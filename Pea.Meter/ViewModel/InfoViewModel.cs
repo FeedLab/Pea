@@ -72,19 +72,8 @@ public partial class InfoViewModel : ObservableObject
 
             var dailyReadingsTask = peaAdapter.ShowDailyReadings(DateTime.Today);
 
-            var meterDataAverageDays7Task = Task.Run(async () =>
-            {
-                using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
-                var repo = new MeterReadingRepository(dbContext);
-                return await repo.GetAverageReadingsByTimeOfDayAsync(7, m.AuthData.Username);
-            });
-
-            var meterDataAverageDays30Task = Task.Run(async () =>
-            {
-                using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
-                var repo = new MeterReadingRepository(dbContext);
-                return await repo.GetAverageReadingsByTimeOfDayAsync(30, m.AuthData.Username);
-            });
+            var meterDataAverageDays7Task = FetchDailyAverageReadingsAsync(dbContextFactory, m.AuthData.Username, 7);
+            var meterDataAverageDays30Task = FetchDailyAverageReadingsAsync(dbContextFactory, m.AuthData.Username, 30);
 
             await Task.WhenAll(dailyReadingsTask, meterDataAverageDays7Task, meterDataAverageDays30Task);
 
@@ -92,11 +81,13 @@ public partial class InfoViewModel : ObservableObject
             var meterData30 = meterDataAverageDays30Task.Result;
             var dailyReadings = dailyReadingsTask.Result;
 
-            await MainThread.InvokeOnMainThreadAsync(async () =>
+            await MainThread.InvokeOnMainThreadAsync(() =>
             {
                 MeterData = new ObservableCollection<PeaMeterReading>(dailyReadings);
                 MeterDataAverage7 = new ObservableCollection<PeaMeterReading>(meterData7);
                 MeterDataAverage30 = new ObservableCollection<PeaMeterReading>(meterData30);
+                
+                return Task.CompletedTask;
             });
 
             // Trigger background import of historic data
@@ -116,6 +107,18 @@ public partial class InfoViewModel : ObservableObject
                     IsCustomerProfileViewVisible = true;
                 });
             });
+    }
+
+    private static Task<IList<PeaMeterReading>> FetchDailyAverageReadingsAsync(PeaDbContextFactory dbContextFactory, string userName, int periodLengthInDays)
+    {
+        var meterDataAverageDaysTask = Task.Run(async () =>
+        {
+            using var dbContext = dbContextFactory.CreateDbContext(userName);
+            var repo = new MeterReadingRepository(dbContext);
+            return await repo.GetAverageReadingsByTimeOfDayAsync(periodLengthInDays, userName);
+        });
+        
+        return meterDataAverageDaysTask;
     }
 
     [RelayCommand]

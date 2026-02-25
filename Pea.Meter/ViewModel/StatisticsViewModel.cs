@@ -32,27 +32,9 @@ public partial class StatisticsViewModel : ObservableObject
                     var timeStart7 = today.AddDays(-7);
                     var timeStart30 = today.AddDays(-30);
 
-                    // Create separate DbContext instances for each concurrent query to avoid threading issues
-                    var meterDataAverageDays1Task = Task.Run(async () =>
-                    {
-                        using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
-                        var repo = new MeterReadingRepository(dbContext);
-                        return await repo.GetHourlyAveragesDuringPeriodAsync(timeStart1, today, m.AuthData.Username);
-                    });
-
-                    var meterDataAverageDays7Task = Task.Run(async () =>
-                    {
-                        using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
-                        var repo = new MeterReadingRepository(dbContext);
-                        return await repo.GetHourlyAveragesDuringPeriodAsync(timeStart7, today, m.AuthData.Username);
-                    });
-
-                    var meterDataAverageDays30Task = Task.Run(async () =>
-                    {
-                        using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
-                        var repo = new MeterReadingRepository(dbContext);
-                        return await repo.GetHourlyAveragesDuringPeriodAsync(timeStart30, today, m.AuthData.Username);
-                    });
+                    var meterDataAverageDays1Task = FetchDailyAverageReadingsAsync(dbContextFactory, timeStart1, today, m.AuthData.Username);
+                    var meterDataAverageDays7Task = FetchDailyAverageReadingsAsync(dbContextFactory, timeStart7, today, m.AuthData.Username);
+                    var meterDataAverageDays30Task = FetchDailyAverageReadingsAsync(dbContextFactory, timeStart30, today, m.AuthData.Username);
 
                     await Task.WhenAll(dailyReadingsTask, meterDataAverageDays1Task, meterDataAverageDays7Task, meterDataAverageDays30Task);
 
@@ -62,15 +44,15 @@ public partial class StatisticsViewModel : ObservableObject
                     var dailyReadings = dailyReadingsTask.Result;
                     
                     var hourlyTotals = dailyReadings
-                        .GroupBy(r => new DateTime(r.PeriodStart.Year, r.PeriodStart.Month, r.PeriodStart.Day, r.PeriodStart.Hour, 0, 0))
+                        .GroupBy(meterReading => new DateTime(meterReading.PeriodStart.Year, meterReading.PeriodStart.Month, meterReading.PeriodStart.Day, meterReading.PeriodStart.Hour, 0, 0))
                         .Select(g => new PeaMeterReading(
                             g.Key,
-                            g.Sum(r => r.RateA),
-                            g.Sum(r => r.RateB),
-                            g.Sum(r => r.RateC),
+                            g.Sum(reading => reading.RateA),
+                            g.Sum(reading => reading.RateB),
+                            g.Sum(reading => reading.RateC),
                             60
                         ))
-                        .OrderBy(r => r.PeriodStart)
+                        .OrderBy(peaMeterReading => peaMeterReading.PeriodStart)
                         .ToList();
                     
                     await MainThread.InvokeOnMainThreadAsync(() =>
@@ -82,5 +64,17 @@ public partial class StatisticsViewModel : ObservableObject
                         return Task.CompletedTask;
                     });
             });
+    }
+    
+    private static Task<IList<PeaMeterReading>> FetchDailyAverageReadingsAsync(PeaDbContextFactory dbContextFactory, DateTime timeStart, DateTime timeEnd, string userName)
+    {
+        var meterDataAverageDaysTask = Task.Run(async () =>
+        {
+            using var dbContext = dbContextFactory.CreateDbContext(userName);
+            var repo = new MeterReadingRepository(dbContext);
+            return await repo.GetHourlyAveragesDuringPeriodAsync(timeStart, timeEnd, userName);
+        });
+        
+        return meterDataAverageDaysTask;
     }
 }
