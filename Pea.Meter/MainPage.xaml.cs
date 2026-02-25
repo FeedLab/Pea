@@ -8,8 +8,6 @@ namespace Pea.Meter
 {
     public partial class MainPage : ContentPage
     {
-        private string userName = "020027734057";
-        private string password = "Bondegatan#16b";
         private readonly AuthDataOptions authDataOptions;
         private readonly IAuthData? authData;
         private readonly CustomerProfileViewModel customerProfile;

@@ -64,11 +64,8 @@ public partial class LoginPopupViewModel(IPopupService popupService, PeaAdapter 
         {
             throw new ArgumentNullException(nameof(LoginData), "LoginData cannot be null");
         }
-        
-        string userName = "020027734057";
-        string password = "Bondegatan#16b";
-        
-        LoginData.Username = userName;
-        LoginData.Password = password;
+        //
+        // LoginData.Username = userName;
+        // LoginData.Password = password;
     }
 }
