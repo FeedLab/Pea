@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using HtmlAgilityPack;
-using Pea.Meter.Models;
+using Pea.Infrastructure.Models;
 
 namespace Pea.Meter.Services;
 

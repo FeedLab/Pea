@@ -1,4 +1,4 @@
-namespace Pea.Meter.Models;
+namespace Pea.Infrastructure.Models;
 
 /// <summary>
 /// Aggregate model containing all customer profile information

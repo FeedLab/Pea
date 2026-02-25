@@ -1,4 +1,4 @@
-namespace Pea.Meter.Models;
+namespace Pea.Infrastructure.Models;
 
 /// <summary>
 /// Model for session information

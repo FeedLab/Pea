@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using Pea.Data;
+using Pea.Data.Repositories;
+using Pea.Infrastructure.Repositories;
 using Pea.Meter.Helper;
 using Pea.Meter.Services;
 using Pea.Meter.View;
@@ -35,7 +38,19 @@ namespace Pea.Meter
             builder.Services.AddSingleton<PeaAdapter>();
             builder.Services.AddSingleton<HistoricDataImportService>();
             builder.Services.AddSingleton<HistoricDataBackgroundService>();
-            
+
+            // Register database services
+            builder.Services.AddSingleton<PeaDbContextFactory>(sp =>
+            {
+                // SQL Server connection string - update with your server details
+                var connectionString = "Server=(localdb)\\mssqllocaldb;Integrated Security=true;TrustServerCertificate=true";
+                return new PeaDbContextFactory(connectionString);
+            });
+
+            // Note: PeaDbContext and repositories should be created on-demand after user login
+            // using PeaDbContextFactory.CreateDbContext(userId)
+            // Don't register PeaDbContext or repositories in DI at startup since they require a userId
+
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<CustomerProfileViewModel>();
 

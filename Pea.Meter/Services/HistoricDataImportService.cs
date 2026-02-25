@@ -1,4 +1,4 @@
-﻿using Pea.Meter.Models;
+﻿using Pea.Infrastructure.Models;
 
 namespace Pea.Meter.Services;
 

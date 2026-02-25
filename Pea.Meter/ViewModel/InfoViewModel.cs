@@ -4,6 +4,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Options;
+using Pea.Data;
+using Pea.Data.Repositories;
+using Pea.Infrastructure.Models;
+using Pea.Infrastructure.Repositories;
 using Pea.Meter.Helper;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
@@ -20,11 +24,14 @@ public partial class InfoViewModel : ObservableObject
     private readonly IPopupService popupService;
     private readonly HistoricDataImportService historicDataImportService;
     private readonly HistoricDataBackgroundService historicDataBackgroundService;
+    private readonly PeaDbContextFactory dbContextFactory;
 
     [ObservableProperty] private IAuthData? authData;
     
     
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterData = [];
+    [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage7 = [];
+    [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage30 = [];
     
     [ObservableProperty] private bool isAddMeterVisible = true;
     [ObservableProperty] private bool isMeterDataVisible = false;
@@ -35,7 +42,8 @@ public partial class InfoViewModel : ObservableObject
     
     public InfoViewModel(CustomerProfileViewModel customerProfile, AuthDataOptions authDataOptions,
         PeaAdapter peaAdapter, ILoginHelper loginHelper, IPopupService popupService,
-        HistoricDataImportService historicDataImportService, HistoricDataBackgroundService historicDataBackgroundService)
+        HistoricDataImportService historicDataImportService, HistoricDataBackgroundService historicDataBackgroundService,
+        PeaDbContextFactory dbContextFactory)
     {
         this.customerProfile = customerProfile;
         this.authDataOptions = authDataOptions;
@@ -44,6 +52,7 @@ public partial class InfoViewModel : ObservableObject
         this.popupService = popupService;
         this.historicDataImportService = historicDataImportService;
         this.historicDataBackgroundService = historicDataBackgroundService;
+        this.dbContextFactory = dbContextFactory;
 
         // Initialize AuthData from saved settings
         AuthData = authDataOptions.AuthData;
@@ -66,9 +75,19 @@ public partial class InfoViewModel : ObservableObject
                     var dailyReadings = await peaAdapter.ShowDailyReadings(DateTime.Today);
 
                     MeterData = new ObservableCollection<PeaMeterReading>(dailyReadings);
+                    
+                    // Create user-specific DbContext and repository
+                    using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
+                    var meterReadingRepository = new MeterReadingRepository(dbContext);
+                    
+                    MeterDataAverage7 = new ObservableCollection<PeaMeterReading>(await meterReadingRepository.GetAverageReadingsByTimeOfDayAsync(7, m.AuthData.Username));
+                    MeterDataAverage30 = new ObservableCollection<PeaMeterReading>(await meterReadingRepository.GetAverageReadingsByTimeOfDayAsync(30, m.AuthData.Username));
 
                     // Trigger background import of historic data
-                    historicDataBackgroundService.TriggerImport();
+                    if (m.AuthData?.Username != null)
+                    {
+                        historicDataBackgroundService.TriggerImport(m.AuthData.Username);
+                    }
                 });
             });
         

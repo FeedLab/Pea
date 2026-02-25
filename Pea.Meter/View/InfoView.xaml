@@ -58,9 +58,18 @@
             </Border.Shadow>
 
             <chart:SfCartesianChart
+                Margin="16"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill"
                 BackgroundColor="Transparent">
+                
+                <chart:SfCartesianChart.Legend>
+                    <chart:ChartLegend>
+                        <chart:ChartLegend.LabelStyle>
+                            <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="18" FontAttributes="None" />
+                        </chart:ChartLegend.LabelStyle>
+                    </chart:ChartLegend>
+                </chart:SfCartesianChart.Legend>
                 
                 <chart:SfCartesianChart.Title>
                     <Label
@@ -89,10 +98,30 @@
                 </chart:SfCartesianChart.YAxes>
 
                 <chart:SplineSeries ItemsSource="{Binding MeterData}"
+                                    Label="Daily"
                                     XBindingPath="PeriodStart"
                                     YBindingPath="Total"
-                                    Fill="#4A90E2"
+                                    Fill="Red"
                                     StrokeWidth="2"
+                                    IsVisibleOnLegend="True"
+                                    EnableTooltip="True" />
+                
+                <chart:SplineSeries ItemsSource="{Binding MeterDataAverage7}"
+                                    Label="Average usage (7 days)"
+                                    XBindingPath="PeriodStart"
+                                    YBindingPath="Total"
+                                    Fill="Orange"
+                                    StrokeWidth="2"
+                                    IsVisibleOnLegend="True"
+                                    EnableTooltip="True" />
+                
+                <chart:SplineSeries ItemsSource="{Binding MeterDataAverage30}"
+                                    Label="Average usage (30 days)"
+                                    XBindingPath="PeriodStart"
+                                    YBindingPath="Total"
+                                    Fill="Green"
+                                    StrokeWidth="2"
+                                    IsVisibleOnLegend="True"
                                     EnableTooltip="True" />
             </chart:SfCartesianChart>
         </Border>

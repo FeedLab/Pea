@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Pea.Meter.Models;
+using Pea.Data;
+using Pea.Data.Repositories;
+using Pea.Infrastructure.Repositories;
 
 namespace Pea.Meter.Services;
 
@@ -9,32 +11,36 @@ namespace Pea.Meter.Services;
 /// </summary>
 public class HistoricDataBackgroundService
 {
-    private readonly PeaAdapter _peaAdapter;
-    private readonly ILogger<HistoricDataBackgroundService> _logger;
-    private CancellationTokenSource? _cancellationTokenSource;
-    private Task? _runningTask;
+    private readonly PeaAdapter peaAdapter;
+    private readonly ILogger<HistoricDataBackgroundService> logger;
+    private readonly PeaDbContextFactory dbContextFactory;
+    private CancellationTokenSource? cancellationTokenSource;
+    private Task? runningTask;
+    private string? currentUserId;
 
-    public HistoricDataBackgroundService(PeaAdapter peaAdapter, ILogger<HistoricDataBackgroundService> logger)
+    public HistoricDataBackgroundService(PeaAdapter peaAdapter, ILogger<HistoricDataBackgroundService> logger, PeaDbContextFactory dbContextFactory)
     {
-        _peaAdapter = peaAdapter;
-        _logger = logger;
+        this.peaAdapter = peaAdapter;
+        this.logger = logger;
+        this.dbContextFactory = dbContextFactory;
     }
 
     /// <summary>
     /// Triggers the background import to start
     /// </summary>
-    public void TriggerImport()
+    public void TriggerImport(string userId)
     {
-        if (_runningTask != null && !_runningTask.IsCompleted)
+        if (runningTask != null && !runningTask.IsCompleted)
         {
-            _logger.LogWarning("Import is already running, ignoring trigger request.");
+            logger.LogWarning("Import is already running, ignoring trigger request.");
             return;
         }
 
-        _logger.LogInformation("Import triggered by user login.");
+        logger.LogInformation("Import triggered by user login for user: {UserId}", userId);
 
-        _cancellationTokenSource = new CancellationTokenSource();
-        _runningTask = Task.Run(async () => await ImportHistoricDataAsync(_cancellationTokenSource.Token));
+        currentUserId = userId;
+        cancellationTokenSource = new CancellationTokenSource();
+        runningTask = Task.Run(async () => await ImportHistoricDataAsync(cancellationTokenSource.Token));
     }
 
     /// <summary>
@@ -42,27 +48,37 @@ public class HistoricDataBackgroundService
     /// </summary>
     public void CancelImport()
     {
-        if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
+        if (cancellationTokenSource != null && !cancellationTokenSource.IsCancellationRequested)
         {
-            _logger.LogInformation("Cancelling historic data import.");
-            _cancellationTokenSource.Cancel();
+            logger.LogInformation("Cancelling historic data import.");
+            cancellationTokenSource.Cancel();
         }
     }
 
     private async Task ImportHistoricDataAsync(CancellationToken cancellationToken)
     {
-        var numberOfDays = 7;
+        if (string.IsNullOrEmpty(currentUserId))
+        {
+            logger.LogError("Cannot import data: User ID is not set");
+            return;
+        }
+
         var startDate = DateTime.Today.AddDays(-1); // Yesterday
+        var maxDaysToTry = 365 * 10; // Safety limit: don't go back more than 10 years
 
-        _logger.LogInformation("Starting historic data import for {Days} days from {Date}", numberOfDays, startDate);
+        logger.LogInformation("Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items", startDate, currentUserId);
 
-        var allReadings = new List<PeaMeterReading>();
+        // Create user-specific database context and repository
+        using var dbContext = dbContextFactory.CreateDbContext(currentUserId);
+        var repository = new MeterReadingRepository(dbContext);
 
-        for (int i = 0; i < numberOfDays; i++)
+        var totalReadings = 0;
+
+        for (int i = 0; i < maxDaysToTry; i++)
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogWarning("Import cancelled by user.");
+                logger.LogWarning("Import cancelled by user.");
                 break;
             }
 
@@ -70,24 +86,38 @@ public class HistoricDataBackgroundService
 
             try
             {
-                _logger.LogInformation("Fetching data for {Date}...", targetDate.ToString("yyyy-MM-dd"));
-                var readings = await _peaAdapter.ShowDailyReadings(targetDate);
+                // Check if data already exists for this date
+                if (await repository.ExistsForDateAsync(targetDate, currentUserId, cancellationToken))
+                {
+                    logger.LogInformation("Data already exists for {Date}, skipping", targetDate.ToString("yyyy-MM-dd"));
+                    continue;
+                }
 
-                allReadings.AddRange(readings);
-                _logger.LogInformation("Successfully imported {Count} readings for {Date}", readings.Count, targetDate.ToString("yyyy-MM-dd"));
+                logger.LogInformation("Fetching data for {Date}...", targetDate.ToString("yyyy-MM-dd"));
+                var readings = await peaAdapter.ShowDailyReadings(targetDate);
+
+                if (readings.Count > 0)
+                {
+                    // Save to database
+                    await repository.AddRangeAsync(readings, currentUserId, cancellationToken);
+                    totalReadings += readings.Count;
+                    logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count, targetDate.ToString("yyyy-MM-dd"));
+                }
+                else
+                {
+                    logger.LogInformation("No readings found for {Date}. Stopping import as there is no more data to read.", targetDate.ToString("yyyy-MM-dd"));
+                    break; // Stop when ShowDailyReadings returns 0 items
+                }
 
                 // Add small delay between requests to avoid overwhelming the server
                 await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error importing data for {Date}", targetDate.ToString("yyyy-MM-dd"));
+                logger.LogError(ex, "Error importing data for {Date}", targetDate.ToString("yyyy-MM-dd"));
             }
         }
 
-        _logger.LogInformation("Import completed. Total readings imported: {Total}", allReadings.Count);
-
-        // TODO: Store the data in a database or file as needed
-        // For now, the data is just logged
+        logger.LogInformation("Import completed. Total readings imported and saved: {Total}", totalReadings);
     }
 }

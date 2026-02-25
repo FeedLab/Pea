@@ -1,4 +1,4 @@
-namespace Pea.Meter.Models;
+namespace Pea.Infrastructure.Models;
 
 /// <summary>
 /// Model representing a meter reading for a specific time period
