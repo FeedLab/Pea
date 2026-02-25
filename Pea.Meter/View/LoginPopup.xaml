@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             x:Class="Pea.Meter.View.LoginPopup">
+    
+    <VerticalStackLayout Padding="20" Spacing="15" HorizontalOptions="Center" VerticalOptions="Center">
+
+        <!-- Image at the top -->
+        <Image Source="amr_logo.png"
+               HeightRequest="100"
+               HorizontalOptions="Center"/>
+
+        <!-- Login text -->
+        <Label Text="Please login"
+               FontSize="16"
+               HorizontalOptions="Center"/>
+       
+        <!-- User input field -->
+        <syncfusion:SfTextInputLayout Hint="Username"
+                                      ContainerType="Outlined"
+                                      OutlineCornerRadius="8"
+                                      FocusedStrokeThickness="4"
+                                      UnfocusedStrokeThickness="2"
+                                      WidthRequest="250"
+                                      HelperText="Minimum 6 characters"
+                                      CharMaxLength="20"
+                                      ShowCharCount="True">
+               
+               <Entry Text="{Binding LoginData.Username}"
+                      MaxLength="20"/>
+               
+               <syncfusion:SfTextInputLayout.LeadingView>
+                      <Label
+                             FontFamily="FontSolid" 
+                             Text="&#x1F464;">     
+                      </Label>
+               </syncfusion:SfTextInputLayout.LeadingView>
+        </syncfusion:SfTextInputLayout>
+
+        <!-- Password input field -->
+        <syncfusion:SfTextInputLayout Hint="Password"
+                                      ContainerType="Outlined"
+                                      OutlineCornerRadius="8"
+                                      FocusedStrokeThickness="4"
+                                      UnfocusedStrokeThickness="2"
+                                      WidthRequest="250"
+                                      HelperText="Minimum 6 characters"
+                                      EnablePasswordVisibilityToggle="True"
+                                      CharMaxLength="50">
+               
+               <Entry Text="{Binding LoginData.Password}"
+                      IsPassword="True"
+                      MaxLength="50"/>
+            
+            <syncfusion:SfTextInputLayout.LeadingView>
+                   <Label
+                          Text="&#x1F510;">     
+                   </Label>
+            </syncfusion:SfTextInputLayout.LeadingView>
+        </syncfusion:SfTextInputLayout>
+
+        <!-- Login text -->
+        <Label Text="{Binding FailLoginMessage}"
+               FontSize="15"
+               IsVisible="{Binding IsFailLoginMessageVisible}"
+               TextColor="DarkRed"
+               HorizontalOptions="Center"/>
+        
+        <!-- OK and Cancel buttons -->
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <buttons:SfButton Text="OK"
+                            Command="{Binding OkCommand}"
+                            WidthRequest="100"/>
+            <buttons:SfButton Text="Cancel"
+                            Command="{Binding CancelCommand}"
+                            WidthRequest="100"/>
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+</ContentView>

@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Expander;assembly=Syncfusion.Maui.Expander"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:view="clr-namespace:Pea.Meter.View"
+             x:Class="Pea.Meter.MainPage">
+    <ContentPage.Resources>
+        <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="EnableRippleEffect" Value="True" />
+            <Setter Property="ShowIcon" Value="True" />
+            <Setter Property="ImageSize" Value="22" />
+            <Setter Property="ImageAlignment" Value="Default" />
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="Stroke" Value="#2B3C56" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="Background" Value="#EEF2F7" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <Style x:Key="IconButtonWithOpacityStyle" TargetType="button:SfButton"
+               BasedOn="{StaticResource IconButtonStyle}">
+            <Style.Triggers>
+                <Trigger TargetType="button:SfButton" Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Icon resources -->
+        <FontImageSource x:Key="AddMeterIcon" FontFamily="FontSolid" Glyph="&#xe541;" Color="DarkGreen" Size="28" />
+        <FontImageSource x:Key="RemoveMeterIcon" FontFamily="FontSolid" Glyph="&#xe540;" Color="DarkRed" Size="28" />
+    </ContentPage.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Image
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Source="pea_meter.png" Aspect="Fill" Opacity="0.3" />
+
+        <tabView:SfTabView
+            Grid.Row="1"
+            x:Name="TabView"
+            Margin="4,0"
+            TabBarPlacement="Bottom"
+            TabWidthMode="SizeToContent">
+            <tabView:SfTabView.Items>
+                <tabView:SfTabItem Header="Info">
+                    <tabView:SfTabItem.Content>
+                        <Grid BackgroundColor="Transparent">
+                            <view:InfoView />
+                        </Grid>
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+
+                <tabView:SfTabItem Header="Data" x:Name="TabData">
+                    <tabView:SfTabItem.Content>
+                        <CollectionView>
+                            <CollectionView.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>James</x:String>
+                                    <x:String>Richard</x:String>
+                                    <x:String>Michael</x:String>
+                                    <x:String>Alex</x:String>
+                                    <x:String>Clara</x:String>
+                                </x:Array>
+                            </CollectionView.ItemsSource>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="10,5" HeightRequest="40">
+                                        <Label
+                                            VerticalOptions="Start"
+                                            HorizontalOptions="Start"
+                                            TextColor="#666666"
+                                            FontSize="16"
+                                            Text="{Binding}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+
+                <tabView:SfTabItem Header="Customer Profile" x:Name="TabCustomerProfile">
+                    <tabView:SfTabItem.Content>
+                        <view:CustomerProfileView />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+            </tabView:SfTabView.Items>
+        </tabView:SfTabView>
+
+    </Grid>
+
+</ContentPage>

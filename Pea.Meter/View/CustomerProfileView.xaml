@@ -1,0 +1,492 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+                       xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+   x:Class="Pea.Meter.View.CustomerProfileView">
+
+    <ContentView.Resources>
+        <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="EnableRippleEffect" Value="True" />
+            <Setter Property="ShowIcon" Value="True" />
+            <Setter Property="ImageSize" Value="22" />
+            <Setter Property="ImageAlignment" Value="Default" />
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="Stroke" Value="#2B3C56" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="Background" Value="#EEF2F7" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <Style x:Key="IconButtonWithOpacityStyle" TargetType="button:SfButton"
+               BasedOn="{StaticResource IconButtonStyle}">
+            <Style.Triggers>
+                <Trigger TargetType="button:SfButton" Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Icon resources -->
+        <FontImageSource x:Key="RemoveMeterIcon" FontFamily="FontSolid" Glyph="&#xe540;" Color="DarkRed" Size="28" />
+    </ContentView.Resources>
+
+    <Border Padding="0"
+            BackgroundColor="#F5F5F5"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            WidthRequest="720"
+            StrokeThickness="0">
+
+        <Border BackgroundColor="White"
+                StrokeThickness="1"
+                Stroke="#CCCCCC"
+                Padding="0">
+
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Opacity="0.15"
+                        Radius="10"
+                        Offset="0,4"/>
+            </Border.Shadow>
+
+            <VerticalStackLayout>
+            <tabView:SfTabView BackgroundColor="White"
+                               TabBarBackground="White"
+                               IndicatorBackground="#007ACC"
+                               TabWidthMode="SizeToContent">
+
+                <!-- Personal Information Tab -->
+                <tabView:SfTabItem Header="Personal">
+                    <ScrollView Padding="20">
+                        <VerticalStackLayout Spacing="12">
+
+                            <Label Text="Customer Name"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Personal.CustomerName}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Customer Account"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Personal.CustomerAccount}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Customer ID"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Personal.CustomerId}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="PEA Site"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Personal.PeaSite}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </tabView:SfTabItem>
+
+                <!-- Meter Information Tab -->
+                <tabView:SfTabItem Header="Meter">
+                    <ScrollView Padding="20">
+                        <VerticalStackLayout Spacing="12">
+
+                            <Label Text="Meter Number"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Meter.MeterNumber}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Meter Point ID"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Meter.MeterPointId}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="CT/VT Ratio"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Meter.CtVtRatio}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="KVA"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Meter.Kva}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Billing Cycle"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Meter.BillingCycle}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </tabView:SfTabItem>
+
+                <!-- Business Information Tab -->
+                <tabView:SfTabItem Header="Business">
+                    <ScrollView Padding="20">
+                        <VerticalStackLayout Spacing="12">
+
+                            <Label Text="Rate Type"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Business.RateType}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Billing Method"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Business.BillingMethod}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Business Type"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Business.BusinessType}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Business Size"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Business.BusinessSize}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Industrial Estate"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Business.IndustrialEstate}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </tabView:SfTabItem>
+
+                <!-- Contact Information Tab -->
+                <tabView:SfTabItem Header="Contact">
+                    <ScrollView Padding="20">
+                        <VerticalStackLayout Spacing="12">
+
+                            <Label Text="Address"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Contact.Address}"
+                                       TextColor="#000000"
+                                       LineBreakMode="WordWrap"/>
+                            </Border>
+
+                            <Label Text="Phone"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Contact.Phone}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Fax"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Contact.Fax}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Contact Person"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Contact.ContactPerson}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Email"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Contact.Email}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Website"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Contact.Website}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </tabView:SfTabItem>
+
+                <!-- Session Information Tab -->
+                <tabView:SfTabItem Header="Session">
+                    <ScrollView Padding="20">
+                        <VerticalStackLayout Spacing="12">
+
+                            <Label Text="IP Address"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Session.IpAddress}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Username"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Session.Username}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                            <Label Text="Last Login Time"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="#333333"
+                                   Margin="0,8,0,0"/>
+                            <Border BackgroundColor="#FAFAFA"
+                                    StrokeThickness="1"
+                                    Stroke="#DDDDDD"
+                                    Padding="10,8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding CustomerProfile.Session.LastLoginTime, StringFormat='{0:yyyy-MM-dd HH:mm:ss}'}"
+                                       TextColor="#000000"/>
+                            </Border>
+
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </tabView:SfTabItem>
+
+            </tabView:SfTabView>
+
+                <Grid
+                    Margin="16"
+                    HorizontalOptions="Fill">
+            <button:SfButton
+                            Style="{StaticResource IconButtonWithOpacityStyle}"
+                            Command="{Binding RemoveAccountCommand}"
+                            IsVisible="True"
+                            ImageSource="{StaticResource RemoveMeterIcon}"
+                HorizontalOptions="End"
+                            ToolTipProperties.Text="Remove meter" />
+                </Grid>
+                
+            </VerticalStackLayout>
+        </Border>
+
+    </Border>
+
+</ContentView>

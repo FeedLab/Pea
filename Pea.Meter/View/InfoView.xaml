@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Pea.Meter.View.InfoView">
+    <ContentView.Resources>
+        <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="EnableRippleEffect" Value="True" />
+            <Setter Property="ShowIcon" Value="True" />
+            <Setter Property="ImageSize" Value="22" />
+            <Setter Property="ImageAlignment" Value="Default" />
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="Stroke" Value="#2B3C56" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="Background" Value="#EEF2F7" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <Style x:Key="IconButtonWithOpacityStyle" TargetType="button:SfButton"
+               BasedOn="{StaticResource IconButtonStyle}">
+            <Style.Triggers>
+                <Trigger TargetType="button:SfButton" Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Icon resources -->
+        <FontImageSource x:Key="AddMeterIcon" FontFamily="FontSolid" Glyph="&#xe541;" Color="DarkGreen" Size="28" />
+        <FontImageSource x:Key="RemoveMeterIcon" FontFamily="FontSolid" Glyph="&#xe540;" Color="DarkRed" Size="28" />
+
+        <!-- Shadow resource -->
+        <Shadow x:Key="BorderShadow" Brush="Black" Offset="0,4" Radius="10" Opacity="0.3" />
+    </ContentView.Resources>
+
+    <Grid>
+        <Border Margin="48,64,48,64"
+                IsVisible="{Binding IsMeterDataVisible}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                BackgroundColor="White"
+                StrokeThickness="0"
+                Padding="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20" />
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,8"
+                        Radius="24"
+                        Opacity="0.15" />
+            </Border.Shadow>
+
+            <chart:SfCartesianChart
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                BackgroundColor="Transparent">
+                
+                <chart:SfCartesianChart.Title>
+                    <Label
+                        Margin="8"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Center"
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Text="{Binding DateMeterData, StringFormat='{0:D}'}"/>
+                </chart:SfCartesianChart.Title>
+                
+                <chart:SfCartesianChart.XAxes>
+                    <chart:DateTimeAxis>
+                        <chart:DateTimeAxis.LabelStyle>
+                            <chart:ChartAxisLabelStyle LabelFormat="HH:mm" />
+                        </chart:DateTimeAxis.LabelStyle>
+                    </chart:DateTimeAxis>
+                </chart:SfCartesianChart.XAxes>
+
+                <chart:SfCartesianChart.YAxes>
+                    <chart:NumericalAxis>
+                        <chart:NumericalAxis.Title>
+                            <chart:ChartAxisTitle Text="Energy consumption in KW per 15 minutes period" />
+                        </chart:NumericalAxis.Title>
+                    </chart:NumericalAxis>
+                </chart:SfCartesianChart.YAxes>
+
+                <chart:SplineSeries ItemsSource="{Binding MeterData}"
+                                    XBindingPath="PeriodStart"
+                                    YBindingPath="Total"
+                                    Fill="#4A90E2"
+                                    StrokeWidth="2"
+                                    EnableTooltip="True" />
+            </chart:SfCartesianChart>
+        </Border>
+
+
+        <Border Margin="20"
+                Padding="16"
+                WidthRequest="400"
+                BackgroundColor="White"
+                StrokeThickness="0"
+                IsVisible="{Binding IsAddMeterVisible}"
+                Shadow="{StaticResource BorderShadow}"
+                VerticalOptions="Center"
+                HorizontalOptions="Center">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12" />
+            </Border.StrokeShape>
+
+            <Grid
+                RowDefinitions="Auto,*,Auto" RowSpacing="8">
+
+                <Label Grid.Row="0"
+                       Margin="0,0,0,16"
+                       Text="How to Register Your Electric Meter"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center" />
+
+                <VerticalStackLayout Grid.Row="1" Spacing="12" Padding="8,0">
+                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="1. Locate your Meter Number:&#x0a;" FontAttributes="Bold" />
+                                <Span
+                                    Text="You can find this physical ID on the face of your electric meter or on your most recent utility bill." />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="2. Open the App:&#x0a;" FontAttributes="Bold" />
+                                <Span
+                                    Text="Navigate to the &quot;Devices&quot; or &quot;My Meters&quot; section in the main menu." />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="3. Scan or Enter Manually:&#x0a;" FontAttributes="Bold" />
+                                <Span
+                                    Text="Tap the (+) icon. You can either scan the barcode on your meter using your phone's camera or type in the serial number manually." />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="4. Start registration:&#x0a;" FontAttributes="Bold" />
+                                <Span Text="Tap the green button below to get started." />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout
+                    Grid.Row="2"
+                    Margin="0,16,0,0"
+                    HorizontalOptions="Center">
+                    <button:SfButton
+                        Style="{StaticResource IconButtonWithOpacityStyle}"
+                        Command="{Binding AddAccountCommand}"
+                        IsVisible="{Binding IsAddMeterVisible}"
+                        ImageSource="{StaticResource AddMeterIcon}"
+                        ToolTipProperties.Text="Add meter" />
+
+                    <button:SfButton
+                        Style="{StaticResource IconButtonWithOpacityStyle}"
+                        Command="{Binding RemoveAccountCommand}"
+                        IsVisible="{Binding IsRemoveMeterVisible}"
+                        ImageSource="{StaticResource RemoveMeterIcon}"
+                        ToolTipProperties.Text="Remove meter" />
+
+                </HorizontalStackLayout>
+            </Grid>
+
+        </Border>
+
+
+    </Grid>
+</ContentView>
