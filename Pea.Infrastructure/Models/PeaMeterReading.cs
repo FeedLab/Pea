@@ -5,8 +5,11 @@ namespace Pea.Infrastructure.Models;
 /// </summary>
 public class PeaMeterReading
 {
-    public PeaMeterReading(DateTime periodStart, decimal rateA, decimal rateB, decimal rateC)
+    private readonly int periodLength;
+
+    public PeaMeterReading(DateTime periodStart, decimal rateA, decimal rateB, decimal rateC, int periodLength = 15)
     {
+        this.periodLength = periodLength;
         PeriodStart = periodStart;
         RateA = rateA;
         RateB = rateB;
@@ -15,7 +18,7 @@ public class PeaMeterReading
 
     public DateTime PeriodStart { get; set; }
 
-    public DateTime PeriodEnd => PeriodStart.AddMinutes(15).AddMilliseconds(-1);
+    public DateTime PeriodEnd => PeriodStart.AddMinutes(periodLength).AddMilliseconds(-1);
 
     public decimal RateA { get;  }
 

@@ -20,16 +20,21 @@ public class MeterReadingRepository : IMeterReadingRepository
     
     public async Task AddRangeAsync(IEnumerable<PeaMeterReading> readings, string userId, CancellationToken cancellationToken = default)
     {
-        var entities = readings.Select(r => new MeterReadingEntity
+        var entities = readings.Select(r =>
         {
-            PeriodStart = r.PeriodStart,
-            PeriodEnd = r.PeriodEnd,
-            RateA = r.RateA,
-            RateB = r.RateB,
-            RateC = r.RateC,
-            Total = r.Total,
-            UserId = userId,
-            CreatedAt = DateTime.UtcNow
+            var utcNow = DateTime.UtcNow;
+            return new MeterReadingEntity
+            {
+                PeriodStart = r.PeriodStart,
+                PeriodEnd = r.PeriodEnd,
+                RateA = r.RateA,
+                RateB = r.RateB,
+                RateC = r.RateC,
+                Total = r.Total,
+                UserId = userId,
+                CreatedAt = utcNow,
+                UpdatedAt = utcNow
+            };
         });
 
         await context.MeterReadings.AddRangeAsync(entities, cancellationToken);
@@ -108,5 +113,59 @@ public class MeterReadingRepository : IMeterReadingRepository
             .ToList();
 
         return averageReadings;
+    }
+
+    public async Task<IList<PeaMeterReading>> GetHourlyTotalsAsync(DateTime startTime, DateTime endTime, string userId, CancellationToken cancellationToken = default)
+    {
+        var readings = await context.MeterReadings
+            .Where(m => m.UserId == userId && m.PeriodStart >= startTime && m.PeriodStart < endTime)
+            .ToListAsync(cancellationToken);
+
+        if (readings.Count == 0)
+        {
+            return new List<PeaMeterReading>();
+        }
+
+        // Group by hour and sum the Total for each hour
+        var hourlyTotals = readings
+            .GroupBy(r => new DateTime(r.PeriodStart.Year, r.PeriodStart.Month, r.PeriodStart.Day, r.PeriodStart.Hour, 0, 0))
+            .Select(g => new PeaMeterReading(
+                g.Key,
+                g.Sum(r => r.RateA),
+                g.Sum(r => r.RateB),
+                g.Sum(r => r.RateC),
+                60
+            ))
+            .OrderBy(r => r.PeriodStart)
+            .ToList();
+
+        return hourlyTotals;
+    }
+
+    public async Task<IList<PeaMeterReading>> GetHourlyAveragesDuringPeriodAsync(DateTime startTime, DateTime endTime, string userId, CancellationToken cancellationToken = default)
+    {
+        var readings = await context.MeterReadings
+            .Where(m => m.UserId == userId && m.PeriodStart >= startTime && m.PeriodStart < endTime)
+            .ToListAsync(cancellationToken);
+
+        if (readings.Count == 0)
+        {
+            return new List<PeaMeterReading>();
+        }
+
+        // Group by hour of day (0-23) and calculate average across all days
+        var hourlyAverages = readings
+            .GroupBy(r => r.PeriodStart.Hour)
+            .Select(g => new PeaMeterReading(
+                new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, g.Key, 0, 0),
+                g.Average(r => r.RateA),
+                g.Average(r => r.RateB),
+                g.Average(r => r.RateC),
+                60
+            ))
+            .OrderBy(r => r.PeriodStart)
+            .ToList();
+
+        return hourlyAverages;
     }
 }

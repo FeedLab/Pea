@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/SolutionFolder/">
+    <File Path="README.md" />
+  </Folder>
   <Project Path="Pea.Data/Pea.Data.csproj" />
   <Project Path="Pea.Infrastructure/Pea.Infrastructure.csproj" />
   <Project Path="Pea.Meter/Pea.Meter.csproj" />

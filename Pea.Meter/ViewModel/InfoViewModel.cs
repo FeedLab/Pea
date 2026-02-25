@@ -27,22 +27,23 @@ public partial class InfoViewModel : ObservableObject
     private readonly PeaDbContextFactory dbContextFactory;
 
     [ObservableProperty] private IAuthData? authData;
-    
-    
+
+
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterData = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage7 = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage30 = [];
-    
+
     [ObservableProperty] private bool isAddMeterVisible = true;
     [ObservableProperty] private bool isMeterDataVisible = false;
     [ObservableProperty] private bool isRemoveMeterVisible = false;
     [ObservableProperty] private bool isCustomerProfileViewVisible = false;
     [ObservableProperty] private DateTime dateMeterData = DateTime.Today;
     private AuthData? authDataLogin;
-    
+
     public InfoViewModel(CustomerProfileViewModel customerProfile, AuthDataOptions authDataOptions,
         PeaAdapter peaAdapter, ILoginHelper loginHelper, IPopupService popupService,
-        HistoricDataImportService historicDataImportService, HistoricDataBackgroundService historicDataBackgroundService,
+        HistoricDataImportService historicDataImportService,
+        HistoricDataBackgroundService historicDataBackgroundService,
         PeaDbContextFactory dbContextFactory)
     {
         this.customerProfile = customerProfile;
@@ -63,34 +64,48 @@ public partial class InfoViewModel : ObservableObject
         OnAuthDataChanged(AuthData);
         Debug.WriteLine($"After OnAuthDataChanged: IsCustomerProfileViewVisible={IsCustomerProfileViewVisible}");
 
-        WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this,
-            (r, m) =>
+        WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
+        {
+            IsAddMeterVisible = false;
+            IsMeterDataVisible = true;
+            IsCustomerProfileViewVisible = false;
+
+            var dailyReadingsTask = peaAdapter.ShowDailyReadings(DateTime.Today);
+
+            var meterDataAverageDays7Task = Task.Run(async () =>
             {
-                MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    IsAddMeterVisible = false;
-                    IsMeterDataVisible = true;
-                    IsCustomerProfileViewVisible = false;
-
-                    var dailyReadings = await peaAdapter.ShowDailyReadings(DateTime.Today);
-
-                    MeterData = new ObservableCollection<PeaMeterReading>(dailyReadings);
-                    
-                    // Create user-specific DbContext and repository
-                    using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
-                    var meterReadingRepository = new MeterReadingRepository(dbContext);
-                    
-                    MeterDataAverage7 = new ObservableCollection<PeaMeterReading>(await meterReadingRepository.GetAverageReadingsByTimeOfDayAsync(7, m.AuthData.Username));
-                    MeterDataAverage30 = new ObservableCollection<PeaMeterReading>(await meterReadingRepository.GetAverageReadingsByTimeOfDayAsync(30, m.AuthData.Username));
-
-                    // Trigger background import of historic data
-                    if (m.AuthData?.Username != null)
-                    {
-                        historicDataBackgroundService.TriggerImport(m.AuthData.Username);
-                    }
-                });
+                using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
+                var repo = new MeterReadingRepository(dbContext);
+                return await repo.GetAverageReadingsByTimeOfDayAsync(7, m.AuthData.Username);
             });
-        
+
+            var meterDataAverageDays30Task = Task.Run(async () =>
+            {
+                using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
+                var repo = new MeterReadingRepository(dbContext);
+                return await repo.GetAverageReadingsByTimeOfDayAsync(30, m.AuthData.Username);
+            });
+
+            await Task.WhenAll(dailyReadingsTask, meterDataAverageDays7Task, meterDataAverageDays30Task);
+
+            var meterData7 = meterDataAverageDays7Task.Result;
+            var meterData30 = meterDataAverageDays30Task.Result;
+            var dailyReadings = dailyReadingsTask.Result;
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                MeterData = new ObservableCollection<PeaMeterReading>(dailyReadings);
+                MeterDataAverage7 = new ObservableCollection<PeaMeterReading>(meterData7);
+                MeterDataAverage30 = new ObservableCollection<PeaMeterReading>(meterData30);
+            });
+
+            // Trigger background import of historic data
+            if (m.AuthData?.Username != null)
+            {
+                historicDataBackgroundService.TriggerImport(m.AuthData.Username);
+            }
+        });
+
         WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this,
             (r, m) =>
             {
@@ -161,16 +176,16 @@ public partial class InfoViewModel : ObservableObject
         try
         {
             Console.WriteLine("Starting historic data import...");
-            
+
             // Import data for 7 days starting from yesterday
             var historicData = await historicDataImportService.ImportHistoricDataAsync(7);
-            
+
             Console.WriteLine($"Import completed. Total days imported: {historicData.Count}");
-            
+
             // Optionally display the total readings imported
             var totalReadings = historicData.Sum(kvp => kvp.Value.Count);
             Console.WriteLine($"Total readings imported: {totalReadings}");
-            
+
             // You can update the UI or store the data as needed
             // For now, just logging the results
             foreach (var dateData in historicData.OrderByDescending(x => x.Key))
@@ -183,5 +198,4 @@ public partial class InfoViewModel : ObservableObject
             Console.WriteLine($"Error during historic data import: {ex.Message}");
         }
     }
-
 }

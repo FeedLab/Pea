@@ -53,6 +53,7 @@ namespace Pea.Meter
 
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<CustomerProfileViewModel>();
+            builder.Services.AddSingleton<StatisticsViewModel>();
 
             builder.Services.AddSingletonPopup<LoginPopup, LoginPopupViewModel>();
             

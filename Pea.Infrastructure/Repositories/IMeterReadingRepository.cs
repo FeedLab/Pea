@@ -45,4 +45,24 @@ public interface IMeterReadingRepository
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>List of average readings by time of day (96 readings per day)</returns>
     Task<IList<PeaMeterReading>> GetAverageReadingsByTimeOfDayAsync(int periodInDays, string userId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets total aggregated per hour for readings between start and end time
+    /// </summary>
+    /// <param name="startTime">Start date/time</param>
+    /// <param name="endTime">End date/time</param>
+    /// <param name="userId">User identifier</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>List of readings with hourly totals</returns>
+    Task<IList<PeaMeterReading>> GetHourlyTotalsAsync(DateTime startTime, DateTime endTime, string userId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets average per hour for readings between start and end time
+    /// </summary>
+    /// <param name="startTime">Start date/time</param>
+    /// <param name="endTime">End date/time</param>
+    /// <param name="userId">User identifier</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>List of readings with hourly averages</returns>
+    Task<IList<PeaMeterReading>> GetHourlyAveragesDuringPeriodAsync(DateTime startTime, DateTime endTime, string userId, CancellationToken cancellationToken = default);
 }

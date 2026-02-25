@@ -63,31 +63,11 @@
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="Data" x:Name="TabData">
+                <tabView:SfTabItem Header="Statistics" x:Name="TabData">
                     <tabView:SfTabItem.Content>
-                        <CollectionView>
-                            <CollectionView.ItemsSource>
-                                <x:Array Type="{x:Type x:String}">
-                                    <x:String>James</x:String>
-                                    <x:String>Richard</x:String>
-                                    <x:String>Michael</x:String>
-                                    <x:String>Alex</x:String>
-                                    <x:String>Clara</x:String>
-                                </x:Array>
-                            </CollectionView.ItemsSource>
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="10,5" HeightRequest="40">
-                                        <Label
-                                            VerticalOptions="Start"
-                                            HorizontalOptions="Start"
-                                            TextColor="#666666"
-                                            FontSize="16"
-                                            Text="{Binding}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                        <Grid BackgroundColor="Transparent">
+                            <view:StatisticsView />
+                        </Grid>
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
