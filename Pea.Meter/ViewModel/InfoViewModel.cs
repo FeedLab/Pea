@@ -18,6 +18,8 @@ public partial class InfoViewModel : ObservableObject
     private readonly PeaAdapter peaAdapter;
     private readonly ILoginHelper loginHelper;
     private readonly IPopupService popupService;
+    private readonly HistoricDataImportService historicDataImportService;
+    private readonly HistoricDataBackgroundService historicDataBackgroundService;
 
     [ObservableProperty] private IAuthData? authData;
     
@@ -32,13 +34,16 @@ public partial class InfoViewModel : ObservableObject
     private AuthData? authDataLogin;
     
     public InfoViewModel(CustomerProfileViewModel customerProfile, AuthDataOptions authDataOptions,
-        PeaAdapter peaAdapter, ILoginHelper loginHelper, IPopupService popupService)
+        PeaAdapter peaAdapter, ILoginHelper loginHelper, IPopupService popupService,
+        HistoricDataImportService historicDataImportService, HistoricDataBackgroundService historicDataBackgroundService)
     {
         this.customerProfile = customerProfile;
         this.authDataOptions = authDataOptions;
         this.peaAdapter = peaAdapter;
         this.loginHelper = loginHelper;
         this.popupService = popupService;
+        this.historicDataImportService = historicDataImportService;
+        this.historicDataBackgroundService = historicDataBackgroundService;
 
         // Initialize AuthData from saved settings
         AuthData = authDataOptions.AuthData;
@@ -57,10 +62,13 @@ public partial class InfoViewModel : ObservableObject
                     IsAddMeterVisible = false;
                     IsMeterDataVisible = true;
                     IsCustomerProfileViewVisible = false;
-                    
+
                     var dailyReadings = await peaAdapter.ShowDailyReadings(DateTime.Today);
-                    
+
                     MeterData = new ObservableCollection<PeaMeterReading>(dailyReadings);
+
+                    // Trigger background import of historic data
+                    historicDataBackgroundService.TriggerImport();
                 });
             });
         
@@ -126,6 +134,35 @@ public partial class InfoViewModel : ObservableObject
             Shell.Current,
             options: popupOptions,
             shellParameters: queryAttributes);
+    }
+
+    [RelayCommand]
+    private async Task ImportHistoricData()
+    {
+        try
+        {
+            Console.WriteLine("Starting historic data import...");
+            
+            // Import data for 7 days starting from yesterday
+            var historicData = await historicDataImportService.ImportHistoricDataAsync(7);
+            
+            Console.WriteLine($"Import completed. Total days imported: {historicData.Count}");
+            
+            // Optionally display the total readings imported
+            var totalReadings = historicData.Sum(kvp => kvp.Value.Count);
+            Console.WriteLine($"Total readings imported: {totalReadings}");
+            
+            // You can update the UI or store the data as needed
+            // For now, just logging the results
+            foreach (var dateData in historicData.OrderByDescending(x => x.Key))
+            {
+                Console.WriteLine($"{dateData.Key:yyyy-MM-dd}: {dateData.Value.Count} readings");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during historic data import: {ex.Message}");
+        }
     }
 
 }

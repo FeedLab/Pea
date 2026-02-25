@@ -244,7 +244,6 @@ public class PeaAdapter
         }
 
         Debug.WriteLine("Protected page content:");
-        Debug.WriteLine(protectedHtml);
 
         // Step 6: Inspect cookies (optional)
         foreach (Cookie cookie in handler.CookieContainer.GetCookies(new Uri("https://www.amr.pea.co.th")))
@@ -272,7 +271,6 @@ public class PeaAdapter
         }
 
         Debug.WriteLine("Protected page content:");
-        Debug.WriteLine(protectedHtml);
     }
 
     public async Task CustomerShowOverview()
@@ -294,7 +292,6 @@ public class PeaAdapter
         }
 
         Debug.WriteLine("Protected page content:");
-        Debug.WriteLine(protectedHtml);
     }
 
     public async Task CustomerOverviewSelect()
@@ -327,7 +324,6 @@ public class PeaAdapter
         }
 
         Debug.WriteLine("Protected page content:");
-        Debug.WriteLine(protectedHtml);
     }
 
     public async Task<IList<PeaMeterReading>> ShowDailyReadings(DateTime selectedDate)
@@ -352,7 +348,6 @@ public class PeaAdapter
         }
 
         Debug.WriteLine("Protected page content:");
-        Debug.WriteLine(protectedHtml);
 
         var html = new HtmlDocument();
         html.LoadHtml(protectedHtml);

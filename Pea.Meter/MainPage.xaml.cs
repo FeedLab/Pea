@@ -35,6 +35,7 @@ namespace Pea.Meter
                 {
                     TabData.IsVisible = true;
                     TabCustomerProfile.IsVisible = true;
+                    
                 }); 
             });
             
