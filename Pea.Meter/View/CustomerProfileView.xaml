@@ -59,6 +59,7 @@
             <tabView:SfTabView BackgroundColor="White"
                                TabBarBackground="White"
                                IndicatorBackground="#007ACC"
+                               EnableSwiping="True"
                                TabWidthMode="SizeToContent">
 
                 <!-- Personal Information Tab -->

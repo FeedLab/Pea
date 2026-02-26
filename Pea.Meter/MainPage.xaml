@@ -76,19 +76,22 @@
         <tabView:SfTabView
             Grid.Row="1"
             x:Name="TabView"
-            Margin="4,0"
+            Margin="0,0"
+            EnableSwiping="True"
             TabBarPlacement="Bottom"
-            TabWidthMode="SizeToContent">
+            TabWidthMode="SizeToContent"
+            TabBarBackground="#CC000000"
+            IndicatorBackground="#4CAF50">
             <tabView:SfTabView.Items>
-                <tabView:SfTabItem Header="PEA" x:Name="Pea">
+                <tabView:SfTabItem Header="PEA" x:Name="Pea" TextColor="White" FontSize="14">
                     <tabView:SfTabItem.Content>
                         <Grid BackgroundColor="Transparent">
                             <view:HomeView />
                         </Grid>
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
-                
-                <tabView:SfTabItem Header="Info" x:Name="Info">
+
+                <tabView:SfTabItem Header="Info" x:Name="Info" TextColor="White" FontSize="14">
                     <tabView:SfTabItem.Content>
                         <Grid BackgroundColor="Transparent">
                             <view:InfoView />
@@ -96,7 +99,7 @@
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="Statistics" x:Name="TabData">
+                <tabView:SfTabItem Header="Statistics" x:Name="TabData" TextColor="White" FontSize="14">
                     <tabView:SfTabItem.Content>
                         <Grid BackgroundColor="Transparent">
                             <view:StatisticsView />
@@ -104,7 +107,7 @@
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="Customer Profile" x:Name="TabCustomerProfile">
+                <tabView:SfTabItem Header="Customer Profile" x:Name="TabCustomerProfile" TextColor="White" FontSize="14">
                     <tabView:SfTabItem.Content>
                         <view:CustomerProfileView />
                     </tabView:SfTabItem.Content>
