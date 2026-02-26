@@ -55,7 +55,15 @@
             TabBarPlacement="Bottom"
             TabWidthMode="SizeToContent">
             <tabView:SfTabView.Items>
-                <tabView:SfTabItem Header="Info">
+                <tabView:SfTabItem Header="PEA" x:Name="Pea">
+                    <tabView:SfTabItem.Content>
+                        <Grid BackgroundColor="Transparent">
+                            <view:HomeView />
+                        </Grid>
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+                
+                <tabView:SfTabItem Header="Info" x:Name="Info">
                     <tabView:SfTabItem.Content>
                         <Grid BackgroundColor="Transparent">
                             <view:InfoView />

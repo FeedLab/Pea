@@ -353,15 +353,15 @@ public class PeaAdapter
         html.LoadHtml(protectedHtml);
 
         // Check if HTML loaded
-        Console.WriteLine($"HTML length: {html.DocumentNode.InnerHtml.Length}");
+     //   Console.WriteLine($"HTML length: {html.DocumentNode.InnerHtml.Length}");
 
         // Find all divs
-        var divs = html.DocumentNode.SelectNodes("//div[@id]");
-        if (divs != null)
-        {
-            foreach (var div in divs)
-                Console.WriteLine($"Found div: {div.GetAttributeValue("id", "")}");
-        }
+        // var divs = html.DocumentNode.SelectNodes("//div[@id]");
+        // if (divs != null)
+        // {
+        //     foreach (var div in divs)
+        //         Console.WriteLine($"Found div: {div.GetAttributeValue("id", "")}");
+        // }
 
         // Find all tables
         var dataTable = html.DocumentNode.SelectSingleNode("//div[@id='divTable']//table");
@@ -369,7 +369,7 @@ public class PeaAdapter
 
         if (rows != null)
         {
-            Console.WriteLine($"Rows found: {rows.Count}");
+            Console.WriteLine($"Year: {selectedDate.Year}, Month: {selectedDate.Month}, Day: {selectedDate.Day}");
 
             var listOfPeaMeterReading = new List<PeaMeterReading>();
 
@@ -386,7 +386,7 @@ public class PeaAdapter
 
                     var dt = ParseAndAdjustTimestamp(timestamp);
 
-                    Console.WriteLine($"{timestamp}: A={rateA}, B={rateB}, C={rateC}, Total={total}");
+                    // Console.WriteLine($"{timestamp}: A={rateA}, B={rateB}, C={rateC}, Total={total}");
 
                     var reading = new PeaMeterReading(
                         dt.AddMinutes(-15),

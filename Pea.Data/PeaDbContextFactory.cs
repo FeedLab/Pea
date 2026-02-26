@@ -38,8 +38,8 @@ public class PeaDbContextFactory
 
         var context = new PeaDbContext(connectionString);
 
-        // Ensure database is created
-        context.Database.EnsureCreated();
+        // Apply any pending migrations
+        context.Database.Migrate();
 
         return context;
     }
@@ -92,21 +92,35 @@ public class PeaDbContextFactory
 
     private string BuildConnectionString(string databaseName)
     {
-        // Check if the base connection string already has a database
-        if (_serverConnectionString.Contains("Database=", StringComparison.OrdinalIgnoreCase) ||
-            _serverConnectionString.Contains("Initial Catalog=", StringComparison.OrdinalIgnoreCase))
+        // For SQLite, modify the file path to include the user-specific database
+        if (_serverConnectionString.Contains("Data Source=", StringComparison.OrdinalIgnoreCase))
         {
-            // Replace existing database name
-            var builder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(_serverConnectionString)
+            // Extract the base path and append user-specific database name
+            var dataSourceIndex = _serverConnectionString.IndexOf("Data Source=", StringComparison.OrdinalIgnoreCase);
+            var dataSourceStart = dataSourceIndex + "Data Source=".Length;
+            var semicolonIndex = _serverConnectionString.IndexOf(';', dataSourceStart);
+
+            string basePath;
+            string remainingConnectionString = "";
+
+            if (semicolonIndex > 0)
             {
-                InitialCatalog = databaseName
-            };
-            return builder.ConnectionString;
+                basePath = _serverConnectionString.Substring(dataSourceStart, semicolonIndex - dataSourceStart);
+                remainingConnectionString = _serverConnectionString.Substring(semicolonIndex);
+            }
+            else
+            {
+                basePath = _serverConnectionString.Substring(dataSourceStart);
+            }
+
+            // Get directory and modify filename to include database name
+            var directory = Path.GetDirectoryName(basePath);
+            var newPath = Path.Combine(directory ?? "", $"{databaseName}.db");
+
+            return $"Data Source={newPath}{remainingConnectionString}";
         }
-        else
-        {
-            // Append database name to connection string
-            return $"{_serverConnectionString};Database={databaseName}";
-        }
+
+        // Fallback for other connection string formats
+        return $"{_serverConnectionString};Database={databaseName}";
     }
 }

@@ -3,5 +3,91 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Pea.Meter.View.PeaServicesView">
-    
+
+    <ContentView.Resources>
+        <Style x:Key="ServiceBoxStyle" TargetType="Border">
+            <Setter Property="Margin" Value="8" />
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Stroke" Value="LightGray" />
+            <Setter Property="VerticalOptions" Value="Start" />
+            <Setter Property="StrokeShape">
+                <RoundRectangle CornerRadius="8" />
+            </Setter>
+        </Style>
+
+        <Style x:Key="ServiceStackStyle" TargetType="VerticalStackLayout">
+            <Setter Property="Spacing" Value="8" />
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="Margin" Value="8" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <Style x:Key="ServiceTitleStyle" TargetType="Label">
+            <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+
+        <Style x:Key="ServiceDescriptionStyle" TargetType="Label">
+            <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="FontSize" Value="10" />
+        </Style>
+    </ContentView.Resources>
+
+     <Grid Margin="20" VerticalOptions="Start">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25*" />
+                    <ColumnDefinition Width="25*" />
+                    <ColumnDefinition Width="25*" />
+                    <ColumnDefinition Width="25*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Item 1 -->
+                <Border Grid.Column="0" Style="{StaticResource ServiceBoxStyle}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="https://eservice.pea.co.th/ebill" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Style="{StaticResource ServiceStackStyle}">
+                        <Image Source="pea_e_bill.png" Aspect="AspectFit"  />
+                        <Label Text="Electronic Billing" Style="{StaticResource ServiceTitleStyle}" />
+                        <Label Text="Go paperless in Thailand! Save time and trees by getting secure monthly invoices sent to your inbox." Style="{StaticResource ServiceDescriptionStyle}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Item 2 -->
+                <Border Grid.Column="1" Style="{StaticResource ServiceBoxStyle}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="https://sabuyservice.pea.co.th/" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Style="{StaticResource ServiceStackStyle}">
+                        <Image Source="pea_e_service.png" Aspect="AspectFit"  />
+                        <Label Text="Smart Services" Style="{StaticResource ServiceTitleStyle}" />
+                        <Label Text="Swift, paperless, and global. Securely access all our services from any device, anywhere on Earth" Style="{StaticResource ServiceDescriptionStyle}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Item 3 -->
+                <Border Grid.Column="2" Style="{StaticResource ServiceBoxStyle}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="https://peasolar.pea.co.th/" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Style="{StaticResource ServiceStackStyle}">
+                        <Image Source="pea_solar.png" Aspect="AspectFit"  />
+                        <Label Text="PEA SOLAR" Style="{StaticResource ServiceTitleStyle}" />
+                        <Label Text="Sustainable solar for farms and homes. Powering irrigation and off-grid life 24/7 with zero emissions" Style="{StaticResource ServiceDescriptionStyle}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Item 4 -->
+                <Border Grid.Column="3" Style="{StaticResource ServiceBoxStyle}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="https://sabuyservice.pea.co.th/service/f54569de-88df-4188-1408-08dcb7573509" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Style="{StaticResource ServiceStackStyle}">
+                        <Image Source="pea_transformer.png" Aspect="AspectFit"  />
+                        <Label Text="Transformer Lifecycle Management" Style="{StaticResource ServiceTitleStyle}" />
+                        <Label Text="Comprehensive diagnostic testing, oil analysis, and preventative repairs to ensure grid stability and peak electrical efficiency" Style="{StaticResource ServiceDescriptionStyle}" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
 </ContentView>

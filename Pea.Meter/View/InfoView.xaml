@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:view="using:Pea.Meter.View"
              x:Class="Pea.Meter.View.InfoView">
     <ContentView.Resources>
         <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
@@ -57,162 +58,177 @@
                         Opacity="0.15" />
             </Border.Shadow>
 
-            <chart:SfCartesianChart
-                Margin="16"
+            <Grid
                 HorizontalOptions="Fill"
-                VerticalOptions="Fill"
-                BackgroundColor="Transparent">
-                
-                <chart:SfCartesianChart.Legend>
-                    <chart:ChartLegend>
-                        <chart:ChartLegend.LabelStyle>
-                            <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="18" FontAttributes="None" />
-                        </chart:ChartLegend.LabelStyle>
-                    </chart:ChartLegend>
-                </chart:SfCartesianChart.Legend>
-                
-                <chart:SfCartesianChart.Title>
-                    <Label
-                        Margin="8"
-                        HorizontalOptions="Fill"
-                        HorizontalTextAlignment="Center"
-                        FontAttributes="Bold"
-                        FontSize="20"
-                        Text="{Binding DateMeterData, StringFormat='{0:D}'}"/>
-                </chart:SfCartesianChart.Title>
-                
-                <chart:SfCartesianChart.XAxes>
-                    <chart:DateTimeAxis>
-                        <chart:DateTimeAxis.LabelStyle>
-                            <chart:ChartAxisLabelStyle LabelFormat="HH:mm" />
-                        </chart:DateTimeAxis.LabelStyle>
-                    </chart:DateTimeAxis>
-                </chart:SfCartesianChart.XAxes>
+                VerticalOptions="Fill">
 
-                <chart:SfCartesianChart.YAxes>
-                    <chart:NumericalAxis>
-                        <chart:NumericalAxis.Title>
-                            <chart:ChartAxisTitle Text="Energy consumption in KW per 15 minutes period" />
-                        </chart:NumericalAxis.Title>
-                    </chart:NumericalAxis>
-                </chart:SfCartesianChart.YAxes>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
 
-                <chart:SplineSeries ItemsSource="{Binding MeterData}"
-                                    Label="Daily"
-                                    XBindingPath="PeriodStart"
-                                    YBindingPath="Total"
-                                    Fill="Red"
-                                    StrokeWidth="2"
-                                    IsVisibleOnLegend="True"
-                                    EnableTooltip="True" />
-                
-                <chart:SplineSeries ItemsSource="{Binding MeterDataAverage7}"
-                                    Label="Average usage (7 days)"
-                                    XBindingPath="PeriodStart"
-                                    YBindingPath="Total"
-                                    Fill="Orange"
-                                    StrokeWidth="2"
-                                    IsVisibleOnLegend="True"
-                                    EnableTooltip="True" />
-                
-                <chart:SplineSeries ItemsSource="{Binding MeterDataAverage30}"
-                                    Label="Average usage (30 days)"
-                                    XBindingPath="PeriodStart"
-                                    YBindingPath="Total"
-                                    Fill="Green"
-                                    StrokeWidth="2"
-                                    IsVisibleOnLegend="True"
-                                    EnableTooltip="True" />
-            </chart:SfCartesianChart>
+                <chart:SfCartesianChart
+                    Grid.Row="0"
+                    Margin="16"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    BackgroundColor="Transparent">
+
+                    <chart:SfCartesianChart.Legend>
+                        <chart:ChartLegend>
+                            <chart:ChartLegend.LabelStyle>
+                                <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="18"
+                                                             FontAttributes="None" />
+                            </chart:ChartLegend.LabelStyle>
+                        </chart:ChartLegend>
+                    </chart:SfCartesianChart.Legend>
+
+                    <chart:SfCartesianChart.Title>
+                        <Label
+                            Margin="8"
+                            HorizontalOptions="Fill"
+                            HorizontalTextAlignment="Center"
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="{Binding DateMeterData, StringFormat='{0:D}'}" />
+                    </chart:SfCartesianChart.Title>
+
+                    <chart:SfCartesianChart.XAxes>
+                        <chart:DateTimeAxis>
+                            <chart:DateTimeAxis.LabelStyle>
+                                <chart:ChartAxisLabelStyle LabelFormat="HH:mm" />
+                            </chart:DateTimeAxis.LabelStyle>
+                        </chart:DateTimeAxis>
+                    </chart:SfCartesianChart.XAxes>
+
+                    <chart:SfCartesianChart.YAxes>
+                        <chart:NumericalAxis>
+                            <chart:NumericalAxis.Title>
+                                <chart:ChartAxisTitle Text="Energy consumption in KW per 15 minutes period" />
+                            </chart:NumericalAxis.Title>
+                        </chart:NumericalAxis>
+                    </chart:SfCartesianChart.YAxes>
+
+                    <chart:SplineSeries ItemsSource="{Binding MeterData}"
+                                        Label="Daily"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="Total"
+                                        Fill="Red"
+                                        StrokeWidth="2"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="True" />
+
+                    <chart:SplineSeries ItemsSource="{Binding MeterDataAverage7}"
+                                        Label="Average usage (7 days)"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="Total"
+                                        Fill="Orange"
+                                        StrokeWidth="2"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="True" />
+
+                    <chart:SplineSeries ItemsSource="{Binding MeterDataAverage30}"
+                                        Label="Average usage (30 days)"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="Total"
+                                        Fill="Green"
+                                        StrokeWidth="2"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="True" />
+                </chart:SfCartesianChart>
+            </Grid>
         </Border>
 
+        <Grid
+            HorizontalOptions="Fill"
+            VerticalOptions="Center"
+            IsVisible="{Binding IsAddMeterVisible}">
 
-        <Border Margin="20"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Border
+                Grid.Row="0"
+                Margin="20"
                 Padding="16"
                 WidthRequest="400"
                 BackgroundColor="White"
                 StrokeThickness="0"
-                IsVisible="{Binding IsAddMeterVisible}"
                 Shadow="{StaticResource BorderShadow}"
                 VerticalOptions="Center"
                 HorizontalOptions="Center">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="12" />
-            </Border.StrokeShape>
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
 
-            <Grid
-                RowDefinitions="Auto,*,Auto" RowSpacing="8">
+                <Grid
+                    RowDefinitions="Auto,*,Auto" RowSpacing="8">
 
-                <Label Grid.Row="0"
-                       Margin="0,0,0,16"
-                       Text="How to Register Your Electric Meter"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       HorizontalTextAlignment="Center" />
+                    <Label Grid.Row="0"
+                           Margin="0,0,0,16"
+                           Text="How to Register Your Electric Meter"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center" />
 
-                <VerticalStackLayout Grid.Row="1" Spacing="12" Padding="8,0">
-                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="1. Locate your Meter Number:&#x0a;" FontAttributes="Bold" />
-                                <Span
-                                    Text="You can find this physical ID on the face of your electric meter or on your most recent utility bill." />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
+                    <VerticalStackLayout Grid.Row="1" Spacing="12" Padding="8,0">
+                        <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="1. Locate your Meter Number:&#x0a;" FontAttributes="Bold" />
+                                    <Span
+                                        Text="You can find this physical ID on the face of your electric meter or on your most recent utility bill." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
 
-                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="2. Open the App:&#x0a;" FontAttributes="Bold" />
-                                <Span
-                                    Text="Navigate to the &quot;Devices&quot; or &quot;My Meters&quot; section in the main menu." />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
+                        <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="2. Open the App:&#x0a;" FontAttributes="Bold" />
+                                    <Span
+                                        Text="Navigate to the &quot;Devices&quot; or &quot;My Meters&quot; section in the main menu." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
 
-                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="3. Scan or Enter Manually:&#x0a;" FontAttributes="Bold" />
-                                <Span
-                                    Text="Tap the (+) icon. You can either scan the barcode on your meter using your phone's camera or type in the serial number manually." />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
+                        <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="3. Start registration:&#x0a;" FontAttributes="Bold" />
+                                    <Span Text="Tap the green button below to get started." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </VerticalStackLayout>
 
-                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="4. Start registration:&#x0a;" FontAttributes="Bold" />
-                                <Span Text="Tap the green button below to get started." />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-                </VerticalStackLayout>
+                    <HorizontalStackLayout
+                        Grid.Row="2"
+                        Margin="0,16,0,0"
+                        HorizontalOptions="Center">
+                        <button:SfButton
+                            Style="{StaticResource IconButtonWithOpacityStyle}"
+                            Command="{Binding AddAccountCommand}"
+                            IsVisible="{Binding IsAddMeterVisible}"
+                            ImageSource="{StaticResource AddMeterIcon}"
+                            ToolTipProperties.Text="Add meter" />
 
-                <HorizontalStackLayout
-                    Grid.Row="2"
-                    Margin="0,16,0,0"
-                    HorizontalOptions="Center">
-                    <button:SfButton
-                        Style="{StaticResource IconButtonWithOpacityStyle}"
-                        Command="{Binding AddAccountCommand}"
-                        IsVisible="{Binding IsAddMeterVisible}"
-                        ImageSource="{StaticResource AddMeterIcon}"
-                        ToolTipProperties.Text="Add meter" />
+                        <button:SfButton
+                            Style="{StaticResource IconButtonWithOpacityStyle}"
+                            Command="{Binding RemoveAccountCommand}"
+                            IsVisible="{Binding IsRemoveMeterVisible}"
+                            ImageSource="{StaticResource RemoveMeterIcon}"
+                            ToolTipProperties.Text="Remove meter" />
 
-                    <button:SfButton
-                        Style="{StaticResource IconButtonWithOpacityStyle}"
-                        Command="{Binding RemoveAccountCommand}"
-                        IsVisible="{Binding IsRemoveMeterVisible}"
-                        ImageSource="{StaticResource RemoveMeterIcon}"
-                        ToolTipProperties.Text="Remove meter" />
+                    </HorizontalStackLayout>
+                </Grid>
 
-                </HorizontalStackLayout>
-            </Grid>
+            </Border>
 
-        </Border>
+            <view:PeaServicesView Grid.Row="1"/>
+            
+        </Grid>
 
 
     </Grid>

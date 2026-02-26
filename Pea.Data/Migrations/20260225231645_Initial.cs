@@ -15,15 +15,17 @@ namespace Pea.Data.Migrations
                 name: "MeterReadings",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PeriodStart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PeriodStart = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    PeriodEnd = table.Column<DateTime>(type: "TEXT", nullable: false),
                     RateA = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     RateB = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     RateC = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Total = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

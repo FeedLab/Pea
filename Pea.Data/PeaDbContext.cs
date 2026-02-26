@@ -26,7 +26,7 @@ public class PeaDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured && !string.IsNullOrEmpty(connectionString))
         {
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlite(connectionString);
         }
     }
 

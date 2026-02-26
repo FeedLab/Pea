@@ -14,7 +14,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<PeaDbConte
 
         // Use a temporary connection string for migrations
         // This will be replaced at runtime with user-specific databases
-        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Pea_Design;Trusted_Connection=True;");
+        optionsBuilder.UseSqlite("Data Source=pea_design.db");
 
         return new PeaDbContext(optionsBuilder.Options);
     }

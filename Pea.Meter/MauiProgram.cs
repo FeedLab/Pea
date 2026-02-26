@@ -42,8 +42,9 @@ namespace Pea.Meter
             // Register database services
             builder.Services.AddSingleton<PeaDbContextFactory>(sp =>
             {
-                // SQL Server connection string - update with your server details
-                var connectionString = "Server=(localdb)\\mssqllocaldb;Integrated Security=true;TrustServerCertificate=true";
+                // SQLite connection string - uses app data directory
+                var dbPath = Path.Combine(FileSystem.AppDataDirectory, "pea.db");
+                var connectionString = $"Data Source={dbPath}";
                 return new PeaDbContextFactory(connectionString);
             });
 
@@ -54,6 +55,7 @@ namespace Pea.Meter
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<CustomerProfileViewModel>();
             builder.Services.AddSingleton<StatisticsViewModel>();
+            builder.Services.AddSingleton<PeaServicesViewModel>();
 
             builder.Services.AddSingletonPopup<LoginPopup, LoginPopupViewModel>();
             
