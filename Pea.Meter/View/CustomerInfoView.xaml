@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Pea.Meter.View.CustomerInfoView">
+
+    <Border
+        IsVisible="{Binding IsCustomerProfileVisible}"
+        Margin="0,8,16,0"
+        BackgroundColor="White"
+            Stroke="Black"
+            StrokeThickness="0"
+            Padding="8"
+        >
+        <Border.Shadow>
+            <Shadow Brush="Black"
+                    Offset="5,5"
+                    Radius="8"
+                    Opacity="0.5" />
+        </Border.Shadow>
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="5" />
+        </Border.StrokeShape>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup Name="CommonStates">
+                <VisualState Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Property="BackgroundColor" Value="White" />
+                        <Setter Property="Scale" Value="1.0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState Name="PointerOver">
+                    <VisualState.Setters>
+                        <Setter Property="BackgroundColor" Value="#F9FCFF" />
+                        <Setter Property="Scale" Value="1.01" />
+                        <Setter Property="Shadow">
+                            <Shadow Brush="Black"
+                                    Offset="8,8"
+                                    Radius="12"
+                                    Opacity="0.6" />
+                        </Setter>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid 
+            ColumnDefinitions="Auto,*" 
+            RowDefinitions="Auto,Auto,Auto" 
+            ColumnSpacing="12">
+            
+            <!-- Row 0 -->
+            <Label Grid.Row="0" Grid.Column="0" Text="Customer" FontAttributes="Bold" FontSize="12" TextColor="Black" VerticalOptions="Center" />
+            <Label Grid.Row="0" Grid.Column="1" Text="{Binding CustomerName}" FontSize="12" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End" />
+
+
+            <!-- Row 2 -->
+            <Label Grid.Row="1" Grid.Column="0" Text="Meter" FontAttributes="Bold" FontSize="12" TextColor="Black" VerticalOptions="Center" />
+            <Label Grid.Row="1" Grid.Column="1" Text="{Binding MeterNumber}" FontSize="12" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End"/>
+            
+            <!-- Row 1 -->
+            <Label Grid.Row="2" Grid.Column="0" Text="Id" FontAttributes="Bold" FontSize="12" TextColor="Black" VerticalOptions="Center" />
+            <Label Grid.Row="2" Grid.Column="1" Text="{Binding CustomerId}" FontSize="12" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End"/>
+
+
+        </Grid>
+    </Border>
+</ContentView>

@@ -42,18 +42,19 @@
             VerticalOptions="Center"
             WidthRequest="720"
             StrokeThickness="0">
-
+        <Border.Shadow>
+            <Shadow Brush="Black"
+                    Offset="5,5"
+                    Radius="8"
+                    Opacity="0.5" />
+        </Border.Shadow>
+        
         <Border BackgroundColor="White"
                 StrokeThickness="1"
                 Stroke="#CCCCCC"
                 Padding="0">
 
-            <Border.Shadow>
-                <Shadow Brush="Black"
-                        Opacity="0.15"
-                        Radius="10"
-                        Offset="0,4"/>
-            </Border.Shadow>
+
 
             <VerticalStackLayout>
             <tabView:SfTabView BackgroundColor="White"

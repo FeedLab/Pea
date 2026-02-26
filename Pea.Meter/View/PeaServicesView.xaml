@@ -54,7 +54,13 @@
                         <Label Text="Electronic Billing" Style="{StaticResource ServiceTitleStyle}" />
                         <Label Text="Go paperless in Thailand! Save time and trees by getting secure monthly invoices sent to your inbox." Style="{StaticResource ServiceDescriptionStyle}" />
                     </VerticalStackLayout>
-                </Border>
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                    Offset="5,5"
+                    Radius="8"
+                    Opacity="0.5" />
+            </Border.Shadow>
+        </Border>
 
                 <!-- Item 2 -->
                 <Border Grid.Column="1" Style="{StaticResource ServiceBoxStyle}">
@@ -66,7 +72,13 @@
                         <Label Text="Smart Services" Style="{StaticResource ServiceTitleStyle}" />
                         <Label Text="Swift, paperless, and global. Securely access all our services from any device, anywhere on Earth" Style="{StaticResource ServiceDescriptionStyle}" />
                     </VerticalStackLayout>
-                </Border>
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                    Offset="5,5"
+                    Radius="8"
+                    Opacity="0.5" />
+            </Border.Shadow>
+        </Border>
 
                 <!-- Item 3 -->
                 <Border Grid.Column="2" Style="{StaticResource ServiceBoxStyle}">
@@ -78,7 +90,13 @@
                         <Label Text="PEA SOLAR" Style="{StaticResource ServiceTitleStyle}" />
                         <Label Text="Sustainable solar for farms and homes. Powering irrigation and off-grid life 24/7 with zero emissions" Style="{StaticResource ServiceDescriptionStyle}" />
                     </VerticalStackLayout>
-                </Border>
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                    Offset="5,5"
+                    Radius="8"
+                    Opacity="0.5" />
+            </Border.Shadow>
+        </Border>
 
                 <!-- Item 4 -->
                 <Border Grid.Column="3" Style="{StaticResource ServiceBoxStyle}">
@@ -90,6 +108,12 @@
                         <Label Text="Transformer Lifecycle Management" Style="{StaticResource ServiceTitleStyle}" />
                         <Label Text="Comprehensive diagnostic testing, oil analysis, and preventative repairs to ensure grid stability and peak electrical efficiency" Style="{StaticResource ServiceDescriptionStyle}" />
                     </VerticalStackLayout>
-                </Border>
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                    Offset="5,5"
+                    Radius="8"
+                    Opacity="0.5" />
+            </Border.Shadow>
+        </Border>
             </Grid>
 </ContentView>

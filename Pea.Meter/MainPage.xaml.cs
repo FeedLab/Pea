@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Pea.Meter.Helper;
-using Pea.Infrastructure.Models;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
 using Pea.Meter.ViewModel;
