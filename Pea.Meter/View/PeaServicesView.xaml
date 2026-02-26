@@ -25,11 +25,13 @@
 
         <Style x:Key="ServiceTitleStyle" TargetType="Label">
             <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="TextColor" Value="Black" />
             <Setter Property="FontSize" Value="12" />
         </Style>
 
         <Style x:Key="ServiceDescriptionStyle" TargetType="Label">
             <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="TextColor" Value="Black" />
             <Setter Property="FontSize" Value="10" />
         </Style>
     </ContentView.Resources>

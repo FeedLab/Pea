@@ -346,22 +346,6 @@
                                        TextColor="#000000"/>
                             </Border>
 
-                            <Label Text="Fax"
-                                   FontAttributes="Bold"
-                                   FontSize="14"
-                                   TextColor="#333333"
-                                   Margin="0,8,0,0"/>
-                            <Border BackgroundColor="#FAFAFA"
-                                    StrokeThickness="1"
-                                    Stroke="#DDDDDD"
-                                    Padding="10,8">
-                                <Border.Shadow>
-                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
-                                </Border.Shadow>
-                                <Label Text="{Binding CustomerProfile.Contact.Fax}"
-                                       TextColor="#000000"/>
-                            </Border>
-
                             <Label Text="Contact Person"
                                    FontAttributes="Bold"
                                    FontSize="14"
@@ -394,21 +378,7 @@
                                        TextColor="#000000"/>
                             </Border>
 
-                            <Label Text="Website"
-                                   FontAttributes="Bold"
-                                   FontSize="14"
-                                   TextColor="#333333"
-                                   Margin="0,8,0,0"/>
-                            <Border BackgroundColor="#FAFAFA"
-                                    StrokeThickness="1"
-                                    Stroke="#DDDDDD"
-                                    Padding="10,8">
-                                <Border.Shadow>
-                                    <Shadow Brush="Black" Opacity="0.05" Radius="2" Offset="0,1"/>
-                                </Border.Shadow>
-                                <Label Text="{Binding CustomerProfile.Contact.Website}"
-                                       TextColor="#000000"/>
-                            </Border>
+
 
                         </VerticalStackLayout>
                     </ScrollView>

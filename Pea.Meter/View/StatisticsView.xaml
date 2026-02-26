@@ -6,7 +6,7 @@
              x:Class="Pea.Meter.View.StatisticsView">
 
     <Grid>
-        <Border Margin="48,64,48,64"
+        <Border Margin="16"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill"
                 BackgroundColor="White"
@@ -41,6 +41,7 @@
                     <Label
                         Margin="8"
                         HorizontalOptions="Fill"
+                                TextColor="Black"
                         HorizontalTextAlignment="Center"
                         FontAttributes="Bold"
                         FontSize="20"

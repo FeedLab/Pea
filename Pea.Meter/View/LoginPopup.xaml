@@ -15,6 +15,7 @@
 
         <!-- Login text -->
         <Label Text="Please login"
+               TextColor="Black"
                FontSize="16"
                HorizontalOptions="Center"/>
        
@@ -30,10 +31,12 @@
                                       ShowCharCount="True">
                
                <Entry Text="{Binding LoginData.Username}"
+                      TextColor="Black"
                       MaxLength="20"/>
                
                <syncfusion:SfTextInputLayout.LeadingView>
                       <Label
+                             TextColor="Black"
                              FontFamily="FontSolid" 
                              Text="&#x1F464;">     
                       </Label>
@@ -52,6 +55,7 @@
                                       CharMaxLength="50">
                
                <Entry Text="{Binding LoginData.Password}"
+                      TextColor="Black"
                       IsPassword="True"
                       MaxLength="50"/>
             

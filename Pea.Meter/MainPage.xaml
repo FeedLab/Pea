@@ -37,6 +37,8 @@
         <FontImageSource x:Key="AddMeterIcon" FontFamily="FontSolid" Glyph="&#xe541;" Color="DarkGreen" Size="28" />
         <FontImageSource x:Key="RemoveMeterIcon" FontFamily="FontSolid" Glyph="&#xe540;" Color="DarkRed" Size="28" />
     </ContentPage.Resources>
+    
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -48,6 +50,29 @@
             Grid.RowSpan="2"
             Source="pea_meter.png" Aspect="Fill" Opacity="0.3" />
 
+        <Grid
+            Grid.Row="0"
+                        HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            >
+            <Image 
+            Margin="12"
+            Source="pea_logo.png" 
+            Aspect="AspectFit" 
+            HorizontalOptions="Start"
+            VerticalOptions="Start"
+            />
+
+            <Image 
+            Margin="12"
+            Source="amr_logo.png" 
+            Aspect="AspectFit" 
+            HeightRequest="100"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            />
+        </Grid>
+        
         <tabView:SfTabView
             Grid.Row="1"
             x:Name="TabView"
