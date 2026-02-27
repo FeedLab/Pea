@@ -141,6 +141,33 @@ public class MeterReadingRepository : IMeterReadingRepository
 
         return hourlyTotals;
     }
+    
+    public async Task<IList<PeaMeterReading>> GetDailyTotalsAsync(DateTime startTime, DateTime endTime, string userId, CancellationToken cancellationToken = default)
+    {
+        var readings = await context.MeterReadings
+            .Where(m => m.UserId == userId && m.PeriodStart >= startTime && m.PeriodStart < endTime)
+            .ToListAsync(cancellationToken);
+
+        if (readings.Count == 0)
+        {
+            return new List<PeaMeterReading>();
+        }
+
+        // Group by hour and sum the Total for each hour
+        var hourlyTotals = readings
+            .GroupBy(r => new DateTime(r.PeriodStart.Year, r.PeriodStart.Month, r.PeriodStart.Day, 0, 0, 0))
+            .Select(g => new PeaMeterReading(
+                g.Key,
+                g.Sum(r => r.RateA),
+                g.Sum(r => r.RateB),
+                g.Sum(r => r.RateC),
+                60 * 24
+            ))
+            .OrderBy(r => r.PeriodStart)
+            .ToList();
+
+        return hourlyTotals;
+    }
 
     public async Task<IList<PeaMeterReading>> GetHourlyAveragesDuringPeriodAsync(DateTime startTime, DateTime endTime, string userId, CancellationToken cancellationToken = default)
     {

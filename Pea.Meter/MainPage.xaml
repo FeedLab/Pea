@@ -65,7 +65,7 @@
                 Margin="12"
                 Source="amr.png"
                 Aspect="AspectFit"
-                HeightRequest="100"
+                HeightRequest="70"
                 HorizontalOptions="Center"
                 VerticalOptions="Start" />
 
@@ -112,6 +112,13 @@
                                    FontSize="14">
                     <tabView:SfTabItem.Content>
                         <view:CustomerProfileView />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+                
+                <tabView:SfTabItem Header="TOU vs Flat-Rate" x:Name="TouVsFlatRate" TextColor="White"
+                                   FontSize="14">
+                    <tabView:SfTabItem.Content>
+                        <view:TouVsFlatRateView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
             </tabView:SfTabView.Items>

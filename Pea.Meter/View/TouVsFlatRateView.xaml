@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Pea.Meter.View.TouVsFlatRateView">
+
+    <VerticalStackLayout
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+        >
+        <Border
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Stroke="LightGray"
+            StrokeThickness="1"
+            BackgroundColor="White"
+            Padding="20"
+            StrokeShape="RoundRectangle 8"
+            IsVisible="{Binding IsTouVisible}">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="5,5"
+                        Radius="8"
+                        Opacity="0.5" />
+            </Border.Shadow>
+
+            <VerticalStackLayout Spacing="12">
+
+                <Image
+                    Margin="12"
+                    Source="tou_banner.png"
+                    Aspect="AspectFit"
+                    HeightRequest="100"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Start" />
+
+                <!-- Title -->
+                <Label Text="Electricity Tariff Comparison Summary"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="Black"
+                       HorizontalOptions="Center" />
+
+                <!-- Intro -->
+                <Label
+                    Text="A comparison between the Time-of-Use (TOU) tariff and the Flat Rate tariff shows a clear financial advantage for TOU under the current consumption pattern."
+                    FontSize="14"
+                    TextColor="DimGray"
+                    LineBreakMode="WordWrap" />
+
+                <!-- Key figures with mixed styles -->
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="• TOU total cost: " FontSize="14" TextColor="Black" />
+                            <Span Text="{Binding TouTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
+                                  FontAttributes="Bold" TextColor="ForestGreen" />
+                            <Span Text="&#10;• Flat rate total cost: " FontSize="14" TextColor="Black" />
+                            <Span Text="{Binding FlatRateTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
+                                  FontAttributes="Bold" TextColor="Crimson" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <!-- Highlighted savings -->
+                <Label FontSize="14"
+                       FontAttributes="Bold"
+                       LineBreakMode="WordWrap">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="This means the TOU tariff results in a savings of "
+                                  TextColor="Black" />
+                            <Span Text="{Binding DiffInCurrency, StringFormat='{}{0:N0}'}"
+                                  TextColor="ForestGreen" />
+                            <Span Text=" THB, equivalent to approximately "
+                                  TextColor="Black" />
+                            <Span Text="{Binding DiffInPercent, StringFormat='{}{0:n1}'}"
+                                  TextColor="ForestGreen" />
+                            <Span Text="% lower cost compared to the flat rate option."
+                                  TextColor="Black" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <!-- Conclusion -->
+                <Label
+                    Text="In conclusion, based on current data, the TOU tariff is the more economical choice, delivering meaningful cost savings without requiring changes in overall consumption."
+                    FontSize="14"
+                    TextColor="Black"
+                    LineBreakMode="WordWrap" />
+
+            </VerticalStackLayout>
+        </Border>
+
+
+        <Border Stroke="LightGray"
+                StrokeThickness="1"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                BackgroundColor="White"
+                Padding="20"
+                IsVisible="{Binding IsFlatRateVisible}"
+                StrokeShape="RoundRectangle 8">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="5,5"
+                        Radius="8"
+                        Opacity="0.5" />
+            </Border.Shadow>
+
+            <VerticalStackLayout Spacing="12">
+
+                <Image
+                    Margin="12"
+                    Source="flatrate_banner.png"
+                    Aspect="AspectFit"
+                    HeightRequest="100"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Start" />
+
+                <!-- Title -->
+                <Label Text="Electricity Tariff Comparison Summary"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="Black"
+                       HorizontalOptions="Center" />
+
+                <!-- Intro -->
+                <Label
+                    Text="A comparison between the Time-of-Use (TOU) tariff and the Flat Rate tariff shows the financial impact under the current consumption pattern."
+                    FontSize="14"
+                    TextColor="DimGray"
+                    LineBreakMode="WordWrap" />
+
+                <!-- Key figures with mixed styles -->
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="• TOU total cost: " FontSize="14" TextColor="Black" />
+                            <Span Text="{Binding TouTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
+                                  FontAttributes="Bold" TextColor="Crimson" />
+                            <Span Text="&#10;• Flat rate total cost: " FontSize="14" TextColor="Black" />
+                            <Span Text="{Binding FlatRateTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
+                                  FontAttributes="Bold" TextColor="ForestGreen" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <!-- Highlighted savings -->
+                <Label FontSize="14"
+                       FontAttributes="Bold"
+                       LineBreakMode="WordWrap">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="This means the TOU tariff is "
+                                  TextColor="Black" />
+                            <Span Text="{Binding DiffInCurrency, StringFormat='{}{0:N0}'}"
+                                  TextColor="ForestGreen" />
+                            <Span Text=" THB, more expensive, representing a "
+                                  TextColor="Black" />
+                            <Span Text="{Binding DiffInPercent, StringFormat='{}{0:n1}'}"
+                                  TextColor="ForestGreen" />
+                            <Span Text="% higher cost compared to the Flat Rate option."
+                                  TextColor="Black" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <!-- Conclusion -->
+                <Label
+                    Text="The result indicates significant electricity usage during peak-rate hours, where TOU pricing is higher. Unless consumption shifts to off-peak periods, the Flat Rate tariff remains the more cost-efficient choice."
+                    FontSize="14"
+                    TextColor="DimGray"
+                    LineBreakMode="WordWrap" />
+
+            </VerticalStackLayout>
+        </Border>
+    </VerticalStackLayout>
+</ContentView>

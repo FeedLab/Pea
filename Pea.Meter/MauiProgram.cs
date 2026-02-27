@@ -57,6 +57,7 @@ namespace Pea.Meter
             builder.Services.AddSingleton<StatisticsViewModel>();
             builder.Services.AddSingleton<PeaServicesViewModel>();
             builder.Services.AddSingleton<CustomerInfoViewModel>();
+            builder.Services.AddSingleton<TouVsFlatRateViewModel>();
             
             builder.Services.AddSingletonPopup<LoginPopup, LoginPopupViewModel>();
             
