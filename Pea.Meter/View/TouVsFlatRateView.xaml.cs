@@ -19,4 +19,15 @@ public partial class TouVsFlatRateView : ContentView
         else
             throw new InvalidOperationException("AppService is not initialized");
     }
+
+    private void OnItemTapGestureTapped(object? sender, TappedEventArgs e)
+    {
+#if ANDROID || IOS
+        // this.StartTimePicker.Reset();
+        this.StartTimePicker.IsOpen = true;
+#else
+        // this.StartTimePicker.Reset();
+        this.StartTimePicker.IsOpen = true;
+#endif
+    }
 }

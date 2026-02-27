@@ -1,0 +1,36 @@
+﻿<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      x:Class="Pea.Meter.Components.LabeledBorder"
+      Margin="0,0,0,0"
+      x:Name="Root">
+
+    <!-- Border behind everything -->
+    <Border Stroke="{Binding Stroke, Source={x:Reference Root}}"
+            StrokeThickness="{Binding StrokeThickness, Source={x:Reference Root}}"
+            BackgroundColor="{Binding BackgroundColor, Source={x:Reference Root}}"
+            Padding="8,2,8,2"
+            Shadow="{x:Null}"
+            x:Name="InnerBorder">
+
+        <Grid x:Name="ContentGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Content will be added here programmatically in Row 1 -->
+        </Grid>
+    </Border>
+
+    <!-- Label overlaying the border - drawn on top -->
+    <Label Text="{Binding LabelText, Source={x:Reference Root}}"
+           TextColor="{Binding LabelForeground, Source={x:Reference Root}}"
+           BackgroundColor="White"
+           HorizontalOptions="Start"
+           VerticalOptions="Start"
+           FontAttributes="None"
+           FontSize="13"
+           Margin="8,-9,0,0"
+           Padding="4,0" 
+           Shadow="{x:Null}"/>
+</Grid>

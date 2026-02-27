@@ -84,6 +84,7 @@
 		<PackageReference Include="Syncfusion.Maui.Buttons" Version="32.2.5" />
 		<PackageReference Include="Syncfusion.Maui.Charts" Version="32.2.7" />
 		<PackageReference Include="Syncfusion.Maui.Expander" Version="32.2.5" />
+		<PackageReference Include="Syncfusion.Maui.Picker" Version="32.2.7" />
 		<PackageReference Include="Syncfusion.Maui.TabView" Version="32.2.5" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="14.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
@@ -101,7 +102,7 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Splash\pea_splash.png" />
-	  <MauiSplashScreen Include="Resources\Splash\pea_splash.png" Resize="true" />
+	  <MauiSplashScreen Include="Resources\Splash\pea_splash.png" Color="#0A1628" ForegroundScale="1.0" />
 	</ItemGroup>
 
 </Project>

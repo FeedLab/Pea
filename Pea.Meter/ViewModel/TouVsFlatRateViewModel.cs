@@ -9,6 +9,7 @@ using Pea.Meter.Models;
 namespace Pea.Meter.ViewModel;
 
 [SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0019:Invalid containing type for [ObservableProperty] field or property")]
+[SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class TouVsFlatRateViewModel: ObservableObject
 {
     private readonly PeaDbContextFactory dbContextFactory;
@@ -20,13 +21,25 @@ public partial class TouVsFlatRateViewModel: ObservableObject
     [ObservableProperty] private decimal diffInPercent;
     [ObservableProperty] private bool isFlatRateVisible;
     [ObservableProperty] private bool isTouVisible;
+    [ObservableProperty] private DateTime startDate;
+    [ObservableProperty] private DateTime endDate;
+    [ObservableProperty] private DateTime startTimePickerMaximumDate;
+    [ObservableProperty] private DateTime startTimePickerMinimumDate;
     
     public TouVsFlatRateViewModel(PeaDbContextFactory dbContextFactory)
     {
         this.dbContextFactory = dbContextFactory;
+        
+
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
         {
+            StartDate = DateTime.Now.AddYears(-1);
+            EndDate = DateTime.Now;
+            
+            StartTimePickerMinimumDate = EndDate.AddYears(-2);
+            StartTimePickerMaximumDate = EndDate.AddDays(-1);
+            
             await Task.Delay(5000);
             await CalculateCostComparisons(m.AuthData.Username);
         });
@@ -39,7 +52,13 @@ public partial class TouVsFlatRateViewModel: ObservableObject
         
         var meterReadingsPerDay = await FetchDailyAverageReadingsAsync(dbContextFactory, userName);
 
+        if (meterReadingsPerDay.Count == 0)
+        {
+            return;
+        }
+
         CostCompares = meterReadingsPerDay
+            .Where(w => w.Total > 0)
             .Select(s => new CostCompare(s, 3.9086m, 5.1135m, 2.6037m))
             .ToList();
             
@@ -68,7 +87,11 @@ public partial class TouVsFlatRateViewModel: ObservableObject
         {
             using var dbContext = dbContextFactory.CreateDbContext(userName);
             var repo = new MeterReadingRepository(dbContext);
-            return await repo.GetDailyTotalsAsync(new DateTime(2024, 1, 1), DateTime.MaxValue, userName);
+            
+            var startTime = new DateTime(2022, 1, 1);
+            var endTime = new DateTime(2023, 1, 1);
+            
+            return await repo.GetDailyTotalsAsync(startTime, endTime, userName);
         });
         
         return meterDataAverageDaysTask;

@@ -96,7 +96,7 @@ public class HistoricDataBackgroundService
                 logger.LogInformation("Fetching data for {Date}...", targetDate.ToString("yyyy-MM-dd"));
                 var readings = await peaAdapter.ShowDailyReadings(targetDate);
 
-                if (readings.Count > 0)
+                if (readings.Count > 0 && readings.Sum(s => s.Total) > 0)
                 {
                     // Save to database
                     await repository.AddRangeAsync(readings, currentUserId, cancellationToken);
@@ -106,10 +106,10 @@ public class HistoricDataBackgroundService
                 else
                 {
                     logger.LogInformation("No readings found for {Date}. Stopping import as there is no more data to read.", targetDate.ToString("yyyy-MM-dd"));
-                    break; // Stop when ShowDailyReadings returns 0 items
+                    break; // Stop when ShowDailyReadings returns 0 items or the total is 0
                 }
 
-                // Add small delay between requests to avoid overwhelming the server
+                // Add a small delay between requests to avoid overwhelming the server
                 await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
             }
             catch (Exception ex)

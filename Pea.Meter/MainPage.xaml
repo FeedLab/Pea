@@ -54,16 +54,17 @@
             Grid.Row="0"
             HorizontalOptions="Fill"
             VerticalOptions="Fill">
-            <Image
+            <!--<Image
                 Margin="12"
-                Source="pea_logo.png"
+                Source="pea_amp.png"
                 Aspect="AspectFit"
+                HeightRequest="70"
                 HorizontalOptions="Start"
-                VerticalOptions="Start" />
+                VerticalOptions="Start" />-->
 
             <Image
                 Margin="12"
-                Source="amr.png"
+                Source="smart_home.png"
                 Aspect="AspectFit"
                 HeightRequest="70"
                 HorizontalOptions="Center"
