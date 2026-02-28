@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
+using Pea.Infrastructure.Models;
 using Pea.Infrastructure.Repositories;
+using Pea.Meter.Models;
 
 namespace Pea.Meter.Services;
 
@@ -18,7 +22,8 @@ public class HistoricDataBackgroundService
     private Task? runningTask;
     private string? currentUserId;
 
-    public HistoricDataBackgroundService(PeaAdapter peaAdapter, ILogger<HistoricDataBackgroundService> logger, PeaDbContextFactory dbContextFactory)
+    public HistoricDataBackgroundService(PeaAdapter peaAdapter, ILogger<HistoricDataBackgroundService> logger,
+        PeaDbContextFactory dbContextFactory)
     {
         this.peaAdapter = peaAdapter;
         this.logger = logger;
@@ -66,7 +71,9 @@ public class HistoricDataBackgroundService
         var startDate = DateTime.Today.AddDays(-1); // Yesterday
         var maxDaysToTry = 365 * 10; // Safety limit: don't go back more than 10 years
 
-        logger.LogInformation("Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items", startDate, currentUserId);
+        logger.LogInformation(
+            "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
+            startDate, currentUserId);
 
         // Create user-specific database context and repository
         using var dbContext = dbContextFactory.CreateDbContext(currentUserId);
@@ -89,7 +96,8 @@ public class HistoricDataBackgroundService
                 // Check if data already exists for this date
                 if (await repository.ExistsForDateAsync(targetDate, currentUserId, cancellationToken))
                 {
-                    logger.LogInformation("Data already exists for {Date}, skipping", targetDate.ToString("yyyy-MM-dd"));
+                    logger.LogInformation("Data already exists for {Date}, skipping",
+                        targetDate.ToString("yyyy-MM-dd"));
                     continue;
                 }
 
@@ -101,11 +109,16 @@ public class HistoricDataBackgroundService
                     // Save to database
                     await repository.AddRangeAsync(readings, currentUserId, cancellationToken);
                     totalReadings += readings.Count;
-                    logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count, targetDate.ToString("yyyy-MM-dd"));
+                    logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count,
+                        targetDate.ToString("yyyy-MM-dd"));
+
+                    WeakReferenceMessenger.Default.Send(new DataImportedMessage(readings, targetDate));
                 }
                 else
                 {
-                    logger.LogInformation("No readings found for {Date}. Stopping import as there is no more data to read.", targetDate.ToString("yyyy-MM-dd"));
+                    logger.LogInformation(
+                        "No readings found for {Date}. Stopping import as there is no more data to read.",
+                        targetDate.ToString("yyyy-MM-dd"));
                     break; // Stop when ShowDailyReadings returns 0 items or the total is 0
                 }
 
@@ -119,5 +132,17 @@ public class HistoricDataBackgroundService
         }
 
         logger.LogInformation("Import completed. Total readings imported and saved: {Total}", totalReadings);
+    }
+}
+
+internal partial class DataImportedMessage : ObservableObject
+{
+    [ObservableProperty] private  IList<PeaMeterReading> readings;
+    [ObservableProperty] private DateTime date;
+
+    public DataImportedMessage(IList<PeaMeterReading> readings, DateTime date)
+    {
+        Readings = readings;
+        Date = date;
     }
 }

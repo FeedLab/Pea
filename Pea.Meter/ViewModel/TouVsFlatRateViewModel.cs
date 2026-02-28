@@ -5,6 +5,7 @@ using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Models;
+using Pea.Meter.Services;
 
 namespace Pea.Meter.ViewModel;
 
@@ -25,32 +26,62 @@ public partial class TouVsFlatRateViewModel: ObservableObject
     [ObservableProperty] private DateTime endDate;
     [ObservableProperty] private DateTime startTimePickerMaximumDate;
     [ObservableProperty] private DateTime startTimePickerMinimumDate;
-    
+    [ObservableProperty] private DateTime endTimePickerMaximumDate;
+    [ObservableProperty] private DateTime endTimePickerMinimumDate;
+    private string userName;
+
     public TouVsFlatRateViewModel(PeaDbContextFactory dbContextFactory)
     {
         this.dbContextFactory = dbContextFactory;
-        
-
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
         {
-            StartDate = DateTime.Now.AddYears(-1);
-            EndDate = DateTime.Now;
+            using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
+            var repository = new MeterReadingRepository(dbContext);
+            var meterReading = await repository.GetEarliestMeterReading(m.AuthData.Username);
+
+            if (meterReading == null)
+            {
+                return;
+            }
             
-            StartTimePickerMinimumDate = EndDate.AddYears(-2);
+            var today = DateTime.Now;
+            StartDate = today.AddYears(-1);
+            EndDate = today;
+            
+            StartTimePickerMinimumDate = meterReading.PeriodStart.Date;
             StartTimePickerMaximumDate = EndDate.AddDays(-1);
+
+            if (StartDate < StartTimePickerMinimumDate)
+            {
+                StartDate = StartTimePickerMinimumDate;
+            }
             
+            EndTimePickerMinimumDate = StartDate.AddDays(1);
+            EndTimePickerMaximumDate = today;
             await Task.Delay(5000);
-            await CalculateCostComparisons(m.AuthData.Username);
+            userName = m.AuthData.Username;
+            await CalculateCostComparisons();
+        });
+
+        WeakReferenceMessenger.Default.Register<DataImportedMessage>(this, async (r, m) =>
+        {
+            StartTimePickerMinimumDate = m.Date;
+
+            if (StartDate < StartTimePickerMinimumDate)
+            {
+                StartDate = StartTimePickerMinimumDate;
+            }
+            
         });
     }
 
-    private async Task CalculateCostComparisons(string userName)
+    public async Task CalculateCostComparisons()
     {
         IsFlatRateVisible = false;
         IsTouVisible = false;
         
-        var meterReadingsPerDay = await FetchDailyAverageReadingsAsync(dbContextFactory, userName);
+        var meterReadingsPerDay = await FetchDailyAverageReadingsAsync();
 
         if (meterReadingsPerDay.Count == 0)
         {
@@ -81,15 +112,15 @@ public partial class TouVsFlatRateViewModel: ObservableObject
         }
     }
 
-    private static async Task<IList<PeaMeterReading>> FetchDailyAverageReadingsAsync(PeaDbContextFactory dbContextFactory, string userName)
+    private async Task<IList<PeaMeterReading>> FetchDailyAverageReadingsAsync( )
     {
         var meterDataAverageDaysTask = await Task.Run(async () =>
         {
             using var dbContext = dbContextFactory.CreateDbContext(userName);
             var repo = new MeterReadingRepository(dbContext);
             
-            var startTime = new DateTime(2022, 1, 1);
-            var endTime = new DateTime(2023, 1, 1);
+            var startTime = StartDate;
+            var endTime = EndDate;
             
             return await repo.GetDailyTotalsAsync(startTime, endTime, userName);
         });

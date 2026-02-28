@@ -58,6 +58,8 @@ public interface IMeterReadingRepository
 
     Task<IList<PeaMeterReading>> GetDailyTotalsAsync(DateTime startTime, DateTime endTime, string userId,
         CancellationToken cancellationToken = default);
+
+    Task<PeaMeterReading?> GetEarliestMeterReading(string userId);
     
     
     /// <summary>

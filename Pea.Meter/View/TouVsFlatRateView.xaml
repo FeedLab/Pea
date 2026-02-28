@@ -10,58 +10,138 @@
         HorizontalOptions="Center"
         VerticalOptions="Center">
 
-        <Grid HeightRequest="60">
-            <Border
-                x:Name="StartDateCtrl"
-                BackgroundColor="White"
-                Stroke="LightBlue"
-                StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="Center" VerticalOptions="Center" Margin="0"
-                Padding="0">
-                <Grid VerticalOptions="Center" HeightRequest="50" WidthRequest="300">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.2*" />
-                        <ColumnDefinition Width="0.5*" />
-                        <ColumnDefinition Width="0.3*" />
-                    </Grid.ColumnDefinitions>
+        <HorizontalStackLayout
+            Margin="0,0,0,8">
+            <VerticalStackLayout
+                Margin="0,0,16,0">
+                <Grid HeightRequest="60" >
+                    <Border
+                        x:Name="StartDateCtrl"
+                        BackgroundColor="White"
+                        Stroke="LightBlue"
+                        StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="Center" VerticalOptions="Center"
+                        Margin="0"
+                        Padding="0">
+                        <Grid 
+                            Margin="4,0,10,0"
+                            VerticalOptions="Center" 
+                            HeightRequest="40" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                    <Label
-                        TextColor="Black" FontSize="15"
-                        HorizontalOptions="Center" VerticalOptions="Center" Text="&#xe72e;" />
 
-                    <Label Grid.Column="1" Text="Start date" Margin="0, 0, 5, 0"
-                           TextColor="Black"
-                           FontSize="13" VerticalOptions="Center" LineBreakMode="WordWrap" 
-                           />
+                            <Label
+                                TextColor="Black" 
+                                FontSize="15"
+                                FontFamily="FontSolid" 
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"                        
+                                Text="&#x1F4C6;"
+                                />
 
-                    <Label Grid.Column="2" Text="{Binding StartDate}" FontSize="13"
-                           TextColor="Black"
-                           VerticalTextAlignment="Center" LineBreakMode="WordWrap" />
+                            <Label Grid.Column="1" 
+                                   Text="Start Date - " 
+                                   Margin="0, 0, 5, 0"
+                                   TextColor="Black"
+                                   FontSize="15" VerticalOptions="Center" LineBreakMode="WordWrap" />
 
-                    <Grid.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnItemTapGestureTapped" />
-                    </Grid.GestureRecognizers>
+                            <Label Grid.Column="2" Text="{Binding StartDate,  StringFormat='{0:D}'}" FontSize="15"
+                                   TextColor="Black"
+                                   VerticalTextAlignment="Center" LineBreakMode="WordWrap" />
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnStartDateTapGestureTapped" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </Border>
                 </Grid>
-            </Border>
-        </Grid>
-        
-        <picker:SfDatePicker
-            x:Name="StartTimePicker"
-            Mode="Dialog"
-            RelativePosition="AlignBottom"
-            TextDisplayMode="FadeAndShrink"
-            MaximumDate="{Binding StartTimePickerMaximumDate}"
-            MinimumDate="{Binding StartTimePickerMinimumDate}"
-            RelativeView = "{x:Reference StartDateCtrl}"
-            SelectedDate="{Binding StartDate}">
-            <picker:SfDatePicker.HeaderView>
-                <picker:PickerHeaderView Text="Start date" Height="40" />
-            </picker:SfDatePicker.HeaderView>
-            
-            <picker:SfDatePicker.FooterView>
-                <picker:PickerFooterView ShowOkButton="True" Height="40" />
-            </picker:SfDatePicker.FooterView>
-        </picker:SfDatePicker>
 
+                <picker:SfDatePicker
+                    x:Name="StartTimePicker"
+                    Mode="Dialog"
+                    RelativePosition="AlignBottom"
+                    TextDisplayMode="FadeAndShrink"
+                    MaximumDate="{Binding StartTimePickerMaximumDate}"
+                    MinimumDate="{Binding StartTimePickerMinimumDate}"
+                    RelativeView="{x:Reference StartDateCtrl}"
+                    SelectedDate="{Binding StartDate}"
+                    OkButtonClicked="OnStartDatePickerOkButtonClicked">
+                    <picker:SfDatePicker.HeaderView>
+                        <picker:PickerHeaderView Text="Start date" Height="40" />
+                    </picker:SfDatePicker.HeaderView>
+
+                    <picker:SfDatePicker.FooterView>
+                        <picker:PickerFooterView ShowOkButton="True" Height="40" />
+                    </picker:SfDatePicker.FooterView>
+                </picker:SfDatePicker>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout>
+                <Grid HeightRequest="60">
+                    <Border
+                        x:Name="EndDateCtrl"
+                        BackgroundColor="White"
+                        Stroke="LightBlue"
+                        StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="Center" VerticalOptions="Center"
+                        Margin="0"
+                        Padding="0">
+                        <Grid 
+                            Margin="4,0,10,0"
+                            VerticalOptions="Center"
+                            HeightRequest="40" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label
+                                TextColor="Black" 
+                                FontSize="15"
+                                FontFamily="FontSolid" 
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"                        
+                                Text="&#x1F4C6;"
+                                />
+
+                            <Label Grid.Column="1" Text="End Date - " Margin="0, 0, 5, 0"
+                                   TextColor="Black"
+                                   FontSize="15" VerticalOptions="Center" LineBreakMode="WordWrap" />
+
+                            <Label Grid.Column="2" Text="{Binding EndDate, StringFormat='{0:D}'}" FontSize="15"
+                                   TextColor="Black"
+                                   VerticalTextAlignment="Center" LineBreakMode="WordWrap" />
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnEndDateTapGestureTapped" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <picker:SfDatePicker
+                    x:Name="EndTimePicker"
+                    Mode="Dialog"
+                    RelativePosition="AlignBottom"
+                    TextDisplayMode="FadeAndShrink"
+                    MaximumDate="{Binding EndTimePickerMaximumDate}"
+                    MinimumDate="{Binding EndTimePickerMinimumDate}"
+                    RelativeView="{x:Reference EndDateCtrl}"
+                    SelectedDate="{Binding EndDate}"
+                    OkButtonClicked="OnEndDatePickerOkButtonClicked">
+                    <picker:SfDatePicker.HeaderView>
+                        <picker:PickerHeaderView Text="End date" Height="40" />
+                    </picker:SfDatePicker.HeaderView>
+
+                    <picker:SfDatePicker.FooterView>
+                        <picker:PickerFooterView ShowOkButton="True" Height="40" />
+                    </picker:SfDatePicker.FooterView>
+                </picker:SfDatePicker>
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
 
         <Border
             HorizontalOptions="Center"

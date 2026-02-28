@@ -195,4 +195,19 @@ public class MeterReadingRepository : IMeterReadingRepository
 
         return hourlyAverages;
     }
+
+    public async Task<PeaMeterReading?> GetEarliestMeterReading(string userId)
+    {
+        var earliestReading = await context.MeterReadings
+            .Where(m => m.UserId == userId )
+            .OrderBy(r => r.PeriodStart)
+            .FirstOrDefaultAsync();
+
+        if (earliestReading != null)
+        {
+            return new PeaMeterReading(earliestReading.PeriodStart , earliestReading.RateA, earliestReading.RateB, earliestReading.RateC, 15);
+        }
+        
+        return null;
+    }
 }
