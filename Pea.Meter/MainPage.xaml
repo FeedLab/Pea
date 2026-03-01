@@ -108,20 +108,21 @@
                         </Grid>
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
-
-                <tabView:SfTabItem Header="Customer Profile" x:Name="TabCustomerProfile" TextColor="White"
-                                   FontSize="14">
-                    <tabView:SfTabItem.Content>
-                        <view:CustomerProfileView />
-                    </tabView:SfTabItem.Content>
-                </tabView:SfTabItem>
-                
+                                
                 <tabView:SfTabItem Header="TOU vs Flat-Rate" x:Name="TouVsFlatRate" TextColor="White"
                                    FontSize="14">
                     <tabView:SfTabItem.Content>
                         <view:TouVsFlatRateView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
+                
+                <tabView:SfTabItem Header="Customer Profile" x:Name="TabCustomerProfile" TextColor="White"
+                                   FontSize="14">
+                    <tabView:SfTabItem.Content>
+                        <view:CustomerProfileView />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+
             </tabView:SfTabView.Items>
         </tabView:SfTabView>
 
