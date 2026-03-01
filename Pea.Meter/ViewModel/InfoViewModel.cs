@@ -25,6 +25,7 @@ public partial class InfoViewModel : ObservableObject
     private readonly HistoricDataImportService historicDataImportService;
     private readonly HistoricDataBackgroundService historicDataBackgroundService;
     private readonly PeaDbContextFactory dbContextFactory;
+    private readonly StorageService storageService;
 
     [ObservableProperty] private IAuthData? authData;
 
@@ -44,7 +45,7 @@ public partial class InfoViewModel : ObservableObject
         PeaAdapter peaAdapter, ILoginHelper loginHelper, IPopupService popupService,
         HistoricDataImportService historicDataImportService,
         HistoricDataBackgroundService historicDataBackgroundService,
-        PeaDbContextFactory dbContextFactory)
+        StorageService storageService)
     {
         this.customerProfile = customerProfile;
         this.authDataOptions = authDataOptions;
@@ -53,7 +54,7 @@ public partial class InfoViewModel : ObservableObject
         this.popupService = popupService;
         this.historicDataImportService = historicDataImportService;
         this.historicDataBackgroundService = historicDataBackgroundService;
-        this.dbContextFactory = dbContextFactory;
+        this.storageService = storageService;
 
         // Initialize AuthData from saved settings
         AuthData = authDataOptions.AuthData;
@@ -70,22 +71,17 @@ public partial class InfoViewModel : ObservableObject
             IsMeterDataVisible = true;
             IsCustomerProfileViewVisible = false;
 
-            var dailyReadingsTask = peaAdapter.ShowDailyReadings(DateTime.Today);
+            var dailyReadings = await peaAdapter.ShowDailyReadings(DateTime.Today);
 
-            var meterDataAverageDays7Task = FetchDailyAverageReadingsAsync(dbContextFactory, m.AuthData.Username, 7);
-            var meterDataAverageDays30Task = FetchDailyAverageReadingsAsync(dbContextFactory, m.AuthData.Username, 30);
+            var meterDataAverageDays7 = storageService.FetchAverageQuarterlyReadingsForPeriodAsync(DateTime.Today.AddDays(-7), DateTime.Today.AddDays(-1) );
+            var meterDataAverageDays30 = storageService.FetchAverageQuarterlyReadingsForPeriodAsync(DateTime.Today.AddDays(-30), DateTime.Today.AddDays(-1));
 
-            await Task.WhenAll(dailyReadingsTask, meterDataAverageDays7Task, meterDataAverageDays30Task);
-
-            var meterData7 = meterDataAverageDays7Task.Result;
-            var meterData30 = meterDataAverageDays30Task.Result;
-            var dailyReadings = dailyReadingsTask.Result;
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
                 MeterData = new ObservableCollection<PeaMeterReading>(dailyReadings);
-                MeterDataAverage7 = new ObservableCollection<PeaMeterReading>(meterData7);
-                MeterDataAverage30 = new ObservableCollection<PeaMeterReading>(meterData30);
+                MeterDataAverage7 = new ObservableCollection<PeaMeterReading>(meterDataAverageDays7);
+                MeterDataAverage30 = new ObservableCollection<PeaMeterReading>(meterDataAverageDays30);
                 
                 return Task.CompletedTask;
             });
@@ -109,17 +105,6 @@ public partial class InfoViewModel : ObservableObject
             });
     }
 
-    private static Task<IList<PeaMeterReading>> FetchDailyAverageReadingsAsync(PeaDbContextFactory dbContextFactory, string userName, int periodLengthInDays)
-    {
-        var meterDataAverageDaysTask = Task.Run(async () =>
-        {
-            using var dbContext = dbContextFactory.CreateDbContext(userName);
-            var repo = new MeterReadingRepository(dbContext);
-            return await repo.GetAverageReadingsByTimeOfDayAsync(periodLengthInDays, userName);
-        });
-        
-        return meterDataAverageDaysTask;
-    }
 
     [RelayCommand]
     private async Task AddAccount()

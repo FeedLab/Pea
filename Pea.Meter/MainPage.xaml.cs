@@ -11,6 +11,7 @@ namespace Pea.Meter
         private readonly AuthDataOptions authDataOptions;
         private readonly IAuthData? authData;
         private readonly CustomerProfileViewModel customerProfile;
+        private readonly StorageService storageService;
 
         public MainPage()
         {
@@ -21,6 +22,8 @@ namespace Pea.Meter
             else
                 throw new InvalidOperationException("AppService is not initialized");
 
+            storageService  = AppService.Current.GetRequiredService<StorageService>();
+            
             authDataOptions = AppService.Current.GetRequiredService<AuthDataOptions>();
             customerProfile = AppService.Current.GetRequiredService<CustomerProfileViewModel>();
 
@@ -58,9 +61,10 @@ namespace Pea.Meter
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
+            
             if (authData is not null && authData.Username != "" && authData.Password != "")
             {
+                await storageService.Init(authData.Username);
                 await customerProfile.RefreshProfile(authData.Username, authData.Password);
                 WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
             }

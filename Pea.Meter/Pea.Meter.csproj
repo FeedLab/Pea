@@ -105,4 +105,8 @@
 	  <MauiSplashScreen Include="Resources\Splash\pea_splash.png" Color="#0A1628" ForegroundScale="1.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Components\StatisticsView\" />
+	</ItemGroup>
+
 </Project>

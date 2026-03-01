@@ -38,6 +38,7 @@ namespace Pea.Meter
             builder.Services.AddSingleton<PeaAdapter>();
             builder.Services.AddSingleton<HistoricDataImportService>();
             builder.Services.AddSingleton<HistoricDataBackgroundService>();
+            builder.Services.AddSingleton<StorageService>();
 
             // Register database services
             builder.Services.AddSingleton<PeaDbContextFactory>(sp =>
@@ -47,10 +48,6 @@ namespace Pea.Meter
                 var connectionString = $"Data Source={dbPath}";
                 return new PeaDbContextFactory(connectionString);
             });
-
-            // Note: PeaDbContext and repositories should be created on-demand after user login
-            // using PeaDbContextFactory.CreateDbContext(userId)
-            // Don't register PeaDbContext or repositories in DI at startup since they require a userId
 
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<CustomerProfileViewModel>();

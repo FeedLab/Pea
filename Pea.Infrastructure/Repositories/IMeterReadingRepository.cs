@@ -17,6 +17,8 @@ public interface IMeterReadingRepository
     /// </summary>
     Task<IList<PeaMeterReading>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, string userId, CancellationToken cancellationToken = default);
 
+    Task<IList<PeaMeterReading>> GetAllMeterReadingsAsync(CancellationToken cancellationToken = default);
+    
     /// <summary>
     /// Gets meter readings for a specific date
     /// </summary>
@@ -60,6 +62,9 @@ public interface IMeterReadingRepository
         CancellationToken cancellationToken = default);
 
     Task<PeaMeterReading?> GetEarliestMeterReading(string userId);
+
+    Task<IList<PeaMeterReading>> GetDailyDuringPeriodAsync(DateTime startTime, DateTime endTime, string userId,
+        CancellationToken cancellationToken = default);
     
     
     /// <summary>

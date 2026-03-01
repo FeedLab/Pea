@@ -41,6 +41,15 @@ public class MeterReadingRepository : IMeterReadingRepository
         await context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<IList<PeaMeterReading>> GetAllMeterReadingsAsync( CancellationToken cancellationToken = default)
+    {
+        var entities = await context.MeterReadings
+            .OrderBy(m => m.PeriodStart)
+            .ToListAsync(cancellationToken);
+
+        return entities.Select(e => new PeaMeterReading(e.PeriodStart, e.RateA, e.RateB, e.RateC)).ToList();
+    }
+    
     public async Task<IList<PeaMeterReading>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, string userId, CancellationToken cancellationToken = default)
     {
         var entities = await context.MeterReadings
@@ -195,6 +204,34 @@ public class MeterReadingRepository : IMeterReadingRepository
 
         return hourlyAverages;
     }
+    
+    public async Task<IList<PeaMeterReading>> GetDailyDuringPeriodAsync(DateTime startTime, DateTime endTime, string userId, CancellationToken cancellationToken = default)
+    {
+        var readings = await context.MeterReadings
+            .Where(m => m.UserId == userId && m.PeriodStart >= startTime && m.PeriodStart < endTime)
+            .ToListAsync(cancellationToken);
+
+        if (readings.Count == 0)
+        {
+            return new List<PeaMeterReading>();
+        }
+
+        // Group by date (year, month, day) and calculate daily totals
+        var dailyAverages = readings
+            .GroupBy(r => r.PeriodStart.Date)
+            .Select(g => new PeaMeterReading(
+                g.Key,
+                g.Sum(r => r.RateA),
+                g.Sum(r => r.RateB),
+                g.Sum(r => r.RateC),
+                60 * 24
+            ))
+            .OrderBy(r => r.PeriodStart)
+            .ToList();
+
+        return dailyAverages;
+    }
+
 
     public async Task<PeaMeterReading?> GetEarliestMeterReading(string userId)
     {
