@@ -49,7 +49,7 @@
         <Image
             Grid.Row="0"
             Grid.RowSpan="2"
-            Source="pea_meter.png" Aspect="Fill" Opacity="0.3" />
+            Source="pea_meter.png" Aspect="Fill" Opacity="0.5" />
 
         <Grid
             Grid.Row="0"

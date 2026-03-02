@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Pea.Data;
+using Pea.Data.Repositories;
 using Pea.Meter.Helper;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Models;
@@ -21,20 +23,24 @@ public partial class CustomerProfileViewModel : ObservableObject
 
     private readonly PeaAdapter peaAdapter;
     private readonly ILoginHelper loginHelper;
+    private readonly PeaDbContextFactory dbContextFactory;
+    private string userName;
 
     /// <summary>
     /// ViewModel that wraps CustomerProfile model and provides UI logic
     /// </summary>
-    public CustomerProfileViewModel(PeaAdapter peaAdapter, ILoginHelper loginHelper)
+    public CustomerProfileViewModel(PeaAdapter peaAdapter, ILoginHelper loginHelper, PeaDbContextFactory dbContextFactory)
     {
         this.peaAdapter = peaAdapter;
         this.loginHelper = loginHelper;
+        this.dbContextFactory = dbContextFactory;
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this,
             (r, m) =>
             {
                 MainThread.InvokeOnMainThreadAsync(async () =>
                 {
+                    userName = m.AuthData.Username;
                     // await peaAdapter.CustomerOverviewSelect();
                 });
             });
@@ -43,6 +49,10 @@ public partial class CustomerProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task RemoveAccount()
     {
+        using var dbContext = dbContextFactory.CreateDbContext(userName);
+        var repository = new MeterReadingRepository(dbContext);
+        
+        await repository.DeleteAllAsync(userName);
         await loginHelper.ClearAuthDataAsync();
         WeakReferenceMessenger.Default.Send(new UserLoggedOutMessage());
     }

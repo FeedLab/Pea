@@ -9,16 +9,23 @@
     <Grid>
         <tabView:SfTabView x:Name="TabViewStatistics"
                            Margin="0"
+                           FontAutoScalingEnabled="True"
+                           ContentTransitionDuration ="500"
+                           EnableRippleAnimation="True"
+                           HeaderHorizontalTextAlignment="Center"
+                           IndicatorCornerRadius ="5"
+                           IndicatorPlacement="Bottom"
+                           IndicatorBackground="Blue"
                            EnableSwiping="True"
                            HorizontalOptions="Fill"
                            TabBarPlacement="Top"
                            TabWidthMode="SizeToContent"
                            TabBarBackground="Transparent"
                            TabHeaderPadding="0"
-                           IndicatorBackground="DarkGray">
+                           >
             <tabView:SfTabView.Items>
 
-                <tabView:SfTabItem Header="30 Days Summary" x:Name="Summary30Days" Background="LightGray"
+                <tabView:SfTabItem Header="30 Days Summary" x:Name="Summary30Days" Background="White"
                                    TextColor="Black" FontSize="12">
                     <tabView:SfTabItem.Content>
                         <Grid BackgroundColor="White">
@@ -121,7 +128,7 @@
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="All Readings Per Day" x:Name="AllReadingsPerDay" Background="LightGray" TextColor="Black" FontSize="12">
+                <tabView:SfTabItem Header="All Readings Per Day" x:Name="AllReadingsPerDay" Background="White" TextColor="Black" FontSize="12">
                     <tabView:SfTabItem.Content>
                         <Grid BackgroundColor="White">
                                 <chart:SfCartesianChart

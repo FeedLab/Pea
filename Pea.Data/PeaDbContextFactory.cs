@@ -31,7 +31,7 @@ public class PeaDbContextFactory
 
         // Sanitize userId to create valid database name
         var sanitizedUserId = SanitizeUserId(userId);
-        var databaseName = $"Pea_{sanitizedUserId}";
+        var databaseName = $"Pea-{sanitizedUserId}";
 
         // Build connection string with user-specific database
         var connectionString = BuildConnectionString(databaseName);
