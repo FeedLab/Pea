@@ -3,7 +3,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
-             x:Class="Pea.Meter.View.Components.DailyOverviewChart"
+             x:Class="Pea.Meter.View.Components.MeterReadingsDailyChart"
              x:Name="DailyOverviewChartControl">
 
     <Grid BackgroundColor="White">
@@ -46,7 +46,7 @@
                                             ZoomMode="X" />
             </chart:SfCartesianChart.ZoomPanBehavior>
 
-            <chart:SplineSeries ItemsSource="{Binding Source={x:Reference DailyOverviewChartControl}, Path=ChartData}"
+            <chart:SplineSeries ItemsSource="{Binding MeterDataDailyAggregated}"
                                 XBindingPath="PeriodStart"
                                 YBindingPath="Total"
                                 Fill="{Binding Source={x:Reference DailyOverviewChartControl}, Path=SeriesColor}"

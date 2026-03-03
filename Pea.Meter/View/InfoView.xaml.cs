@@ -19,6 +19,11 @@ public partial class InfoView : ContentView
         else
             throw new InvalidOperationException("AppService is not initialized");
     }
-  
 
+
+    private void TapGestureRecognizer_OnTapped(object? sender, TappedEventArgs e)
+    {
+        var url = "https://www.amr.pea.co.th/AMRWEB/Manual/usernameandpassword190925.pdf";
+        Launcher.OpenAsync(new Uri(url));
+    }
 }

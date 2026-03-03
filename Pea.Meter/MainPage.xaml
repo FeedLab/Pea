@@ -6,6 +6,7 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Expander;assembly=Syncfusion.Maui.Expander"
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:view="clr-namespace:Pea.Meter.View"
+             xmlns:statistics="clr-namespace:Pea.Meter.View.Statistics"
              x:Class="Pea.Meter.MainPage">
     <ContentPage.Resources>
         <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
@@ -105,7 +106,7 @@
                 <tabView:SfTabItem Header="Statistics" x:Name="TabData" TextColor="White" FontSize="14">
                     <tabView:SfTabItem.Content>
                         <Grid BackgroundColor="Transparent">
-                            <view:StatisticsView />
+                            <statistics:StatisticsView />
                         </Grid>
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>

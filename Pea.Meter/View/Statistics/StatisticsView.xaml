@@ -5,7 +5,9 @@
              xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              xmlns:components="clr-namespace:Pea.Meter.View.Components"
-             x:Class="Pea.Meter.View.StatisticsView">
+             xmlns:local="clr-namespace:Pea.Meter.View"
+             xmlns:statistics="clr-namespace:Pea.Meter.View.Statistics"
+             x:Class="Pea.Meter.View.Statistics.StatisticsView">
 
     <Grid>
         <tabView:SfTabView x:Name="TabViewStatistics"
@@ -29,18 +31,13 @@
                 <tabView:SfTabItem Header="30 Days Summary" x:Name="Summary30Days" Background="White"
                                    TextColor="Black" FontSize="12">
                     <tabView:SfTabItem.Content>
-                        <components:MeterComparisonChart 
-                            ChartTitle="{Binding DateMeterData, StringFormat='{0:D}'}"
-                            TodayData="{Binding MeterDataToday}"
-                            Average1DayData="{Binding MeterDataAverage1}"
-                            Average7DaysData="{Binding MeterDataAverage7}"
-                            Average30DaysData="{Binding MeterDataAverage30}" />
+                        <statistics:MeterReadingsHourView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
                 <tabView:SfTabItem Header="All Readings Per Day" x:Name="AllReadingsPerDay" Background="White" TextColor="Black" FontSize="12">
                     <tabView:SfTabItem.Content>
-                        <components:DailyOverviewChart ChartData="{Binding MeterDataDailyAggregated}" />
+                        <statistics:MeterReadingsDailyView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 

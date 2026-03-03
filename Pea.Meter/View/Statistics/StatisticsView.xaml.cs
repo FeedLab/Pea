@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Pea.Meter.Services;
+﻿using Pea.Meter.Services;
 using Pea.Meter.ViewModel;
+using Pea.Meter.ViewModel.Statistics;
 
-namespace Pea.Meter.View;
+namespace Pea.Meter.View.Statistics;
 
 public partial class StatisticsView : ContentView
 {

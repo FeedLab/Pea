@@ -1,24 +1,24 @@
 ﻿using System.Collections.ObjectModel;
 using Pea.Infrastructure.Models;
 
-namespace Pea.Meter.View.Components;
+namespace Pea.Meter.View.Statistics;
 
-public partial class MeterComparisonChart : ContentView
+public partial class MeterReadingsHourChart : ContentView
 {
     public static readonly BindableProperty ChartTitleProperty =
-        BindableProperty.Create(nameof(ChartTitle), typeof(string), typeof(MeterComparisonChart), string.Empty);
+        BindableProperty.Create(nameof(ChartTitle), typeof(string), typeof(MeterReadingsHourChart), string.Empty);
 
     public static readonly BindableProperty TodayDataProperty =
-        BindableProperty.Create(nameof(TodayData), typeof(ObservableCollection<PeaMeterReading>), typeof(MeterComparisonChart), null);
+        BindableProperty.Create(nameof(TodayData), typeof(ObservableCollection<PeaMeterReading>), typeof(MeterReadingsHourChart), null);
 
     public static readonly BindableProperty Average1DayDataProperty =
-        BindableProperty.Create(nameof(Average1DayData), typeof(ObservableCollection<PeaMeterReading>), typeof(MeterComparisonChart), null);
+        BindableProperty.Create(nameof(Average1DayData), typeof(ObservableCollection<PeaMeterReading>), typeof(MeterReadingsHourChart), null);
 
     public static readonly BindableProperty Average7DaysDataProperty =
-        BindableProperty.Create(nameof(Average7DaysData), typeof(ObservableCollection<PeaMeterReading>), typeof(MeterComparisonChart), null);
+        BindableProperty.Create(nameof(Average7DaysData), typeof(ObservableCollection<PeaMeterReading>), typeof(MeterReadingsHourChart), null);
 
     public static readonly BindableProperty Average30DaysDataProperty =
-        BindableProperty.Create(nameof(Average30DaysData), typeof(ObservableCollection<PeaMeterReading>), typeof(MeterComparisonChart), null);
+        BindableProperty.Create(nameof(Average30DaysData), typeof(ObservableCollection<PeaMeterReading>), typeof(MeterReadingsHourChart), null);
 
     public string ChartTitle
     {
@@ -50,7 +50,7 @@ public partial class MeterComparisonChart : ContentView
         set => SetValue(Average30DaysDataProperty, value);
     }
 
-    public MeterComparisonChart()
+    public MeterReadingsHourChart()
     {
         InitializeComponent();
     }

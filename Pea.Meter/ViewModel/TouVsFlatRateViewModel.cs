@@ -13,8 +13,7 @@ namespace Pea.Meter.ViewModel;
 [SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class TouVsFlatRateViewModel: ObservableObject
 {
-    private readonly PeaDbContextFactory dbContextFactory;
-
+    private readonly StorageService storageService;
     [ObservableProperty] private List<CostCompare> costCompares = [];
     [ObservableProperty] private decimal touTotalCost;
     [ObservableProperty] private decimal flatRateTotalCost;
@@ -28,28 +27,25 @@ public partial class TouVsFlatRateViewModel: ObservableObject
     [ObservableProperty] private DateTime startTimePickerMinimumDate;
     [ObservableProperty] private DateTime endTimePickerMaximumDate;
     [ObservableProperty] private DateTime endTimePickerMinimumDate;
-    private string userName;
 
-    public TouVsFlatRateViewModel(PeaDbContextFactory dbContextFactory)
+    public TouVsFlatRateViewModel(StorageService storageService)
     {
-        this.dbContextFactory = dbContextFactory;
+        this.storageService = storageService;
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
         {
-            using var dbContext = dbContextFactory.CreateDbContext(m.AuthData.Username);
-            var repository = new MeterReadingRepository(dbContext);
-            var meterReading = await repository.GetEarliestMeterReading(m.AuthData.Username);
-
-            if (meterReading == null)
-            {
-                return;
-            }
+            var meterReading = storageService.GetDailyAggregated();
             
             var today = DateTime.Now;
             StartDate = today.AddYears(-1);
             EndDate = today;
             
-            StartTimePickerMinimumDate = meterReading.PeriodStart.Date;
+            // meterReading = storageService
+            //     .GetDailyAggregated()
+            //     .Where(w => w.PeriodStart >= StartDate && w.PeriodStart < EndDate)
+            //     .ToList();
+
+            StartTimePickerMinimumDate = meterReading.First().PeriodStart.Date;
             StartTimePickerMaximumDate = EndDate.AddDays(-1);
 
             if (StartDate < StartTimePickerMinimumDate)
@@ -60,7 +56,6 @@ public partial class TouVsFlatRateViewModel: ObservableObject
             EndTimePickerMinimumDate = StartDate.AddDays(1);
             EndTimePickerMaximumDate = today;
             await Task.Delay(5000);
-            userName = m.AuthData.Username;
             await CalculateCostComparisons();
         });
 
@@ -76,19 +71,22 @@ public partial class TouVsFlatRateViewModel: ObservableObject
         });
     }
 
-    public async Task CalculateCostComparisons()
+    public Task CalculateCostComparisons()
     {
         IsFlatRateVisible = false;
         IsTouVisible = false;
         
-        var meterReadingsPerDay = await FetchDailyAverageReadingsAsync();
-
-        if (meterReadingsPerDay.Count == 0)
+        var meterReading = storageService
+            .GetDailyAggregated()
+            .Where(w => w.PeriodStart >= StartDate && w.PeriodStart < EndDate)
+            .ToList();
+        
+        if (meterReading.Count == 0)
         {
-            return;
+            return Task.CompletedTask;
         }
 
-        CostCompares = meterReadingsPerDay
+        CostCompares = meterReading
             .Where(w => w.Total > 0)
             .Select(s => new CostCompare(s, 3.9086m, 5.1135m, 2.6037m))
             .ToList();
@@ -110,23 +108,10 @@ public partial class TouVsFlatRateViewModel: ObservableObject
             IsFlatRateVisible = false;
             IsTouVisible = true;
         }
+
+        return Task.CompletedTask;
     }
 
-    private async Task<IList<PeaMeterReading>> FetchDailyAverageReadingsAsync( )
-    {
-        var meterDataAverageDaysTask = await Task.Run(async () =>
-        {
-            using var dbContext = dbContextFactory.CreateDbContext(userName);
-            var repo = new MeterReadingRepository(dbContext);
-            
-            var startTime = StartDate;
-            var endTime = EndDate;
-            
-            return await repo.GetDailyTotalsAsync(startTime, endTime, userName);
-        });
-        
-        return meterDataAverageDaysTask;
-    }
 }
 
 public partial class CostCompare : ObservableObject

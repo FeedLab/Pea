@@ -147,7 +147,6 @@
                     </chart:SfCartesianChart>
                 </Grid>
             </Border>
-
         </Grid>
 
         <Grid
@@ -189,9 +188,14 @@
                         <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="1. Locate your Meter Number:&#x0a;" FontAttributes="Bold" />
-                                    <Span
-                                        Text="You can find this physical ID on the face of your electric meter or on your most recent utility bill." />
+                                    <Span Text="1. Obtain credential:&#x0a;" FontAttributes="Bold" />
+                                    <Span Text="Read instruction in the " />
+                                    <Span Text="link" TextColor="Blue" TextDecorations="Underline">
+                                        <Span.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped"  />
+                                        </Span.GestureRecognizers>
+                                    </Span>
+                                    <Span Text=". " />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
@@ -199,9 +203,10 @@
                         <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="2. Open the App:&#x0a;" FontAttributes="Bold" />
-                                    <Span
-                                        Text="Navigate to the &quot;Devices&quot; or &quot;My Meters&quot; section in the main menu." />
+                                    <Span Text="2. Credential sent from PEA:&#x0a;" FontAttributes="Bold" />
+                                    <Span Text="Look in your inbox for a mail from " />
+                                    <Span Text="support.amr." FontAttributes="Bold" TextColor="Gray" />
+                                    <Span Text="." />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>

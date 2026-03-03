@@ -32,7 +32,8 @@ namespace Pea.Meter
             TabData.IsVisible = false;
             TabCustomerProfile.IsVisible = false;
             Pea.IsVisible = false;
-
+            TouVsFlatRate.IsVisible = false;
+            
             WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, (r, m) =>
             {
                 MainThread.InvokeOnMainThreadAsync(async () =>
@@ -41,6 +42,7 @@ namespace Pea.Meter
                     TabCustomerProfile.IsVisible = true;
                     Pea.IsVisible = true;
                     Info.IsVisible = true;
+                    TouVsFlatRate.IsVisible = true;
                 });
             });
 
@@ -51,6 +53,7 @@ namespace Pea.Meter
                     TabData.IsVisible = false;
                     TabCustomerProfile.IsVisible = false;
                     Pea.IsVisible = false;
+                    TouVsFlatRate.IsVisible = false;
                     Info.IsVisible = true;
                     
                     TabView.SelectedIndex = 0;
@@ -64,8 +67,8 @@ namespace Pea.Meter
             
             if (authData is not null && authData.Username != "" && authData.Password != "")
             {
-                await storageService.Init(authData.Username);
                 await customerProfile.RefreshProfile(authData.Username, authData.Password);
+                await storageService.Init(authData.Username);
                 WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
             }
         }

@@ -106,7 +106,37 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Components\StatisticsView\" />
+	  <MauiXaml Update="View\StatisticsView\MeterReadingsHourView.xaml">
+	    <SubType>Designer</SubType>
+	  </MauiXaml>
+	  <MauiXaml Update="View\StatisticsView\StatisticsView.xaml">
+	    <SubType>Designer</SubType>
+	  </MauiXaml>
+	  <MauiXaml Update="View\StatisticsView\MeterReadingsHourChart.xaml">
+	    <SubType>Designer</SubType>
+	  </MauiXaml>
+	  <MauiXaml Update="View\Statistics\MeterReadingsDailyView.xaml">
+	    <SubType>Designer</SubType>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="View\StatisticsView\MeterReadingsHourView.xaml.cs">
+	    <DependentUpon>MeterReadingsHourView.xaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="View\StatisticsView\StatisticsView.xaml.cs">
+	    <DependentUpon>StatisticsView.xaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="View\StatisticsView\MeterReadingsHourChart.xaml.cs">
+	    <DependentUpon>MeterReadingsHourChart.xaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="View\Statistics\MeterReadingsDailyView.xaml.cs">
+	    <DependentUpon>MeterReadingsDailyView.xaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

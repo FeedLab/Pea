@@ -3,7 +3,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
-             x:Class="Pea.Meter.View.Components.MeterComparisonChart"
+             x:Class="Pea.Meter.View.Statistics.MeterReadingsHourChart"
              x:Name="MeterComparisonChartControl">
 
     <Grid BackgroundColor="White">

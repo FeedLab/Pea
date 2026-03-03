@@ -5,12 +5,13 @@ using Pea.Infrastructure.Models;
 
 namespace Pea.Meter.Services;
 
-public class StorageService(PeaDbContextFactory dbContextFactory)
+public class StorageService(PeaDbContextFactory dbContextFactory, PeaAdapter peaAdapter)
 {
     private IList<PeaMeterReading> allMeterReadingsAsync;
     private IList<PeaMeterReading> hourlyAggregated;
     private IList<PeaMeterReading> dailyAggregated;
     private IList<PeaMeterReading> weeklyAggregated;
+    private IList<PeaMeterReading> dailyReadings;
 
     public async Task Init(string userId)
     {
@@ -18,6 +19,8 @@ public class StorageService(PeaDbContextFactory dbContextFactory)
         var meterReadingRepository = new MeterReadingRepository(context);
         allMeterReadingsAsync = await meterReadingRepository.GetAllMeterReadingsAsync();
 
+        dailyReadings = await peaAdapter.ShowDailyReadings(DateTime.Today);
+        
         // Start aggregations in background without blocking
         await Task.Run(() =>
         {
@@ -140,6 +143,7 @@ public class StorageService(PeaDbContextFactory dbContextFactory)
     public IList<PeaMeterReading> GetHourlyAggregated() => hourlyAggregated;
     public IList<PeaMeterReading> GetDailyAggregated() => dailyAggregated;
     public IList<PeaMeterReading> GetWeeklyAggregated() => weeklyAggregated;
+    public IList<PeaMeterReading> GetCurrentDayMeterReadings() => dailyReadings;
 }
 
 public record HourlyAggregationCompletedMessage(IList<PeaMeterReading> Data);

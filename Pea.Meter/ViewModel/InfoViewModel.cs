@@ -122,6 +122,8 @@ public partial class InfoViewModel : ObservableObject
         AuthData = await loginHelper.SaveAuthDataAsync(authDataLogin.Username, authDataLogin.Password);
         Debug.WriteLine($"AddAccount: AuthData saved. IsCustomerProfileViewVisible={IsCustomerProfileViewVisible}");
 
+        await storageService.Init(AuthData.Username);
+        
         WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(AuthData));
     }
 

@@ -7,7 +7,9 @@ using Pea.Meter.Helper;
 using Pea.Meter.Services;
 using Pea.Meter.View;
 using Pea.Meter.ViewModel;
+using Pea.Meter.ViewModel.Statistics;
 using Syncfusion.Maui.Core.Hosting;
+using MeterReadingsHourViewModel = Pea.Meter.ViewModel.Statistics.MeterReadingsHourViewModel;
 
 namespace Pea.Meter
 {
@@ -52,9 +54,11 @@ namespace Pea.Meter
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<CustomerProfileViewModel>();
             builder.Services.AddSingleton<StatisticsViewModel>();
+            builder.Services.AddSingleton<MeterReadingsHourViewModel>();
             builder.Services.AddSingleton<PeaServicesViewModel>();
             builder.Services.AddSingleton<CustomerInfoViewModel>();
             builder.Services.AddSingleton<TouVsFlatRateViewModel>();
+            builder.Services.AddSingleton<MeterReadingsDailyViewModel>();
             
             builder.Services.AddSingletonPopup<LoginPopup, LoginPopupViewModel>();
             
