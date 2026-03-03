@@ -12,15 +12,17 @@ public class StorageService(PeaDbContextFactory dbContextFactory, PeaAdapter pea
     private IList<PeaMeterReading> dailyAggregated;
     private IList<PeaMeterReading> weeklyAggregated;
     private IList<PeaMeterReading> dailyReadings;
+    
+    public bool IsAuthenticated { get; set; }
 
-    public async Task Init(string userId)
+    public async Task Init()
     {
-        var context = dbContextFactory.CreateDbContext(userId);
+        var context = dbContextFactory.CreateDbContext();
         var meterReadingRepository = new MeterReadingRepository(context);
         allMeterReadingsAsync = await meterReadingRepository.GetAllMeterReadingsAsync();
 
         dailyReadings = await peaAdapter.ShowDailyReadings(DateTime.Today);
-        
+
         // Start aggregations in background without blocking
         await Task.Run(() =>
         {

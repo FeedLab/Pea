@@ -47,12 +47,31 @@ public class PeaAdapter
         client = new HttpClient(handler);
     }
 
-    public async Task LoginUser(string username, string password)
+    public async Task<bool> LoginUser(string username, string password)
     {
-        await Login(username, password);
-        await MainCustomer();
-        await CustomerProfile();
-        await CustomerOverviewSelect();
+        var isAuthenticated = false;
+        
+        try
+        {
+            isAuthenticated = await Login(username, password);
+        }
+        catch (Exception)
+        {
+            Debug.WriteLine("Login failed");
+
+            return false;
+        }
+
+        if (isAuthenticated)
+        {
+            await MainCustomer();
+            await CustomerProfile();
+            await CustomerOverviewSelect();
+
+            return true;
+        }
+
+        return false;
     }
 
     public async Task<bool> ValidateCredential(string username, string password)
@@ -316,7 +335,8 @@ public class PeaAdapter
         doc.LoadHtml(protectedHtml);
 
         // Parse ddlMeterNo selected value
-        var selectedOption = doc.DocumentNode.SelectSingleNode("//select[@id='ddlMeterNo']/option[@selected='selected']");
+        var selectedOption =
+            doc.DocumentNode.SelectSingleNode("//select[@id='ddlMeterNo']/option[@selected='selected']");
         if (selectedOption != null)
         {
             MeterPointId = selectedOption.GetAttributeValue("value", "");
@@ -331,7 +351,7 @@ public class PeaAdapter
         var year = selectedDate.Year.ToString();
         var month = selectedDate.Month.ToString("00");
         var day = selectedDate.Day.ToString("00");
-        
+
         var requestUri =
             $"https://www.amr.pea.co.th/AMRWEB/ShowDailyProfile.aspx?Overview=1&Custid={CustomerId}&CustCode={CustomerCode}&MeterPoint={MeterPointId}&SumMeter=0&RepDate={day}/{month}/{year}&GrphType=Line&DataType=2&kWh=1&kVarh=0&kW=0&kVar=0&Cur=0&Vol=0&PF=0&PD=0&kWh1=0&kVarh1=0&kW1=0&kVar1=0";
 
@@ -353,7 +373,7 @@ public class PeaAdapter
         html.LoadHtml(protectedHtml);
 
         // Check if HTML loaded
-     //   Console.WriteLine($"HTML length: {html.DocumentNode.InnerHtml.Length}");
+        //   Console.WriteLine($"HTML length: {html.DocumentNode.InnerHtml.Length}");
 
         // Find all divs
         // var divs = html.DocumentNode.SelectNodes("//div[@id]");

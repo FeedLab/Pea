@@ -19,21 +19,14 @@ public class PeaDbContextFactory
     }
 
     /// <summary>
-    /// Creates a DbContext for a specific user
-    /// Database will be created as Pea_{sanitizedUserId} on the SQL Server
+    /// Creates a DbContext
+    /// Database will be created as Pea on the SQL Server
     /// </summary>
-    public PeaDbContext CreateDbContext(string userId)
+    public PeaDbContext CreateDbContext()
     {
-        if (string.IsNullOrWhiteSpace(userId))
-        {
-            throw new ArgumentException("User ID cannot be null or empty", nameof(userId));
-        }
+        var databaseName = "Pea";
 
-        // Sanitize userId to create valid database name
-        var sanitizedUserId = SanitizeUserId(userId);
-        var databaseName = $"Pea-{sanitizedUserId}";
-
-        // Build connection string with user-specific database
+        // Build connection string with database
         var connectionString = BuildConnectionString(databaseName);
 
         var context = new PeaDbContext(connectionString);

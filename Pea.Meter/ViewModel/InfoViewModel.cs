@@ -71,7 +71,7 @@ public partial class InfoViewModel : ObservableObject
             IsMeterDataVisible = true;
             IsCustomerProfileViewVisible = false;
 
-            var dailyReadings = await peaAdapter.ShowDailyReadings(DateTime.Today);
+            var dailyReadings = storageService.GetCurrentDayMeterReadings();
 
             var meterDataAverageDays7 = storageService.FetchAverageQuarterlyReadingsForPeriodAsync(DateTime.Today.AddDays(-7), DateTime.Today.AddDays(-1) );
             var meterDataAverageDays30 = storageService.FetchAverageQuarterlyReadingsForPeriodAsync(DateTime.Today.AddDays(-30), DateTime.Today.AddDays(-1));
@@ -122,7 +122,7 @@ public partial class InfoViewModel : ObservableObject
         AuthData = await loginHelper.SaveAuthDataAsync(authDataLogin.Username, authDataLogin.Password);
         Debug.WriteLine($"AddAccount: AuthData saved. IsCustomerProfileViewVisible={IsCustomerProfileViewVisible}");
 
-        await storageService.Init(AuthData.Username);
+        await storageService.Init();
         
         WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(AuthData));
     }

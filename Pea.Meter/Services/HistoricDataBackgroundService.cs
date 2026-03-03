@@ -18,16 +18,19 @@ public class HistoricDataBackgroundService
     private readonly PeaAdapter peaAdapter;
     private readonly ILogger<HistoricDataBackgroundService> logger;
     private readonly PeaDbContextFactory dbContextFactory;
+    private readonly StorageService storageService;
     private CancellationTokenSource? cancellationTokenSource;
     private Task? runningTask;
     private string? currentUserId;
 
     public HistoricDataBackgroundService(PeaAdapter peaAdapter, ILogger<HistoricDataBackgroundService> logger,
-        PeaDbContextFactory dbContextFactory)
+        PeaDbContextFactory dbContextFactory,
+        StorageService storageService)
     {
         this.peaAdapter = peaAdapter;
         this.logger = logger;
         this.dbContextFactory = dbContextFactory;
+        this.storageService = storageService;
     }
 
     /// <summary>
@@ -75,8 +78,8 @@ public class HistoricDataBackgroundService
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
             startDate, currentUserId);
 
-        // Create user-specific database context and repository
-        using var dbContext = dbContextFactory.CreateDbContext(currentUserId);
+        // Create database context and repository
+        using var dbContext = dbContextFactory.CreateDbContext();
         var repository = new MeterReadingRepository(dbContext);
 
         var totalReadings = 0;
@@ -94,7 +97,8 @@ public class HistoricDataBackgroundService
             try
             {
                 // Check if data already exists for this date
-                if (await repository.ExistsForDateAsync(targetDate, currentUserId, cancellationToken))
+                var existsRecord = storageService.GetDailyAggregated().SingleOrDefault(r => r.PeriodStart.Date == targetDate);
+                if (existsRecord != null)
                 {
                     logger.LogInformation("Data already exists for {Date}, skipping",
                         targetDate.ToString("yyyy-MM-dd"));
@@ -107,7 +111,7 @@ public class HistoricDataBackgroundService
                 if (readings.Count > 0 && readings.Sum(s => s.Total) > 0)
                 {
                     // Save to database
-                    await repository.AddRangeAsync(readings, currentUserId, cancellationToken);
+                    await repository.AddRangeAsync(readings, cancellationToken);
                     totalReadings += readings.Count;
                     logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count,
                         targetDate.ToString("yyyy-MM-dd"));

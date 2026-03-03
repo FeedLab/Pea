@@ -7,6 +7,10 @@
     Title="Pea.Meter">
 
     <ShellContent
+        ContentTemplate="{DataTemplate local:LoadingPage}"
+        Route="LoadingPage" />
+
+    <ShellContent
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 

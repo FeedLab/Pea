@@ -29,7 +29,8 @@ public partial class CustomerProfileViewModel : ObservableObject
     /// <summary>
     /// ViewModel that wraps CustomerProfile model and provides UI logic
     /// </summary>
-    public CustomerProfileViewModel(PeaAdapter peaAdapter, ILoginHelper loginHelper, PeaDbContextFactory dbContextFactory)
+    public CustomerProfileViewModel(PeaAdapter peaAdapter, ILoginHelper loginHelper,
+        PeaDbContextFactory dbContextFactory)
     {
         this.peaAdapter = peaAdapter;
         this.loginHelper = loginHelper;
@@ -49,15 +50,15 @@ public partial class CustomerProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task RemoveAccount()
     {
-        using var dbContext = dbContextFactory.CreateDbContext(userName);
+        using var dbContext = dbContextFactory.CreateDbContext();
         var repository = new MeterReadingRepository(dbContext);
-        
-        await repository.DeleteAllAsync(userName);
+
+        await repository.DeleteAllAsync();
         await loginHelper.ClearAuthDataAsync();
         WeakReferenceMessenger.Default.Send(new UserLoggedOutMessage());
     }
 
-    private async Task LoadCustomerProfile(string user, string pwd)
+    private async Task<bool> LoadCustomerProfile(string user, string pwd)
     {
         try
         {
@@ -65,10 +66,17 @@ public partial class CustomerProfileViewModel : ObservableObject
             ErrorMessage = null;
 
             // Ensure login and profile data is loaded
-            await peaAdapter.LoginUser(user, pwd);
+            var isAuthenticated = await peaAdapter.LoginUser(user, pwd);
+
+            if (!isAuthenticated)
+            {
+                return false;
+            }
 
             // Get the complete customer profile model
             CustomerProfile = peaAdapter.GetCustomerProfileModel();
+
+            return true;
         }
         catch (Exception ex)
         {
@@ -78,11 +86,13 @@ public partial class CustomerProfileViewModel : ObservableObject
         {
             IsLoading = false;
         }
+
+        return false;
     }
 
 
-    public async Task RefreshProfile(string user, string pwd)
+    public async Task<bool> RefreshProfile(string user, string pwd)
     {
-        await LoadCustomerProfile(user, pwd);
+        return await LoadCustomerProfile(user, pwd);
     }
 }

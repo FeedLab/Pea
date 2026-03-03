@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Pea.Meter.View.ErrorMessagePopup">
+
+    <VerticalStackLayout Padding="20" Spacing="15" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="300">
+
+        <!-- Error Label -->
+        <Label Text="Error"
+               TextColor="DarkRed"
+               FontSize="20"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"/>
+
+        <!-- Error Message -->
+        <Label Text="{Binding ErrorMessage}"
+               TextColor="Black"
+               FontSize="16"
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               LineBreakMode="WordWrap"/>
+
+        <!-- Close Button -->
+        <buttons:SfButton Text="Close"
+                          Command="{Binding CloseCommand}"
+                          WidthRequest="100"
+                          HorizontalOptions="Center"/>
+
+    </VerticalStackLayout>
+</ContentView>

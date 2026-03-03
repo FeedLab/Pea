@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Pea.Data;
-using Pea.Data.Repositories;
-using Pea.Infrastructure.Repositories;
 using Pea.Meter.Helper;
 using Pea.Meter.Services;
 using Pea.Meter.View;
@@ -43,7 +41,7 @@ namespace Pea.Meter
             builder.Services.AddSingleton<StorageService>();
 
             // Register database services
-            builder.Services.AddSingleton<PeaDbContextFactory>(sp =>
+            builder.Services.AddSingleton<PeaDbContextFactory>(_ =>
             {
                 // SQLite connection string - uses app data directory
                 var dbPath = Path.Combine(FileSystem.AppDataDirectory, "pea.db");

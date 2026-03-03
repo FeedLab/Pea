@@ -64,13 +64,17 @@ namespace Pea.Meter
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            
-            if (authData is not null && authData.Username != "" && authData.Password != "")
+
+            if (storageService.IsAuthenticated)
             {
-                await customerProfile.RefreshProfile(authData.Username, authData.Password);
-                await storageService.Init(authData.Username);
                 WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
             }
+            // if (authData is not null && authData.Username != "" && authData.Password != "")
+            // {
+            //     await customerProfile.RefreshProfile(authData.Username, authData.Password);
+            //     await storageService.Init();
+            //     WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
+            // }
         }
     }
 }

@@ -35,28 +35,31 @@ public partial class TouVsFlatRateViewModel: ObservableObject
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
         {
             var meterReading = storageService.GetDailyAggregated();
-            
+
             var today = DateTime.Now;
             StartDate = today.AddYears(-1);
             EndDate = today;
-            
+
             // meterReading = storageService
             //     .GetDailyAggregated()
             //     .Where(w => w.PeriodStart >= StartDate && w.PeriodStart < EndDate)
             //     .ToList();
 
-            StartTimePickerMinimumDate = meterReading.First().PeriodStart.Date;
-            StartTimePickerMaximumDate = EndDate.AddDays(-1);
-
-            if (StartDate < StartTimePickerMinimumDate)
+            if (meterReading.Any())
             {
-                StartDate = StartTimePickerMinimumDate;
+                StartTimePickerMinimumDate = meterReading.First().PeriodStart.Date;
+                StartTimePickerMaximumDate = EndDate.AddDays(-1);
+
+                if (StartDate < StartTimePickerMinimumDate)
+                {
+                    StartDate = StartTimePickerMinimumDate;
+                }
+
+                EndTimePickerMinimumDate = StartDate.AddDays(1);
+                EndTimePickerMaximumDate = today;
+                await Task.Delay(5000);
+                await CalculateCostComparisons();
             }
-            
-            EndTimePickerMinimumDate = StartDate.AddDays(1);
-            EndTimePickerMaximumDate = today;
-            await Task.Delay(5000);
-            await CalculateCostComparisons();
         });
 
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this, async (r, m) =>
