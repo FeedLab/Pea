@@ -36,7 +36,7 @@ public class HistoricDataBackgroundService
     /// <summary>
     /// Triggers the background import to start
     /// </summary>
-    public void TriggerImport(string userId)
+    public void TriggerImport()
     {
         if (runningTask != null && !runningTask.IsCompleted)
         {
@@ -44,9 +44,8 @@ public class HistoricDataBackgroundService
             return;
         }
 
-        logger.LogInformation("Import triggered by user login for user: {UserId}", userId);
+        logger.LogInformation("Import triggered by user login for user: {UserId}", "N/A");
 
-        currentUserId = userId;
         cancellationTokenSource = new CancellationTokenSource();
         runningTask = Task.Run(async () => await ImportHistoricDataAsync(cancellationTokenSource.Token));
     }

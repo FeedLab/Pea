@@ -117,19 +117,48 @@ public partial class TouVsFlatRateViewModel: ObservableObject
 
 }
 
+[SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class CostCompare : ObservableObject
 {
     [ObservableProperty] private decimal touCost;
     [ObservableProperty] private decimal flatRateCost;
+    [ObservableProperty] private decimal kwUsedAtPeek;
+    [ObservableProperty] private decimal kwUsedAtOffPeek;
     [ObservableProperty] private PeaMeterReading meterReading;
 
     public CostCompare(PeaMeterReading meterReading, decimal flatRate, decimal peek, decimal offPeek)
     {
         MeterReading = meterReading;
+
+        var isWeekday = meterReading.PeriodStart.DayOfWeek >= DayOfWeek.Monday &&
+                         meterReading.PeriodStart.DayOfWeek <= DayOfWeek.Friday;
+        var isWeekend = !isWeekday;
+
         
-        TouCost += meterReading.RateA * peek;
-        TouCost += meterReading.RateB * offPeek;
-        TouCost += meterReading.RateC * offPeek;
+        if (meterReading.PeriodStart.Hour is >= 9 and < 22 && isWeekday)
+        {
+            TouCost += meterReading.Total * peek;
+            KwUsedAtPeek += meterReading.Total;
+        }
+        else if (meterReading.PeriodStart.Hour >= 22 && isWeekday)
+        {
+            TouCost += meterReading.Total * offPeek;
+            KwUsedAtOffPeek += meterReading.Total;
+        }
+        else if (meterReading.PeriodStart.Hour < 9 && isWeekday)
+        {
+            TouCost += meterReading.Total * offPeek;
+            KwUsedAtOffPeek += meterReading.Total;
+        }
+        else if (isWeekend)
+        {
+            TouCost += meterReading.Total * offPeek;
+            KwUsedAtOffPeek += meterReading.Total;
+        }
+        else
+        {
+            throw new Exception("Invalid time");
+        }
         
         FlatRateCost = meterReading.Total * flatRate;
     }

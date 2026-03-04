@@ -7,7 +7,8 @@
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:view="clr-namespace:Pea.Meter.View"
              xmlns:statistics="clr-namespace:Pea.Meter.View.Statistics"
-             x:Class="Pea.Meter.MainPage">
+             x:Class="Pea.Meter.MainPage"
+             Shell.NavBarIsVisible="False">
     <ContentPage.Resources>
         <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
             <Setter Property="Margin" Value="2" />

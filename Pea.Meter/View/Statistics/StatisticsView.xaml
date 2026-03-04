@@ -29,13 +29,13 @@
             <tabView:SfTabView.Items>
 
                 <tabView:SfTabItem Header="30 Days Summary" x:Name="Summary30Days" Background="White"
-                                   TextColor="Black" FontSize="12">
+                                   TextColor="Black" FontSize="18">
                     <tabView:SfTabItem.Content>
                         <statistics:MeterReadingsHourView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="All Readings Per Day" x:Name="AllReadingsPerDay" Background="White" TextColor="Black" FontSize="12">
+                <tabView:SfTabItem Header="All Historic Readings" x:Name="AllHistoricReadings" Background="White" TextColor="Black" FontSize="18">
                     <tabView:SfTabItem.Content>
                         <statistics:MeterReadingsDailyView />
                     </tabView:SfTabItem.Content>

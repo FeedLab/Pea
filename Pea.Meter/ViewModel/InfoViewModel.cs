@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -79,18 +80,29 @@ public partial class InfoViewModel : ObservableObject
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                MeterData = new ObservableCollection<PeaMeterReading>(dailyReadings);
-                MeterDataAverage7 = new ObservableCollection<PeaMeterReading>(meterDataAverageDays7);
-                MeterDataAverage30 = new ObservableCollection<PeaMeterReading>(meterDataAverageDays30);
+                MeterData = dailyReadings;
+                MeterDataAverage7 = meterDataAverageDays7;
+                MeterDataAverage30 = meterDataAverageDays30;
                 
+                // dailyReadings.CollectionChanged += (sender, args) =>
+                // {
+                //     switch (args.Action)
+                //     {
+                //         case NotifyCollectionChangedAction.Add:
+                //             break;
+                //         case NotifyCollectionChangedAction.Remove:
+                //             break;
+                //         case NotifyCollectionChangedAction.Replace:
+                //             break;
+                //         case NotifyCollectionChangedAction.Move:
+                //             MeterData = new ObservableCollection<PeaMeterReading>(dailyReadings);
+                //             break;
+                //         case NotifyCollectionChangedAction.Reset:
+                //             break;
+                //     }
+                // };
                 return Task.CompletedTask;
             });
-
-            // Trigger background import of historic data
-            if (m.AuthData?.Username != null)
-            {
-                historicDataBackgroundService.TriggerImport(m.AuthData.Username);
-            }
         });
 
         WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this,

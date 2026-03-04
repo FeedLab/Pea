@@ -21,7 +21,7 @@
                     HorizontalTextAlignment="Center"
                     FontAttributes="Bold"
                     FontSize="20"
-                    Text="{Binding Source={x:Reference DailyOverviewChartControl}, Path=ChartTitle}" />
+                    Text="All Meter Readings" />
             </chart:SfCartesianChart.Title>
 
             <chart:SfCartesianChart.XAxes>
