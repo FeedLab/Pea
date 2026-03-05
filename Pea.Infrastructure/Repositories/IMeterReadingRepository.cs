@@ -14,7 +14,11 @@ public interface IMeterReadingRepository
 
 
     Task<IList<PeaMeterReading>> GetAllMeterReadingsAsync(CancellationToken cancellationToken = default);
-    
+
     Task DeleteAllAsync(CancellationToken cancellationToken = default);
-    
+
+    /// <summary>
+    /// Checks if readings exist for a specific date
+    /// </summary>
+    Task<bool> HasReadingsForDateAsync(DateTime date, CancellationToken cancellationToken = default);
     }

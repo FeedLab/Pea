@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Pea_U_020027734057.db" uuid="5191e334-bb29-4d4a-8379-72d13816cdc8">
+    <data-source source="LOCAL" name="Pea.db" uuid="c85003ac-8c82-414a-bca7-503b7e8c59bc">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$USER_HOME$/AppData/Local/User Name/com.companyname.pea.meter/Data/Pea_U_020027734057.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$USER_HOME$/AppData/Local/User Name/com.companyname.pea.meter/Data/Pea.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

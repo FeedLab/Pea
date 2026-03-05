@@ -34,10 +34,6 @@ internal class MeterReadingEntity
     [Required]
     [Column(TypeName = "decimal(18,4)")]
     public decimal Total { get; set; }
-    
-    [Required]
-    [MaxLength(100)]
-    public string UserId { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

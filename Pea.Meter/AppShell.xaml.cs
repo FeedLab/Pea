@@ -39,11 +39,10 @@ namespace Pea.Meter
 
                 if (storageService.IsAuthenticated)
                 {
-                    await storageService.Init();
-
-                    // Trigger background import of historic data
-                    await Task.Delay(5000);
                     historicDataBackgroundService.TriggerImport();
+                    await Task.Delay(1000);
+
+                    await storageService.Init();
                 }
             }
         }

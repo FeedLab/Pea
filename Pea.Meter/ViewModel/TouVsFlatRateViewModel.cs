@@ -34,7 +34,7 @@ public partial class TouVsFlatRateViewModel: ObservableObject
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
         {
-            var meterReading = storageService.GetDailyAggregated();
+            var meterReading = storageService.DailyAggregated;
 
             var today = DateTime.Now;
             StartDate = today.AddYears(-1);
@@ -80,7 +80,7 @@ public partial class TouVsFlatRateViewModel: ObservableObject
         IsTouVisible = false;
         
         var meterReading = storageService
-            .GetDailyAggregated()
+            .DailyAggregated
             .Where(w => w.PeriodStart >= StartDate && w.PeriodStart < EndDate)
             .ToList();
         

@@ -51,7 +51,7 @@
         <Image
             Grid.Row="0"
             Grid.RowSpan="2"
-            Source="pea_meter.png" Aspect="Fill" Opacity="0.5" />
+            Source="solar_battery_meter.png" Aspect="Fill" Opacity="0.3" />
 
         <Grid
             Grid.Row="0"

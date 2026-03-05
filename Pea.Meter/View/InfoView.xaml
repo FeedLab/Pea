@@ -127,11 +127,20 @@
                                         IsVisibleOnLegend="True"
                                         EnableTooltip="True" />
 
+                        <chart:SplineSeries ItemsSource="{Binding MeterDataAverage1}"
+                                            Label="Average usage (Yesterday)"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="Total"
+                                            Fill="Orange"
+                                            StrokeWidth="2"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True" />
+                        
                         <chart:SplineSeries ItemsSource="{Binding MeterDataAverage7}"
                                         Label="Average usage (7 days)"
                                         XBindingPath="PeriodStart"
                                         YBindingPath="Total"
-                                        Fill="Orange"
+                                        Fill="Blue"
                                         StrokeWidth="2"
                                         IsVisibleOnLegend="True"
                                         EnableTooltip="True" />

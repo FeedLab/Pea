@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Pea.Meter.LoadingPage"
@@ -8,10 +9,13 @@
         VerticalOptions="Fill"
         HorizontalOptions="Fill"
         BackgroundColor="Black">
-        
-        <Image Source="pea_load_splash.png" Aspect="AspectFit"  />
-        
-        <ActivityIndicator IsRunning="True" HorizontalOptions="Center" VerticalOptions="Center" />
-        <!-- <Label Text="Loading..." Margin="0,20,0,0" /> -->
+
+        <Image Source="pea_load_splash.png" Aspect="AspectFit" />
+
+        <ActivityIndicator
+            IsRunning="True"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+        <Label Text="Loading..." Margin="0,20,0,0" />
     </Grid>
 </ContentPage>

@@ -53,4 +53,10 @@ public class MeterReadingRepository : IMeterReadingRepository
     {
         await context.MeterReadings.ExecuteDeleteAsync(cancellationToken);
     }
+
+    public async Task<bool> HasReadingsForDateAsync(DateTime date, CancellationToken cancellationToken = default)
+    {
+        return await context.MeterReadings
+            .AnyAsync(m => m.PeriodStart.Date == date.Date, cancellationToken);
+    }
 }

@@ -21,7 +21,6 @@ public class HistoricDataBackgroundService
     private readonly StorageService storageService;
     private CancellationTokenSource? cancellationTokenSource;
     private Task? runningTask;
-    private string? currentUserId;
 
     public HistoricDataBackgroundService(PeaAdapter peaAdapter, ILogger<HistoricDataBackgroundService> logger,
         PeaDbContextFactory dbContextFactory,
@@ -64,18 +63,12 @@ public class HistoricDataBackgroundService
 
     private async Task ImportHistoricDataAsync(CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(currentUserId))
-        {
-            logger.LogError("Cannot import data: User ID is not set");
-            return;
-        }
-
         var startDate = DateTime.Today.AddDays(-1); // Yesterday
         var maxDaysToTry = 365 * 10; // Safety limit: don't go back more than 10 years
 
         logger.LogInformation(
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
-            startDate, currentUserId);
+            startDate, "N/A");
 
         // Create database context and repository
         using var dbContext = dbContextFactory.CreateDbContext();
@@ -95,9 +88,9 @@ public class HistoricDataBackgroundService
 
             try
             {
-                // Check if data already exists for this date
-                var existsRecord = storageService.GetDailyAggregated().SingleOrDefault(r => r.PeriodStart.Date == targetDate);
-                if (existsRecord != null)
+                // Check if data already exists for this date in the database
+                var hasExistingData = await repository.HasReadingsForDateAsync(targetDate, cancellationToken);
+                if (hasExistingData)
                 {
                     logger.LogInformation("Data already exists for {Date}, skipping",
                         targetDate.ToString("yyyy-MM-dd"));

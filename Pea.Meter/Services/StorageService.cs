@@ -1,52 +1,66 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
+using Pea.Meter.Extension;
 
 namespace Pea.Meter.Services;
 
-public class StorageService
+[SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
+[SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
+public partial class StorageService : ObservableObject
 {
-    private ObservableCollection<PeaMeterReading> allMeterReadingsAsync;
-    private ObservableCollection<PeaMeterReading> hourlyAggregated;
-    private ObservableCollection<PeaMeterReading> dailyAggregated;
-    private ObservableCollection<PeaMeterReading> weeklyAggregated;
-    private ObservableCollection<PeaMeterReading> dailyReadings = [];
+    [ObservableProperty] private ObservableCollection<PeaMeterReading> allMeterReadingsAsync = [];
+    [ObservableProperty] private ObservableCollection<PeaMeterReading> hourlyAggregated = [];
+    [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyAggregated = [];
+    [ObservableProperty] private ObservableCollection<PeaMeterReading> weeklyAggregated = [];
+    [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyReadings = [];
     private readonly PeaDbContextFactory dbContextFactory;
     private readonly PeaAdapter peaAdapter;
     private CancellationTokenSource? cancellationTokenSource;
     private Timer? backgroundTimer;
-    private MeterReadingRepository meterReadingRepository;
+    private DateTime currentDay = DateTime.Now.Date;
+
+    public bool IsAuthenticated { get; set; }
 
     public StorageService(PeaDbContextFactory dbContextFactory, PeaAdapter peaAdapter)
     {
         this.dbContextFactory = dbContextFactory;
         this.peaAdapter = peaAdapter;
 
-        // WeakReferenceMessenger.Default.Register<DataImportedMessage>(this, async (r, m) =>
-        // {
-        //     ProcessAggregations();
-        // });
+        WeakReferenceMessenger.Default.Register<DateChangedMessage>(this, async (r, m) =>
+        {
+            await InitNewDay();
+        });
     }
 
-    public bool IsAuthenticated { get; set; }
 
     public async Task Init()
     {
-        var context = dbContextFactory.CreateDbContext();
-        meterReadingRepository = new MeterReadingRepository(context);
-        var allMeterReadingsList = await meterReadingRepository.GetAllMeterReadingsAsync();
-        allMeterReadingsAsync = allMeterReadingsList.ToObservableCollection();
+        await InitNewDay();
 
-        await FetchAndFilterDailyReadings();
+        StartBackgroundTask();
+    }
+
+    private async Task InitNewDay()
+    {
+        StopBackgroundTask();
+        
+        var context = dbContextFactory.CreateDbContext();
+        var meterReadingRepository = new MeterReadingRepository(context);
+        
+        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
+        AllMeterReadingsAsync.AddRange(readingsFromDb);
 
         // Start aggregations in background without blocking
-        await Task.Run(() =>
+        await Task.Run(async () =>
         {
-            ProcessAggregations();
-            WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+                await FetchAndFilterDailyReadings();
+                ProcessAggregations();
         });
 
         StartBackgroundTask();
@@ -54,19 +68,17 @@ public class StorageService
 
     private async Task FetchAndFilterDailyReadings()
     {
-        var readings = await peaAdapter.ShowDailyReadings(DateTime.Today);
+        var readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
 
-        await MainThread.InvokeOnMainThreadAsync(() =>
-        {
-            dailyReadings.Clear();
-            foreach (var reading in readings.Where(r => r.Total > 0))
-            {
-                if (reading.PeriodStart < DateTime.Now)
-                {
-                    dailyReadings.Add(reading);
-                }
-            }
-        });
+        var newReadings = GetDiffBetweenDailyAndAllReadings(readingsFromPea.ToList());
+
+//        await MainThread.InvokeOnMainThreadAsync(() =>
+//        {
+            var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
+            
+            DailyReadings.AddRange(newReadingsFiltered);
+            AllMeterReadingsAsync.AddRange(newReadingsFiltered);
+//        });
     }
 
     private void StartBackgroundTask()
@@ -78,29 +90,34 @@ public class StorageService
         {
             if (!cancellationTokenSource.Token.IsCancellationRequested)
             {
+                CheckAndSendDateChangeMessage();
+
                 await Task.Run(async () =>
                 {
-                    await FetchAndFilterDailyReadings();
-
-                    var lastDailyReadings = allMeterReadingsAsync.LastOrDefault()?.PeriodStart.Date;
-                    var currentMeterReadingDay = dailyReadings.LastOrDefault()?.PeriodStart.Date;
-
-                    if (lastDailyReadings is not null && currentMeterReadingDay is not null)
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
-                        if (currentMeterReadingDay.Value.AddDays(-1).Date > lastDailyReadings)
-                        {
-                            var allMeterReadingsList = await meterReadingRepository.GetAllMeterReadingsAsync();
-                            allMeterReadingsAsync = allMeterReadingsList.ToObservableCollection();
-
-                            await MainThread.InvokeOnMainThreadAsync(ProcessAggregations);
-                        }
-                    }
+                        await FetchAndFilterDailyReadings();
+                        ProcessAggregations();
+                    });
                 }, cancellationTokenSource.Token);
             }
         }, null, TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(15));
     }
 
-    public void StopBackgroundTask()
+    private void CheckAndSendDateChangeMessage()
+    {
+        // Check if date has changed
+        if (DateTime.Now.Date > currentDay)
+        {
+            var oldDate = currentDay;
+            var newDate = DateTime.Now.Date;
+            currentDay = newDate;
+
+            WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
+        }
+    }
+
+    private void StopBackgroundTask()
     {
         cancellationTokenSource?.Cancel();
         backgroundTimer?.Dispose();
@@ -109,8 +126,12 @@ public class StorageService
 
     private void ProcessAggregations()
     {
+        HourlyAggregated.Clear();
+        DailyAggregated.Clear();
+        WeeklyAggregated.Clear();
+        
         // Aggregate by hour
-        hourlyAggregated = allMeterReadingsAsync
+        var hourlyList = AllMeterReadingsAsync
             .GroupBy(r =>
                 new DateTime(r.PeriodStart.Year, r.PeriodStart.Month, r.PeriodStart.Day, r.PeriodStart.Hour, 0, 0))
             .Select(g => new PeaMeterReading(
@@ -120,13 +141,15 @@ public class StorageService
                 g.Sum(r => r.RateC),
                 60
             ))
-            .OrderBy(r => r.PeriodStart)
-            .ToObservableCollection();
+            .OrderBy(r => r.PeriodStart);
         
-        WeakReferenceMessenger.Default.Send(new HourlyAggregationCompletedMessage(hourlyAggregated));
+        HourlyAggregated.AddRange(hourlyList);
 
+        WeakReferenceMessenger.Default.Send(new HourlyAggregationCompletedMessage(HourlyAggregated));
+
+        
         // Aggregate by day
-        dailyAggregated = allMeterReadingsAsync
+        var dailyList = AllMeterReadingsAsync
             .GroupBy(r => r.PeriodStart.Date)
             .Select(g => new PeaMeterReading(
                 g.Key,
@@ -135,13 +158,15 @@ public class StorageService
                 g.Sum(r => r.RateC),
                 60 * 24
             ))
-            .OrderBy(r => r.PeriodStart)
-            .ToObservableCollection();
-        
-        WeakReferenceMessenger.Default.Send(new DailyAggregationCompletedMessage(dailyAggregated));
+            .OrderBy(r => r.PeriodStart);
 
+        DailyAggregated.AddRange(dailyList);
+        
+        WeakReferenceMessenger.Default.Send(new DailyAggregationCompletedMessage(DailyAggregated));
+
+        
         // Aggregate by week
-        weeklyAggregated = allMeterReadingsAsync
+        var weeklyList = AllMeterReadingsAsync
             .GroupBy(r =>
             {
                 var weekStart = r.PeriodStart.Date.AddDays(-(int)r.PeriodStart.DayOfWeek);
@@ -156,79 +181,45 @@ public class StorageService
             ))
             .OrderBy(r => r.PeriodStart)
             .ToObservableCollection();
+
+        WeeklyAggregated.AddRange(weeklyList);
         
-        WeakReferenceMessenger.Default.Send(new WeeklyAggregationCompletedMessage(weeklyAggregated));
+        WeakReferenceMessenger.Default.Send(new WeeklyAggregationCompletedMessage(WeeklyAggregated));
     }
 
-    
-    
-    public ObservableCollection<PeaMeterReading> FetchAverageQuarterlyReadingsForPeriodAsync(DateTime startDate, DateTime endDate)
+
+    // public ObservableCollection<PeaMeterReading> FetchDailyAggregatedForPeriodAsync(DateTime startDate,
+    //     DateTime endDate)
+    // {
+    //     var readings = DailyReadings
+    //         .Where(m => m.PeriodStart >= startDate && m.PeriodStart < endDate)
+    //         .ToList();
+    //
+    //     return new ObservableCollection<PeaMeterReading>(readings);
+    // }
+
+    // public ObservableCollection<PeaMeterReading> GetQuarterlyAggregated() => allMeterReadingsAsync;
+    // public ObservableCollection<PeaMeterReading> GetHourlyAggregated() => hourlyAggregated;
+    // public ObservableCollection<PeaMeterReading> GetDailyAggregated() => dailyAggregated;
+    // public ObservableCollection<PeaMeterReading> GetWeeklyAggregated() => weeklyAggregated;
+    // public ObservableCollection<PeaMeterReading> GetCurrentDayMeterReadings() => dailyReadings;
+
+    /// <summary>
+    /// Creates a diff list between all database readings and current day's live readings.
+    /// Returns readings that exist in dailyReadings but not yet in the database (allMeterReadingsAsync).
+    /// </summary>
+    private List<PeaMeterReading> GetDiffBetweenDailyAndAllReadings(List<PeaMeterReading> readings)
     {
-        var readings = GetQuarterlyAggregated()
-            .Where(m => m.PeriodStart >= startDate && m.PeriodStart < endDate)
+        // Get readings from dailyReadings that don't exist in allMeterReadingsAsync
+        // Compare by PeriodStart as unique identifier
+        var allReadingTimes = new HashSet<DateTime>(allMeterReadingsAsync.Select(r => r.PeriodStart));
+
+        var newReadings = readings
+            .Where(dr => !allReadingTimes.Contains(dr.PeriodStart))
             .ToList();
 
-        if (readings.Count == 0)
-        {
-            return new ObservableCollection<PeaMeterReading>();
-        }
-
-        // Group by time of day (hour and minute) and calculate average for each 15-minute slot
-        var averageReadings = readings
-            .GroupBy(r => new { r.PeriodStart.Hour, r.PeriodStart.Minute })
-            .Select(g => new PeaMeterReading(
-                new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, g.Key.Hour, g.Key.Minute,
-                    0),
-                g.Average(r => r.RateA),
-                g.Average(r => r.RateB),
-                g.Average(r => r.RateC)
-            ))
-            .OrderBy(r => r.PeriodStart)
-            .ToList();
-
-        return averageReadings.ToObservableCollection();
+        return newReadings;
     }
-
-    public ObservableCollection<PeaMeterReading> FetchAverageHourlyReadingsForPeriodAsync(DateTime startDate, DateTime endDate)
-    {
-        var readings = GetHourlyAggregated()
-            .Where(m => m.PeriodStart >= startDate && m.PeriodStart < endDate)
-            .ToList();
-
-        if (readings.Count == 0)
-        {
-            return new ObservableCollection<PeaMeterReading>();
-        }
-
-        // Group by time of day (hour and minute) and calculate average for each 15-minute slot
-        var averageReadings = readings
-            .GroupBy(r => new { r.PeriodStart.Hour })
-            .Select(g => new PeaMeterReading(
-                new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, g.Key.Hour, 0, 0),
-                g.Average(r => r.RateA),
-                g.Average(r => r.RateB),
-                g.Average(r => r.RateC)
-            ))
-            .OrderBy(r => r.PeriodStart)
-            .ToList();
-
-        return averageReadings.ToObservableCollection();
-    }
-
-    public ObservableCollection<PeaMeterReading> FetchDailyAggregatedForPeriodAsync(DateTime startDate, DateTime endDate)
-    {
-        var readings = GetDailyAggregated()
-            .Where(m => m.PeriodStart >= startDate && m.PeriodStart < endDate)
-            .ToList();
-
-        return readings.ToObservableCollection();
-    }
-
-    public ObservableCollection<PeaMeterReading> GetQuarterlyAggregated() => allMeterReadingsAsync;
-    public ObservableCollection<PeaMeterReading> GetHourlyAggregated() => hourlyAggregated;
-    public ObservableCollection<PeaMeterReading> GetDailyAggregated() => dailyAggregated;
-    public ObservableCollection<PeaMeterReading> GetWeeklyAggregated() => weeklyAggregated;
-    public ObservableCollection<PeaMeterReading> GetCurrentDayMeterReadings() => dailyReadings;
 }
 
 public record HourlyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);
@@ -238,3 +229,5 @@ public record DailyAggregationCompletedMessage(ObservableCollection<PeaMeterRead
 public record WeeklyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);
 
 public record AllAggregationsCompletedMessage();
+
+public record DateChangedMessage(DateTime OldDate, DateTime NewDate);

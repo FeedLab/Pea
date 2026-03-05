@@ -7,7 +7,7 @@ namespace Pea.Data;
 /// </summary>
 public class PeaDbContextFactory
 {
-    private readonly string _serverConnectionString;
+    private readonly string serverConnectionString;
 
     /// <summary>
     /// Creates a factory with a base SQL Server connection string
@@ -15,7 +15,7 @@ public class PeaDbContextFactory
     /// <param name="serverConnectionString">Base connection string (without database name)</param>
     public PeaDbContextFactory(string serverConnectionString)
     {
-        _serverConnectionString = serverConnectionString;
+        this.serverConnectionString = serverConnectionString;
     }
 
     /// <summary>
@@ -86,24 +86,24 @@ public class PeaDbContextFactory
     private string BuildConnectionString(string databaseName)
     {
         // For SQLite, modify the file path to include the user-specific database
-        if (_serverConnectionString.Contains("Data Source=", StringComparison.OrdinalIgnoreCase))
+        if (serverConnectionString.Contains("Data Source=", StringComparison.OrdinalIgnoreCase))
         {
             // Extract the base path and append user-specific database name
-            var dataSourceIndex = _serverConnectionString.IndexOf("Data Source=", StringComparison.OrdinalIgnoreCase);
+            var dataSourceIndex = serverConnectionString.IndexOf("Data Source=", StringComparison.OrdinalIgnoreCase);
             var dataSourceStart = dataSourceIndex + "Data Source=".Length;
-            var semicolonIndex = _serverConnectionString.IndexOf(';', dataSourceStart);
+            var semicolonIndex = serverConnectionString.IndexOf(';', dataSourceStart);
 
             string basePath;
             string remainingConnectionString = "";
 
             if (semicolonIndex > 0)
             {
-                basePath = _serverConnectionString.Substring(dataSourceStart, semicolonIndex - dataSourceStart);
-                remainingConnectionString = _serverConnectionString.Substring(semicolonIndex);
+                basePath = serverConnectionString.Substring(dataSourceStart, semicolonIndex - dataSourceStart);
+                remainingConnectionString = serverConnectionString.Substring(semicolonIndex);
             }
             else
             {
-                basePath = _serverConnectionString.Substring(dataSourceStart);
+                basePath = serverConnectionString.Substring(dataSourceStart);
             }
 
             // Get directory and modify filename to include database name
@@ -114,6 +114,6 @@ public class PeaDbContextFactory
         }
 
         // Fallback for other connection string formats
-        return $"{_serverConnectionString};Database={databaseName}";
+        return $"{serverConnectionString};Database={databaseName}";
     }
 }

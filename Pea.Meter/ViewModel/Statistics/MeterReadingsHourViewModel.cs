@@ -1,12 +1,17 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using ObservableCollections;
 using Pea.Infrastructure.Models;
+using Pea.Meter.Extension;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
 
 namespace Pea.Meter.ViewModel.Statistics;
 
+[SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator",
+    "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class MeterReadingsHourViewModel : ObservableObject
 {
     private readonly PeaAdapter peaAdapter;
@@ -22,25 +27,22 @@ public partial class MeterReadingsHourViewModel : ObservableObject
     {
         this.peaAdapter = peaAdapter;
         this.storageService = storageService;
-        
-        WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
-        {
-            await LoadDataAsync();
-        });
+
+        WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) => { await LoadDataAsync(); });
     }
 
     private async Task LoadDataAsync()
     {
-        var dailyReadings = storageService.GetCurrentDayMeterReadings();
+        var dailyReadings = storageService.DailyReadings;
 
         var today = DateTime.Today;
         var timeStart1 = today.AddDays(-1);
         var timeStart7 = today.AddDays(-7);
         var timeStart30 = today.AddDays(-30);
 
-        var meterDataAverageDays1 = storageService.FetchAverageHourlyReadingsForPeriodAsync(timeStart1, today);
-        var meterDataAverageDays7 = storageService.FetchAverageHourlyReadingsForPeriodAsync(timeStart7, today);
-        var meterDataAverageDays30 = storageService.FetchAverageHourlyReadingsForPeriodAsync(timeStart30, today);
+        var meterDataAverageDays1 = storageService.HourlyAggregated.AverageByHour().FilterByPeriod(timeStart1, today);
+        var meterDataAverageDays7 = storageService.HourlyAggregated.AverageByHour().FilterByPeriod(timeStart7, today);
+        var meterDataAverageDays30 = storageService.HourlyAggregated.AverageByHour().FilterByPeriod(timeStart30, today);
 
         var hourlyTotals = dailyReadings
             .GroupBy(meterReading => new DateTime(meterReading.PeriodStart.Year, meterReading.PeriodStart.Month,
@@ -61,7 +63,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
             MeterDataAverage1 = new ObservableCollection<PeaMeterReading>(meterDataAverageDays1);
             MeterDataAverage7 = new ObservableCollection<PeaMeterReading>(meterDataAverageDays7);
             MeterDataAverage30 = new ObservableCollection<PeaMeterReading>(meterDataAverageDays30);
-            
+
             return Task.CompletedTask;
         }));
     }
