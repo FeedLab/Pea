@@ -1,4 +1,5 @@
-﻿using Pea.Infrastructure.Models;
+﻿using Microsoft.Extensions.Logging;
+using Pea.Infrastructure.Models;
 
 namespace Pea.Meter.Services;
 
@@ -7,10 +8,12 @@ namespace Pea.Meter.Services;
 /// </summary>
 public class HistoricDataImportService
 {
+    private readonly ILogger<HistoricDataImportService> logger;
     private readonly PeaAdapter _peaAdapter;
 
-    public HistoricDataImportService(PeaAdapter peaAdapter)
+    public HistoricDataImportService(ILogger<HistoricDataImportService> logger, PeaAdapter peaAdapter)
     {
+        this.logger = logger;
         _peaAdapter = peaAdapter;
     }
 
@@ -24,7 +27,7 @@ public class HistoricDataImportService
         var historicData = new Dictionary<DateTime, IList<PeaMeterReading>>();
         var startDate = DateTime.Today.AddDays(-1); // Yesterday
 
-        Console.WriteLine($"Starting historic data import for {numberOfDays} days from {startDate:yyyy-MM-dd}");
+        logger.LogDebug($"Starting historic data import for {numberOfDays} days from {startDate:yyyy-MM-dd}");
 
         for (int i = 0; i < numberOfDays; i++)
         {
@@ -32,15 +35,15 @@ public class HistoricDataImportService
             
             try
             {
-                Console.WriteLine($"Fetching data for {targetDate:yyyy-MM-dd}...");
+                logger.LogDebug($"Fetching data for {targetDate:yyyy-MM-dd}...");
                 var readings = await _peaAdapter.ShowDailyReadings(targetDate);
                 
                 historicData[targetDate] = readings;
-                Console.WriteLine($"Successfully imported {readings.Count} readings for {targetDate:yyyy-MM-dd}");
+                logger.LogDebug($"Successfully imported {readings.Count} readings for {targetDate:yyyy-MM-dd}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error importing data for {targetDate:yyyy-MM-dd}: {ex.Message}");
+                logger.LogDebug($"Error importing data for {targetDate:yyyy-MM-dd}: {ex.Message}");
             }
         }
 
@@ -59,21 +62,21 @@ public class HistoricDataImportService
         var currentDate = startDate.Date;
         var finalDate = endDate.Date;
 
-        Console.WriteLine($"Starting historic data import from {startDate:yyyy-MM-dd} to {endDate:yyyy-MM-dd}");
+        logger.LogDebug($"Starting historic data import from {startDate:yyyy-MM-dd} to {endDate:yyyy-MM-dd}");
 
         while (currentDate <= finalDate)
         {
             try
             {
-                Console.WriteLine($"Fetching data for {currentDate:yyyy-MM-dd}...");
+                logger.LogDebug($"Fetching data for {currentDate:yyyy-MM-dd}...");
                 var readings = await _peaAdapter.ShowDailyReadings(currentDate);
                 
                 historicData[currentDate] = readings;
-                Console.WriteLine($"Successfully imported {readings.Count} readings for {currentDate:yyyy-MM-dd}");
+                logger.LogDebug($"Successfully imported {readings.Count} readings for {currentDate:yyyy-MM-dd}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error importing data for {currentDate:yyyy-MM-dd}: {ex.Message}");
+                logger.LogDebug($"Error importing data for {currentDate:yyyy-MM-dd}: {ex.Message}");
             }
 
             currentDate = currentDate.AddDays(1);

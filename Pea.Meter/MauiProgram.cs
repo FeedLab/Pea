@@ -6,6 +6,7 @@ using Pea.Meter.Services;
 using Pea.Meter.View;
 using Pea.Meter.ViewModel;
 using Pea.Meter.ViewModel.Statistics;
+using Serilog;
 using Syncfusion.Maui.Core.Hosting;
 using MeterReadingsHourViewModel = Pea.Meter.ViewModel.Statistics.MeterReadingsHourViewModel;
 
@@ -16,7 +17,15 @@ namespace Pea.Meter
         public static MauiApp CreateMauiApp()
         {
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1JGaF1cWGhIfEx1RHxQdld5ZFRHallYTnNWUj0eQnxTdENjW31ecnRRT2BYUEZxXUleYQ==");
-            
+
+            // Configure Serilog
+            var logPath = Path.Combine(FileSystem.AppDataDirectory, "logs", "pea.log");
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+                .CreateLogger();
+
             var builder = MauiApp.CreateBuilder();
 
             builder
@@ -30,9 +39,10 @@ namespace Pea.Meter
                     fonts.AddFont("Font Awesome 7 Free-Solid-900.otf", "FontSolid");
                     fonts.AddFont("Font Awesome 7 Free-Regular-400.otf", "FontRegular");
                     fonts.AddFont("Roboto-Regular.ttf", "Roboto-Regular");
-                })
-                .Logging.AddConsole();
-            ;
+                });
+
+            // Add Serilog to the logging pipeline
+            builder.Logging.AddSerilog(dispose: true);
 
             // Register services
             builder.Services.AddSingleton<IEncryptionHelper, EncryptionHelper>();

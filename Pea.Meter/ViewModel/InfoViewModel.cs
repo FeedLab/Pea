@@ -381,27 +381,27 @@ public partial class InfoViewModel : ObservableObject
     {
         try
         {
-            Console.WriteLine("Starting historic data import...");
+            logger.LogDebug("Starting historic data import...");
 
             // Import data for 7 days starting from yesterday
             var historicData = await historicDataImportService.ImportHistoricDataAsync(7);
 
-            Console.WriteLine($"Import completed. Total days imported: {historicData.Count}");
+            logger.LogDebug($"Import completed. Total days imported: {historicData.Count}");
 
             // Optionally display the total readings imported
             var totalReadings = historicData.Sum(kvp => kvp.Value.Count);
-            Console.WriteLine($"Total readings imported: {totalReadings}");
+            logger.LogDebug($"Total readings imported: {totalReadings}");
 
             // You can update the UI or store the data as needed
             // For now, just logging the results
             foreach (var dateData in historicData.OrderByDescending(x => x.Key))
             {
-                Console.WriteLine($"{dateData.Key:yyyy-MM-dd}: {dateData.Value.Count} readings");
+                logger.LogDebug($"{dateData.Key:yyyy-MM-dd}: {dateData.Value.Count} readings");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error during historic data import: {ex.Message}");
+            logger.LogDebug($"Error during historic data import: {ex.Message}");
         }
     }
 }
