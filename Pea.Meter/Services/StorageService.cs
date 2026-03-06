@@ -38,6 +38,24 @@ public partial class StorageService : ObservableObject
         this.logger = logger;
         this.dbContextFactory = dbContextFactory;
         this.peaAdapter = peaAdapter;
+
+        WeakReferenceMessenger.Default.Register<DataImportedMessage>(this, async void (r, m) =>
+        {
+            try
+            {
+                var context = dbContextFactory.CreateDbContext();
+                var meterReadingRepository = new MeterReadingRepository(context);
+
+                var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
+                AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
+
+                await MainThread.InvokeOnMainThreadAsync(() => { ProcessAggregations(); });
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in {Method}: {Message}", nameof(StorageService), e.Message);
+            }
+        });
     }
 
 
@@ -45,7 +63,7 @@ public partial class StorageService : ObservableObject
     {
         await CheckForNewDayBackgroundTask();
 
-        StartBackgroundTask();
+        //StartBackgroundTask();
     }
 
     private Task CheckForNewDayBackgroundTask()
@@ -70,7 +88,11 @@ public partial class StorageService : ObservableObject
                     var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
                     AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
 
-                    await MainThread.InvokeOnMainThreadAsync(() => { ProcessAggregations(); });
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        ProcessAggregations();
+                        WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+                    });
 
                     await InitNewDay(oldDate, newDate);
 
@@ -89,14 +111,16 @@ public partial class StorageService : ObservableObject
 
     private async Task InitNewDay(DateTime oldDate, DateTime newDate)
     {
-        logger.LogInformation("InitNewDay: {OldDate}, {NewDate}",oldDate, newDate);
+        logger.LogInformation("InitNewDay: {OldDate}, {NewDate}", oldDate, newDate);
+
         var context = dbContextFactory.CreateDbContext();
         var meterReadingRepository = new MeterReadingRepository(context);
 
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
         AllMeterReadingsAsync.AddRange(readingsFromDb);
 
-        await FetchAndFilterDailyReadings();
+        DailyReadings.Clear();
+        // await FetchAndFilterDailyReadings();
 
         WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
     }
@@ -105,20 +129,20 @@ public partial class StorageService : ObservableObject
     {
         logger.LogInformation("Fetching daily readings from Pea Adapter");
 
-        var readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
-        var newReadings = GetDiffBetweenDailyAndAllReadings(readingsFromPea.ToList());
-        var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
-
-        logger.LogInformation($"Found {newReadingsFiltered.Count} new readings");
-
-        if (newReadingsFiltered.Count > 0)
+        await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            await MainThread.InvokeOnMainThreadAsync(() =>
+            var readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
+            var newReadings = GetDiffBetweenDailyAndAllReadings(readingsFromPea.ToList());
+            var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
+
+            logger.LogInformation($"Found {newReadingsFiltered.Count} new readings");
+
+            if (newReadingsFiltered.Count > 0)
             {
                 DailyReadings.AddRange(newReadingsFiltered);
                 AllMeterReadingsAsync.AddRange(newReadingsFiltered);
-            });
-        }
+            }
+        });
     }
 
     private void StartBackgroundTask()
@@ -132,7 +156,17 @@ public partial class StorageService : ObservableObject
             {
                 if (!cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    await Task.Run(async () => { await FetchAndFilterDailyReadings(); }, cancellationTokenSource.Token);
+                    await Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await FetchAndFilterDailyReadings();
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogError(e, "Error in background task: {Message}", e.Message);
+                        }
+                    }, cancellationTokenSource.Token);
                 }
             }
             catch (Exception e)
@@ -210,7 +244,6 @@ public partial class StorageService : ObservableObject
         WeeklyAggregated.AddRange(weeklyList);
 
         WeakReferenceMessenger.Default.Send(new WeeklyAggregationCompletedMessage(WeeklyAggregated));
-        WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
     }
 
 

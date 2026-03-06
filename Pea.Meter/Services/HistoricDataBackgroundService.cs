@@ -35,16 +35,30 @@ public class HistoricDataBackgroundService
     /// </summary>
     public void TriggerImport()
     {
-        if (runningTask != null && !runningTask.IsCompleted)
-        {
-            logger.LogWarning("Import is already running, ignoring trigger request.");
-            return;
-        }
 
-        logger.LogInformation("Import triggered by user login for user: {UserId}", "N/A");
 
         cancellationTokenSource = new CancellationTokenSource();
-        runningTask = Task.Run(async () => await ImportHistoricDataAsync(cancellationTokenSource.Token));
+        
+        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (r, m) =>
+        {
+            try
+            {
+                if (runningTask != null && !runningTask.IsCompleted)
+                {
+                    logger.LogWarning("Import is already running, ignoring trigger request.");
+                    return;
+                }
+                
+                logger.LogInformation("Import triggered by user login for user: {UserId}", "N/A");
+
+                runningTask = Task.Run(async () => await ImportHistoricDataAsync(cancellationTokenSource.Token));
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in {Method}: {Message}", nameof(TriggerImport), e.Message);
+            }
+        });
+        
     }
 
     /// <summary>
@@ -61,12 +75,13 @@ public class HistoricDataBackgroundService
 
     private async Task ImportHistoricDataAsync(CancellationToken cancellationToken)
     {
-        await Task.Delay(5000, cancellationToken);
+        // await Task.Delay(5000, cancellationToken);
 
-        var peaMeterReading = storageService.DailyAggregated.FirstOrDefault();
-        var startDate = peaMeterReading?.PeriodStart ?? new DateTime().Date.AddDays(-1) ; // Yesterday
-        var maxDaysToTry = 365 * 5; // Safety limit: don't go back more than 5 years
-        
+        // var peaMeterReading = storageService.DailyAggregated.FirstOrDefault();
+        var startDate = DateTime.Today.AddDays(-1);
+        // var startDate = peaMeterReading?.PeriodStart ?? new DateTime().Date.AddDays(-1) ; // Yesterday
+//        var maxDaysToTry = 365 * 5; // Safety limit: don't go back more than 5 years
+        var maxDaysToTry = 25;
         logger.LogInformation(
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
             startDate, "N/A");
