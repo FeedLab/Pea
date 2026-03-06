@@ -5,12 +5,8 @@ using CommunityToolkit.Maui;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Extensions.Options;
-using ObservableCollections;
-using Pea.Data;
-using Pea.Data.Repositories;
+using Microsoft.Extensions.Logging;
 using Pea.Infrastructure.Models;
-using Pea.Infrastructure.Repositories;
 using Pea.Meter.Extension;
 using Pea.Meter.Helper;
 using Pea.Meter.Models;
@@ -22,6 +18,7 @@ namespace Pea.Meter.ViewModel;
 [SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class InfoViewModel : ObservableObject
 {
+    private readonly ILogger<InfoViewModel> logger;
     private readonly CustomerProfileViewModel customerProfile;
     private readonly ILoginHelper loginHelper;
     private readonly IPopupService popupService;
@@ -43,11 +40,12 @@ public partial class InfoViewModel : ObservableObject
     [ObservableProperty] private DateTime dateMeterData = DateTime.Today;
     private AuthData? authDataLogin;
 
-    public InfoViewModel(CustomerProfileViewModel customerProfile, AuthDataOptions authDataOptions,
+    public InfoViewModel(ILogger<InfoViewModel> logger, CustomerProfileViewModel customerProfile, AuthDataOptions authDataOptions,
         ILoginHelper loginHelper, IPopupService popupService,
         HistoricDataImportService historicDataImportService,
         StorageService storageService)
     {
+        this.logger = logger;
         this.customerProfile = customerProfile;
         this.loginHelper = loginHelper;
         this.popupService = popupService;
@@ -63,6 +61,57 @@ public partial class InfoViewModel : ObservableObject
         OnAuthDataChanged(AuthData);
         Debug.WriteLine($"After OnAuthDataChanged: IsCustomerProfileViewVisible={IsCustomerProfileViewVisible}");
 
+        CreateLoggedInSubscription();
+        CreateLoggedOutSubscription();
+        CreateAllAggregationsCompletedSubscription();
+        CreateNewDaySubscription();
+    }
+
+    private void CreateNewDaySubscription()
+    {
+        WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
+            (r, m) =>
+            {
+                MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    try
+                    {
+                        DateMeterData = m.NewDate;
+                        await PopulateChartData();
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
+                    }
+                    
+                    return Task.CompletedTask;
+                });
+            });
+    }
+
+    private void CreateLoggedOutSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this,
+            (r, m) =>
+            {
+                MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    IsAddMeterVisible = true;
+                    IsMeterDataVisible = false;
+                    IsCustomerProfileViewVisible = true;
+                    
+                    storageService.DailyReadings.CollectionChanged -= DailyPeaMeterDataCollectionChanged;
+                    storageService.AllMeterReadingsAsync.CollectionChanged -= MeterDataAverage1OnCollectionChanged;
+                    storageService.AllMeterReadingsAsync.CollectionChanged -= MeterDataAverage7OnCollectionChanged;
+                    storageService.AllMeterReadingsAsync.CollectionChanged -= MeterDataAverage30OnCollectionChanged;
+                    
+                    return Task.CompletedTask;
+                });
+            });
+    }
+
+    private void CreateLoggedInSubscription()
+    {
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
         {
             IsAddMeterVisible = false;
@@ -70,72 +119,64 @@ public partial class InfoViewModel : ObservableObject
             IsCustomerProfileViewVisible = false;
 
             storageService.DailyReadings.CollectionChanged += DailyPeaMeterDataCollectionChanged;
-            storageService.DailyReadings.CollectionChanged += MeterDataAverage1OnCollectionChanged;
-            storageService.DailyReadings.CollectionChanged += MeterDataAverage7OnCollectionChanged;
-            storageService.DailyReadings.CollectionChanged += MeterDataAverage30OnCollectionChanged;
+            storageService.AllMeterReadingsAsync.CollectionChanged += MeterDataAverage1OnCollectionChanged;
+            storageService.AllMeterReadingsAsync.CollectionChanged += MeterDataAverage7OnCollectionChanged;
+            storageService.AllMeterReadingsAsync.CollectionChanged += MeterDataAverage30OnCollectionChanged;
         });
-
-        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async (r, m) =>
-        {
-            var today = DateTime.Today;
-            var timeStart1 = today.AddDays(-1);
-            var timeStart7 = today.AddDays(-7);
-            var timeStart30 = today.AddDays(-30);
-
-            var meterDataAverageDays0 = storageService.DailyReadings;
-            var meterDataAverageDays1 = storageService.AllMeterReadingsAsync.FilterByPeriod(timeStart1, today).AverageBy15MinutesPeriod();
-            var meterDataAverageDays7 = storageService.AllMeterReadingsAsync.FilterByPeriod(timeStart7, today).AverageBy15MinutesPeriod();
-            var meterDataAverageDays30 = storageService.AllMeterReadingsAsync.FilterByPeriod(timeStart30, today).AverageBy15MinutesPeriod();
-
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                MeterData.Clear();
-                MeterDataAverage1.Clear();
-                MeterDataAverage7.Clear();
-                MeterDataAverage30.Clear();
-
-                MeterData.AddRange(meterDataAverageDays0);
-                MeterDataAverage1.AddRange(meterDataAverageDays1);
-                MeterDataAverage7.AddRange(meterDataAverageDays7);
-                MeterDataAverage30.AddRange(meterDataAverageDays30);
-            });
-
-            // var meterDataAverageDays7 = storageService.FetchAverageQuarterlyReadingsForPeriodAsync(DateTime.Today.AddDays(-7), DateTime.Today.AddDays(-1) );
-            // var meterDataAverageDays30 = storageService.FetchAverageQuarterlyReadingsForPeriodAsync(DateTime.Today.AddDays(-30), DateTime.Today.AddDays(-1));
-
-
-            // await MainThread.InvokeOnMainThreadAsync(() =>
-            // {
-            //     MeterData = dailyReadings;
-            //     MeterDataAverage7 = meterDataAverageDays7;
-            //     MeterDataAverage30 = meterDataAverageDays30;
-            //
-            //     return Task.CompletedTask;
-            // });
-        });
-
-        WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this,
-            (r, m) =>
-            {
-                MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    IsAddMeterVisible = true;
-                    IsMeterDataVisible = false;
-                    IsCustomerProfileViewVisible = true;
-                });
-            });
     }
 
+    private void CreateAllAggregationsCompletedSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (r, m) =>
+        {
+            try
+            {
+                await PopulateChartData();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateAllAggregationsCompletedSubscription), e.Message);
+            }
+        });
+    }
+    
+    private async Task PopulateChartData()
+    {
+        var today = DateTime.Today;
+        var timeStart1 = today.AddDays(-1);
+        var timeStart7 = today.AddDays(-7);
+        var timeStart30 = today.AddDays(-30);
+
+        var meterDataAverageDays0 = storageService.DailyReadings;
+        var meterDataAverageDays1 = storageService.AllMeterReadingsAsync.FilterByPeriod(timeStart1, today).AverageBy15MinutesPeriod();
+        var meterDataAverageDays7 = storageService.AllMeterReadingsAsync.FilterByPeriod(timeStart7, today).AverageBy15MinutesPeriod();
+        var meterDataAverageDays30 = storageService.AllMeterReadingsAsync.FilterByPeriod(timeStart30, today).AverageBy15MinutesPeriod();
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            MeterData.Clear();
+            MeterDataAverage1.Clear();
+            MeterDataAverage7.Clear();
+            MeterDataAverage30.Clear();
+
+            MeterData.AddRange(meterDataAverageDays0);
+            MeterDataAverage1.AddRange(meterDataAverageDays1);
+            MeterDataAverage7.AddRange(meterDataAverageDays7);
+            MeterDataAverage30.AddRange(meterDataAverageDays30);
+        });
+    }
+    
     private void DailyPeaMeterDataCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems as List<PeaMeterReading> ?? [];
-                MeterData.AddRange(newItems);
+                var newItems = e.NewItems?.Cast<PeaMeterReading>().ToList() ?? [];
+                MeterData.Clear();
+                MeterData.AddRange(storageService.DailyReadings);
                 break;
             case NotifyCollectionChangedAction.Remove:
-                foreach (PeaMeterReading item in e.OldItems)
+                foreach (var item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
                 {
                     MeterData.Remove(item);
                 }
@@ -170,12 +211,12 @@ public partial class InfoViewModel : ObservableObject
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems as List<PeaMeterReading> ?? [];
+                var newItems = e.NewItems?.Cast<PeaMeterReading>().ToList() ?? [];
                 var filteredData = newItems.Where(x => x.PeriodStart >= data30Day && x.PeriodStart < dataYesterday);
                 MeterDataAverage30.AddRange(filteredData);
                 break;
             case NotifyCollectionChangedAction.Remove:
-                foreach (PeaMeterReading item in e.OldItems)
+                foreach (var item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
                 {
                     MeterDataAverage30.Remove(item);
                 }
@@ -210,12 +251,12 @@ public partial class InfoViewModel : ObservableObject
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems as List<PeaMeterReading> ?? [];
+                var newItems = e.NewItems?.Cast<PeaMeterReading>().ToList() ?? [];
                 var filteredData = newItems.Where(x => x.PeriodStart >= data30Day && x.PeriodStart < dataYesterday);
                 MeterDataAverage30.AddRange(filteredData);
                 break;
             case NotifyCollectionChangedAction.Remove:
-                foreach (PeaMeterReading item in e.OldItems)
+                foreach (var item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
                 {
                     MeterDataAverage30.Remove(item);
                 }
@@ -250,12 +291,12 @@ public partial class InfoViewModel : ObservableObject
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems as List<PeaMeterReading> ?? [];
+                var newItems = e.NewItems?.Cast<PeaMeterReading>().ToList() ?? [];
                 var filteredData = newItems.Where(x => x.PeriodStart >= data7Day && x.PeriodStart < dataYesterday);
                 MeterDataAverage7.AddRange(filteredData);
                 break;
             case NotifyCollectionChangedAction.Remove:
-                foreach (PeaMeterReading item in e.OldItems)
+                foreach (var item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
                 {
                     MeterDataAverage7.Remove(item);
                 }

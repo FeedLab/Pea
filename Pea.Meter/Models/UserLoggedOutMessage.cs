@@ -1,6 +1,4 @@
-﻿using Pea.Meter.Helper;
-
-namespace Pea.Meter.Models;
+﻿namespace Pea.Meter.Models;
 
 public class UserLoggedOutMessage()
 {

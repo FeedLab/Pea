@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using ObservableCollections;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Extension;
 using Pea.Meter.Models;

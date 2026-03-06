@@ -3,6 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
@@ -11,7 +13,8 @@ using Pea.Meter.Extension;
 namespace Pea.Meter.Services;
 
 [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
-[SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
+[SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator",
+    "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class StorageService : ObservableObject
 {
     [ObservableProperty] private ObservableCollection<PeaMeterReading> allMeterReadingsAsync = [];
@@ -19,66 +22,103 @@ public partial class StorageService : ObservableObject
     [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> weeklyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyReadings = [];
+    private readonly ILogger logger;
     private readonly PeaDbContextFactory dbContextFactory;
     private readonly PeaAdapter peaAdapter;
     private CancellationTokenSource? cancellationTokenSource;
     private Timer? backgroundTimer;
-    private DateTime currentDay = DateTime.Now.Date;
+    private DateTime currentDay = DateTime.MinValue; // MinValue - Will trigger a new day on the first run
+    private Timer backgroundTimerNewDay;
+    private CancellationTokenSource newDayCancellationTokenSource;
 
     public bool IsAuthenticated { get; set; }
 
-    public StorageService(PeaDbContextFactory dbContextFactory, PeaAdapter peaAdapter)
+    public StorageService(ILogger<StorageService> logger, PeaDbContextFactory dbContextFactory, PeaAdapter peaAdapter)
     {
+        this.logger = logger;
         this.dbContextFactory = dbContextFactory;
         this.peaAdapter = peaAdapter;
-
-        WeakReferenceMessenger.Default.Register<DateChangedMessage>(this, async (r, m) =>
-        {
-            await InitNewDay();
-        });
     }
 
 
     public async Task Init()
     {
-        await InitNewDay();
+        await CheckForNewDayBackgroundTask();
 
         StartBackgroundTask();
     }
 
-    private async Task InitNewDay()
+    private Task CheckForNewDayBackgroundTask()
     {
-        StopBackgroundTask();
-        
         var context = dbContextFactory.CreateDbContext();
         var meterReadingRepository = new MeterReadingRepository(context);
-        
+
+        newDayCancellationTokenSource = new CancellationTokenSource();
+
+        backgroundTimerNewDay = new Timer(async void (_) =>
+        {
+            try
+            {
+                if (DateTime.Now.Date > currentDay)
+                {
+                    var oldDate = currentDay;
+                    var newDate = DateTime.Now.Date;
+                    currentDay = newDate;
+
+                    StopBackgroundTask();
+
+                    var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
+                    AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
+
+                    await MainThread.InvokeOnMainThreadAsync(() => { ProcessAggregations(); });
+
+                    await InitNewDay(oldDate, newDate);
+
+                    StartBackgroundTask();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in background task ({backgroundTaskName}): {Message}",
+                    nameof(CheckForNewDayBackgroundTask), e.Message);
+            }
+        }, null, TimeSpan.FromMinutes(0), TimeSpan.FromMinutes(1));
+
+        return Task.CompletedTask;
+    }
+
+    private async Task InitNewDay(DateTime oldDate, DateTime newDate)
+    {
+        logger.LogInformation("InitNewDay: {OldDate}, {NewDate}",oldDate, newDate);
+        var context = dbContextFactory.CreateDbContext();
+        var meterReadingRepository = new MeterReadingRepository(context);
+
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
         AllMeterReadingsAsync.AddRange(readingsFromDb);
 
-        // Start aggregations in background without blocking
-        await Task.Run(async () =>
-        {
-                await FetchAndFilterDailyReadings();
-                ProcessAggregations();
-        });
+        await FetchAndFilterDailyReadings();
 
-        StartBackgroundTask();
+        WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
     }
 
     private async Task FetchAndFilterDailyReadings()
     {
+        logger.LogInformation("Fetching daily readings from Pea Adapter");
+
         var readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
-
         var newReadings = GetDiffBetweenDailyAndAllReadings(readingsFromPea.ToList());
+        var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
 
-//        await MainThread.InvokeOnMainThreadAsync(() =>
-//        {
-            var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
-            
-            DailyReadings.AddRange(newReadingsFiltered);
-            AllMeterReadingsAsync.AddRange(newReadingsFiltered);
-//        });
+        logger.LogInformation($"Found {newReadingsFiltered.Count} new readings");
+
+        if (newReadingsFiltered.Count > 0)
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                DailyReadings.AddRange(newReadingsFiltered);
+                AllMeterReadingsAsync.AddRange(newReadingsFiltered);
+            });
+        }
     }
 
     private void StartBackgroundTask()
@@ -86,35 +126,20 @@ public partial class StorageService : ObservableObject
         cancellationTokenSource = new CancellationTokenSource();
 
         // Run aggregations every 15 minutes
-        backgroundTimer = new Timer(async _ =>
+        backgroundTimer = new Timer(async void (_) =>
         {
-            if (!cancellationTokenSource.Token.IsCancellationRequested)
+            try
             {
-                CheckAndSendDateChangeMessage();
-
-                await Task.Run(async () =>
+                if (!cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    await MainThread.InvokeOnMainThreadAsync(async () =>
-                    {
-                        await FetchAndFilterDailyReadings();
-                        ProcessAggregations();
-                    });
-                }, cancellationTokenSource.Token);
+                    await Task.Run(async () => { await FetchAndFilterDailyReadings(); }, cancellationTokenSource.Token);
+                }
             }
-        }, null, TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(15));
-    }
-
-    private void CheckAndSendDateChangeMessage()
-    {
-        // Check if date has changed
-        if (DateTime.Now.Date > currentDay)
-        {
-            var oldDate = currentDay;
-            var newDate = DateTime.Now.Date;
-            currentDay = newDate;
-
-            WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
-        }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in background task: {Message}", e.Message);
+            }
+        }, null, TimeSpan.FromMinutes(0), TimeSpan.FromMinutes(15));
     }
 
     private void StopBackgroundTask()
@@ -129,7 +154,7 @@ public partial class StorageService : ObservableObject
         HourlyAggregated.Clear();
         DailyAggregated.Clear();
         WeeklyAggregated.Clear();
-        
+
         // Aggregate by hour
         var hourlyList = AllMeterReadingsAsync
             .GroupBy(r =>
@@ -142,12 +167,12 @@ public partial class StorageService : ObservableObject
                 60
             ))
             .OrderBy(r => r.PeriodStart);
-        
+
         HourlyAggregated.AddRange(hourlyList);
 
         WeakReferenceMessenger.Default.Send(new HourlyAggregationCompletedMessage(HourlyAggregated));
 
-        
+
         // Aggregate by day
         var dailyList = AllMeterReadingsAsync
             .GroupBy(r => r.PeriodStart.Date)
@@ -161,10 +186,10 @@ public partial class StorageService : ObservableObject
             .OrderBy(r => r.PeriodStart);
 
         DailyAggregated.AddRange(dailyList);
-        
+
         WeakReferenceMessenger.Default.Send(new DailyAggregationCompletedMessage(DailyAggregated));
 
-        
+
         // Aggregate by week
         var weeklyList = AllMeterReadingsAsync
             .GroupBy(r =>
@@ -183,8 +208,9 @@ public partial class StorageService : ObservableObject
             .ToObservableCollection();
 
         WeeklyAggregated.AddRange(weeklyList);
-        
+
         WeakReferenceMessenger.Default.Send(new WeeklyAggregationCompletedMessage(WeeklyAggregated));
+        WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
     }
 
 

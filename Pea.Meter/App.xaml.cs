@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace Pea.Meter
+﻿namespace Pea.Meter
 {
     public partial class App : Application
     {

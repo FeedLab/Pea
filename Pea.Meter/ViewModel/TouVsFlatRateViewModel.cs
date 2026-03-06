@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using Pea.Data;
-using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Models;
 using Pea.Meter.Services;

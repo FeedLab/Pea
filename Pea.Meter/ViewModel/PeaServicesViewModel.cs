@@ -1,8 +1,5 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using Pea.Meter.Models;
-using Pea.Meter.Services;
 
 namespace Pea.Meter.ViewModel;
 

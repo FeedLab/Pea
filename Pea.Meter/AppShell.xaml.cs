@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using Pea.Meter.Helper;
-using Pea.Meter.Models;
+﻿using Pea.Meter.Helper;
 using Pea.Meter.Services;
 using Pea.Meter.ViewModel;
 
@@ -39,10 +37,10 @@ namespace Pea.Meter
 
                 if (storageService.IsAuthenticated)
                 {
-                    historicDataBackgroundService.TriggerImport();
-                    await Task.Delay(1000);
 
                     await storageService.Init();
+                
+                    historicDataBackgroundService.TriggerImport();
                 }
             }
         }

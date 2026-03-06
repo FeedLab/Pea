@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using ObservableCollections;
 using Pea.Infrastructure.Models;
 
 namespace Pea.Meter.View.Statistics;

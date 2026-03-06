@@ -3,10 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Pea.Meter.Helper;
-using Pea.Infrastructure.Models;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
-using Debug = System.Diagnostics.Debug;
 
 namespace Pea.Meter.ViewModel;
 

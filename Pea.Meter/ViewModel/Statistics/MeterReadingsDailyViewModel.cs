@@ -1,9 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using ObservableCollections;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Extension;
 using Pea.Meter.Models;
@@ -23,15 +21,31 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
         {
-            var meterDataAggregatedPerDayAll =
-                storageService.DailyAggregated.FilterByPeriod(DateTime.MinValue, DateTime.MaxValue);
-
             storageService.DailyAggregated.CollectionChanged += MeterDataAverageDailyOnCollectionChanged;
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                MeterDataDailyAggregated.AddRange(meterDataAggregatedPerDayAll);
+                MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
                 return Task.CompletedTask;
+            });
+        });
+        
+        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async (r, m) =>
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                MeterDataDailyAggregated.Clear();
+
+                MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
+            });
+        });
+        
+        WeakReferenceMessenger.Default.Register<DateChangedMessage>(this, async (r, m) =>
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                MeterDataDailyAggregated.Clear();
+                MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
             });
         });
 
@@ -49,13 +63,13 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
                     ))
                     .ToList();
 
-                var meterDataAggregatedPerDayAll = storageService.DailyAggregated.FilterByPeriod(DateTime.MinValue, DateTime.MaxValue);
-                meterDataAggregatedPerDayAll.Add(aggregated.First());
+                //        var meterDataAggregatedPerDayAll = storageService.DailyAggregated.FilterByPeriod(DateTime.MinValue, DateTime.MaxValue);
+                MeterDataDailyAggregated.Insert(0, aggregated.First());
 
-                MeterDataDailyAggregated = meterDataAggregatedPerDayAll
-                    .OrderBy(o => o.PeriodStart)
-                    .ToObservableCollection();
-                
+                // MeterDataDailyAggregated = meterDataAggregatedPerDayAll
+                //     .OrderBy(o => o.PeriodStart)
+                //     .ToObservableCollection();
+
                 return Task.CompletedTask;
             });
         });
@@ -66,11 +80,11 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems as List<PeaMeterReading> ?? [];
+                var newItems = e.NewItems?.Cast<PeaMeterReading>().ToList() ?? [];
                 MeterDataDailyAggregated.AddRange(newItems);
                 break;
             case NotifyCollectionChangedAction.Remove:
-                foreach (PeaMeterReading item in e.OldItems)
+                foreach (PeaMeterReading item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
                 {
                     MeterDataDailyAggregated.Remove(item);
                 }

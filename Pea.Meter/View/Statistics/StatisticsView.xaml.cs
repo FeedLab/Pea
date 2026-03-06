@@ -1,5 +1,4 @@
 ﻿using Pea.Meter.Services;
-using Pea.Meter.ViewModel;
 using Pea.Meter.ViewModel.Statistics;
 
 namespace Pea.Meter.View.Statistics;

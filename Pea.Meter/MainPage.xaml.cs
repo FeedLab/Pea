@@ -68,7 +68,6 @@ namespace Pea.Meter
             if (storageService.IsAuthenticated)
             {
                 WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
-                WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
             }
             // if (authData is not null && authData.Username != "" && authData.Password != "")
             // {

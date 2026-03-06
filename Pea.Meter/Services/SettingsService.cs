@@ -1,7 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Pea.Meter.Helper;
 
 namespace Pea.Meter.Services;

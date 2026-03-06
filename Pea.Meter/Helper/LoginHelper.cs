@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Extensions.Options;
 using Pea.Meter.Services;
 
 namespace Pea.Meter.Helper;

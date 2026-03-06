@@ -4,8 +4,6 @@ using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
-using Pea.Infrastructure.Repositories;
-using Pea.Meter.Models;
 
 namespace Pea.Meter.Services;
 
@@ -63,9 +61,12 @@ public class HistoricDataBackgroundService
 
     private async Task ImportHistoricDataAsync(CancellationToken cancellationToken)
     {
-        var startDate = DateTime.Today.AddDays(-1); // Yesterday
-        var maxDaysToTry = 365 * 10; // Safety limit: don't go back more than 10 years
+        await Task.Delay(5000, cancellationToken);
 
+        var peaMeterReading = storageService.DailyAggregated.FirstOrDefault();
+        var startDate = peaMeterReading?.PeriodStart ?? new DateTime().Date.AddDays(-1) ; // Yesterday
+        var maxDaysToTry = 365 * 5; // Safety limit: don't go back more than 5 years
+        
         logger.LogInformation(
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
             startDate, "N/A");
@@ -89,8 +90,8 @@ public class HistoricDataBackgroundService
             try
             {
                 // Check if data already exists for this date in the database
-                var hasExistingData = await repository.HasReadingsForDateAsync(targetDate, cancellationToken);
-                if (hasExistingData)
+                // var hasExistingData = await repository.HasReadingsForDateAsync(targetDate, cancellationToken);
+                if (storageService.DailyAggregated.Any(r => r.PeriodStart == targetDate))
                 {
                     logger.LogInformation("Data already exists for {Date}, skipping",
                         targetDate.ToString("yyyy-MM-dd"));

@@ -30,7 +30,9 @@ namespace Pea.Meter
                     fonts.AddFont("Font Awesome 7 Free-Solid-900.otf", "FontSolid");
                     fonts.AddFont("Font Awesome 7 Free-Regular-400.otf", "FontRegular");
                     fonts.AddFont("Roboto-Regular.ttf", "Roboto-Regular");
-                });
+                })
+                .Logging.AddConsole();
+            ;
 
             // Register services
             builder.Services.AddSingleton<IEncryptionHelper, EncryptionHelper>();
