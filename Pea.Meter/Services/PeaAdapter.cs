@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Logging;
 using Pea.Infrastructure.Models;
 
 namespace Pea.Meter.Services;
@@ -11,6 +12,8 @@ namespace Pea.Meter.Services;
 /// </summary>
 public class PeaAdapter
 {
+    private readonly ILogger<PeaAdapter> logger;
+
     private readonly HttpClientHandler handler = new()
     {
         UseCookies = true,
@@ -42,8 +45,9 @@ public class PeaAdapter
     public string? BillingCycle { get; private set; }
     public string? MeterPointId { get; private set; }
 
-    public PeaAdapter()
+    public PeaAdapter(ILogger<PeaAdapter> logger)
     {
+        this.logger = logger;
         client = new HttpClient(handler);
     }
 
@@ -121,19 +125,19 @@ public class PeaAdapter
         // Look for login form elements (present = failed, absent = success)
         if (loginResultHtml.Contains("txtUsername") || loginResultHtml.Contains("txtPassword"))
         {
-            Console.WriteLine("Login failed - still on login page");
+            logger.LogDebug("Login failed - still on login page");
 
             return false;
         }
         else
         {
-            Console.WriteLine("Login successful - redirected away from login");
+            logger.LogDebug("Login successful - redirected away from login");
         }
 
         var cookies = handler.CookieContainer.GetCookies(new Uri("https://www.amr.pea.co.th"));
         if (cookies["ASP.NET_SessionId"] != null || cookies[".ASPXAUTH"] != null)
         {
-            Console.WriteLine("Authentication cookie found");
+            logger.LogDebug("Authentication cookie found");
             return true;
         }
 
@@ -150,11 +154,11 @@ public class PeaAdapter
 
         if (protectedHtml.Contains("txtUsername") || protectedHtml.Contains("txtPassword"))
         {
-            Console.WriteLine("Login failed - still on login page");
+            logger.LogDebug("Login failed - still on login page");
         }
         else
         {
-            Console.WriteLine("Login successful - redirected away from login");
+            logger.LogDebug("Login successful - redirected away from login");
         }
 
         var doc = new HtmlDocument();
@@ -179,7 +183,7 @@ public class PeaAdapter
         KVA = doc.DocumentNode.SelectSingleNode("//span[@id='lblCustomerKVA']")?.InnerText.Trim();
         BillingCycle = doc.DocumentNode.SelectSingleNode("//span[@id='lblCustomerReset']")?.InnerText.Trim();
 
-        Console.WriteLine($"Customer Profile: {CustomerName} - {PeaSite}");
+        logger.LogDebug($"Customer Profile: {CustomerName} - {PeaSite}");
     }
 
     /// <summary>
@@ -238,11 +242,11 @@ public class PeaAdapter
 
         if (protectedHtml.Contains("txtUsername") || protectedHtml.Contains("txtPassword"))
         {
-            Console.WriteLine("Login failed - still on login page");
+            logger.LogDebug("Login failed - still on login page");
         }
         else
         {
-            Console.WriteLine("Login successful - redirected away from login");
+            logger.LogDebug("Login successful - redirected away from login");
         }
 
         var doc = new HtmlDocument();
@@ -267,7 +271,7 @@ public class PeaAdapter
         // Step 6: Inspect cookies (optional)
         foreach (Cookie cookie in handler.CookieContainer.GetCookies(new Uri("https://www.amr.pea.co.th")))
         {
-            Console.WriteLine($"{cookie.Name} = {cookie.Value}");
+            logger.LogDebug($"{cookie.Name} = {cookie.Value}");
         }
     }
 
@@ -282,11 +286,11 @@ public class PeaAdapter
 
         if (protectedHtml.Contains("txtUsername") || protectedHtml.Contains("txtPassword"))
         {
-            Console.WriteLine("Login failed - still on login page");
+            logger.LogDebug("Login failed - still on login page");
         }
         else
         {
-            Console.WriteLine("Login successful - redirected away from login");
+            logger.LogDebug("Login successful - redirected away from login");
         }
 
         Debug.WriteLine("Protected page content:");
@@ -303,11 +307,11 @@ public class PeaAdapter
 
         if (protectedHtml.Contains("txtUsername") || protectedHtml.Contains("txtPassword"))
         {
-            Console.WriteLine("Login failed - still on login page");
+            logger.LogDebug("Login failed - still on login page");
         }
         else
         {
-            Console.WriteLine("Login successful - redirected away from login");
+            logger.LogDebug("Login successful - redirected away from login");
         }
 
         Debug.WriteLine("Protected page content:");
@@ -324,11 +328,11 @@ public class PeaAdapter
 
         if (protectedHtml.Contains("txtUsername") || protectedHtml.Contains("txtPassword"))
         {
-            Console.WriteLine("Login failed - still on login page");
+            logger.LogDebug("Login failed - still on login page");
         }
         else
         {
-            Console.WriteLine("Login successful - redirected away from login");
+            logger.LogDebug("Login successful - redirected away from login");
         }
 
         var doc = new HtmlDocument();
@@ -340,7 +344,7 @@ public class PeaAdapter
         if (selectedOption != null)
         {
             MeterPointId = selectedOption.GetAttributeValue("value", "");
-            Console.WriteLine($"Meter No: {MeterNumber}, Meter Point ID: {MeterPointId}");
+            logger.LogDebug($"Meter No: {MeterNumber}, Meter Point ID: {MeterPointId}");
         }
 
         Debug.WriteLine("Protected page content:");
@@ -360,11 +364,11 @@ public class PeaAdapter
 
         if (protectedHtml.Contains("txtUsername") || protectedHtml.Contains("txtPassword"))
         {
-            Console.WriteLine("Login failed - still on login page");
+            logger.LogDebug("Login failed - still on login page");
         }
         else
         {
-            Console.WriteLine("Login successful - redirected away from login");
+            logger.LogDebug("Login successful - redirected away from login");
         }
 
         Debug.WriteLine("Protected page content:");
@@ -373,14 +377,14 @@ public class PeaAdapter
         html.LoadHtml(protectedHtml);
 
         // Check if HTML loaded
-        //   Console.WriteLine($"HTML length: {html.DocumentNode.InnerHtml.Length}");
+        //   logger.LogDebug($"HTML length: {html.DocumentNode.InnerHtml.Length}");
 
         // Find all divs
         // var divs = html.DocumentNode.SelectNodes("//div[@id]");
         // if (divs != null)
         // {
         //     foreach (var div in divs)
-        //         Console.WriteLine($"Found div: {div.GetAttributeValue("id", "")}");
+        //         logger.LogDebug($"Found div: {div.GetAttributeValue("id", "")}");
         // }
 
         // Find all tables
@@ -389,7 +393,7 @@ public class PeaAdapter
 
         if (rows != null)
         {
-            Console.WriteLine($"Year: {selectedDate.Year}, Month: {selectedDate.Month}, Day: {selectedDate.Day}");
+            logger.LogDebug($"Year: {selectedDate.Year}, Month: {selectedDate.Month}, Day: {selectedDate.Day}");
 
             var listOfPeaMeterReading = new List<PeaMeterReading>();
 
@@ -406,7 +410,7 @@ public class PeaAdapter
 
                     var dt = ParseAndAdjustTimestamp(timestamp);
 
-                    // Console.WriteLine($"{timestamp}: A={rateA}, B={rateB}, C={rateC}, Total={total}");
+                    // logger.LogDebug($"{timestamp}: A={rateA}, B={rateB}, C={rateC}, Total={total}");
 
                     var reading = new PeaMeterReading(
                         dt.AddMinutes(-15),

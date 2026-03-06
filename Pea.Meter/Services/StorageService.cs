@@ -86,12 +86,19 @@ public partial class StorageService : ObservableObject
                     StopBackgroundTask();
 
                     var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
-                    AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
 
                     await MainThread.InvokeOnMainThreadAsync(() =>
                     {
-                        ProcessAggregations();
-                        WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+                        try
+                        {
+                            AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
+                            ProcessAggregations();
+                            WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogError(e, "Error in {Method}: {Message}", nameof(CheckForNewDayBackgroundTask), e.Message);
+                        }
                     });
 
                     await InitNewDay(oldDate, newDate);
@@ -117,9 +124,9 @@ public partial class StorageService : ObservableObject
         var meterReadingRepository = new MeterReadingRepository(context);
 
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
-        AllMeterReadingsAsync.AddRange(readingsFromDb);
+        //AllMeterReadingsAsync.AddRange(readingsFromDb);
 
-        DailyReadings.Clear();
+        //DailyReadings.Clear();
         // await FetchAndFilterDailyReadings();
 
         WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
