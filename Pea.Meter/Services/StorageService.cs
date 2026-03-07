@@ -21,7 +21,7 @@ public partial class StorageService : ObservableObject
     [ObservableProperty] private ObservableCollection<PeaMeterReading> hourlyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> weeklyAggregated = [];
-    [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyReadings = [];
+    [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyPeriodReadings = [];
     private readonly ILogger logger;
     private readonly PeaDbContextFactory dbContextFactory;
     private readonly PeaAdapter peaAdapter;
@@ -97,7 +97,8 @@ public partial class StorageService : ObservableObject
                         }
                         catch (Exception e)
                         {
-                            logger.LogError(e, "Error in {Method}: {Message}", nameof(CheckForNewDayBackgroundTask), e.Message);
+                            logger.LogError(e, "Error in {Method}: {Message}", nameof(CheckForNewDayBackgroundTask),
+                                e.Message);
                         }
                     });
 
@@ -111,45 +112,66 @@ public partial class StorageService : ObservableObject
                 logger.LogError(e, "Error in background task ({backgroundTaskName}): {Message}",
                     nameof(CheckForNewDayBackgroundTask), e.Message);
             }
-        }, null, TimeSpan.FromMinutes(0), TimeSpan.FromMinutes(1));
+        }, null, TimeSpan.FromMinutes(0), TimeSpan.FromMinutes(10));
 
         return Task.CompletedTask;
     }
 
     private async Task InitNewDay(DateTime oldDate, DateTime newDate)
     {
-        logger.LogInformation("InitNewDay: {OldDate}, {NewDate}", oldDate, newDate);
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            try
+            {
+                logger.LogInformation("InitNewDay: {OldDate}, {NewDate}", oldDate, newDate);
 
-        var context = dbContextFactory.CreateDbContext();
-        var meterReadingRepository = new MeterReadingRepository(context);
 
-        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
-        //AllMeterReadingsAsync.AddRange(readingsFromDb);
+                var context = dbContextFactory.CreateDbContext();
+                var meterReadingRepository = new MeterReadingRepository(context);
 
-        //DailyReadings.Clear();
-        // await FetchAndFilterDailyReadings();
+                var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
 
-        WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
+                AllMeterReadingsAsync.Clear();
+                AllMeterReadingsAsync.AddRange(readingsFromDb);
+
+                var readingsFromPea = await peaAdapter.ShowDailyReadings(newDate);
+                var newReadings = GetDiffBetweenDailyAndAllReadings(readingsFromPea.ToList());
+                var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
+
+                DailyPeriodReadings.Clear();
+                DailyPeriodReadings.AddRange(newReadingsFiltered);
+                AllMeterReadingsAsync.AddRange(newReadingsFiltered);
+
+                WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in {Method}: {Message}", nameof(InitNewDay),
+                    e.Message);
+            }
+        });
     }
 
     private async Task FetchAndFilterDailyReadings()
     {
         logger.LogInformation("Fetching daily readings from Pea Adapter");
 
-        await MainThread.InvokeOnMainThreadAsync(async () =>
+        await MainThread.InvokeOnMainThreadAsync(async () => { await ProcessNewPeriodReadings(); });
+    }
+
+    private async Task ProcessNewPeriodReadings()
+    {
+        var readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
+        var newReadings = GetDiffBetweenDailyAndAllReadings(readingsFromPea.ToList());
+        var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
+
+        logger.LogInformation($"Found {newReadingsFiltered.Count} new readings");
+
+        if (newReadingsFiltered.Count > 0)
         {
-            var readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
-            var newReadings = GetDiffBetweenDailyAndAllReadings(readingsFromPea.ToList());
-            var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
-
-            logger.LogInformation($"Found {newReadingsFiltered.Count} new readings");
-
-            if (newReadingsFiltered.Count > 0)
-            {
-                DailyReadings.AddRange(newReadingsFiltered);
-                AllMeterReadingsAsync.AddRange(newReadingsFiltered);
-            }
-        });
+            DailyPeriodReadings.AddRange(newReadingsFiltered);
+            AllMeterReadingsAsync.AddRange(newReadingsFiltered);
+        }
     }
 
     private void StartBackgroundTask()

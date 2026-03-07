@@ -11,7 +11,7 @@
 
     <statistics1:MeterReadingsHourChart 
         ChartTitle="{Binding DateMeterData, StringFormat='{0:D}'}"
-        TodayData="{Binding MeterDataToday}"
+        TodayData="{Binding TodayData}"
         Average1DayData="{Binding MeterDataAverage1}"
         Average7DaysData="{Binding MeterDataAverage7}"
         Average30DaysData="{Binding MeterDataAverage30}" />

@@ -19,6 +19,33 @@ public static class ObservableCollectionExtensions
         return new ObservableCollection<PeaMeterReading>(readings);
     }
 
+    public static ObservableCollection<PeaMeterReading> SummaryByHour(
+        this IEnumerable<PeaMeterReading> source)
+    {
+        var readings = source.ToList();
+        
+        if (readings.Count == 0)
+        {
+            return new ObservableCollection<PeaMeterReading>();
+        }
+
+        var hourlyList = readings
+                .GroupBy(r =>
+                    new DateTime(r.PeriodStart.Year, r.PeriodStart.Month, r.PeriodStart.Day, r.PeriodStart.Hour, 0, 0))
+                .Select(g => new PeaMeterReading(
+                    g.Key,
+                    g.Sum(r => r.RateA),
+                    g.Sum(r => r.RateB),
+                    g.Sum(r => r.RateC),
+                    60
+                ))
+                .OrderBy(r => r.PeriodStart)
+            .ToList();
+
+        return new ObservableCollection<PeaMeterReading>(hourlyList);
+        
+    }
+    
     public static ObservableCollection<PeaMeterReading> AverageByHour(
         this IEnumerable<PeaMeterReading> source)
     {
@@ -30,7 +57,7 @@ public static class ObservableCollectionExtensions
         }
 
         var averageReadings = readings
-            .GroupBy(r => new { r.PeriodStart.Hour })
+            .GroupBy(r => new { r.PeriodStart.Hour  })
             .Select(g => new PeaMeterReading(
                 new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, g.Key.Hour, 0, 0),
                 g.Average(r => r.RateA),
@@ -42,6 +69,7 @@ public static class ObservableCollectionExtensions
 
         return new ObservableCollection<PeaMeterReading>(averageReadings);
     }
+    
     
     public static ObservableCollection<PeaMeterReading> AverageBy15MinutesPeriod(
         this IEnumerable<PeaMeterReading> source)

@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Extension;
 using Pea.Meter.Models;
@@ -11,12 +12,14 @@ namespace Pea.Meter.ViewModel.Statistics;
 
 public partial class MeterReadingsDailyViewModel : ObservableObject
 {
+    private readonly ILogger<MeterReadingsDailyViewModel> logger;
     private readonly StorageService storageService;
 
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataDailyAggregated = [];
 
-    public MeterReadingsDailyViewModel(StorageService storageService)
+    public MeterReadingsDailyViewModel(ILogger<MeterReadingsDailyViewModel> logger, StorageService storageService)
     {
+        this.logger = logger;
         this.storageService = storageService;
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
@@ -30,13 +33,27 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
             });
         });
         
-        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async (r, m) =>
+        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (r, m) =>
         {
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                MeterDataDailyAggregated.Clear();
+                MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    try
+                    {
+                        MeterDataDailyAggregated.Clear();
 
-                MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
+                        MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, "Error in {Method}: {Message}", "MeterDataDailyAggregated", e.Message);
+                    }
+                    
+                    return Task.CompletedTask;
+                });
+                
+                return Task.CompletedTask;
             });
         });
         
