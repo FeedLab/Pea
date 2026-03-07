@@ -33,6 +33,18 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
             });
         });
         
+        WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this, (r, m) =>
+        {
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                storageService.DailyAggregated.CollectionChanged -= MeterDataAverageDailyOnCollectionChanged;
+
+                MeterDataDailyAggregated = [];
+                
+                return Task.CompletedTask;
+            });
+        });
+        
         WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (r, m) =>
         {
             await MainThread.InvokeOnMainThreadAsync(() =>

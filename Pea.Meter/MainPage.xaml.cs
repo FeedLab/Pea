@@ -29,34 +29,40 @@ namespace Pea.Meter
 
             authData = authDataOptions.AuthData;
 
+            Pea.IsVisible = true;
             TabData.IsVisible = false;
             TabCustomerProfile.IsVisible = false;
-            Pea.IsVisible = false;
             TouVsFlatRate.IsVisible = false;
             
             WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, (r, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(async () =>
+                MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     TabData.IsVisible = true;
                     TabCustomerProfile.IsVisible = true;
-                    Pea.IsVisible = true;
+                    Pea.IsVisible = false;
                     Info.IsVisible = true;
                     TouVsFlatRate.IsVisible = true;
+
+                    TabView.SelectedIndex = 0;
+                    
+                    return Task.CompletedTask;
                 });
             });
 
             WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this, (r, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(async () =>
+                MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     TabData.IsVisible = false;
                     TabCustomerProfile.IsVisible = false;
-                    Pea.IsVisible = false;
+                    Pea.IsVisible = true;
                     TouVsFlatRate.IsVisible = false;
-                    Info.IsVisible = true;
+                    Info.IsVisible = false;
                     
                     TabView.SelectedIndex = 0;
+                    
+                    return Task.CompletedTask;
                 });
             });
         }

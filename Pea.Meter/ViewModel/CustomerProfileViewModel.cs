@@ -24,17 +24,19 @@ public partial class CustomerProfileViewModel : ObservableObject
     private readonly PeaAdapter peaAdapter;
     private readonly ILoginHelper loginHelper;
     private readonly PeaDbContextFactory dbContextFactory;
+    private readonly HistoricDataBackgroundService historicDataBackgroundService;
     private string userName;
 
     /// <summary>
     /// ViewModel that wraps CustomerProfile model and provides UI logic
     /// </summary>
     public CustomerProfileViewModel(PeaAdapter peaAdapter, ILoginHelper loginHelper,
-        PeaDbContextFactory dbContextFactory)
+        PeaDbContextFactory dbContextFactory, HistoricDataBackgroundService historicDataBackgroundService)
     {
         this.peaAdapter = peaAdapter;
         this.loginHelper = loginHelper;
         this.dbContextFactory = dbContextFactory;
+        this.historicDataBackgroundService = historicDataBackgroundService;
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this,
             (r, m) =>
@@ -55,6 +57,7 @@ public partial class CustomerProfileViewModel : ObservableObject
 
         await repository.DeleteAllAsync();
         await loginHelper.ClearAuthDataAsync();
+        historicDataBackgroundService.CancelImport();
         WeakReferenceMessenger.Default.Send(new UserLoggedOutMessage());
     }
 
