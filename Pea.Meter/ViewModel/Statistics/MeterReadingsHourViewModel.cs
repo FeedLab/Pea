@@ -131,7 +131,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                TodayData = storageService.HourlyAggregated.AverageByHour();
+                TodayData = storageService.DailyPeriodReadings.SummaryByHour();
                 break;
             case NotifyCollectionChangedAction.Remove:
                 foreach (var item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])

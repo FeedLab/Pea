@@ -38,11 +38,6 @@ public partial class TouVsFlatRateViewModel: ObservableObject
             StartDate = today.AddYears(-1);
             EndDate = today;
 
-            // meterReading = storageService
-            //     .GetDailyAggregated()
-            //     .Where(w => w.PeriodStart >= StartDate && w.PeriodStart < EndDate)
-            //     .ToList();
-
             if (meterReading.Any())
             {
                 StartTimePickerMinimumDate = meterReading.First().PeriodStart.Date;
@@ -55,9 +50,12 @@ public partial class TouVsFlatRateViewModel: ObservableObject
 
                 EndTimePickerMinimumDate = StartDate.AddDays(1);
                 EndTimePickerMaximumDate = today;
-                await Task.Delay(5000);
-                await CalculateCostComparisons();
             }
+        });
+        
+        WeakReferenceMessenger.Default.Register<DateChangedMessage>(this, async (r, m) =>
+        {
+                await CalculateCostComparisons();
         });
 
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this, async (r, m) =>
