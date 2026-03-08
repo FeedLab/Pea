@@ -24,10 +24,10 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
         {
-            storageService.DailyAggregated.CollectionChanged += MeterDataAverageDailyOnCollectionChanged;
-
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
+                storageService.DailyAggregated.CollectionChanged += MeterDataAverageDailyOnCollectionChanged;
+
                 MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
                 return Task.CompletedTask;
             });
@@ -106,38 +106,41 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
 
     private void MeterDataAverageDailyOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        switch (e.Action)
+        MainThread.BeginInvokeOnMainThread(() =>
         {
-            case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems?.Cast<PeaMeterReading>().ToList() ?? [];
-                MeterDataDailyAggregated.AddRange(newItems);
-                break;
-            case NotifyCollectionChangedAction.Remove:
-                foreach (PeaMeterReading item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
-                {
-                    MeterDataDailyAggregated.Remove(item);
-                }
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newItems = e.NewItems?.Cast<PeaMeterReading>().ToList() ?? [];
+                    MeterDataDailyAggregated.AddRange(newItems);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (PeaMeterReading item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
+                    {
+                        MeterDataDailyAggregated.Remove(item);
+                    }
 
-                break;
-            case NotifyCollectionChangedAction.Replace:
-                // for (var i = 0; i < e.OldItems.Length; i++)
-                // {
-                //     var index = MeterDataAverage30.IndexOf(e.OldItems[i]);
-                //     if (index >= 0)
-                //     {
-                //         MeterDataAverage30[index] = e.NewItems[i];
-                //     }
-                // }
-                break;
-            case NotifyCollectionChangedAction.Move:
-                // For ObservableCollection, typically no action needed as order may not matter
-                // or rebuild collection if order is important
-                break;
-            case NotifyCollectionChangedAction.Reset:
-                MeterDataDailyAggregated.Clear();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    // for (var i = 0; i < e.OldItems.Length; i++)
+                    // {
+                    //     var index = MeterDataAverage30.IndexOf(e.OldItems[i]);
+                    //     if (index >= 0)
+                    //     {
+                    //         MeterDataAverage30[index] = e.NewItems[i];
+                    //     }
+                    // }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    // For ObservableCollection, typically no action needed as order may not matter
+                    // or rebuild collection if order is important
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    MeterDataDailyAggregated.Clear();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        });
     }
 }

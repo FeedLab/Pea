@@ -48,6 +48,7 @@ public partial class StorageService : ObservableObject
 
                 var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
                 AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
+                ProcessAggregations();
 
                 await MainThread.InvokeOnMainThreadAsync(() => { ProcessAggregations(); });
             }
@@ -141,6 +142,8 @@ public partial class StorageService : ObservableObject
                 DailyPeriodReadings.Clear();
                 DailyPeriodReadings.AddRange(newReadingsFiltered);
                 AllMeterReadingsAsync.AddRange(newReadingsFiltered);
+                
+                ProcessAggregations();
 
                 WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
             }
@@ -171,6 +174,7 @@ public partial class StorageService : ObservableObject
         {
             DailyPeriodReadings.AddRange(newReadingsFiltered);
             AllMeterReadingsAsync.AddRange(newReadingsFiltered);
+            ProcessAggregations();
         }
     }
 

@@ -67,8 +67,30 @@ public partial class InfoViewModel : ObservableObject
         CreateLoggedOutSubscription();
         CreateAllAggregationsCompletedSubscription();
         CreateNewDaySubscription();
+        CreateDataImportedSubscription();
     }
 
+    private void CreateDataImportedSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<DataImportedMessage>(this,
+            (r, m) =>
+            {
+                MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    try
+                    {
+                        await PopulateChartData();
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateDataImportedSubscription), e.Message);
+                    }
+
+                    return Task.CompletedTask;
+                });
+            });
+    }
+    
     private void CreateNewDaySubscription()
     {
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
