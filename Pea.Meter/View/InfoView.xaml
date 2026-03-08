@@ -44,13 +44,13 @@
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="{OnIdiom Desktop='*', Default='6*'}" />
+                <RowDefinition Height="{OnIdiom Desktop='auto', Default='5*'}" />
             </Grid.RowDefinitions>
 
             <Border
                 Grid.Row="0"
-                Margin="16"
+                Margin="16,0"
                 IsVisible="{Binding IsMeterDataVisible}"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill"
@@ -67,31 +67,23 @@
                             Opacity="0.5" />
                 </Border.Shadow>
 
-                <Grid
+                <chart:SfCartesianChart
+                    Grid.Row="0"
+                    Margin="16"
                     HorizontalOptions="Fill"
-                    VerticalOptions="Fill">
+                    VerticalOptions="Fill"
+                    BackgroundColor="Transparent">
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
+                    <chart:SfCartesianChart.Legend>
+                        <chart:ChartLegend>
+                            <chart:ChartLegend.LabelStyle>
+                                <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="18"
+                                                             FontAttributes="None" />
+                            </chart:ChartLegend.LabelStyle>
+                        </chart:ChartLegend>
+                    </chart:SfCartesianChart.Legend>
 
-                    <chart:SfCartesianChart
-                        Grid.Row="0"
-                        Margin="16"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Fill"
-                        BackgroundColor="Transparent">
-
-                        <chart:SfCartesianChart.Legend>
-                            <chart:ChartLegend>
-                                <chart:ChartLegend.LabelStyle>
-                                    <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="18"
-                                                                 FontAttributes="None" />
-                                </chart:ChartLegend.LabelStyle>
-                            </chart:ChartLegend>
-                        </chart:SfCartesianChart.Legend>
-
-                        <chart:SfCartesianChart.Title>
+                    <!--<chart:SfCartesianChart.Title>
                             <Label
                                 Margin="8"
                                 HorizontalOptions="Fill"
@@ -100,61 +92,60 @@
                                 FontAttributes="Bold"
                                 FontSize="20"
                                 Text="{Binding DateMeterData, StringFormat='{0:D}'}" />
-                        </chart:SfCartesianChart.Title>
+                        </chart:SfCartesianChart.Title>-->
 
-                        <chart:SfCartesianChart.XAxes>
-                            <chart:DateTimeAxis>
-                                <chart:DateTimeAxis.LabelStyle>
-                                    <chart:ChartAxisLabelStyle LabelFormat="HH:mm" />
-                                </chart:DateTimeAxis.LabelStyle>
-                            </chart:DateTimeAxis>
-                        </chart:SfCartesianChart.XAxes>
+                    <chart:SfCartesianChart.XAxes>
+                        <chart:DateTimeAxis>
+                            <chart:DateTimeAxis.LabelStyle>
+                                <chart:ChartAxisLabelStyle LabelFormat="HH:mm" />
+                            </chart:DateTimeAxis.LabelStyle>
+                        </chart:DateTimeAxis>
+                    </chart:SfCartesianChart.XAxes>
 
-                        <chart:SfCartesianChart.YAxes>
-                            <chart:NumericalAxis>
-                                <chart:NumericalAxis.Title>
-                                    <chart:ChartAxisTitle Text="KW per 15 minutes period" />
-                                </chart:NumericalAxis.Title>
-                            </chart:NumericalAxis>
-                        </chart:SfCartesianChart.YAxes>
+                    <chart:SfCartesianChart.YAxes>
+                        <chart:NumericalAxis>
+                            <chart:NumericalAxis.Title>
+                                <chart:ChartAxisTitle Text="KWh per 15 minute" />
+                            </chart:NumericalAxis.Title>
+                        </chart:NumericalAxis>
+                    </chart:SfCartesianChart.YAxes>
 
-                        <chart:SplineSeries ItemsSource="{Binding MeterData}"
-                                            Label="Daily"
-                                            XBindingPath="PeriodStart"
-                                            YBindingPath="Total"
-                                            Fill="Red"
-                                            StrokeWidth="2"
-                                            IsVisibleOnLegend="True"
-                                            EnableTooltip="True" />
+                    <chart:SplineSeries ItemsSource="{Binding MeterData}"
+                                        Label="Daily"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="Total"
+                                        Fill="Red"
+                                        StrokeWidth="2"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="True" />
 
-                        <chart:SplineSeries ItemsSource="{Binding MeterDataAverage1}"
-                                            Label="Average usage (Yesterday)"
-                                            XBindingPath="PeriodStart"
-                                            YBindingPath="Total"
-                                            Fill="Orange"
-                                            StrokeWidth="2"
-                                            IsVisibleOnLegend="True"
-                                            EnableTooltip="True" />
+                    <chart:SplineSeries ItemsSource="{Binding MeterDataAverage1}"
+                                        Label="Average usage (Yesterday)"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="Total"
+                                        Fill="Orange"
+                                        StrokeWidth="2"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="True" />
 
-                        <chart:SplineSeries ItemsSource="{Binding MeterDataAverage7}"
-                                            Label="Average usage (7 days)"
-                                            XBindingPath="PeriodStart"
-                                            YBindingPath="Total"
-                                            Fill="Blue"
-                                            StrokeWidth="2"
-                                            IsVisibleOnLegend="True"
-                                            EnableTooltip="True" />
+                    <chart:SplineSeries ItemsSource="{Binding MeterDataAverage7}"
+                                        Label="Average usage (7 days)"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="Total"
+                                        Fill="Blue"
+                                        StrokeWidth="2"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="True" />
 
-                        <chart:SplineSeries ItemsSource="{Binding MeterDataAverage30}"
-                                            Label="Average usage (30 days)"
-                                            XBindingPath="PeriodStart"
-                                            YBindingPath="Total"
-                                            Fill="Green"
-                                            StrokeWidth="2"
-                                            IsVisibleOnLegend="True"
-                                            EnableTooltip="True" />
-                    </chart:SfCartesianChart>
-                </Grid>
+                    <chart:SplineSeries ItemsSource="{Binding MeterDataAverage30}"
+                                        Label="Average usage (30 days)"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="Total"
+                                        Fill="Green"
+                                        StrokeWidth="2"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="True" />
+                </chart:SfCartesianChart>
             </Border>
 
             <view:PeaServicesView

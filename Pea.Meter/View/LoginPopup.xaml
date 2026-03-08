@@ -5,8 +5,27 @@
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:Class="Pea.Meter.View.LoginPopup">
-    
-    <VerticalStackLayout Padding="20" Spacing="15" HorizontalOptions="Center" VerticalOptions="Center">
+
+    <Grid WidthRequest="900">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>   
+        </Grid.ColumnDefinitions>
+
+        <Image
+            Grid.Column="0"
+            Margin="16"
+            HeightRequest="450"
+            Source="pea_login_light.png" 
+            Aspect="Fill" 
+            Opacity="0.9" />
+
+        <VerticalStackLayout
+        Grid.Column="1"
+        Padding="20" 
+        Spacing="15" 
+        HorizontalOptions="Center" 
+        VerticalOptions="Center">
 
         <!-- Image at the top -->
         <Image Source="amr_logo.png"
@@ -25,7 +44,7 @@
                                       OutlineCornerRadius="8"
                                       FocusedStrokeThickness="4"
                                       UnfocusedStrokeThickness="2"
-                                      WidthRequest="250"
+                                      WidthRequest="350"
                                       HelperText="Minimum 6 characters"
                                       CharMaxLength="20"
                                       ShowCharCount="True">
@@ -49,7 +68,7 @@
                                       OutlineCornerRadius="8"
                                       FocusedStrokeThickness="4"
                                       UnfocusedStrokeThickness="2"
-                                      WidthRequest="250"
+                                      WidthRequest="350"
                                       HelperText="Minimum 6 characters"
                                       EnablePasswordVisibilityToggle="True"
                                       CharMaxLength="50">
@@ -84,4 +103,5 @@
         </HorizontalStackLayout>
 
     </VerticalStackLayout>
+    </Grid>
 </ContentView>

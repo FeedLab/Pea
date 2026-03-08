@@ -10,7 +10,8 @@
             <Setter Property="BackgroundColor" Value="White" />
             <Setter Property="StrokeThickness" Value="0" />
             <!-- <Setter Property="Stroke" Value="LightGray" /> -->
-            <Setter Property="VerticalOptions" Value="Start" />
+            <Setter Property="VerticalOptions" Value="Fill" />
+            <Setter Property="Margin" Value="32,0" />
             <Setter Property="StrokeShape">
                 <RoundRectangle CornerRadius="8" />
             </Setter>
@@ -24,19 +25,20 @@
         </Style>
 
         <Style x:Key="ServiceTitleStyle" TargetType="Label">
-            <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="HorizontalTextAlignment" Value="{OnIdiom Desktop=Start, Default=Center }"/>
             <Setter Property="TextColor" Value="Black" />
             <Setter Property="FontSize" Value="12" />
         </Style>
 
         <Style x:Key="ServiceDescriptionStyle" TargetType="Label">
-            <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="HorizontalTextAlignment" Value="Start"/>
             <Setter Property="TextColor" Value="Black" />
             <Setter Property="FontSize" Value="10" />
+            <Setter Property="IsVisible" Value="{OnIdiom Desktop=True, Default=False}" />
         </Style>
     </ContentView.Resources>
 
-    <Grid Margin="20" VerticalOptions="Start">
+    <Grid Margin="0,26" VerticalOptions="Fill">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25*" />
             <ColumnDefinition Width="25*" />
@@ -51,7 +53,7 @@
                                       CommandParameter="https://eservice.pea.co.th/ebill" />
             </Border.GestureRecognizers>
             <VerticalStackLayout Style="{StaticResource ServiceStackStyle}">
-                <Image Source="pea_e_bill.png" Aspect="AspectFit" />
+                <Image Source="pea_e_bill.png" Aspect="AspectFit"  />
                 <Label Text="Electronic Billing" Style="{StaticResource ServiceTitleStyle}" />
                 <Label
                     Text="Go paperless in Thailand! Save time and trees by getting secure monthly invoices sent to your inbox."
@@ -72,7 +74,7 @@
                                       CommandParameter="https://sabuyservice.pea.co.th/" />
             </Border.GestureRecognizers>
             <VerticalStackLayout Style="{StaticResource ServiceStackStyle}">
-                <Image Source="pea_e_service.png" Aspect="AspectFit" />
+                <Image Source="pea_e_service.png" Aspect="AspectFit"  />
                 <Label Text="Smart Services" Style="{StaticResource ServiceTitleStyle}" />
                 <Label
                     Text="Swift, paperless, and global. Securely access all our services from any device, anywhere on Earth"
@@ -113,8 +115,8 @@
                                       CommandParameter="https://sabuyservice.pea.co.th/service/f54569de-88df-4188-1408-08dcb7573509" />
             </Border.GestureRecognizers>
             <VerticalStackLayout Style="{StaticResource ServiceStackStyle}">
-                <Image Source="pea_transformer.png" Aspect="AspectFit" />
-                <Label Text="Transformer Lifecycle Management" Style="{StaticResource ServiceTitleStyle}" />
+                <Image Source="pea_transformer.png" Aspect="AspectFit"  />
+                <Label Text="{OnIdiom Desktop='Transformer Lifecycle Management', Default='Transformer Management'}" Style="{StaticResource ServiceTitleStyle}" />
                 <Label
                     Text="Comprehensive diagnostic testing, oil analysis, and preventative repairs to ensure grid stability and peak electrical efficiency"
                     Style="{StaticResource ServiceDescriptionStyle}" />
