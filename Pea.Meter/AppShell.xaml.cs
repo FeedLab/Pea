@@ -39,8 +39,6 @@ namespace Pea.Meter
                 {
 
                     await storageService.Init();
-                
-                    historicDataBackgroundService.TriggerImport();
                 }
             }
         }

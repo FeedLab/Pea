@@ -48,8 +48,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Border 
-                Grid.Row="1"
+            <Border
+                Grid.Row="0"
                 Margin="16"
                 IsVisible="{Binding IsMeterDataVisible}"
                 HorizontalOptions="Fill"
@@ -62,44 +62,44 @@
                 </Border.StrokeShape>
                 <Border.Shadow>
                     <Shadow Brush="Black"
-                    Offset="5,5"
-                    Radius="8"
-                    Opacity="0.5" />
+                            Offset="5,5"
+                            Radius="8"
+                            Opacity="0.5" />
                 </Border.Shadow>
 
                 <Grid
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill">
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <chart:SfCartesianChart
-                    Grid.Row="0"
-                    Margin="16"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Fill"
-                    BackgroundColor="Transparent">
+                        Grid.Row="0"
+                        Margin="16"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        BackgroundColor="Transparent">
 
                         <chart:SfCartesianChart.Legend>
                             <chart:ChartLegend>
                                 <chart:ChartLegend.LabelStyle>
                                     <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="18"
-                                                             FontAttributes="None" />
+                                                                 FontAttributes="None" />
                                 </chart:ChartLegend.LabelStyle>
                             </chart:ChartLegend>
                         </chart:SfCartesianChart.Legend>
 
                         <chart:SfCartesianChart.Title>
                             <Label
-                            Margin="8"
-                            HorizontalOptions="Fill"
-                            HorizontalTextAlignment="Center"
+                                Margin="8"
+                                HorizontalOptions="Fill"
+                                HorizontalTextAlignment="Center"
                                 TextColor="Black"
-                            FontAttributes="Bold"
-                            FontSize="20"
-                            Text="{Binding DateMeterData, StringFormat='{0:D}'}" />
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="{Binding DateMeterData, StringFormat='{0:D}'}" />
                         </chart:SfCartesianChart.Title>
 
                         <chart:SfCartesianChart.XAxes>
@@ -113,19 +113,19 @@
                         <chart:SfCartesianChart.YAxes>
                             <chart:NumericalAxis>
                                 <chart:NumericalAxis.Title>
-                                    <chart:ChartAxisTitle Text="Energy consumption in KW per 15 minutes period" />
+                                    <chart:ChartAxisTitle Text="KW per 15 minutes period" />
                                 </chart:NumericalAxis.Title>
                             </chart:NumericalAxis>
                         </chart:SfCartesianChart.YAxes>
 
                         <chart:SplineSeries ItemsSource="{Binding MeterData}"
-                                        Label="Daily"
-                                        XBindingPath="PeriodStart"
-                                        YBindingPath="Total"
-                                        Fill="Red"
-                                        StrokeWidth="2"
-                                        IsVisibleOnLegend="True"
-                                        EnableTooltip="True" />
+                                            Label="Daily"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="Total"
+                                            Fill="Red"
+                                            StrokeWidth="2"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True" />
 
                         <chart:SplineSeries ItemsSource="{Binding MeterDataAverage1}"
                                             Label="Average usage (Yesterday)"
@@ -135,128 +135,32 @@
                                             StrokeWidth="2"
                                             IsVisibleOnLegend="True"
                                             EnableTooltip="True" />
-                        
+
                         <chart:SplineSeries ItemsSource="{Binding MeterDataAverage7}"
-                                        Label="Average usage (7 days)"
-                                        XBindingPath="PeriodStart"
-                                        YBindingPath="Total"
-                                        Fill="Blue"
-                                        StrokeWidth="2"
-                                        IsVisibleOnLegend="True"
-                                        EnableTooltip="True" />
+                                            Label="Average usage (7 days)"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="Total"
+                                            Fill="Blue"
+                                            StrokeWidth="2"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True" />
 
                         <chart:SplineSeries ItemsSource="{Binding MeterDataAverage30}"
-                                        Label="Average usage (30 days)"
-                                        XBindingPath="PeriodStart"
-                                        YBindingPath="Total"
-                                        Fill="Green"
-                                        StrokeWidth="2"
-                                        IsVisibleOnLegend="True"
-                                        EnableTooltip="True" />
+                                            Label="Average usage (30 days)"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="Total"
+                                            Fill="Green"
+                                            StrokeWidth="2"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True" />
                     </chart:SfCartesianChart>
                 </Grid>
             </Border>
+
+            <view:PeaServicesView
+                Grid.Row="1"
+                HorizontalOptions="Fill"
+                VerticalOptions="Center" />
         </Grid>
-
-        <Grid
-            HorizontalOptions="Fill"
-            VerticalOptions="Center"
-            IsVisible="{Binding IsAddMeterVisible}">
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-
-            <Border
-                Grid.Row="0"
-                Margin="20"
-                Padding="16"
-                WidthRequest="400"
-                BackgroundColor="White"
-                StrokeThickness="0"
-                Shadow="{StaticResource BorderShadow}"
-                VerticalOptions="Center"
-                HorizontalOptions="Center">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="12" />
-                </Border.StrokeShape>
-
-                <Grid
-                    RowDefinitions="Auto,*,Auto" RowSpacing="8">
-
-                    <Label Grid.Row="0"
-                           Margin="0,0,0,16"
-                           Text="How to Register Your Electric Meter"
-                           TextColor="Black"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           HorizontalTextAlignment="Center" />
-
-                    <VerticalStackLayout Grid.Row="1" Spacing="12" Padding="8,0">
-                        <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="1. Obtain credential:&#x0a;" FontAttributes="Bold" />
-                                    <Span Text="Read instruction in the " />
-                                    <Span Text="link" TextColor="Blue" TextDecorations="Underline">
-                                        <Span.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped"  />
-                                        </Span.GestureRecognizers>
-                                    </Span>
-                                    <Span Text=". " />
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
-
-                        <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="2. Credential sent from PEA:&#x0a;" FontAttributes="Bold" />
-                                    <Span Text="Look in your inbox for a mail from " />
-                                    <Span Text="support.amr." FontAttributes="Bold" TextColor="Gray" />
-                                    <Span Text="." />
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
-
-                        <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="3. Start registration:&#x0a;" FontAttributes="Bold" />
-                                    <Span Text="Tap the green button below to get started." />
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
-                    </VerticalStackLayout>
-
-                    <HorizontalStackLayout
-                        Grid.Row="2"
-                        Margin="0,16,0,0"
-                        HorizontalOptions="Center">
-                        <button:SfButton
-                            Style="{StaticResource IconButtonWithOpacityStyle}"
-                            Command="{Binding AddAccountCommand}"
-                            IsVisible="{Binding IsAddMeterVisible}"
-                            ImageSource="{StaticResource AddMeterIcon}"
-                            ToolTipProperties.Text="Add meter" />
-
-                        <button:SfButton
-                            Style="{StaticResource IconButtonWithOpacityStyle}"
-                            Command="{Binding RemoveAccountCommand}"
-                            IsVisible="{Binding IsRemoveMeterVisible}"
-                            ImageSource="{StaticResource RemoveMeterIcon}"
-                            ToolTipProperties.Text="Remove meter" />
-
-                    </HorizontalStackLayout>
-                </Grid>
-
-            </Border>
-
-            <view:PeaServicesView Grid.Row="1"/>
-            
-        </Grid>
-
-
     </Grid>
 </ContentView>

@@ -102,7 +102,11 @@ public partial class InfoViewModel : ObservableObject
                 IsCustomerProfileViewVisible = true;
 
                 storageService.DailyPeriodReadings.CollectionChanged -= DailyPeriodPeaMeterDataCollectionChanged;
-
+                
+                MeterData = [];
+                MeterDataAverage1 = [];
+                MeterDataAverage7 = [];
+                MeterDataAverage30 = [];
                 return Task.CompletedTask;
             });
         });

@@ -2,20 +2,138 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:view="using:Pea.Meter.View"
              x:Class="Pea.Meter.View.HomeView">
+    <ContentView.Resources>
+        <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="EnableRippleEffect" Value="True" />
+            <Setter Property="ShowIcon" Value="True" />
+            <Setter Property="ImageSize" Value="22" />
+            <Setter Property="ImageAlignment" Value="Default" />
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="Stroke" Value="#2B3C56" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="Background" Value="#EEF2F7" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
 
+        <Style x:Key="IconButtonWithOpacityStyle" TargetType="button:SfButton"
+               BasedOn="{StaticResource IconButtonStyle}">
+            <Style.Triggers>
+                <Trigger TargetType="button:SfButton" Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Icon resources -->
+        <FontImageSource x:Key="AddMeterIcon" FontFamily="FontSolid" Glyph="&#xe541;" Color="DarkGreen" Size="28" />
+        <FontImageSource x:Key="RemoveMeterIcon" FontFamily="FontSolid" Glyph="&#xe540;" Color="DarkRed" Size="28" />
+
+        <!-- Shadow resource -->
+        <Shadow x:Key="BorderShadow" Brush="Black" Offset="0,4" Radius="10" Opacity="0.3" />
+    </ContentView.Resources>
+    
     <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="33*" />
-            <RowDefinition Height="33*" />
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+        
+         <Border
+                Grid.Column="0"
+                Margin="20"
+                Padding="16"
+                WidthRequest="400"
+                BackgroundColor="White"
+                StrokeThickness="0"
+                Shadow="{StaticResource BorderShadow}"
+                VerticalOptions="Center"
+                HorizontalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
 
-        <view:PeaServicesView 
-            Grid.Row="0"
-            Grid.RowSpan="2"
-                HorizontalOptions="Fill"
-                VerticalOptions="Center"/>
+                <Grid
+                    RowDefinitions="Auto,*,Auto" RowSpacing="8">
+
+                    <Label Grid.Row="0"
+                           Margin="0,0,0,16"
+                           Text="How to Register Your Electric Meter"
+                           TextColor="Black"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center" />
+
+                    <VerticalStackLayout Grid.Row="1" Spacing="12" Padding="8,0">
+                        <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="1. Obtain credential:&#x0a;" FontAttributes="Bold" />
+                                    <Span Text="Read instruction in the " />
+                                    <Span Text="link" TextColor="Blue" TextDecorations="Underline">
+                                        <Span.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped"  />
+                                        </Span.GestureRecognizers>
+                                    </Span>
+                                    <Span Text=". " />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="2. Credential sent from PEA:&#x0a;" FontAttributes="Bold" />
+                                    <Span Text="Look in your inbox for a mail from " />
+                                    <Span Text="support.amr." FontAttributes="Bold" TextColor="Gray" />
+                                    <Span Text="." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="3. Start registration:&#x0a;" FontAttributes="Bold" />
+                                    <Span Text="Tap the green button below to get started." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </VerticalStackLayout>
+
+                    <HorizontalStackLayout
+                        Grid.Row="2"
+                        Margin="0,16,0,0"
+                        HorizontalOptions="Center">
+                        <button:SfButton
+                            Style="{StaticResource IconButtonWithOpacityStyle}"
+                            Command="{Binding AddAccountCommand}"
+                            ImageSource="{StaticResource AddMeterIcon}"
+                            ToolTipProperties.Text="Register Meter" />
+                        <!-- -->
+                        <!-- <button:SfButton -->
+                        <!--     Style="{StaticResource IconButtonWithOpacityStyle}" -->
+                        <!--     Command="{Binding RemoveAccountCommand}" -->
+                        <!--     IsVisible="{Binding IsRemoveMeterVisible}" -->
+                        <!--     ImageSource="{StaticResource RemoveMeterIcon}" -->
+                        <!--     ToolTipProperties.Text="Remove meter" /> -->
+
+                    </HorizontalStackLayout>
+                </Grid>
+
+            </Border>
+
+        <!-- <view:PeaServicesView  -->
+        <!--     Grid.Row="0" -->
+        <!--     Grid.RowSpan="2" -->
+        <!--         HorizontalOptions="Fill" -->
+        <!--         VerticalOptions="Center"/> -->
     </Grid>
 </ContentView>

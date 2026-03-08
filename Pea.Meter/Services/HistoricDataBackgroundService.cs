@@ -28,6 +28,33 @@ public class HistoricDataBackgroundService
         this.logger = logger;
         this.dbContextFactory = dbContextFactory;
         this.storageService = storageService;
+
+        cancellationTokenSource = new CancellationTokenSource();
+
+        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this,
+            async void (r, m) => { TriggerImportTask(); });
+    }
+
+    private void TriggerImportTask()
+    {
+        try
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+
+            if (runningTask != null && !runningTask.IsCompleted)
+            {
+                logger.LogWarning("Import is already running, ignoring trigger request.");
+                return;
+            }
+
+            logger.LogInformation("Import triggered by user login for user: {UserId}", "N/A");
+
+            runningTask = Task.Run(async () => await ImportHistoricDataAsync(cancellationTokenSource.Token));
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in {Method}: {Message}", "Import", e.Message);
+        }
     }
 
     /// <summary>
@@ -35,30 +62,8 @@ public class HistoricDataBackgroundService
     /// </summary>
     public void TriggerImport()
     {
-
-
-        cancellationTokenSource = new CancellationTokenSource();
-        
-        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (r, m) =>
-        {
-            try
-            {
-                if (runningTask != null && !runningTask.IsCompleted)
-                {
-                    logger.LogWarning("Import is already running, ignoring trigger request.");
-                    return;
-                }
-                
-                logger.LogInformation("Import triggered by user login for user: {UserId}", "N/A");
-
-                runningTask = Task.Run(async () => await ImportHistoricDataAsync(cancellationTokenSource.Token));
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Error in {Method}: {Message}", nameof(TriggerImport), e.Message);
-            }
-        });
-        
+        CancelImport();
+        TriggerImportTask();
     }
 
     /// <summary>
@@ -149,7 +154,7 @@ public class HistoricDataBackgroundService
 
 internal partial class DataImportedMessage : ObservableObject
 {
-    [ObservableProperty] private  IList<PeaMeterReading> readings;
+    [ObservableProperty] private IList<PeaMeterReading> readings;
     [ObservableProperty] private DateTime date;
 
     public DataImportedMessage(IList<PeaMeterReading> readings, DateTime date)

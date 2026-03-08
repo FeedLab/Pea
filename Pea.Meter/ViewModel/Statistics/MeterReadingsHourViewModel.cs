@@ -68,6 +68,11 @@ public partial class MeterReadingsHourViewModel : ObservableObject
             {
                 storageService.DailyPeriodReadings.CollectionChanged -= DailyPeriodPeaMeterDataCollectionChanged;
 
+                TodayData = [];
+                MeterDataAverage1 = [];
+                MeterDataAverage7 = [];
+                MeterDataAverage30 = [];
+                
                 return Task.CompletedTask;
             });
         });
