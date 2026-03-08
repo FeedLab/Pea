@@ -67,7 +67,7 @@
 
             <Image
                 Margin="12"
-                Source="smart_home.png"
+                Source="pea_amr_banner_light_green.png"
                 Aspect="AspectFit"
                 HeightRequest="70"
                 HorizontalOptions="Center"

@@ -21,6 +21,8 @@ public class PeaAdapter
     };
 
     private readonly HttpClient client;
+    private string userName;
+    private string password;
     public string? CustomerId { get; private set; }
     public string? CustomerCode { get; private set; }
     public string? PeaNo { get; private set; }
@@ -53,6 +55,8 @@ public class PeaAdapter
 
     public async Task<bool> LoginUser(string username, string password)
     {
+        this.userName = username.Trim();
+        this.password = password.Trim();
         var isAuthenticated = false;
         
         try
@@ -359,6 +363,13 @@ public class PeaAdapter
         var requestUri =
             $"https://www.amr.pea.co.th/AMRWEB/ShowDailyProfile.aspx?Overview=1&Custid={CustomerId}&CustCode={CustomerCode}&MeterPoint={MeterPointId}&SumMeter=0&RepDate={day}/{month}/{year}&GrphType=Line&DataType=2&kWh=1&kVarh=0&kW=0&kVar=0&Cur=0&Vol=0&PF=0&PD=0&kWh1=0&kVarh1=0&kW1=0&kVar1=0";
 
+        var isAuthenticated = await LoginUser(userName, password);
+
+        if (isAuthenticated == false)
+        {
+            return new List<PeaMeterReading>();
+        }
+        
         var protectedResponse = await client.GetAsync(requestUri);
         var protectedHtml = await protectedResponse.Content.ReadAsStringAsync();
 

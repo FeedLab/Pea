@@ -113,7 +113,7 @@
                         <chart:SfCartesianChart.YAxes>
                             <chart:NumericalAxis>
                                 <chart:NumericalAxis.Title>
-                                    <chart:ChartAxisTitle Text="Consumption in KW per 15 minutes" />
+                                    <chart:ChartAxisTitle Text="KW per 15 minutes period" />
                                 </chart:NumericalAxis.Title>
                             </chart:NumericalAxis>
                         </chart:SfCartesianChart.YAxes>
