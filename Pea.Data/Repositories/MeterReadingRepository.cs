@@ -42,11 +42,12 @@ public class MeterReadingRepository : IMeterReadingRepository
 
     public async Task<IList<PeaMeterReading>> GetAllMeterReadingsAsync( CancellationToken cancellationToken = default)
     {
-        var entities = await context.MeterReadings
-            .OrderBy(m => m.PeriodStart)
-            .ToListAsync(cancellationToken);
+        var entities = await context.MeterReadings.ToListAsync(cancellationToken);
 
-        return entities.Select(e => new PeaMeterReading(e.PeriodStart, e.RateA, e.RateB, e.RateC)).ToList();
+        return entities
+            .OrderBy(e => e.PeriodStart)
+            .Select(e => new PeaMeterReading(e.PeriodStart, e.RateA, e.RateB, e.RateC))
+            .ToList();
     }
     
     public async Task DeleteAllAsync(CancellationToken cancellationToken = default)
