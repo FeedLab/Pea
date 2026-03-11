@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
+             x:Class="Pea.Meter.View.Solar.SolarSystemSizingView">
+    
+    <VerticalStackLayout Padding="20">
+
+        <!-- Page Title -->
+        <Label Text="Projected Monthly Production"
+               FontSize="20"
+               TextColor="DarkGreen"
+               HorizontalOptions="Center"
+               Margin="0,0,0,10"/>
+
+        <chart:SfCartesianChart>
+            <!-- X-axis: Months -->
+            <!-- <chart:SfCategoryAxis Title="Month" -->
+            <!--                       LabelStyle="{chart:ChartAxisLabelStyle TextColor=Blue}" /> -->
+            <!-- -->
+            <!-- ~1~ Y-axis: kWh @1@ -->
+            <!-- <chart:SfNumericalAxis Title="Energy (kWh)" -->
+            <!--                        LabelStyle="{chart:ChartAxisLabelStyle TextColor=DarkRed}" /> -->
+
+            <chart:SfCartesianChart.XAxes>
+                <chart:DateTimeAxis 
+                    IntervalType="Months"
+                    Interval="1">
+
+                    <chart:DateTimeAxis.LabelStyle>
+                        <chart:ChartAxisLabelStyle LabelFormat="MMM" />
+                    </chart:DateTimeAxis.LabelStyle>
+                </chart:DateTimeAxis>
+            </chart:SfCartesianChart.XAxes>
+
+            <chart:SfCartesianChart.YAxes>
+                <chart:NumericalAxis>
+                    <chart:NumericalAxis.Title>
+                        <chart:ChartAxisTitle Text="KWh Per Month" />
+                    </chart:NumericalAxis.Title>
+                </chart:NumericalAxis>
+            </chart:SfCartesianChart.YAxes>
+            
+            <!-- Column series with colored data labels -->
+            <chart:ColumnSeries ItemsSource="{Binding MeterDataMonthSummary}"
+                                Label="Monthly"
+                                XBindingPath="PeriodStart"
+                                YBindingPath="Total"
+                                Fill="Red"
+                                StrokeWidth="2"
+                                IsVisibleOnLegend="False"
+                                EnableTooltip="True">
+                <!--<chart:ColumnSeries.DataLabelSettings>
+                    <chart:CartesianDataLabelSettings 
+                        LabelPlacement="Outer"
+                        LabelStyle="{chart:ChartDataLabelStyle TextColor=Purple}" />
+                </chart:ColumnSeries.DataLabelSettings>-->
+            </chart:ColumnSeries>
+        </chart:SfCartesianChart>
+
+    </VerticalStackLayout>
+
+    
+</ContentView>

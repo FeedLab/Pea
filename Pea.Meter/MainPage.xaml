@@ -7,6 +7,7 @@
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:view="clr-namespace:Pea.Meter.View"
              xmlns:statistics="clr-namespace:Pea.Meter.View.Statistics"
+             xmlns:solar="clr-namespace:Pea.Meter.View.Solar"
              x:Class="Pea.Meter.MainPage"
              Shell.NavBarIsVisible="False">
     <ContentPage.Resources>
@@ -116,6 +117,13 @@
                                    FontSize="14">
                     <tabView:SfTabItem.Content>
                         <view:TouVsFlatRateView />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+                
+                <tabView:SfTabItem Header="Solar System Sizing" x:Name="SolarSystemSizing" TextColor="White"
+                                   FontSize="14">
+                    <tabView:SfTabItem.Content>
+                        <solar:SolarSystemSizingView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
                 

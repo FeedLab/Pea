@@ -21,6 +21,7 @@ public partial class StorageService : ObservableObject
     [ObservableProperty] private ObservableCollection<PeaMeterReading> hourlyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> weeklyAggregated = [];
+    [ObservableProperty] private ObservableCollection<PeaMeterReading> monthlyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyPeriodReadings = [];
     private readonly ILogger logger;
     private readonly PeaDbContextFactory dbContextFactory;
@@ -221,6 +222,7 @@ public partial class StorageService : ObservableObject
         HourlyAggregated.Clear();
         DailyAggregated.Clear();
         WeeklyAggregated.Clear();
+        MonthlyAggregated.Clear();
 
         // Aggregate by hour
         var hourlyList = AllMeterReadingsAsync
@@ -277,6 +279,25 @@ public partial class StorageService : ObservableObject
         WeeklyAggregated.AddRange(weeklyList);
 
         WeakReferenceMessenger.Default.Send(new WeeklyAggregationCompletedMessage(WeeklyAggregated));
+        
+        // Aggregate by month
+        var monthlyList = AllMeterReadingsAsync
+            .GroupBy(r => new { Year = r.PeriodStart.Year, Month = r.PeriodStart.Month })
+            .Select(g => new PeaMeterReading(
+                // Use the first day of the month as the PeriodStart
+                new DateTime(g.Key.Year, g.Key.Month, 1),
+                g.Sum(r => r.RateA),
+                g.Sum(r => r.RateB),
+                g.Sum(r => r.RateC),
+                // Minutes in the month (approximate: 60 * 24 * days)
+                60 * 24 * DateTime.DaysInMonth(g.Key.Year, g.Key.Month)
+            ))
+            .OrderBy(r => r.PeriodStart)
+            .ToObservableCollection();
+
+        MonthlyAggregated.AddRange(monthlyList);
+
+        WeakReferenceMessenger.Default.Send(new MonthlyAggregationCompletedMessage(MonthlyAggregated));
     }
 
 
@@ -319,6 +340,8 @@ public record HourlyAggregationCompletedMessage(ObservableCollection<PeaMeterRea
 public record DailyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);
 
 public record WeeklyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);
+
+public record MonthlyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);
 
 public record AllAggregationsCompletedMessage();
 

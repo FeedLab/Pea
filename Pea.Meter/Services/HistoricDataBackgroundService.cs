@@ -86,7 +86,7 @@ public class HistoricDataBackgroundService
         var startDate = DateTime.Today.AddDays(-1);
         // var startDate = peaMeterReading?.PeriodStart ?? new DateTime().Date.AddDays(-1) ; // Yesterday
 //        var maxDaysToTry = 365 * 5; // Safety limit: don't go back more than 5 years
-        var maxDaysToTry = 100;
+        var maxDaysToTry = 400;
         logger.LogInformation(
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
             startDate, "N/A");

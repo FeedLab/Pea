@@ -363,7 +363,7 @@ public class PeaAdapter
         var requestUri =
             $"https://www.amr.pea.co.th/AMRWEB/ShowDailyProfile.aspx?Overview=1&Custid={CustomerId}&CustCode={CustomerCode}&MeterPoint={MeterPointId}&SumMeter=0&RepDate={day}/{month}/{year}&GrphType=Line&DataType=2&kWh=1&kVarh=0&kW=0&kVar=0&Cur=0&Vol=0&PF=0&PD=0&kWh1=0&kVarh1=0&kW1=0&kVar1=0";
 
-        var isAuthenticated = await LoginUser(userName, password);
+        var isAuthenticated = await ValidateCredential(userName, password);
 
         if (isAuthenticated == false)
         {
