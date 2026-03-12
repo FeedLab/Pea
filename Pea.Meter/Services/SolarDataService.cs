@@ -1,85 +1,20 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿namespace Pea.Meter.Models.PhotovoltaicPower;
 
-namespace Pea.Meter.Models;
-
-public partial class PhotovoltaicPowerMonth : ObservableObject
-{
-    [ObservableProperty] private int year;
-    [ObservableProperty] private int month;
-    [ObservableProperty] private int daysInMonth;
-    [ObservableProperty] private string monthName;
-    [ObservableProperty] private decimal touCost;
-    [ObservableProperty] private List<PhotovoltaicPowerDay> days;
-
-    public PhotovoltaicPowerMonth(int year, int month)
-    {
-        Year = year;
-        Month = month;
-        DaysInMonth = DateTime.DaysInMonth(year, month);
-
-        MonthName = GetMonthNameFromValue(month);
-
-        Days = Enumerable.Range(1, daysInMonth)
-            .Select(d => new PhotovoltaicPowerDay(new DateOnly(year, month, d)))
-            .ToList();
-    }
-
-    partial void OnMonthChanged(int value)
-    {
-        MonthName = GetMonthNameFromValue(value);
-    }
-
-    private static string GetMonthNameFromValue(int value)
-    {
-        return new DateTime(DateTime.Now.Year, value, 1).ToString("MMMM");
-    }
-}
-
-public partial class PhotovoltaicPowerDay : ObservableObject
-{
-    [ObservableProperty] private DateOnly date;
-    [ObservableProperty] private List<PhotovoltaicPowerHour> hours;
-
-    public PhotovoltaicPowerDay(DateOnly date)
-    {
-        Date = date;
-
-        Hours = Enumerable.Range(0, 23)
-            .Select(d => new PhotovoltaicPowerHour(Date, d))
-            .ToList();
-    }
-}
-
-public partial class PhotovoltaicPowerHour : ObservableObject
-{
-    [ObservableProperty] private int hour;
-    [ObservableProperty] private DateOnly date;
-    [ObservableProperty] private decimal photovoltaicPower;
-
-    public PhotovoltaicPowerHour(DateOnly date, int hour)
-    {
-        Date = date;
-        Hour = hour;
-        
-        photovoltaicPower = SolarData.GetHourlyData(Date.Month, Hour);
-    }
-}
-
-public static class SolarData
+public static class SolarDataService
 {
     private const decimal BaseKw = 21.0m;
 
-    public static decimal GetHourlyData(int month, int hour)
+    public static decimal GetHourlyData(decimal installedKw, int month, int hour)
     {
         if (month is < 1 or > 12)
         {
             throw new ArgumentOutOfRangeException(nameof(month), "Month must be between 1 and 12.");
         }
 
-        return HourlyData[hour, month - 1] / BaseKw;
+        return (HourlyData[hour, month - 1] / BaseKw) * installedKw;
     }
 
-    public static decimal GetMonthlySummary(int month, int beginHour, int endHour)
+    public static decimal GetMonthlySummary(decimal installedKw, int month, int beginHour, int endHour)
     {
         if (month is < 1 or > 12)
         {
@@ -106,13 +41,13 @@ public static class SolarData
         
         for (var hour = beginHour; hour <= endHour; hour++)
         {
-            total += HourlyData[hour, monthIndex - 1];
+            total += (HourlyData[hour, month - 1] / BaseKw) * installedKw;
         }
 
         return total;
     }
 
-    public static List<decimal> GetDailyDataRange(int month, int beginHour, int endHour)
+    public static List<decimal> GetDailyDataRange(decimal installedKw, int month, int beginHour, int endHour)
     {
         if (month is < 1 or > 12)
         {
@@ -139,7 +74,7 @@ public static class SolarData
 
         for (var hour = beginHour; hour <= endHour; hour++)
         {
-            result.Add(HourlyData[hour, monthIndex] / BaseKw);
+            result.Add((HourlyData[hour, month - 1] / BaseKw) * installedKw);
         }
 
         return result;
