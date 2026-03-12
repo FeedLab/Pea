@@ -60,4 +60,13 @@ public class MeterReadingRepository : IMeterReadingRepository
         return await context.MeterReadings
             .AnyAsync(m => m.PeriodStart.Date == date.Date, cancellationToken);
     }
+    
+    public async Task<DateTime> GetOldestPeriodStartAsync(CancellationToken cancellationToken = default)
+    {
+        if (!await context.MeterReadings.AnyAsync(cancellationToken))
+        {
+            return DateTime.Now.Date;
+        }
+        return await context.MeterReadings.MinAsync(m => m.PeriodStart, cancellationToken);
+    }
 }

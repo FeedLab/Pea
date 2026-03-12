@@ -1,47 +1,58 @@
-﻿namespace Pea.Infrastructure.Models;
+﻿﻿using System.Diagnostics.CodeAnalysis;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace Pea.Infrastructure.Models;
 
 /// <summary>
 /// Model representing a monthly summary of meter readings aggregated by peak and off-peak periods
 /// </summary>
-public class MeterReadingMonthlySummary
+[SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator",
+    "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
+public partial class MeterReadingMonthlySummary : ObservableObject
 {
     /// <summary>
     /// The first day of the month for this summary
     /// </summary>
-    public DateTime Date { get; set; }
+    [ObservableProperty] private DateTime date;
 
     /// <summary>
     /// Total kilowatt-hours used during peak period
     /// </summary>
-    public decimal KwUsedAtPeek { get; set; }
+    [ObservableProperty] private decimal kwUsedAtPeek;
 
     /// <summary>
     /// Total kilowatt-hours used during off-peak period
     /// </summary>
-    public decimal KwUsedAtOffPeek { get; set; }
+    [ObservableProperty] private decimal kwUsedAtOffPeek;
 
     /// <summary>
     /// Total kilowatt-hours used (peak + off-peak)
     /// </summary>
-    public decimal Total { get; set; }
+    [ObservableProperty] private decimal total;
 
     /// <summary>
     /// Average kilowatt-hours used at peak period per record
     /// </summary>
-    public decimal AverageKwUsedAtPeekPerRecord { get; set; }
+    [ObservableProperty] private decimal averageKwUsedAtPeekPerRecord;
 
     /// <summary>
     /// Average kilowatt-hours used at off-peak period per record
     /// </summary>
-    public decimal AverageKwUsedAtOffPeekPerRecord { get; set; }
+    [ObservableProperty] private decimal averageKwUsedAtOffPeekPerRecord;
 
     /// <summary>
     /// Average kilowatt-hours used at peak period per day
     /// </summary>
-    public decimal AverageKwUsedAtPeekPerDay { get; set; }
+    [ObservableProperty] private decimal averageKwUsedAtPeekPerDay;
 
     /// <summary>
     /// Average kilowatt-hours used at off-peak period per day
     /// </summary>
-    public decimal AverageKwUsedAtOffPeekPerDay { get; set; }
+    [ObservableProperty] private decimal averageKwUsedAtOffPeekPerDay;
+    
+    /// <summary>
+    /// Total kilowatt-hours produced per month from solar cells
+    /// </summary>
+    [ObservableProperty] private decimal kwProducedPerMonth;
+    
 }

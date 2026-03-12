@@ -1,4 +1,4 @@
-﻿namespace Pea.Meter.Models.PhotovoltaicPower;
+﻿namespace Pea.Meter.Services;
 
 public static class SolarDataService
 {
@@ -44,7 +44,7 @@ public static class SolarDataService
             total += (HourlyData[hour, month - 1] / BaseKw) * installedKw;
         }
 
-        return total;
+        return total * 30;
     }
 
     public static List<decimal> GetDailyDataRange(decimal installedKw, int month, int beginHour, int endHour)

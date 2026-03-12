@@ -21,4 +21,9 @@ public interface IMeterReadingRepository
     /// Checks if readings exist for a specific date
     /// </summary>
     Task<bool> HasReadingsForDateAsync(DateTime date, CancellationToken cancellationToken = default);
-    }
+
+    /// <summary>
+    /// Gets the oldest period start date
+    /// </summary>
+    Task<DateTime> GetOldestPeriodStartAsync(CancellationToken cancellationToken = default);
+}

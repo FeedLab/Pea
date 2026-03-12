@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Pea.Meter.Models;
+namespace Pea.Meter.Models.PhotovoltaicPower;
 
 public partial class PhotovoltaicPowerDay : ObservableObject
 {
@@ -18,7 +18,7 @@ public partial class PhotovoltaicPowerDay : ObservableObject
 
     public decimal GetPhotovoltaicPower()
     {
-        return Hours.Sum(s => s.GetPhotovoltaicPower());
+        return Enumerable.Sum<PhotovoltaicPowerHour>(Hours, s => s.GetPhotovoltaicPower());
     }
     
     public decimal GetPhotovoltaicPower(int hour)

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Pea.Meter.Services;
 
-namespace Pea.Meter.Models;
+namespace Pea.Meter.Models.PhotovoltaicPower;
 
 public partial class PhotovoltaicPowerHour : ObservableObject
 {
@@ -13,7 +14,7 @@ public partial class PhotovoltaicPowerHour : ObservableObject
         Date = date;
         Hour = hour;
         
-        photovoltaicPower = SolarData.GetHourlyData(installedKw, Date.Month, Hour);
+        photovoltaicPower = SolarDataService.GetHourlyData(installedKw, Date.Month, Hour);
     }
     
     public decimal GetPhotovoltaicPower()

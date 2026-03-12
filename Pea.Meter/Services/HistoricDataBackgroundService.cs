@@ -80,20 +80,15 @@ public class HistoricDataBackgroundService
 
     private async Task ImportHistoricDataAsync(CancellationToken cancellationToken)
     {
-        // await Task.Delay(5000, cancellationToken);
-
-        // var peaMeterReading = storageService.DailyAggregated.FirstOrDefault();
-        var startDate = DateTime.Today.AddDays(-1);
-        // var startDate = peaMeterReading?.PeriodStart ?? new DateTime().Date.AddDays(-1) ; // Yesterday
-//        var maxDaysToTry = 365 * 5; // Safety limit: don't go back more than 5 years
-        var maxDaysToTry = 400;
-        logger.LogInformation(
-            "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
-            startDate, "N/A");
-
         // Create database context and repository
         using var dbContext = dbContextFactory.CreateDbContext();
         var repository = new MeterReadingRepository(dbContext);
+        
+        var startDate = await GetOldestPeriodStartAsync(cancellationToken, repository);
+        var maxDaysToTry = 365 * 5; // Safety limit: don't go back more than 5 years
+        logger.LogInformation(
+            "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
+            startDate, "N/A");
 
         var totalReadings = 0;
 
@@ -149,6 +144,14 @@ public class HistoricDataBackgroundService
         }
 
         logger.LogInformation("Import completed. Total readings imported and saved: {Total}", totalReadings);
+    }
+
+    private static async Task<DateTime> GetOldestPeriodStartAsync(CancellationToken cancellationToken,
+        MeterReadingRepository repository)
+    {
+        var date = await repository.GetOldestPeriodStartAsync(cancellationToken);
+
+        return date.AddDays(-1);
     }
 }
 

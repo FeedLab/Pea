@@ -58,7 +58,7 @@ public class PeaAdapter
         this.userName = username.Trim();
         this.password = password.Trim();
         var isAuthenticated = false;
-        
+
         try
         {
             isAuthenticated = await Login(username, password);
@@ -356,6 +356,27 @@ public class PeaAdapter
 
     public async Task<IList<PeaMeterReading>> ShowDailyReadings(DateTime selectedDate)
     {
+        var result = await ShowDailyReadingsInternal(selectedDate);
+
+        if (result == null)
+        {
+            var isAuthenticated = await ValidateCredential(userName, password);
+
+            if (isAuthenticated == false)
+            {
+                return new List<PeaMeterReading>();
+            }
+
+            result = await ShowDailyReadingsInternal(selectedDate);
+
+            return result ?? new List<PeaMeterReading>();
+        }
+
+        return result;
+    }
+
+    public async Task<IList<PeaMeterReading>?> ShowDailyReadingsInternal(DateTime selectedDate)
+    {
         var year = selectedDate.Year.ToString();
         var month = selectedDate.Month.ToString("00");
         var day = selectedDate.Day.ToString("00");
@@ -363,19 +384,20 @@ public class PeaAdapter
         var requestUri =
             $"https://www.amr.pea.co.th/AMRWEB/ShowDailyProfile.aspx?Overview=1&Custid={CustomerId}&CustCode={CustomerCode}&MeterPoint={MeterPointId}&SumMeter=0&RepDate={day}/{month}/{year}&GrphType=Line&DataType=2&kWh=1&kVarh=0&kW=0&kVar=0&Cur=0&Vol=0&PF=0&PD=0&kWh1=0&kVarh1=0&kW1=0&kVar1=0";
 
-        var isAuthenticated = await ValidateCredential(userName, password);
+        // var isAuthenticated = await ValidateCredential(userName, password);
+        //
+        // if (isAuthenticated == false)
+        // {
+        //     return new List<PeaMeterReading>();
+        // }
 
-        if (isAuthenticated == false)
-        {
-            return new List<PeaMeterReading>();
-        }
-        
         var protectedResponse = await client.GetAsync(requestUri);
         var protectedHtml = await protectedResponse.Content.ReadAsStringAsync();
 
         if (protectedHtml.Contains("txtUsername") || protectedHtml.Contains("txtPassword"))
         {
             logger.LogDebug("Login failed - still on login page");
+            return null;
         }
         else
         {
