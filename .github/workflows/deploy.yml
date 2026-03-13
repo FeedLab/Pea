@@ -16,8 +16,8 @@ jobs:
         
       - name: Restore Keystore
         run: |
-          [System.Convert]::FromBase64String("${{ secrets.KEYSTORE_BASE64 }}") | Set-Content -Path pea.smart.meter.keystore -Encoding Byte
-         
+          $bytes = [System.Convert]::FromBase64String("${{ secrets.KEYSTORE_BASE64 }}") [System.IO.File]::WriteAllBytes("pea.smart.meter.keystore", $bytes)
+          
       - name: Print current directory
         run: pwd
         
