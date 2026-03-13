@@ -22,7 +22,7 @@ public partial class SolarSystemSizingViewModel : ObservableObject
     [ObservableProperty] private decimal consumption6HighestMonth;
     [ObservableProperty] private decimal solarSizeNeeded;
     [ObservableProperty] private decimal batterySizeNeeded;
-    
+
     const int PeekMonths = 6;
 
     public SolarSystemSizingViewModel(ILogger<SolarSystemSizingViewModel> logger, StorageService storageService)
@@ -162,29 +162,38 @@ public partial class SolarSystemSizingViewModel : ObservableObject
             {
                 var peekRecords = g.Where(w => w.IsPeekPeriod).ToList();
                 var offPeekRecords = g.Where(w => !w.IsPeekPeriod).ToList();
-                var total = peekRecords.Sum(s => s.KwUsed) + offPeekRecords.Sum(s => s.KwUsed);
+                var totalKw = peekRecords.Sum(s => s.KwUsed) + offPeekRecords.Sum(s => s.KwUsed);
 
                 var peekSum = peekRecords.Sum(s => s.KwUsed);
                 var offPeekSum = offPeekRecords.Sum(s => s.KwUsed);
 
                 // distinct days in this month for normalization
-                var peekDays = peekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
-                var offPeekDays = offPeekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
+                var daysInMonth = DateTime.DaysInMonth(g.Key.Year, g.Key.Month);
+                //var peekDays = peekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
+                //var offPeekDays = offPeekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
 
+                var dateTime = new DateTime(g.Key.Year, g.Key.Month, 1);
+                
                 return new MeterReadingMonthlySummary
                 {
-                    Date = new DateTime(g.Key.Year, g.Key.Month, 1),
+                    Date = dateTime,
                     KwUsedAtPeek = peekSum,
                     KwUsedAtOffPeek = offPeekSum,
-                    Total = total,
+                    KwUsedTotal = totalKw,
 
                     // average per record
                     AverageKwUsedAtPeekPerRecord = peekRecords.Any() ? peekRecords.Average(s => s.KwUsed) : 0,
                     AverageKwUsedAtOffPeekPerRecord = offPeekRecords.Any() ? offPeekRecords.Average(s => s.KwUsed) : 0,
 
                     // average per day
-                    AverageKwUsedAtPeekPerDay = peekDays > 0 ? peekSum / peekDays : 0,
-                    AverageKwUsedAtOffPeekPerDay = offPeekDays > 0 ? offPeekSum / offPeekDays : 0
+                    AverageKwUsedAtPeekPerDay = daysInMonth > 0 ? peekSum / daysInMonth : 0,
+                    AverageKwUsedAtOffPeekPerDay = daysInMonth > 0 ? offPeekSum / daysInMonth : 0,
+                    
+                    CalculateProducedSolarKwDaily = (decimal)PvCalculatorService
+                        .CalculateKwMonthly(dateTime, 1, 3, 180 ) /daysInMonth,
+
+                    CalculateProducedSolarKwMonthly = (decimal)PvCalculatorService
+                        .CalculateKwMonthly(dateTime, 1, 3, 180 )
                 };
             })
             .ToList();
@@ -193,22 +202,22 @@ public partial class SolarSystemSizingViewModel : ObservableObject
             .Sum(s => s.Total);
         
         var consumption6HighestMonthList = costCompareMonthList
-            .OrderByDescending(o => o.KwUsedAtPeek + o.KwUsedAtOffPeek)
+            .OrderByDescending(o => o.KwUsedTotal)
             .Take(PeekMonths)
             .ToList();
        
         DailyConsumptionAverage6Month = consumption6HighestMonthList
-            .Sum(s => s.KwUsedAtPeek + s.KwUsedAtOffPeek) / (PeekMonths * 30);
+            .Sum(s => s.KwUsedTotal) / (consumption6HighestMonthList.Count * 30);
         
         DailyPeekConsumptionAverage6Month = consumption6HighestMonthList
-            .Sum(s => s.KwUsedAtPeek) / (PeekMonths * 30);
+            .Sum(s => s.KwUsedAtPeek) / (consumption6HighestMonthList.Count * 30);
         
-        var peekConsumptionAverage6Month = consumption6HighestMonthList
-            .Average(s => s.KwUsedAtPeek);
+        var calculateProducedSolarKwDailyAverage = consumption6HighestMonthList
+            .Average(s => s.CalculateProducedSolarKwDaily);
+        
+        SolarSizeNeeded = DailyPeekConsumptionAverage6Month / 5;
 
-        SolarSizeNeeded = DailyPeekConsumptionAverage6Month / 4;
-
-        BatterySizeNeeded = SolarSizeNeeded * 0.5m;
+        BatterySizeNeeded = DailyPeekConsumptionAverage6Month - (calculateProducedSolarKwDailyAverage * SolarSizeNeeded);
 
         var meterReadingMonthlySummaries = costCompareMonthList
             .Where(period => period.Date >= startDate && period.Date < endDate)

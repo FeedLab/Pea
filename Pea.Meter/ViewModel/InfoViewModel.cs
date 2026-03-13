@@ -1,9 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
-using CommunityToolkit.Maui;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Pea.Infrastructure.Models;
@@ -20,10 +18,6 @@ namespace Pea.Meter.ViewModel;
 public partial class InfoViewModel : ObservableObject
 {
     private readonly ILogger<InfoViewModel> logger;
-    private readonly CustomerProfileViewModel customerProfile;
-    private readonly ILoginHelper loginHelper;
-    private readonly IPopupService popupService;
-    private readonly HistoricDataImportService historicDataImportService;
     private readonly StorageService storageService;
 
     [ObservableProperty] private IAuthData? authData;
@@ -35,23 +29,16 @@ public partial class InfoViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage30 = [];
 
     [ObservableProperty] private bool isAddMeterVisible = true;
-    [ObservableProperty] private bool isMeterDataVisible = false;
-    [ObservableProperty] private bool isRemoveMeterVisible = false;
-    [ObservableProperty] private bool isCustomerProfileViewVisible = false;
+    [ObservableProperty] private bool isMeterDataVisible;
+    [ObservableProperty] private bool isRemoveMeterVisible;
+    [ObservableProperty] private bool isCustomerProfileViewVisible;
     [ObservableProperty] private DateTime dateMeterData = DateTime.Today;
-    private AuthData? authDataLogin;
 
-    public InfoViewModel(ILogger<InfoViewModel> logger, CustomerProfileViewModel customerProfile,
+    public InfoViewModel(ILogger<InfoViewModel> logger,
         AuthDataOptions authDataOptions,
-        ILoginHelper loginHelper, IPopupService popupService,
-        HistoricDataImportService historicDataImportService,
         StorageService storageService)
     {
         this.logger = logger;
-        this.customerProfile = customerProfile;
-        this.loginHelper = loginHelper;
-        this.popupService = popupService;
-        this.historicDataImportService = historicDataImportService;
         this.storageService = storageService;
 
         // Initialize AuthData from saved settings
@@ -73,7 +60,7 @@ public partial class InfoViewModel : ObservableObject
     private void CreateDataImportedSubscription()
     {
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this,
-            (r, m) =>
+            (_, _) =>
             {
                 MainThread.InvokeOnMainThreadAsync(async () =>
                 {
@@ -94,7 +81,7 @@ public partial class InfoViewModel : ObservableObject
     private void CreateNewDaySubscription()
     {
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
-            (r, m) =>
+            (_, m) =>
             {
                 MainThread.InvokeOnMainThreadAsync(async () =>
                 {
@@ -115,7 +102,7 @@ public partial class InfoViewModel : ObservableObject
 
     private void CreateLoggedOutSubscription()
     {
-        WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this, (_, _) =>
         {
             MainThread.InvokeOnMainThreadAsync(() =>
             {
@@ -136,7 +123,7 @@ public partial class InfoViewModel : ObservableObject
 
     private void CreateLoggedInSubscription()
     {
-        WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
+        WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (_, _) =>
         {
             IsAddMeterVisible = false;
             IsMeterDataVisible = true;
@@ -148,7 +135,7 @@ public partial class InfoViewModel : ObservableObject
 
     private void CreateAllAggregationsCompletedSubscription()
     {
-        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (r, m) =>
+        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (_, _) =>
         {
             try
             {
@@ -214,7 +201,7 @@ public partial class InfoViewModel : ObservableObject
                 //             MeterData[index] = e.NewItems[i];
                 //         }
                 //     }
-                break;
+                //break;
             case NotifyCollectionChangedAction.Move:
                 // For ObservableCollection, typically no action needed as order may not matter
                 // or rebuild collection if order is important

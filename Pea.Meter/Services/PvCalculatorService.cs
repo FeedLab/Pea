@@ -36,7 +36,7 @@ public class PvCalculatorService
         double totalKwh = 0;
         var dayStart = time.Date;
 
-        for (int hour = 0; hour < 24; hour++)
+        for (var hour = 0; hour < 24; hour++)
         {
             var currentTime = dayStart.AddHours(hour);
             var powerKw = CalculateKw(latitude, longitude, currentTime, systemKWp, tilt, panelAzimuth, timezone);
@@ -68,7 +68,7 @@ public class PvCalculatorService
         var monthStart = new DateTime(time.Year, time.Month, 1);
         var daysInMonth = DateTime.DaysInMonth(time.Year, time.Month);
 
-        for (int day = 0; day < daysInMonth; day++)
+        for (var day = 0; day < daysInMonth; day++)
         {
             var currentDay = monthStart.AddDays(day);
             var dailyKwh = CalculateKwDaily(latitude, longitude, currentDay, systemKWp, tilt, panelAzimuth, timezone);
@@ -88,6 +88,50 @@ public class PvCalculatorService
         return CalculateKw(ThailandLatitude, ThailandLongitude, time, systemKWp, tilt, panelAzimuth, timezone);
     }
 
+    public static int GetProductiveSolarHours(
+        DateTime time,
+        double systemKWp,
+        double tilt,
+        double panelAzimuth,
+        int timezone = 7,
+        double fraction = 0.03)
+    {
+        return GetProductiveSolarHours(ThailandLatitude, ThailandLongitude, time, systemKWp, tilt, panelAzimuth, timezone, fraction);
+    }
+
+    public static int GetProductiveSolarHours(
+        double latitude,
+        double longitude,
+        DateTime time,
+        double systemKWp,
+        double tilt,
+        double panelAzimuth,
+        int timezone = 7,
+        double fraction = 0.03) // 3 Percent
+    {
+        // Step 1: total daily energy
+        var totalKwh = CalculateKwDaily(latitude, longitude, time, systemKWp, tilt, panelAzimuth, timezone);
+
+        // Step 2: threshold
+        var threshold = totalKwh * fraction;
+
+        var productiveHours = 0;
+        var dayStart = time.Date;
+
+        // Step 3: loop through hours
+        for (var hour = 0; hour < 24; hour++)
+        {
+            var currentTime = dayStart.AddHours(hour);
+            var powerKw = CalculateKw(latitude, longitude, currentTime, systemKWp, tilt, panelAzimuth, timezone);
+
+            if (powerKw >= threshold)
+                productiveHours++;
+        }
+
+        return productiveHours;
+    }
+
+    
     public static double CalculateKw(
         double latitude,
         double longitude,
@@ -108,22 +152,22 @@ public class PvCalculatorService
                             Math.Sin(DegToRad(360.0 * (284 + day) / 365)));
 
         // equation of time
-        var B = DegToRad((360.0 / 365.0) * (day - 81));
-        var EoT = 9.87 * Math.Sin(2 * B)
-                  - 7.53 * Math.Cos(B)
-                  - 1.5 * Math.Sin(B);
+        var b = DegToRad((360.0 / 365.0) * (day - 81));
+        var eoT = 9.87 * Math.Sin(2 * b)
+                  - 7.53 * Math.Cos(b)
+                  - 1.5 * Math.Sin(b);
 
         // local standard time meridian
-        double LSTM = 15 * timezone;
+        double lstm = 15 * timezone;
 
-        var TC = 4 * (longitude - LSTM) + EoT;
+        var tc = 4 * (longitude - lstm) + eoT;
 
         var localTime =
             time.Hour +
             time.Minute / 60.0 +
             time.Second / 3600.0;
 
-        var solarTime = localTime + TC / 60.0;
+        var solarTime = localTime + tc / 60.0;
 
         // hour angle
         var hra = DegToRad(15 * (solarTime - 12));
@@ -174,9 +218,9 @@ public class PvCalculatorService
             dhi * (1 + Math.Cos(tiltRad)) / 2;
 
         // convert to PV output
-        var powerKW = systemKWp * (poa / 1000.0) * SystemEfficiency;
+        var powerKw = systemKWp * (poa / 1000.0) * SystemEfficiency;
 
-        return Math.Max(0, powerKW);
+        return Math.Max(0, powerKw);
     }
 
     static double DegToRad(double deg)

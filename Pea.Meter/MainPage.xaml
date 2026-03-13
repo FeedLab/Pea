@@ -57,7 +57,7 @@
         <Grid
             Grid.Row="0"
             HorizontalOptions="Fill"
-            VerticalOptions="Fill">
+            VerticalOptions="Start">
             <!--<Image
                 Margin="12"
                 Source="pea_amp.png"
@@ -76,7 +76,7 @@
 
             <view:CustomerInfoView
                 HorizontalOptions="End"
-                VerticalOptions="Start" />
+                VerticalOptions="Center" />
         </Grid>
 
         <tabView:SfTabView

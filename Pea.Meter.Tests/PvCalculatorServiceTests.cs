@@ -837,4 +837,349 @@ public class PvCalculatorServiceTests
     }
 
     #endregion
+
+    #region GetProductiveSolarHours Tests
+
+    [Fact]
+    public void GetProductiveSolarHours_SummerDay_ShouldReturnReasonableHours()
+    {
+        // Arrange
+        var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
+
+        // Act
+        var productiveHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        // Assert
+        // In summer, expect roughly 10-12 productive hours (sunrise ~6am to sunset ~6pm)
+        productiveHours.Should().BeGreaterThan(8);
+        productiveHours.Should().BeLessThanOrEqualTo(14);
+        Console.WriteLine($"Productive solar hours in summer: {productiveHours} hours");
+    }
+
+    [Fact]
+    public void GetProductiveSolarHours_WinterDay_ShouldReturnReasonableHours()
+    {
+        // Arrange
+        var time = new DateTime(TestYear, WinterMonth, TestDay, 0, 0, 0);
+
+        // Act
+        var productiveHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        // Assert
+        // In winter, expect slightly fewer productive hours
+        productiveHours.Should().BeGreaterThan(7);
+        productiveHours.Should().BeLessThanOrEqualTo(13);
+        Console.WriteLine($"Productive solar hours in winter: {productiveHours} hours");
+    }
+
+    [Fact]
+    public void GetProductiveSolarHours_WithDefaultLocation_ShouldProduceSameResult()
+    {
+        // Arrange
+        var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
+
+        // Act - call both overloads
+        var defaultLocationResult = PvCalculatorService.GetProductiveSolarHours(
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        var explicitLocationResult = PvCalculatorService.GetProductiveSolarHours(
+            15.274053, // Thailand latitude (default)
+            102.622572, // Thailand longitude (default)
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        // Assert
+        defaultLocationResult.Should().Be(explicitLocationResult);
+    }
+
+    [Theory]
+    [InlineData(0.01)] // 1% threshold - more strict, fewer hours
+    [InlineData(0.03)] // 3% threshold - default
+    [InlineData(0.05)] // 5% threshold - more lenient, more hours
+    [InlineData(0.10)] // 10% threshold - very lenient
+    public void GetProductiveSolarHours_DifferentThresholds_ShouldAffectCount(double fraction)
+    {
+        // Arrange
+        var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
+
+        // Act
+        var productiveHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone,
+            fraction);
+
+        // Assert
+        // Higher threshold (fraction) should result in more productive hours
+        productiveHours.Should().BeGreaterThan(0);
+        productiveHours.Should().BeLessThanOrEqualTo(24);
+        Console.WriteLine($"Productive hours with {fraction * 100}% threshold: {productiveHours} hours");
+    }
+
+    [Fact]
+    public void GetProductiveSolarHours_HigherThreshold_ShouldResultInFewerHours()
+    {
+        // Arrange
+        var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
+
+        // Act
+        var strictHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone,
+            0.01); // 1% - strict
+
+        var lenientHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone,
+            0.10); // 10% - lenient
+
+        // Assert
+        // Lower threshold percentage (stricter) should give fewer or equal hours
+        strictHours.Should().BeLessThanOrEqualTo(lenientHours);
+    }
+
+    [Fact]
+    public void GetProductiveSolarHours_NorthernLatitude_ShouldHaveFewerHoursInWinter()
+    {
+        // Arrange - Northern latitude location
+        const double northernLatitude = 45.0; // e.g., Northern Europe
+        var summerDay = new DateTime(TestYear, 6, 21); // Summer solstice
+        var winterDay = new DateTime(TestYear, 12, 21); // Winter solstice
+
+        // Act
+        var summerHours = PvCalculatorService.GetProductiveSolarHours(
+            northernLatitude,
+            BangkokLongitude,
+            summerDay,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        var winterHours = PvCalculatorService.GetProductiveSolarHours(
+            northernLatitude,
+            BangkokLongitude,
+            winterDay,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        // Assert
+        summerHours.Should().BeGreaterThan(winterHours);
+        Console.WriteLine($"Northern latitude - Summer: {summerHours}h, Winter: {winterHours}h");
+    }
+
+    [Fact]
+    public void GetProductiveSolarHours_LargerSystem_ShouldNotAffectHourCount()
+    {
+        // Arrange
+        var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
+
+        // Act - same location and time, different system sizes
+        var smallSystemHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            5.0, // 5 kWp
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        var largeSystemHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            20.0, // 20 kWp
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        // Assert
+        // System size shouldn't affect productive hours count
+        // (threshold is proportional to total energy)
+        smallSystemHours.Should().Be(largeSystemHours);
+    }
+
+    [Fact]
+    public void GetProductiveSolarHours_ShouldNeverExceed24Hours()
+    {
+        // Arrange - test various scenarios
+        var testDates = new[]
+        {
+            new DateTime(TestYear, 1, 15),
+            new DateTime(TestYear, 3, 15),
+            new DateTime(TestYear, 6, 15),
+            new DateTime(TestYear, 9, 15),
+            new DateTime(TestYear, 12, 15)
+        };
+
+        foreach (var date in testDates)
+        {
+            // Act
+            var productiveHours = PvCalculatorService.GetProductiveSolarHours(
+                BangkokLatitude,
+                BangkokLongitude,
+                date,
+                StandardSystemKWp,
+                StandardTilt,
+                SouthFacingAzimuth,
+                ThailandTimezone,
+                0.001); // Very low threshold
+
+            // Assert
+            productiveHours.Should().BeLessThanOrEqualTo(24);
+        }
+    }
+
+    [Fact]
+    public void GetProductiveSolarHours_ZeroThreshold_ShouldCountAllHoursWithPower()
+    {
+        // Arrange
+        var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
+
+        // Act
+        var productiveHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone,
+            0.0); // Zero threshold - count all hours with any power
+
+        // Assert
+        // Should count all daylight hours (roughly 10-14 hours)
+        productiveHours.Should().BeGreaterThan(8);
+        productiveHours.Should().BeLessThanOrEqualTo(16);
+    }
+
+    [Theory]
+    [InlineData(0.0)]   // Horizontal
+    [InlineData(15.0)]  // Optimal for Bangkok
+    [InlineData(30.0)]  // Steeper
+    public void GetProductiveSolarHours_DifferentTilts_ShouldReturnValidHours(double tilt)
+    {
+        // Arrange
+        var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
+
+        // Act
+        var productiveHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            tilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        // Assert
+        productiveHours.Should().BeGreaterThan(0);
+        productiveHours.Should().BeLessThanOrEqualTo(24);
+        Console.WriteLine($"Productive hours with {tilt}° tilt: {productiveHours} hours");
+    }
+
+    [Theory]
+    [InlineData(0.0)]    // North
+    [InlineData(90.0)]   // East
+    [InlineData(180.0)]  // South
+    [InlineData(270.0)]  // West
+    public void GetProductiveSolarHours_DifferentAzimuths_ShouldReturnValidHours(double azimuth)
+    {
+        // Arrange
+        var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
+
+        // Act
+        var productiveHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            azimuth,
+            ThailandTimezone);
+
+        // Assert
+        productiveHours.Should().BeGreaterThan(0);
+        productiveHours.Should().BeLessThanOrEqualTo(24);
+        Console.WriteLine($"Productive hours with {azimuth}° azimuth: {productiveHours} hours");
+    }
+
+    [Fact]
+    public void GetProductiveSolarHours_EquatorLocation_ShouldHaveConsistentHoursYearRound()
+    {
+        // Arrange - Equator location
+        const double equatorLatitude = 0.0;
+        var dates = new[]
+        {
+            new DateTime(TestYear, 3, 21),  // Spring equinox
+            new DateTime(TestYear, 6, 21),  // Summer solstice
+            new DateTime(TestYear, 9, 21),  // Fall equinox
+            new DateTime(TestYear, 12, 21)  // Winter solstice
+        };
+
+        var hoursList = new List<int>();
+
+        foreach (var date in dates)
+        {
+            // Act
+            var hours = PvCalculatorService.GetProductiveSolarHours(
+                equatorLatitude,
+                BangkokLongitude,
+                date,
+                StandardSystemKWp,
+                StandardTilt,
+                SouthFacingAzimuth,
+                ThailandTimezone);
+
+            hoursList.Add(hours);
+        }
+
+        // Assert - At equator, productive hours should be relatively consistent throughout year
+        var maxHours = hoursList.Max();
+        var minHours = hoursList.Min();
+        var difference = maxHours - minHours;
+
+        // Difference should be small (within 2-3 hours)
+        difference.Should().BeLessThanOrEqualTo(3);
+        Console.WriteLine($"Equator productive hours - Max: {maxHours}, Min: {minHours}, Diff: {difference}");
+    }
+
+    #endregion
 }

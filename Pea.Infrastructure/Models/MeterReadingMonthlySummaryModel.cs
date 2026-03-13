@@ -28,7 +28,7 @@ public partial class MeterReadingMonthlySummary : ObservableObject
     /// <summary>
     /// Total kilowatt-hours used (peak + off-peak)
     /// </summary>
-    [ObservableProperty] private decimal total;
+    [ObservableProperty] private decimal kwUsedTotal;
 
     /// <summary>
     /// Average kilowatt-hours used at peak period per record
@@ -54,5 +54,10 @@ public partial class MeterReadingMonthlySummary : ObservableObject
     /// Total kilowatt-hours produced per month from solar cells
     /// </summary>
     [ObservableProperty] private decimal kwProducedPerMonth;
+    
+    
+    [ObservableProperty] private decimal calculateProducedSolarKwDaily;
+
+    [ObservableProperty] private decimal calculateProducedSolarKwMonthly;
     
 }
