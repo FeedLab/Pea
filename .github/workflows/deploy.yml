@@ -14,12 +14,11 @@ jobs:
         run: dotnet --version
       - uses: actions/checkout@v3
         
-      - name: Restore Keystore
+      - name: Setup Keystore File
         run: |
-          "${{ secrets.KEYSTORE_BASE64 }}" | Out-File -FilePath temp.txt -NoNewline
-          $bytes = [System.Convert]::FromBase64String((Get-Content temp.txt -Raw))
-          [System.IO.File]::WriteAllBytes("pea.smart.meter.keystore", $bytes)
-          Remove-Item temp.txt
+          $base64 = "${{ secrets.KEYSTORE_BASE64 }}" -replace "`r`n",""  -replace "`n",""
+          $bytes = [System.Convert]::FromBase64String($base64)
+          [System.IO.File]::WriteAllBytes("Pea.Meter\pea.smart.meter.keystore", $bytes)
           
       - name: Print current directory
         run: pwd
