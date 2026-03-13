@@ -13,9 +13,10 @@ jobs:
       - name: Check dotnet on first run
         run: dotnet --version
       - uses: actions/checkout@v3
-      - name: Setup Keystore File
+        
+      - name: Restore Keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > pea.smart.meter.keystore
+          [System.Convert]::FromBase64String("${{ secrets.KEYSTORE_BASE64 }}") | Set-Content -Path pea.smart.meter.keystore -Encoding Byte
          
       - name: Print current directory
         run: pwd
