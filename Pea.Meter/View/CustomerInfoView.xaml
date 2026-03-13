@@ -6,7 +6,7 @@
 
     <Border
         IsVisible="{Binding IsCustomerProfileVisible}"
-        Margin="0,8,16,0"
+        Margin="0"
         BackgroundColor="White"
             Stroke="Black"
             StrokeThickness="0"

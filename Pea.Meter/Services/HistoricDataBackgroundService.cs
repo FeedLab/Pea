@@ -85,7 +85,7 @@ public class HistoricDataBackgroundService
         var repository = new MeterReadingRepository(dbContext);
         
         var startDate = await GetOldestPeriodStartAsync(cancellationToken, repository);
-        var maxDaysToTry = 365 * 5; // Safety limit: don't go back more than 5 years
+        var maxDaysToTry = 365 * 2; // Safety limit: don't go back more than 2 years
         logger.LogInformation(
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
             startDate, "N/A");
@@ -101,6 +101,16 @@ public class HistoricDataBackgroundService
             }
 
             var targetDate = startDate.AddDays(-i);
+
+            var  historyLengthTs = DateTime.Now.Date - targetDate;
+            if (historyLengthTs.TotalDays > maxDaysToTry)
+            {
+                logger.LogWarning(
+                    "Reached maximum history length of {MaxDays} days. Stopping import to avoid excessive data fetching.",
+                    maxDaysToTry);
+
+                break;
+            }
 
             try
             {

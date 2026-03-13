@@ -165,10 +165,10 @@
                 Grid.Column="0"
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
-                
+                TextColor="Black"
                 Margin="24"
             LineBreakMode="WordWrap"
-            FontSize="18">
+            FontSize="16">
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="With an annual consumption of " />

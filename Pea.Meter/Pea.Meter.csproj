@@ -28,10 +28,10 @@
 		<MauiXamlInflator>SourceGen</MauiXamlInflator>
 
 		<!-- Display name -->
-		<ApplicationTitle>Pea.Meter</ApplicationTitle>
+		<ApplicationTitle>PEA Smart Meter</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.pea.meter</ApplicationId>
+		<ApplicationId>com.ivdata.pea.meter</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>

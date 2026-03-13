@@ -75,6 +75,7 @@
                 VerticalOptions="Start" />
 
             <view:CustomerInfoView
+                Margin="0,-8,20,0"
                 HorizontalOptions="End"
                 VerticalOptions="Center" />
         </Grid>
