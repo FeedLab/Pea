@@ -1,0 +1,44 @@
+name: PEA Smart Meter
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-android:
+    runs-on: windows-latest
+    steps:
+      - name: Check dotnet on first run
+        run: dotnet --version
+      - uses: actions/checkout@v3
+      - name: Setup Keystore File
+        run: |
+          echo "${{ secrets.KEYSTORE_FILE }}" > basket.keystore.asc
+          gpg -d --passphrase "${{ secrets.KEYSTORE_PASSWORD_GPG }}" --batch basket.keystore.asc > .\BasketPhoneApp\basket.keystore
+          
+      - name: Print current directory
+        run: pwd
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+      - name: Install MAUI workload
+        run: dotnet workload install maui
+
+      - name: Print directory
+        run: pwd
+            
+      - name: Build
+        run: dotnet publish BasketPhoneApp/BasketPhoneApp.csproj -verbosity:detailed -f net9.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=basket.keystore -p:AndroidSigningKeyAlias=ghactionkey -p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" -p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD_ALIAS }}"
+      - name: List build output
+        run: ls -R ./**/*-Signed.aab
+      - uses: r0adkll/upload-google-play@v1.1.3
+        name: Upload Android Artifact to Play Console
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT }}
+          packageName: com.basket.maui
+          releaseFiles: BasketPhoneApp/bin/Release/net9.0-android/publish/com.basket.maui-Signed.aab
+          track: internal
