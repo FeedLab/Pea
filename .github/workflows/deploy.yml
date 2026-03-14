@@ -70,3 +70,4 @@ jobs:
           packageName: com.ivdata.pea.smart.meter
           releaseFiles: Pea.Meter/bin/Release/net10.0-android/publish/com.ivdata.pea.smart.meter-Signed.aab
           track: internal
+          status: draft
