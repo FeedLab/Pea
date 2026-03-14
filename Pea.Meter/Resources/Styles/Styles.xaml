@@ -469,4 +469,23 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
+    <Style x:Key="IconBorder" TargetType="Border">
+        <!-- <Setter Property="BackgroundColor" Value="#E0F0F5" /> -->
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape">
+            <RoundRectangle CornerRadius="4" />
+        </Setter>
+    </Style>
+
+    <Style x:Key="IconLabel" TargetType="Label">
+        <Setter Property="TextColor" Value="#008089" />
+        <Setter Property="FontSize" Value="32" />
+        <Setter Property="FontFamily" Value="FontSolid" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+    </Style>
+
 </ResourceDictionary>

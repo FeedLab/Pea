@@ -129,55 +129,12 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                 .OrderBy(o => o.PeriodStart.Month)
                 .ToList();
         
-            var listOfAllCostCompares = allPeriods.Select(s => new CostCompare(s, 3.9086m, 5.1135m, 2.6037m)).ToList();
-        
             MeterDataMonthSummary.Clear();
             MeterDataMonthSummary.AddRange(monthlySummaryList);
 
-            var costCompareMonthList = listOfAllCostCompares
-                .GroupBy(r => new { r.MeterReading.PeriodStart.Year, r.MeterReading.PeriodStart.Month })
-                .Select(g =>
-                {
-                    var peekRecords = g.Where(w => w.IsPeekPeriod).ToList();
-                    var offPeekRecords = g.Where(w => !w.IsPeekPeriod).ToList();
-                    var totalKw = peekRecords.Sum(s => s.KwUsed) + offPeekRecords.Sum(s => s.KwUsed);
-
-                    var peekSum = peekRecords.Sum(s => s.KwUsed);
-                    var offPeekSum = offPeekRecords.Sum(s => s.KwUsed);
-
-                    // distinct days in this month for normalization
-                    var daysInMonth = DateTime.DaysInMonth(g.Key.Year, g.Key.Month);
-                    //var peekDays = peekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
-                    //var offPeekDays = offPeekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
-
-                    var dateTime = new DateTime(g.Key.Year, g.Key.Month, 1);
-                
-                    return new MeterReadingMonthlySummary
-                    {
-                        Date = dateTime,
-                        KwUsedAtPeek = peekSum,
-                        KwUsedAtOffPeek = offPeekSum,
-                        KwUsedTotal = totalKw,
-
-                        // average per record
-                        AverageKwUsedAtPeekPerRecord = peekRecords.Any() ? peekRecords.Average(s => s.KwUsed) : 0,
-                        AverageKwUsedAtOffPeekPerRecord = offPeekRecords.Any() ? offPeekRecords.Average(s => s.KwUsed) : 0,
-
-                        // average per day
-                        AverageKwUsedAtPeekPerDay = daysInMonth > 0 ? peekSum / daysInMonth : 0,
-                        AverageKwUsedAtOffPeekPerDay = daysInMonth > 0 ? offPeekSum / daysInMonth : 0,
-                    
-                        CalculateProducedSolarKwDaily = (decimal)PvCalculatorService
-                            .CalculateKwMonthly(dateTime, 1, 3, 180 ) /daysInMonth,
-
-                        CalculateProducedSolarKwMonthly = (decimal)PvCalculatorService
-                            .CalculateKwMonthly(dateTime, 1, 3, 180 )
-                    };
-                })
-                .ToList();
+            var costCompareMonthList = storageService.GetMeterReadingMonthlySummaries(allPeriods);
         
-            YearlyConsumption = monthlySummaryList
-                .Sum(s => s.Total);
+            YearlyConsumption = monthlySummaryList.Sum(s => s.Total);
         
             var consumption6HighestMonthList = costCompareMonthList
                 .OrderByDescending(o => o.KwUsedTotal)

@@ -13,22 +13,22 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Style="{StaticResource HoverBorder}">
-            <Image x:Name="Configuration"
-                   Source="configuration.png"
-                   Style="{StaticResource IconImage}" />
+        <Border Grid.Column="0" Style="{StaticResource IconBorder}">
+            <Label Text="&#xf013;"
+                   ToolTipProperties.Text="Configuration"
+                   Style="{StaticResource IconLabel}" />
         </Border>
 
-        <Border Grid.Column="1" Style="{StaticResource HoverBorder}">
-            <Image x:Name="Country"
-                   Source="language.png"
-                   Style="{StaticResource IconImage}" />
+        <Border Grid.Column="1" Style="{StaticResource IconBorder}">
+            <Label Text="&#xf57d;"
+                   ToolTipProperties.Text="Language"
+                   Style="{StaticResource IconLabel}" />
         </Border>
 
-        <Border Grid.Column="2" Style="{StaticResource HoverBorder}" Margin="32,0,0,0">
-            <Image x:Name="Quit"
-                   Source="quit.png"
-                   Style="{StaticResource IconImage}" />
+        <Border Grid.Column="2" Style="{StaticResource IconBorder}" Margin="32,0,0,0">
+            <Label Text="&#xf2f5;"
+                   ToolTipProperties.Text="Quit"
+                   Style="{StaticResource IconLabel}" />
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnQuitTapped" />
             </Border.GestureRecognizers>
