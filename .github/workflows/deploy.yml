@@ -49,7 +49,7 @@ jobs:
       - name: Print directory
         run: pwd
 
-      - name: Set Version Code
+      - name: Set Version Code 1000 + Build Number
         run: |
           $versionCode = 1000 + ${{ github.run_number }}
           Write-Host "Setting version code to: $versionCode"
