@@ -42,7 +42,7 @@ jobs:
         run: pwd
             
       - name: Build
-        run: dotnet publish Pea.Meter/Pea.Meter.csproj -verbosity:detailed -f net10.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=pea.smart.meter.keystore -p:AndroidSigningKeyAlias=ghactionkey -p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" -p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD_ALIAS }}"
+        run: dotnet publish Pea.Meter/Pea.Meter.csproj -verbosity:detailed -f net10.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=Pea.Meter\pea.smart.meter.keystore -p:AndroidSigningKeyAlias=ghactionkey -p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" -p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD_ALIAS }}"
       - name: List build output
         run: ls -R ./**/*-Signed.aab
       - uses: r0adkll/upload-google-play@v1.1.3
