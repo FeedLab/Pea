@@ -34,7 +34,7 @@ jobs:
         run: |
           $keystorePath = Join-Path $env:GITHUB_WORKSPACE "Pea.Meter\pea.smart.meter.keystore"
           Write-Host "Testing keystore at: $keystorePath"
-          keytool -list -v -keystore "$keystorePath" -storepass "${{ secrets.KEYSTORE_PASSWORD }}" -J-Duser.language=en
+          keytool -list -v -keystore "$keystorePath" -storepass "${{ secrets.KEYSTORE_PASSWORD }}"
 
       - name: Print current directory
         run: pwd
