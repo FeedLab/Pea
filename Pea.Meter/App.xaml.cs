@@ -5,6 +5,18 @@
         public App()
         {
             InitializeComponent();
+
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                Exception ex = e.ExceptionObject as Exception;
+                // Log or handle
+            };
+
+            TaskScheduler.UnobservedTaskException += (s, e) =>
+            {
+                // Handle async task exceptions
+                e.SetObserved();
+            };
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

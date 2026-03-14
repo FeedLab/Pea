@@ -29,11 +29,15 @@ namespace Pea.Meter
 
             authData = authDataOptions.AuthData;
 
-            Pea.IsVisible = true;
             TabData.IsVisible = false;
             TabCustomerProfile.IsVisible = false;
+            Pea.IsVisible = true;
             TouVsFlatRate.IsVisible = false;
-            
+            Info.IsVisible = false;
+            SolarSystemSizing.IsVisible = false;
+
+            TabView.SelectedIndex = 0;
+
             WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, (r, m) =>
             {
                 MainThread.InvokeOnMainThreadAsync(() =>
@@ -43,6 +47,7 @@ namespace Pea.Meter
                     Pea.IsVisible = false;
                     Info.IsVisible = true;
                     TouVsFlatRate.IsVisible = true;
+                    SolarSystemSizing.IsVisible = true;
 
                     TabView.SelectedIndex = 0;
                     
@@ -59,7 +64,8 @@ namespace Pea.Meter
                     Pea.IsVisible = true;
                     TouVsFlatRate.IsVisible = false;
                     Info.IsVisible = false;
-                    
+                    SolarSystemSizing.IsVisible = false;
+
                     TabView.SelectedIndex = 0;
                     
                     return Task.CompletedTask;
