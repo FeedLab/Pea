@@ -48,7 +48,15 @@ jobs:
 
       - name: Print directory
         run: pwd
-            
+
+      - name: Set Version Code
+        run: |
+          $versionCode = 1000 + ${{ github.run_number }}
+          Write-Host "Setting version code to: $versionCode"
+          $content = Get-Content Pea.Meter/Pea.Meter.csproj
+          $content = $content -replace '<ApplicationVersion>\d+</ApplicationVersion>', "<ApplicationVersion>$versionCode</ApplicationVersion>"
+          Set-Content Pea.Meter/Pea.Meter.csproj $content
+
       - name: Build
         run: |
           $keystorePath = Join-Path $env:GITHUB_WORKSPACE "Pea.Meter\pea.smart.meter.keystore"
