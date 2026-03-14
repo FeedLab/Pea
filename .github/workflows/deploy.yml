@@ -23,11 +23,19 @@ jobs:
         run: |
           if (Test-Path ".\Pea.Meter\pea.smart.meter.keystore") {
             Write-Host "Keystore file exists"
+            $fileInfo = Get-Item ".\Pea.Meter\pea.smart.meter.keystore"
+            Write-Host "Keystore size: $($fileInfo.Length) bytes"
           } else {
             Write-Error "Keystore file not found"
             exit 1
           }
-      
+
+      - name: Test Keystore Access
+        run: |
+          $keystorePath = Join-Path $env:GITHUB_WORKSPACE "Pea.Meter\pea.smart.meter.keystore"
+          Write-Host "Testing keystore at: $keystorePath"
+          keytool -list -v -keystore "$keystorePath" -storepass "${{ secrets.KEYSTORE_PASSWORD }}" -J-Duser.language=en
+
       - name: Print current directory
         run: pwd
         
@@ -43,8 +51,8 @@ jobs:
             
       - name: Build
         run: |
-          $keystorePath = Join-Path $env:GITHUB_WORKSPACE ".\Pea.Meter\pea.smart.meter.keystore"
-          dotnet publish Pea.Meter/Pea.Meter.csproj -verbosity:detailed -f net10.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore="$keystorePath" -p:AndroidSigningKeyAlias=ghactionkey -p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" -p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD_ALIAS }}"
+          $keystorePath = Join-Path $env:GITHUB_WORKSPACE "Pea.Meter\pea.smart.meter.keystore"
+          dotnet publish Pea.Meter/Pea.Meter.csproj -verbosity:detailed -f net10.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore="$keystorePath" -p:AndroidSigningKeyAlias=ghactionkey -p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD_ALIAS }}" -p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD }}"
       - name: List build output
         run: ls -R ./**/*-Signed.aab
       - uses: r0adkll/upload-google-play@v1.1.3
