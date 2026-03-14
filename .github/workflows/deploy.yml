@@ -16,10 +16,18 @@ jobs:
         
       - name: Setup Keystore File
         run: |
-          $base64 = "${{ secrets.KEYSTORE_BASE64 }}" -replace "`r`n",""  -replace "`n",""
-          $bytes = [System.Convert]::FromBase64String($base64)
-          [System.IO.File]::WriteAllBytes("Pea.Meter\pea.smart.meter.keystore", $bytes)
+          echo "${{ secrets.KEYSTORE_FILE }}" > pea.smart.meter.keystore.asc
+          gpg -d --passphrase "${{ secrets.KEYSTORE_PASSWORD_GPG }}" --batch pea.smart.meter.keystore.asc > .\Pea.Meter\pea.smart.meter.keystore
           
+      - name: Validate Keystore File
+        run: |
+          if (Test-Path ".\Pea.Meter\pea.smart.meter.keystore") {
+            Write-Host "Keystore file exists"
+          } else {
+            Write-Error "Keystore file not found"
+            exit 1
+          }
+      
       - name: Print current directory
         run: pwd
         
