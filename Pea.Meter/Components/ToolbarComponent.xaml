@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sfButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Pea.Meter.Components.ToolbarComponent"
+             x:Name="Root">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource HoverBorder}">
+            <Image x:Name="Configuration"
+                   Source="configuration.png"
+                   Style="{StaticResource IconImage}" />
+        </Border>
+
+        <Border Grid.Column="1" Style="{StaticResource HoverBorder}">
+            <Image x:Name="Country"
+                   Source="language.png"
+                   Style="{StaticResource IconImage}" />
+        </Border>
+
+        <Border Grid.Column="2" Style="{StaticResource HoverBorder}" Margin="32,0,0,0">
+            <Image x:Name="Quit"
+                   Source="quit.png"
+                   Style="{StaticResource IconImage}" />
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnQuitTapped" />
+            </Border.GestureRecognizers>
+        </Border>
+
+    </Grid>
+</ContentView>

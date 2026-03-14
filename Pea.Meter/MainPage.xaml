@@ -3,11 +3,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
-             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Expander;assembly=Syncfusion.Maui.Expander"
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:view="clr-namespace:Pea.Meter.View"
              xmlns:statistics="clr-namespace:Pea.Meter.View.Statistics"
              xmlns:solar="clr-namespace:Pea.Meter.View.Solar"
+             xmlns:components="clr-namespace:Pea.Meter.Components"
              x:Class="Pea.Meter.MainPage"
              Shell.NavBarIsVisible="False">
     <ContentPage.Resources>
@@ -66,6 +66,11 @@
                 HorizontalOptions="Start"
                 VerticalOptions="Start" />-->
 
+            <view:CustomerInfoView
+                Margin="20,-8,20,0"
+                HorizontalOptions="Start"
+                VerticalOptions="Center" />
+            
             <Image
                 Margin="12"
                 Source="pea_amr_banner_light_green.png"
@@ -74,8 +79,8 @@
                 HorizontalOptions="Center"
                 VerticalOptions="Start" />
 
-            <view:CustomerInfoView
-                Margin="0,-8,20,0"
+            <components:ToolbarComponent
+                Margin="0,-15,20,0"
                 HorizontalOptions="End"
                 VerticalOptions="Center" />
         </Grid>
