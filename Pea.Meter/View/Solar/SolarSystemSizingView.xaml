@@ -5,26 +5,38 @@
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              x:Class="Pea.Meter.View.Solar.SolarSystemSizingView">
 
-        <Grid
-            Margin="32,8"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            Background="AliceBlue">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*" />
-                <ColumnDefinition Width="5*" />
-            </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Border
+            Grid.Column="0"
+            Grid.Row="0"
+            Margin="24"
+            BackgroundColor="White"
+            Stroke="Black"
+            StrokeThickness="0"
+            Padding="8">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="5,5"
+                        Radius="8"
+                        Opacity="0.5" />
+            </Border.Shadow>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="5" />
+            </Border.StrokeShape>
 
             <chart:SfCartesianChart
-                Grid.Column="0"
-                Grid.Row="0"
-                HorizontalOptions="Center"
-                MinimumWidthRequest="500">
+                HorizontalOptions="Fill">
 
                 <chart:SfCartesianChart.Title>
                     <Label
@@ -34,7 +46,7 @@
                         HorizontalTextAlignment="Center"
                         FontAttributes="Bold"
                         FontSize="20"
-                        Text="Monthly Consumption" />
+                        Text="Consumption (Last 12 months)" />
                 </chart:SfCartesianChart.Title>
 
                 <chart:SfCartesianChart.XAxes>
@@ -74,12 +86,31 @@
 
                 </chart:ColumnSeries>
             </chart:SfCartesianChart>
+        </Border>
+
+        <Border
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="24"
+            BackgroundColor="White"
+            Stroke="Black"
+            StrokeThickness="0"
+            Padding="8">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="5,5"
+                        Radius="8"
+                        Opacity="0.5" />
+            </Border.Shadow>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="5" />
+            </Border.StrokeShape>
 
             <chart:SfCartesianChart
-                Grid.Row="0"
-                Grid.Column="1"
-                HorizontalOptions="Center"    
-                MinimumWidthRequest="500">
+                HorizontalOptions="Fill">
+                <chart:SfCartesianChart.Shadow>
+                    <Shadow Brush="Gray" Opacity="0.3" Radius="10" Offset="5,5" />
+                </chart:SfCartesianChart.Shadow>
 
                 <chart:SfCartesianChart.Legend>
                     <chart:ChartLegend>
@@ -89,7 +120,7 @@
                         </chart:ChartLegend.LabelStyle>
                     </chart:ChartLegend>
                 </chart:SfCartesianChart.Legend>
-                
+
                 <chart:SfCartesianChart.Title>
                     <Label
                         Margin="8"
@@ -98,7 +129,7 @@
                         HorizontalTextAlignment="Center"
                         FontAttributes="Bold"
                         FontSize="20"
-                        Text="TOU - Peek Usage vs Production" />
+                        Text="Estimation Of Solar Array Size" />
                 </chart:SfCartesianChart.Title>
 
                 <chart:SfCartesianChart.XAxes>
@@ -118,67 +149,106 @@
                     </chart:NumericalAxis>
                 </chart:SfCartesianChart.YAxes>
 
-                <!-- Column series with colored data labels -->
-                <chart:ColumnSeries ItemsSource="{Binding MeterReadingMonthlySummary}"
-                                    Label="Produced (KW)"
-                                    XBindingPath="Date"
-                                    YBindingPath="KwProducedPerMonth"
-                                    Fill="#D1F9EB"
-                                    Stroke="#A4C4B9"
-                                    StrokeWidth="1"
-                                    IsVisibleOnLegend="True"
-                                    EnableTooltip="True"
-                                    Spacing="0.3"
-                                    CornerRadius="3,3,0,0">
-                    
-                    <chart:ColumnSeries.DataLabelSettings>
-                        <chart:CartesianDataLabelSettings
-                            LabelPlacement="Inner"
-                            LabelStyle="{chart:ChartDataLabelStyle TextColor=Purple}" />
-                    </chart:ColumnSeries.DataLabelSettings>
+                <!-- Stacked column series with colored data labels -->
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="Peek"
+                                            XBindingPath="Date"
+                                            YBindingPath="KwUsedAtPeek"
+                                            GroupingLabel="KwUsed"
+                                            Fill="#EDA600"
+                                            Stroke="#B57E00"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="0,0,0,0">
+                </chart:StackingColumnSeries>
 
-                </chart:ColumnSeries>
-                
-                
-                <chart:ColumnSeries ItemsSource="{Binding MeterReadingMonthlySummary}"
-                                    Label="Consumed (KW)"
-                                    XBindingPath="Date"
-                                    YBindingPath="KwUsedAtPeek"
-                                    Fill="#F79BA6"
-                                    Stroke="#D35064"
-                                    StrokeWidth="1"
-                                    IsVisibleOnLegend="True"
-                                    EnableTooltip="True"
-                                    Spacing="0.3"
-                                    CornerRadius="3,3,0,0">
-                    
-                    <chart:ColumnSeries.DataLabelSettings>
-                        <chart:CartesianDataLabelSettings
-                            LabelPlacement="Inner"
-                            LabelStyle="{chart:ChartDataLabelStyle TextColor=Purple}" />
-                    </chart:ColumnSeries.DataLabelSettings>
 
-                </chart:ColumnSeries>
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="OffPeek"
+                                            XBindingPath="Date"
+                                            YBindingPath="KwUsedAtOffPeek"
+                                            GroupingLabel="KwUsed"
+                                            Fill="#EFD700"
+                                            Stroke="#A59700"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="2,2,0,0">
+                </chart:StackingColumnSeries>
+
+                <!-- Stacked column series with colored data labels -->
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="Solar"
+                                            XBindingPath="Date"
+                                            YBindingPath="CalculateProducedSolarKwMonthly"
+                                            GroupingLabel="KwProduced"
+                                            Fill="#D1F9EB"
+                                            Stroke="#A2C1B6"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="0,0,0,0">
+                </chart:StackingColumnSeries>
+
+
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="Battery"
+                                            XBindingPath="Date"
+                                            YBindingPath="BatteryKwProducedMonthly"
+                                            GroupingLabel="KwProduced"
+                                            Fill="#0026FF"
+                                            Stroke="Black"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="2,2,0,0">
+                </chart:StackingColumnSeries>
             </chart:SfCartesianChart>
+        </Border>
 
-            <Label 
+        <Grid
+            Grid.Column="0"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Margin="32,16"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Background="AliceBlue">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <Label
                 Grid.Column="0"
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
                 TextColor="Black"
                 Margin="24"
-            LineBreakMode="WordWrap"
-            FontSize="16">
+                LineBreakMode="WordWrap"
+                FontSize="16">
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="With an annual consumption of " />
                         <Span Text="{Binding YearlyConsumption, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
                         <Span Text=" kWh" FontAttributes="None" />
                         <Span Text=", your facility averages roughly " />
-                        <Span Text="{Binding DailyConsumptionAverage6Month, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
-                        <Span Text=" kWh per day based on a six-month peak demand profile (Highest consumption)" FontAttributes="None" />
+                        <Span Text="{Binding DailyUsageAveragePeekKw, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
+                        <Span Text=" kWh per day based on peak demand profile (Highest consumption)"
+                              FontAttributes="None" />
                         <Span Text=". Currently, your average peak demand during the TOU window (09:00–22:00) sits at " />
-                        <Span Text="{Binding DailyPeekConsumptionAverage6Month, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
+                        <Span Text="{Binding AverageKwUsedBetween08To17Monthly, StringFormat='{}{0:N0}'}"
+                              FontAttributes="Bold" />
                         <Span Text=" kWh" FontAttributes="None" />
                         <Span Text=". By integrating a " />
                         <Span Text="{Binding SolarSizeNeeded, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
@@ -186,10 +256,12 @@
                         <Span Text=" paired with a " />
                         <Span Text="{Binding BatterySizeNeeded, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
                         <Span Text=" kWh battery storage system" FontAttributes="None" />
-                        <Span Text=", you can effectively offset the most expensive billing periods with renewable energy, significantly reducing your reliance on the grid during high-tariff hours." />
+                        <Span
+                            Text=", you can effectively offset the most expensive billing periods with renewable energy, significantly reducing your reliance on the grid during high-tariff hours." />
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
         </Grid>
+    </Grid>
 
 </ContentView>

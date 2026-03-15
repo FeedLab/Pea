@@ -14,16 +14,15 @@ public partial class SolarSystemSizingViewModel : ObservableObject
     private readonly ILogger<SolarSystemSizingViewModel> logger;
     private readonly StorageService storageService;
 
+    [ObservableProperty] private ObservableCollection<MeterReadingMonthlySummary> costCompareMonthList = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataMonthSummary = [];
-    [ObservableProperty] private ObservableCollection<MeterReadingMonthlySummary> meterReadingMonthlySummary = [];
+    [ObservableProperty] private ObservableCollection<MeterReadingMonthlySummary> energyProducedMonthlySummary = [];
     [ObservableProperty] private decimal yearlyConsumption;
-    [ObservableProperty] private decimal dailyConsumptionAverage6Month;
-    [ObservableProperty] private decimal dailyPeekConsumptionAverage6Month;
+    [ObservableProperty] private decimal dailyUsageAveragePeekKw;
+    [ObservableProperty] private decimal averageKwUsedBetween08To17Monthly;
     [ObservableProperty] private decimal consumption6HighestMonth;
     [ObservableProperty] private decimal solarSizeNeeded;
     [ObservableProperty] private decimal batterySizeNeeded;
-
-    const int PeekMonths = 6;
 
     public SolarSystemSizingViewModel(ILogger<SolarSystemSizingViewModel> logger, StorageService storageService)
     {
@@ -40,18 +39,18 @@ public partial class SolarSystemSizingViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this,
             (r, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(async () =>
+                MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     try
                     {
-                        await PopulateChartData();
+                        PopulateChartData();
                     }
                     catch (Exception e)
                     {
                         logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
                     }
 
-                    return Task.CompletedTask;
+                    return Task.FromResult(Task.CompletedTask);
                 });
             });
     }
@@ -61,18 +60,18 @@ public partial class SolarSystemSizingViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this,
             (r, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(async () =>
+                MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     try
                     {
-                        await PopulateChartData();
+                        PopulateChartData();
                     }
                     catch (Exception e)
                     {
                         logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
                     }
 
-                    return Task.CompletedTask;
+                    return Task.FromResult(Task.CompletedTask);
                 });
             });
     }
@@ -82,27 +81,29 @@ public partial class SolarSystemSizingViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
             (r, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(async () =>
+                MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     try
                     {
-                        await PopulateChartData();
+                        PopulateChartData();
                     }
                     catch (Exception e)
                     {
                         logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
                     }
 
-                    return Task.CompletedTask;
+                    return Task.FromResult(Task.CompletedTask);
                 });
             });
     }
 
-    private async Task PopulateChartData()
+    private void PopulateChartData()
     {
-
         try
         {
+            List<decimal> listSolarArraySizes =
+                [2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500, 1000];
+            
             if (storageService.AllMeterReadingsAsync.Count == 0)
             {
                 return;
@@ -111,69 +112,71 @@ public partial class SolarSystemSizingViewModel : ObservableObject
             var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             var startDate = endDate.AddMonths(-12).Date;
 
+            var peaMonthlyMeterReadings = storageService.MonthlyAggregated
+                .Where(period => period.PeriodStart >= startDate && period.PeriodStart < endDate)
+                .OrderBy(o => o.PeriodStart.Month);
+            
+            MeterDataMonthSummary = new ObservableCollection<PeaMeterReading>(peaMonthlyMeterReadings);
+
             var allPeriods = storageService.AllMeterReadingsAsync
                 .Where(period => period.PeriodStart >= startDate && period.PeriodStart < endDate)
                 .ToList();
 
-            var monthlySummaryList = allPeriods
-                .GroupBy(r => new { Year = r.PeriodStart.Year, Month = r.PeriodStart.Month })
-                .Select(g => new PeaMeterReading(
-                    // Use the first day of the month as the PeriodStart
-                    new DateTime(g.Key.Year, g.Key.Month, 1),
-                    g.Sum(r => r.RateA),
-                    g.Sum(r => r.RateB),
-                    g.Sum(r => r.RateC),
-                    // Minutes in the month (approximate: 60 * 24 * days)
-                    60 * 24 * DateTime.DaysInMonth(g.Key.Year, g.Key.Month)
-                ))
-                .OrderBy(o => o.PeriodStart.Month)
-                .ToList();
-        
-            MeterDataMonthSummary.Clear();
-            MeterDataMonthSummary.AddRange(monthlySummaryList);
-
-            var costCompareMonthList = storageService.GetMeterReadingMonthlySummaries(allPeriods);
-        
-            YearlyConsumption = monthlySummaryList.Sum(s => s.Total);
-        
-            var consumption6HighestMonthList = costCompareMonthList
-                .OrderByDescending(o => o.KwUsedTotal)
-                .Take(PeekMonths)
+            var listOfAllCostCompares = allPeriods
+                .Select(s => new CostCompare(s, 3.9086m, 5.1135m, 2.6037m))
                 .ToList();
 
-            if (consumption6HighestMonthList.Count == 0)
-            {
-                return;
-            }
+            var yearlyConsumptionPeekKw = listOfAllCostCompares.Where(w => w.IsPeekPeriod).Sum(s => s.KwUsed);
+            var yearlyConsumptionOffPeekKw = listOfAllCostCompares.Where(w => !w.IsPeekPeriod).Sum(s => s.KwUsed);
+            var yearlyConsumptionTotalKw = yearlyConsumptionPeekKw + yearlyConsumptionOffPeekKw;
+            var dailyConsumptionAverageTotalKw = yearlyConsumptionTotalKw / 365;
+            var dailyConsumptionAveragePeekKw = yearlyConsumptionPeekKw / 365;
+            var dailyConsumptionAverageOffPeekKw = yearlyConsumptionOffPeekKw / 365;
+            var monthlyMeterReadingsList = GetMonthlyMeterReadingsList(allPeriods);
 
-            DailyConsumptionAverage6Month = consumption6HighestMonthList
-                .Sum(s => s.KwUsedTotal) / (consumption6HighestMonthList.Count * 30);
+            YearlyConsumption = yearlyConsumptionTotalKw;
 
-            DailyPeekConsumptionAverage6Month = consumption6HighestMonthList
-                .Sum(s => s.KwUsedAtPeek) / (consumption6HighestMonthList.Count * 30);
-        
-            var calculateProducedSolarKwDailyAverage = consumption6HighestMonthList
-                .Average(s => s.CalculateProducedSolarKwDaily);
-        
-            SolarSizeNeeded = DailyPeekConsumptionAverage6Month / 5;
+            var solarArraySize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
+            var batterySize = (solarArraySize / 2.0m).RoundUpToNearestFive();
 
-            BatterySizeNeeded = DailyPeekConsumptionAverage6Month - (calculateProducedSolarKwDailyAverage * SolarSizeNeeded);
-
-            var meterReadingMonthlySummaries = costCompareMonthList
+            var meterReadingMonthlySummaries = storageService
+                .GetMeterReadingMonthlySummaries(allPeriods, solarArraySize, batterySize)
                 .Where(period => period.Date >= startDate && period.Date < endDate)
                 .OrderBy(o => o.Date.Month)
                 .ToList();
-        
-            foreach (var monthlyData in meterReadingMonthlySummaries)
-            {
-                monthlyData.KwProducedPerMonth = SolarDataService.GetMonthlySummary(SolarSizeNeeded, monthlyData.Date.Month, 1, 23);
-            }
-        
-            MeterReadingMonthlySummary = new ObservableCollection<MeterReadingMonthlySummary>(meterReadingMonthlySummaries);
+
+            DailyUsageAveragePeekKw = dailyConsumptionAveragePeekKw;
+            AverageKwUsedBetween08To17Monthly = dailyConsumptionAveragePeekKw -
+                                                meterReadingMonthlySummaries.Average(s =>
+                                                    s.AverageKwUsedBetween08To17Monthly);
+            SolarSizeNeeded = solarArraySize;
+            BatterySizeNeeded = AverageKwUsedBetween08To17Monthly.RoundUpToNearestFive();
+
+            EnergyProducedMonthlySummary =
+                new ObservableCollection<MeterReadingMonthlySummary>(meterReadingMonthlySummaries);
         }
         catch (Exception e)
         {
             logger.LogError(e, "Error in {Method}: {Message}", nameof(PopulateChartData), e.Message);
         }
+    }
+
+    private static List<PeaMeterReading> GetMonthlyMeterReadingsList(List<PeaMeterReading> allPeriods)
+    {
+        var monthlyMeterReadingList = allPeriods
+            .GroupBy(r => new { Year = r.PeriodStart.Year, Month = r.PeriodStart.Month })
+            .Select(g => new PeaMeterReading(
+                // Use the first day of the month as the PeriodStart
+                new DateTime(g.Key.Year, g.Key.Month, 1),
+                g.Sum(r => r.RateA),
+                g.Sum(r => r.RateB),
+                g.Sum(r => r.RateC),
+                // Minutes in the month (approximate: 60 * 24 * days)
+                60 * 24 * DateTime.DaysInMonth(g.Key.Year, g.Key.Month)
+            ))
+            .OrderBy(o => o.PeriodStart.Month)
+            .ToList();
+
+        return monthlyMeterReadingList;
     }
 }

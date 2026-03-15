@@ -31,6 +31,11 @@ public partial class MeterReadingMonthlySummary : ObservableObject
     [ObservableProperty] private decimal kwUsedTotal;
 
     /// <summary>
+    /// Average kilowatt-hours used between 8am and 5pm
+    /// </summary>
+    [ObservableProperty] private decimal averageKwUsedBetween08To17Monthly;
+    
+    /// <summary>
     /// Average kilowatt-hours used at peak period per record
     /// </summary>
     [ObservableProperty] private decimal averageKwUsedAtPeekPerRecord;
@@ -56,8 +61,29 @@ public partial class MeterReadingMonthlySummary : ObservableObject
     [ObservableProperty] private decimal kwProducedPerMonth;
     
     
+    /// <summary>
+    /// Total kilowatt-hours produced (Calculated) per day from solar cells
+    /// </summary>
     [ObservableProperty] private decimal calculateProducedSolarKwDaily;
 
+    /// <summary>
+    /// Total kilowatt-hours produced (Calculated) per month from solar cells
+    /// </summary>
     [ObservableProperty] private decimal calculateProducedSolarKwMonthly;
+
+
+    /// <summary>
+    /// Battery size selected
+    /// </summary>
+    [ObservableProperty] private decimal batterySize;
     
+    /// <summary>
+    /// Solar array size selected
+    /// </summary>
+    [ObservableProperty] private decimal solarArraySize;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal batteryKwProducedMonthly;
 }
