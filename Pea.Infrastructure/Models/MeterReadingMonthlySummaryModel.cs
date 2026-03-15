@@ -86,4 +86,54 @@ public partial class MeterReadingMonthlySummary : ObservableObject
     /// 
     /// </summary>
     [ObservableProperty] private decimal batteryKwProducedMonthly;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal costSummaryTouPeek;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal costSummaryTouOffPeek;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal costSummaryFlatRate;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal costSummaryTouTotal;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal peekTouDiscounted;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal offPeekTouDiscounted;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal flatRateDiscounted;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal peekTouSaving;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal offPeekTouSaving;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [ObservableProperty] private decimal flatRateSaving;
 }

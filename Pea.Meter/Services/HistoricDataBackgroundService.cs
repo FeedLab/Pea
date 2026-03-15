@@ -84,7 +84,8 @@ public class HistoricDataBackgroundService
         using var dbContext = dbContextFactory.CreateDbContext();
         var repository = new MeterReadingRepository(dbContext);
         
-        var startDate = await GetOldestPeriodStartAsync(cancellationToken, repository);
+        var startDate = DateTime.Now.Date.AddDays(-1);
+    //    var startDate = await GetOldestPeriodStartAsync(cancellationToken, repository);
         var maxDaysToTry = 365 * 2; // Safety limit: don't go back more than 2 years
         logger.LogInformation(
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",

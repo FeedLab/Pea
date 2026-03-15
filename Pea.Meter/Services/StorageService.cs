@@ -301,23 +301,6 @@ public partial class StorageService : ObservableObject
         WeakReferenceMessenger.Default.Send(new MonthlyAggregationCompletedMessage(MonthlyAggregated));
     }
 
-
-    // public ObservableCollection<PeaMeterReading> FetchDailyAggregatedForPeriodAsync(DateTime startDate,
-    //     DateTime endDate)
-    // {
-    //     var readings = DailyReadings
-    //         .Where(m => m.PeriodStart >= startDate && m.PeriodStart < endDate)
-    //         .ToList();
-    //
-    //     return new ObservableCollection<PeaMeterReading>(readings);
-    // }
-
-    // public ObservableCollection<PeaMeterReading> GetQuarterlyAggregated() => allMeterReadingsAsync;
-    // public ObservableCollection<PeaMeterReading> GetHourlyAggregated() => hourlyAggregated;
-    // public ObservableCollection<PeaMeterReading> GetDailyAggregated() => dailyAggregated;
-    // public ObservableCollection<PeaMeterReading> GetWeeklyAggregated() => weeklyAggregated;
-    // public ObservableCollection<PeaMeterReading> GetCurrentDayMeterReadings() => dailyReadings;
-
     /// <summary>
     /// Creates a diff list between all database readings and current day's live readings.
     /// Returns readings that exist in dailyReadings but not yet in the database (allMeterReadingsAsync).
@@ -326,7 +309,7 @@ public partial class StorageService : ObservableObject
     {
         // Get readings from dailyReadings that don't exist in allMeterReadingsAsync
         // Compare by PeriodStart as unique identifier
-        var allReadingTimes = new HashSet<DateTime>(allMeterReadingsAsync.Select(r => r.PeriodStart));
+        var allReadingTimes = new HashSet<DateTime>(AllMeterReadingsAsync.Select(r => r.PeriodStart));
 
         var newReadings = readings
             .Where(dr => !allReadingTimes.Contains(dr.PeriodStart))
@@ -335,41 +318,98 @@ public partial class StorageService : ObservableObject
         return newReadings;
     }
 
-    public List<MeterReadingMonthlySummary> GetMeterReadingMonthlySummaries(List<PeaMeterReading> allPeriods, decimal solarArraySize = 1, decimal batterySize = 0)
+    public List<MeterReadingMonthlySummary> GetMeterReadingMonthlySummaries(List<PeaMeterReading> allPeriods,
+        decimal solarArraySize = 1, decimal batterySize = 0)
     {
         var listOfAllCostCompares = allPeriods.Select(s => new CostCompare(s, 3.9086m, 5.1135m, 2.6037m)).ToList();
-        
+
         var costCompareMonthList = listOfAllCostCompares
-            .GroupBy(r => new { r.MeterReading.PeriodStart.Year, r.MeterReading.PeriodStart.Month })
-            .Select(g =>
+            .GroupBy(costCompare => new
+                { costCompare.MeterReading.PeriodStart.Year, costCompare.MeterReading.PeriodStart.Month })
+            .Select(costCompares =>
             {
-                var peekRecords = g.Where(w => w.IsPeekPeriod).ToList();
-                var offPeekRecords = g.Where(w => !w.IsPeekPeriod).ToList();
+                var daysInMonthList = costCompares.Select(s => s.MeterReading.PeriodStart.Date).Distinct().ToList();
+
+                var peekRecords = costCompares.Where(w => w.IsPeekPeriod).ToList();
+                var offPeekRecords = costCompares.Where(w => !w.IsPeekPeriod).ToList();
                 var totalKw = peekRecords.Sum(s => s.KwUsed) + offPeekRecords.Sum(s => s.KwUsed);
 
                 var peekSum = peekRecords.Sum(s => s.KwUsed);
                 var offPeekSum = offPeekRecords.Sum(s => s.KwUsed);
 
-                var sumKwUsedBetween08To17 = g
+                var costSummaryFlatRate = costCompares.Sum(s => s.FlatRateCost);
+                var costSummaryTouPeek = costCompares.Sum(s => s.KwCostAtPeek);
+                var costSummaryTouOffPeek = costCompares.Sum(s => s.KwCostAtOffPeek);
+                var costTouTotal = costSummaryTouPeek + costSummaryTouOffPeek;
+
+
+                var sumKwUsedBetween08To17 = costCompares
                     .Where(w => w is { IsPeekPeriod: true, MeterReading.PeriodStart.Hour: >= 8 and < 17 })
                     .Sum(s => s.KwUsed);
-            
+
                 // distinct days in this month for normalization
-                var daysInMonth = DateTime.DaysInMonth(g.Key.Year, g.Key.Month);
+                var daysInMonth = DateTime.DaysInMonth(costCompares.Key.Year, costCompares.Key.Month);
                 //var peekDays = peekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
                 //var offPeekDays = offPeekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
 
-                var dateTime = new DateTime(g.Key.Year, g.Key.Month, 1);
+                var dateTime = new DateTime(costCompares.Key.Year, costCompares.Key.Month, 1);
 
-                var calculateKwMonthly = (decimal)PvCalculatorService
+                var calculateKwGeneratedMonthly = (decimal)PvCalculatorService
                     .CalculateKwMonthly(dateTime, (double)solarArraySize, 3, 180);
-                
+
+                var calculateKwGeneratedDaily = calculateKwGeneratedMonthly / daysInMonth;
+
+                var firstCostCompare = costCompares.First();
+
+                var offPeekPrice = firstCostCompare.OffPeekPrice;
+                var peekPrice = firstCostCompare.PeekPrice;
+                var flatRatePrice = firstCostCompare.FlatRatePrice;
+
+                var peekTouSaving = 0m;
+                var offPeekTouSaving = 0m;
+                var flatRateSaving = 0m;
+                foreach (var day in daysInMonthList)
+                {
+                    if (day.DayOfWeek == DayOfWeek.Saturday |
+                        day.DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        offPeekTouSaving += calculateKwGeneratedDaily * offPeekPrice;
+                    }
+                    else
+                    {
+                        peekTouSaving += calculateKwGeneratedDaily * peekPrice;
+                    }
+
+                    flatRateSaving += calculateKwGeneratedDaily * flatRatePrice;
+                }
+
+                if (peekTouSaving > costSummaryTouPeek)
+                {
+                    var rest = peekTouSaving - costSummaryTouPeek;
+
+                    peekTouSaving = costSummaryTouPeek;
+                    offPeekTouSaving += rest;
+                }
+
                 return new MeterReadingMonthlySummary
                 {
                     Date = dateTime,
                     KwUsedAtPeek = peekSum,
                     KwUsedAtOffPeek = offPeekSum,
                     KwUsedTotal = totalKw,
+
+                    CostSummaryFlatRate = costSummaryFlatRate,
+                    CostSummaryTouPeek = costSummaryTouPeek,
+                    CostSummaryTouOffPeek = costSummaryTouOffPeek,
+                    CostSummaryTouTotal = costTouTotal,
+
+                    PeekTouDiscounted = costSummaryTouPeek - peekTouSaving,
+                    OffPeekTouDiscounted = costSummaryTouOffPeek - offPeekTouSaving,
+                    FlatRateDiscounted = costSummaryFlatRate - flatRateSaving,
+
+                    PeekTouSaving = peekTouSaving,
+                    OffPeekTouSaving = offPeekTouSaving,
+                    FlatRateSaving = flatRateSaving,
 
                     // average per record
                     AverageKwUsedAtPeekPerRecord = peekRecords.Any() ? peekRecords.Average(s => s.KwUsed) : 0,
@@ -380,10 +420,10 @@ public partial class StorageService : ObservableObject
                     AverageKwUsedAtPeekPerDay = daysInMonth > 0 ? peekSum / daysInMonth : 0,
                     AverageKwUsedAtOffPeekPerDay = daysInMonth > 0 ? offPeekSum / daysInMonth : 0,
 
-                    CalculateProducedSolarKwMonthly = calculateKwMonthly,
-                    CalculateProducedSolarKwDaily = calculateKwMonthly / daysInMonth,
+                    CalculateProducedSolarKwMonthly = calculateKwGeneratedMonthly,
+                    CalculateProducedSolarKwDaily = calculateKwGeneratedMonthly / daysInMonth,
                     BatteryKwProducedMonthly = batterySize * daysInMonth,
-                    
+
                     SolarArraySize = solarArraySize,
                     BatterySize = batterySize
                 };
@@ -392,7 +432,6 @@ public partial class StorageService : ObservableObject
         return costCompareMonthList;
     }
 }
-
 
 public record HourlyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);
 

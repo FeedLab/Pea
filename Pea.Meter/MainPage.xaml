@@ -119,14 +119,14 @@
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
                                 
-                <tabView:SfTabItem Header="TOU vs Flat-Rate" x:Name="TouVsFlatRate" TextColor="White"
+                <tabView:SfTabItem Header="Tariff Calculation" x:Name="TouVsFlatRate" TextColor="White"
                                    FontSize="14">
                     <tabView:SfTabItem.Content>
                         <view:TouVsFlatRateView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
                 
-                <tabView:SfTabItem Header="Solar System Sizing" x:Name="SolarSystemSizing" TextColor="White"
+                <tabView:SfTabItem Header="Solar System Calculation (Experimental)" x:Name="SolarSystemSizing" TextColor="White"
                                    FontSize="14">
                     <tabView:SfTabItem.Content>
                         <solar:SolarSystemSizingView />

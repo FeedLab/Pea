@@ -8,8 +8,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -35,8 +35,21 @@
                 <RoundRectangle CornerRadius="5" />
             </Border.StrokeShape>
 
+            
             <chart:SfCartesianChart
                 HorizontalOptions="Fill">
+                <chart:SfCartesianChart.Shadow>
+                    <Shadow Brush="Gray" Opacity="0.3" Radius="10" Offset="5,5" />
+                </chart:SfCartesianChart.Shadow>
+
+                <chart:SfCartesianChart.Legend>
+                    <chart:ChartLegend>
+                        <chart:ChartLegend.LabelStyle>
+                            <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="18"
+                                                         FontAttributes="None" />
+                        </chart:ChartLegend.LabelStyle>
+                    </chart:ChartLegend>
+                </chart:SfCartesianChart.Legend>
 
                 <chart:SfCartesianChart.Title>
                     <Label
@@ -46,7 +59,7 @@
                         HorizontalTextAlignment="Center"
                         FontAttributes="Bold"
                         FontSize="20"
-                        Text="Consumption (Last 12 months)" />
+                        Text="Cost Calculation" />
                 </chart:SfCartesianChart.Title>
 
                 <chart:SfCartesianChart.XAxes>
@@ -61,30 +74,102 @@
                 <chart:SfCartesianChart.YAxes>
                     <chart:NumericalAxis>
                         <chart:NumericalAxis.Title>
-                            <chart:ChartAxisTitle Text="KWh Per Month" />
+                            <chart:ChartAxisTitle Text="Bath Per Month" />
                         </chart:NumericalAxis.Title>
                     </chart:NumericalAxis>
                 </chart:SfCartesianChart.YAxes>
 
-                <!-- Column series with colored data labels -->
-                <chart:ColumnSeries ItemsSource="{Binding MeterDataMonthSummary}"
-                                    Label="Monthly"
-                                    XBindingPath="PeriodStart"
-                                    YBindingPath="Total"
-                                    Fill="#FCCC8A"
-                                    Stroke="#C0A16B"
-                                    StrokeWidth="1"
-                                    IsVisibleOnLegend="False"
-                                    EnableTooltip="True"
-                                    CornerRadius="5,5,0,0">
+                <!-- Stacked column series with colored data labels -->
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="Peek"
+                                            XBindingPath="Date"
+                                            YBindingPath="CostSummaryTouPeek"
+                                            GroupingLabel="CostSummaryToU"
+                                            Fill="#FF7043"
+                                            Stroke="#E64A19"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="0,0,0,0">
+                </chart:StackingColumnSeries>
 
-                    <chart:ColumnSeries.DataLabelSettings>
-                        <chart:CartesianDataLabelSettings
-                            LabelPlacement="Inner"
-                            LabelStyle="{chart:ChartDataLabelStyle TextColor=Purple}" />
-                    </chart:ColumnSeries.DataLabelSettings>
 
-                </chart:ColumnSeries>
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="OffPeek"
+                                            XBindingPath="Date"
+                                            YBindingPath="CostSummaryTouOffPeek"
+                                            GroupingLabel="CostSummaryToU"
+                                            Fill="#EC407A"
+                                            Stroke="#C2185B"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="2,2,0,0">
+                </chart:StackingColumnSeries>
+
+                <!-- Stacked column series with colored data labels -->
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="FlatRate"
+                                            XBindingPath="Date"
+                                            YBindingPath="CostSummaryFlatRate"
+                                            GroupingLabel="CostSummaryFlatRate"
+                                            Fill="#7CB342"
+                                            Stroke="#558B2F"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="2,2,0,0">
+                </chart:StackingColumnSeries>
+
+                <!-- Stacked column series with colored data labels -->
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="Peek Solar"
+                                            XBindingPath="Date"
+                                            YBindingPath="PeekTouDiscounted"
+                                            GroupingLabel="CostSummaryToUSolar"
+                                            Fill="#B184B2"
+                                            Stroke="#806182"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="0,0,0,0">
+                </chart:StackingColumnSeries>
+
+
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="OffPeek Solar"
+                                            XBindingPath="Date"
+                                            YBindingPath="OffPeekTouDiscounted"
+                                            GroupingLabel="CostSummaryToUSolar"
+                                            Fill="#FFCA28"
+                                            Stroke="#F9A825"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="2,2,0,0">
+                </chart:StackingColumnSeries>
+
+
+                <!-- Stacked column series with colored data labels -->
+                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                                            Label="FlatRate Solar"
+                                            XBindingPath="Date"
+                                            YBindingPath="FlatRateDiscounted"
+                                            GroupingLabel="CostSummaryFlatRateSolar"
+                                            Fill="#26C6DA"
+                                            Stroke="#00838F"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="2,2,0,0">
+                </chart:StackingColumnSeries>
+                
             </chart:SfCartesianChart>
         </Border>
 
@@ -155,8 +240,8 @@
                                             XBindingPath="Date"
                                             YBindingPath="KwUsedAtPeek"
                                             GroupingLabel="KwUsed"
-                                            Fill="#EDA600"
-                                            Stroke="#B57E00"
+                                            Fill="#FF9800"
+                                            Stroke="#E65100"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
                                             EnableTooltip="True"
@@ -170,8 +255,8 @@
                                             XBindingPath="Date"
                                             YBindingPath="KwUsedAtOffPeek"
                                             GroupingLabel="KwUsed"
-                                            Fill="#EFD700"
-                                            Stroke="#A59700"
+                                            Fill="#FFC107"
+                                            Stroke="#FF6F00"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
                                             EnableTooltip="True"
@@ -185,8 +270,8 @@
                                             XBindingPath="Date"
                                             YBindingPath="CalculateProducedSolarKwMonthly"
                                             GroupingLabel="KwProduced"
-                                            Fill="#D1F9EB"
-                                            Stroke="#A2C1B6"
+                                            Fill="#26A69A"
+                                            Stroke="#00695C"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
                                             EnableTooltip="True"
@@ -200,8 +285,8 @@
                                             XBindingPath="Date"
                                             YBindingPath="BatteryKwProducedMonthly"
                                             GroupingLabel="KwProduced"
-                                            Fill="#0026FF"
-                                            Stroke="Black"
+                                            Fill="#5C6BC0"
+                                            Stroke="#283593"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
                                             EnableTooltip="True"

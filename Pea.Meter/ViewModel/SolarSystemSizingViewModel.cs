@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
@@ -152,8 +153,7 @@ public partial class SolarSystemSizingViewModel : ObservableObject
             SolarSizeNeeded = solarArraySize;
             BatterySizeNeeded = AverageKwUsedBetween08To17Monthly.RoundUpToNearestFive();
 
-            EnergyProducedMonthlySummary =
-                new ObservableCollection<MeterReadingMonthlySummary>(meterReadingMonthlySummaries);
+            EnergyProducedMonthlySummary = meterReadingMonthlySummaries.ToObservableCollection();
         }
         catch (Exception e)
         {
