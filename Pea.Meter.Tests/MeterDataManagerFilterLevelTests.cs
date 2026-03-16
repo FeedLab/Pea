@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Pea.Infrastructure.Models;
-using Pea.Meter.Models.MeterData;
+using Pea.Infrastructure.Models.MeterData;
 
 namespace Pea.Meter.Tests;
 
@@ -9,9 +9,12 @@ namespace Pea.Meter.Tests;
 /// </summary>
 public class MeterDataManagerFilterLevelTests
 {
-    private const decimal RateA = 10.5m;
-    private const decimal RateB = 20.3m;
-    private const decimal RateC = 15.7m;
+    private const decimal PeekUsage = 10.5m;
+    private const decimal OffPeekUsage = 20.3m;
+    private const decimal HolidayUsage = 15.7m;
+    private const decimal FlatRatePrice = 1.5m;
+    private const decimal PeekPrice = 2.0m;
+    private const decimal OffPeekPrice = 1.0m;
 
     #region FilterLevel.None Tests
 
@@ -19,8 +22,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelNone_ShouldReturnAllReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 2, 20, 14, 30),
@@ -40,8 +43,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithDefaultFilterLevel_ShouldReturnAllReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 2, 20, 14, 30)
@@ -64,14 +67,14 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelYear_ShouldReturnYearReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings2024 = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings2024 = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 6, 20, 14, 30),
             CreateReading(2024, 12, 25, 8, 45)
         };
-        var readings2025 = new List<PeaMeterReading>
+        var readings2025 = new List<MeterDataReading>
         {
             CreateReading(2025, 1, 1, 0, 0)
         };
@@ -92,8 +95,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelYear_NonExistentYear_ShouldReturnAllReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0)
         };
@@ -115,14 +118,14 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelMonth_ShouldReturnMonthReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readingsJan = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readingsJan = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 5, 10, 0),
             CreateReading(2024, 1, 15, 14, 30),
             CreateReading(2024, 1, 25, 8, 45)
         };
-        var readingsFeb = new List<PeaMeterReading>
+        var readingsFeb = new List<MeterDataReading>
         {
             CreateReading(2024, 2, 10, 12, 0)
         };
@@ -143,8 +146,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelMonth_NonExistentMonth_ShouldReturnYearReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 2, 20, 14, 30)
@@ -167,14 +170,14 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelDay_ShouldReturnDayReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readingsDay15 = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readingsDay15 = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 0, 0),
             CreateReading(2024, 1, 15, 12, 30),
             CreateReading(2024, 1, 15, 23, 45)
         };
-        var readingsDay20 = new List<PeaMeterReading>
+        var readingsDay20 = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 20, 10, 0)
         };
@@ -195,8 +198,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelDay_NonExistentDay_ShouldReturnMonthReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 1, 20, 14, 30)
@@ -219,15 +222,15 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelHour_ShouldReturnHourReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readingsHour10 = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readingsHour10 = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 1, 15, 10, 15),
             CreateReading(2024, 1, 15, 10, 30),
             CreateReading(2024, 1, 15, 10, 45)
         };
-        var readingsHour14 = new List<PeaMeterReading>
+        var readingsHour14 = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 14, 0)
         };
@@ -248,8 +251,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelHour_NonExistentHour_ShouldReturnDayReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 1, 15, 14, 30)
@@ -268,8 +271,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelHour_Midnight_ShouldWork()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readingsMidnight = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readingsMidnight = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 0, 0),
             CreateReading(2024, 1, 15, 0, 15),
@@ -294,11 +297,11 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelQuarter_ShouldReturnQuarterReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readingsQ0 = new List<PeaMeterReading> { CreateReading(2024, 1, 15, 10, 0) };
-        var readingsQ1 = new List<PeaMeterReading> { CreateReading(2024, 1, 15, 10, 15) };
-        var readingsQ2 = new List<PeaMeterReading> { CreateReading(2024, 1, 15, 10, 30) };
-        var readingsQ3 = new List<PeaMeterReading> { CreateReading(2024, 1, 15, 10, 45) };
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readingsQ0 = new List<MeterDataReading> { CreateReading(2024, 1, 15, 10, 0) };
+        var readingsQ1 = new List<MeterDataReading> { CreateReading(2024, 1, 15, 10, 15) };
+        var readingsQ2 = new List<MeterDataReading> { CreateReading(2024, 1, 15, 10, 30) };
+        var readingsQ3 = new List<MeterDataReading> { CreateReading(2024, 1, 15, 10, 45) };
 
         manager.AddRange(readingsQ0);
         manager.AddRange(readingsQ1);
@@ -327,8 +330,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelQuarter_NonExistentQuarter_ShouldReturnHourReadings()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 1, 15, 10, 15)
@@ -347,8 +350,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithFilterLevelQuarter_CalculatesQuarterFromMinutes()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        manager.AddRange(new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        manager.AddRange(new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 1, 15, 10, 7),   // Should be quarter 0 (0-14 min)
@@ -378,7 +381,7 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithEmptyManager_ShouldReturnEmptyList()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
 
         // Act
         var result = manager.GetReadings(new DateTime(2024, 1, 1), FilterLevel.Year);
@@ -391,8 +394,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithLeapYearDate_ShouldWork()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 2, 29, 12, 0),
             CreateReading(2024, 2, 29, 12, 15)
@@ -411,8 +414,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_AfterClear_ShouldReturnEmpty()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        manager.AddRange(new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        manager.AddRange(new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0)
         });
@@ -433,16 +436,16 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithLargeDataset_ShouldFilterEfficiently()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var allReadings = new List<PeaMeterReading>();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var allReadings = new List<MeterDataReading>();
 
         // Add full year of data
         var startDate = new DateTime(2024, 1, 1, 0, 0, 0);
         for (int i = 0; i < 366 * 24 * 4; i++) // Leap year
         {
-            allReadings.Add(new PeaMeterReading(
+            allReadings.Add(new MeterDataReading(
                 startDate.AddMinutes(i * 15),
-                RateA, RateB, RateC
+                PeekUsage, OffPeekUsage, HolidayUsage
             ));
         }
         manager.AddRange(allReadings);
@@ -463,8 +466,8 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_WithDuplicateTimestamps_ShouldReturnAllInstances()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 1, 15, 10, 0),
@@ -487,25 +490,25 @@ public class MeterDataManagerFilterLevelTests
     public void GetReadings_ShouldPreserveReadingData()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var reading = new PeaMeterReading(new DateTime(2024, 1, 15, 10, 0, 0), 1.5m, 2.5m, 3.5m);
-        manager.AddRange(new List<PeaMeterReading> { reading });
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var reading = new MeterDataReading(new DateTime(2024, 1, 15, 10, 0, 0), 1.5m, 2.5m, 3.5m);
+        manager.AddRange(new List<MeterDataReading> { reading });
 
         // Act
         var result = manager.GetReadings(new DateTime(2024, 1, 15, 10, 0, 0), FilterLevel.Quarter);
 
         // Assert
         result.Should().ContainSingle();
-        result[0].RateA.Should().Be(1.5m);
-        result[0].RateB.Should().Be(2.5m);
-        result[0].RateC.Should().Be(3.5m);
+        result[0].PeekUsage.Should().Be(1.5m);
+        result[0].OffPeekUsage.Should().Be(2.5m);
+        result[0].HolidayUsage.Should().Be(3.5m);
     }
 
     [Fact]
     public void GetReadings_ShouldAlwaysReturnNonNull()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
 
         // Act & Assert
         manager.GetReadings(new DateTime(2024, 1, 1), FilterLevel.None).Should().NotBeNull();
@@ -520,10 +523,10 @@ public class MeterDataManagerFilterLevelTests
 
     #region Helper Methods
 
-    private static PeaMeterReading CreateReading(int year, int month, int day, int hour, int minute)
+    private static MeterDataReading CreateReading(int year, int month, int day, int hour, int minute)
     {
         var periodStart = new DateTime(year, month, day, hour, minute, 0);
-        return new PeaMeterReading(periodStart, RateA, RateB, RateC);
+        return new MeterDataReading(periodStart, PeekUsage, OffPeekUsage, HolidayUsage);
     }
 
     #endregion

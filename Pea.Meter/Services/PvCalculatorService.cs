@@ -124,7 +124,7 @@ public class PvCalculatorService
             var currentTime = dayStart.AddHours(hour);
             var powerKw = CalculateKw(latitude, longitude, currentTime, systemKWp, tilt, panelAzimuth, timezone);
 
-            if (powerKw >= threshold)
+            if (powerKw > threshold)
                 productiveHours++;
         }
 

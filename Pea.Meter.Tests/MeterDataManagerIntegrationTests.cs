@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Pea.Infrastructure.Models;
-using Pea.Meter.Models.MeterData;
+using Pea.Infrastructure.Models.MeterData;
 
 namespace Pea.Meter.Tests;
 
@@ -9,9 +9,12 @@ namespace Pea.Meter.Tests;
 /// </summary>
 public class MeterDataManagerIntegrationTests
 {
-    private const decimal RateA = 10.5m;
-    private const decimal RateB = 20.3m;
-    private const decimal RateC = 15.7m;
+    private const decimal PeekUsage = 10.5m;
+    private const decimal OffPeekUsage = 20.3m;
+    private const decimal HolidayUsage = 15.7m;
+    private const decimal FlatRatePrice = 1.5m;
+    private const decimal PeekPrice = 2.0m;
+    private const decimal OffPeekPrice = 1.0m;
 
     #region Full Day Integration Tests
 
@@ -19,7 +22,7 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddFullDayOfReadings_ShouldHandleAllQuarters()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
         var readings = GenerateFullDayReadings(2024, 1, 15);
 
         // Act
@@ -33,8 +36,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddFullWeekOfReadings_ShouldHandleAllDays()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>();
 
         for (int day = 1; day <= 7; day++)
         {
@@ -52,8 +55,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddFullMonthOfReadings_ShouldHandleAllDays()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>();
 
         // January has 31 days
         for (int day = 1; day <= 31; day++)
@@ -76,8 +79,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsAcrossMultipleYears_ShouldOrganizeCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2023, 12, 31, 23, 45),
             CreateReading(2024, 1, 1, 0, 0),
@@ -97,15 +100,15 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsToSameYearMultipleTimes_ShouldMergeCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
 
-        var batch1 = new List<PeaMeterReading>
+        var batch1 = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 0),
             CreateReading(2024, 1, 15, 10, 15)
         };
 
-        var batch2 = new List<PeaMeterReading>
+        var batch2 = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 15, 10, 30),
             CreateReading(2024, 1, 15, 10, 45)
@@ -128,8 +131,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsAcrossAllMonths_ShouldHandleCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>();
 
         for (int month = 1; month <= 12; month++)
         {
@@ -147,15 +150,15 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsToSameMonthMultipleTimes_ShouldMergeCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
 
-        var batch1 = new List<PeaMeterReading>
+        var batch1 = new List<MeterDataReading>
         {
             CreateReading(2024, 3, 1, 10, 0),
             CreateReading(2024, 3, 2, 10, 0)
         };
 
-        var batch2 = new List<PeaMeterReading>
+        var batch2 = new List<MeterDataReading>
         {
             CreateReading(2024, 3, 3, 10, 0),
             CreateReading(2024, 3, 4, 10, 0)
@@ -178,8 +181,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsAcrossDifferentDaysInMonth_ShouldOrganizeCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 1, 12, 0),
             CreateReading(2024, 1, 15, 12, 0),
@@ -197,7 +200,7 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsToSameDayMultipleTimes_ShouldMergeCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
 
         var batch1 = GenerateQuarterHourReadings(2024, 5, 10, 9);  // 9 AM
         var batch2 = GenerateQuarterHourReadings(2024, 5, 10, 15); // 3 PM
@@ -219,8 +222,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsAcrossDifferentHours_ShouldOrganizeCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>();
 
         for (int hour = 0; hour < 24; hour++)
         {
@@ -238,15 +241,15 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsToSameHourMultipleTimes_ShouldMergeCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
 
-        var batch1 = new List<PeaMeterReading>
+        var batch1 = new List<MeterDataReading>
         {
             CreateReading(2024, 7, 20, 14, 0),
             CreateReading(2024, 7, 20, 14, 15)
         };
 
-        var batch2 = new List<PeaMeterReading>
+        var batch2 = new List<MeterDataReading>
         {
             CreateReading(2024, 7, 20, 14, 30),
             CreateReading(2024, 7, 20, 14, 45)
@@ -269,8 +272,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_ClearAfterFullYearOfData_ShouldAllowReAddingData()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>();
 
         // Add readings for each month
         for (int month = 1; month <= 12; month++)
@@ -293,7 +296,7 @@ public class MeterDataManagerIntegrationTests
     public void Integration_ClearAndReAdd_ShouldWorkMultipleTimes()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
 
         for (int i = 0; i < 5; i++)
         {
@@ -316,8 +319,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsInNonChronologicalOrder_ShouldOrganizeCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 12, 31, 23, 45),
             CreateReading(2024, 1, 1, 0, 0),
@@ -337,9 +340,9 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddDuplicateReadings_ShouldAddBothInstances()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
         var reading = CreateReading(2024, 6, 15, 12, 0);
-        var readings = new List<PeaMeterReading> { reading, reading };
+        var readings = new List<MeterDataReading> { reading, reading };
 
         // Act
         var action = () => manager.AddRange(readings);
@@ -353,22 +356,22 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsWithVaryingRates_ShouldPreserveAllData()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
-            new PeaMeterReading(new DateTime(2024, 1, 15, 10, 0, 0), 1.5m, 2.5m, 3.5m),
-            new PeaMeterReading(new DateTime(2024, 1, 15, 10, 15, 0), 100m, 200m, 300m),
-            new PeaMeterReading(new DateTime(2024, 1, 15, 10, 30, 0), 0.001m, 0.002m, 0.003m),
-            new PeaMeterReading(new DateTime(2024, 1, 15, 10, 45, 0), 0m, 0m, 0m)
+            new MeterDataReading(new DateTime(2024, 1, 15, 10, 0, 0), 1.5m, 2.5m, 3.5m),
+            new MeterDataReading(new DateTime(2024, 1, 15, 10, 15, 0), 100m, 200m, 300m),
+            new MeterDataReading(new DateTime(2024, 1, 15, 10, 30, 0), 0.001m, 0.002m, 0.003m),
+            new MeterDataReading(new DateTime(2024, 1, 15, 10, 45, 0), 0m, 0m, 0m)
         };
 
         // Act
         manager.AddRange(readings);
 
         // Assert
-        readings[0].RateA.Should().Be(1.5m);
-        readings[1].RateB.Should().Be(200m);
-        readings[2].RateC.Should().Be(0.003m);
+        readings[0].PeekUsage.Should().Be(1.5m);
+        readings[1].OffPeekUsage.Should().Be(200m);
+        readings[2].HolidayUsage.Should().Be(0.003m);
         readings[3].Total.Should().Be(0m);
     }
 
@@ -376,8 +379,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsSpanningDaylightSavingTime_ShouldHandleCorrectly()
     {
         // Arrange - March 2024 DST in US (typically 2nd Sunday in March)
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 3, 10, 1, 45),  // Before DST
             CreateReading(2024, 3, 10, 2, 0),   // During DST transition
@@ -400,19 +403,19 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddYearOfQuarterHourReadings_ShouldPerformEfficiently()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>();
 
         var startDate = new DateTime(2024, 1, 1, 0, 0, 0);
         var totalQuarters = 365 * 24 * 4; // Leap year 2024: 366 days
 
         for (int i = 0; i < totalQuarters; i++)
         {
-            readings.Add(new PeaMeterReading(
+            readings.Add(new MeterDataReading(
                 startDate.AddMinutes(i * 15),
-                RateA,
-                RateB,
-                RateC
+                PeekUsage,
+                OffPeekUsage,
+                HolidayUsage
             ));
         }
 
@@ -428,18 +431,18 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddMultipleBatchesOfReadings_ShouldHandleEfficiently()
     {
         // Arrange
-        var manager = new MeterDataManager();
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
         var totalReadingsAdded = 0;
 
         // Act - Add 100 batches of 100 readings each
         for (int batch = 0; batch < 100; batch++)
         {
-            var readings = new List<PeaMeterReading>();
+            var readings = new List<MeterDataReading>();
 
             for (int i = 0; i < 100; i++)
             {
                 var date = new DateTime(2024, 1, 1, 0, 0, 0).AddMinutes((batch * 100 + i) * 15);
-                readings.Add(new PeaMeterReading(date, RateA, RateB, RateC));
+                readings.Add(new MeterDataReading(date, PeekUsage, OffPeekUsage, HolidayUsage));
             }
 
             manager.AddRange(readings);
@@ -458,8 +461,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsAtMonthBoundaries_ShouldHandleCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 1, 31, 23, 45),
             CreateReading(2024, 2, 1, 0, 0),
@@ -478,8 +481,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsAtYearBoundaries_ShouldHandleCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2023, 12, 31, 23, 45),
             CreateReading(2024, 1, 1, 0, 0),
@@ -498,8 +501,8 @@ public class MeterDataManagerIntegrationTests
     public void Integration_AddReadingsAtMidnight_ShouldHandleCorrectly()
     {
         // Arrange
-        var manager = new MeterDataManager();
-        var readings = new List<PeaMeterReading>
+        var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
+        var readings = new List<MeterDataReading>
         {
             CreateReading(2024, 6, 15, 23, 45),
             CreateReading(2024, 6, 16, 0, 0),
@@ -518,15 +521,15 @@ public class MeterDataManagerIntegrationTests
 
     #region Helper Methods
 
-    private static PeaMeterReading CreateReading(int year, int month, int day, int hour, int minute)
+    private static MeterDataReading CreateReading(int year, int month, int day, int hour, int minute)
     {
         var periodStart = new DateTime(year, month, day, hour, minute, 0);
-        return new PeaMeterReading(periodStart, RateA, RateB, RateC);
+        return new MeterDataReading(periodStart, PeekUsage, OffPeekUsage, HolidayUsage);
     }
 
-    private static List<PeaMeterReading> GenerateFullDayReadings(int year, int month, int day)
+    private static List<MeterDataReading> GenerateFullDayReadings(int year, int month, int day)
     {
-        var readings = new List<PeaMeterReading>();
+        var readings = new List<MeterDataReading>();
 
         for (int hour = 0; hour < 24; hour++)
         {
@@ -540,9 +543,9 @@ public class MeterDataManagerIntegrationTests
         return readings;
     }
 
-    private static List<PeaMeterReading> GenerateQuarterHourReadings(int year, int month, int day, int hour)
+    private static List<MeterDataReading> GenerateQuarterHourReadings(int year, int month, int day, int hour)
     {
-        var readings = new List<PeaMeterReading>();
+        var readings = new List<MeterDataReading>();
 
         for (int quarter = 0; quarter < 4; quarter++)
         {

@@ -948,16 +948,6 @@ public class PvCalculatorServiceTests
         var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
 
         // Act
-        var strictHours = PvCalculatorService.GetProductiveSolarHours(
-            BangkokLatitude,
-            BangkokLongitude,
-            time,
-            StandardSystemKWp,
-            StandardTilt,
-            SouthFacingAzimuth,
-            ThailandTimezone,
-            0.01); // 1% - strict
-
         var lenientHours = PvCalculatorService.GetProductiveSolarHours(
             BangkokLatitude,
             BangkokLongitude,
@@ -966,10 +956,20 @@ public class PvCalculatorServiceTests
             StandardTilt,
             SouthFacingAzimuth,
             ThailandTimezone,
-            0.10); // 10% - lenient
+            0.01); // 1% fraction = lower threshold = lenient (more hours pass)
+
+        var strictHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone,
+            0.10); // 10% fraction = higher threshold = strict (fewer hours pass)
 
         // Assert
-        // Lower threshold percentage (stricter) should give fewer or equal hours
+        // Higher threshold (strict) should give fewer or equal hours than lower threshold (lenient)
         strictHours.Should().BeLessThanOrEqualTo(lenientHours);
     }
 
