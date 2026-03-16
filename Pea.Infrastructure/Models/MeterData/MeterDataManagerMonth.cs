@@ -40,6 +40,9 @@ public class MeterDataManagerMonth : MeterDataManagerBase<MeterDataManagerDay>
 
         MeterReadings.Clear();
         DataBucket.Clear();
+
+        MeterDataUsageInKwSummary.Reset();
+        MeterDataUsageInMoneySummary.Reset();
     }
 
     private void Add(List<MeterDataReading> readings)
@@ -56,7 +59,10 @@ public class MeterDataManagerMonth : MeterDataManagerBase<MeterDataManagerDay>
 
             DataBucket[group.Key.Day].AddRange(group.ToList());
         }
-
+        
+        MeterDataUsageInKwSummary.Reset();
+        MeterDataUsageInMoneySummary.Reset();
+        
         CalculateMeterDataUsageSummary();
         CalculateUsagePriceSummaries();
     }

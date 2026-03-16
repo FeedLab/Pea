@@ -27,5 +27,8 @@ public class MeterDataManagerQuarter : MeterDataManagerBase<MeterDataManagerQuar
     public void Clear()
     {
         MeterReadings.Clear();
+
+        MeterDataUsageInKwSummary.Reset();
+        MeterDataUsageInMoneySummary.Reset();
     }
 }

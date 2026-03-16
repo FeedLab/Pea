@@ -308,6 +308,86 @@ public class MeterDataManagerTests
         action.Should().NotThrow();
     }
 
+    [Fact]
+    public void Clear_ShouldResetMeterDataUsageInKwSummary()
+    {
+        // Arrange
+        var manager = new MeterDataManager(new List<MeterDataReading>(), DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var readings = new List<MeterDataReading>
+        {
+            CreateReading(2024, 1, 15, 10, 0),
+            CreateReading(2024, 1, 15, 11, 0)
+        };
+        manager.AddRange(readings);
+
+        // Verify summaries have data before clear
+        var hasDataBefore = manager.MeterDataUsageInKwSummary.PeekUsage > 0 ||
+                           manager.MeterDataUsageInKwSummary.OffPeekUsage > 0 ||
+                           manager.MeterDataUsageInKwSummary.Holiday > 0;
+
+        // Act
+        manager.Clear();
+
+        // Assert
+        hasDataBefore.Should().BeTrue("summaries should have data before clear");
+        manager.MeterDataUsageInKwSummary.PeekUsage.Should().Be(0m);
+        manager.MeterDataUsageInKwSummary.OffPeekUsage.Should().Be(0m);
+        manager.MeterDataUsageInKwSummary.Holiday.Should().Be(0m);
+    }
+
+    [Fact]
+    public void Clear_ShouldResetMeterDataUsageInMoneySummary()
+    {
+        // Arrange
+        var manager = new MeterDataManager(new List<MeterDataReading>(), DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var readings = new List<MeterDataReading>
+        {
+            CreateReading(2024, 1, 15, 10, 0),
+            CreateReading(2024, 1, 15, 11, 0)
+        };
+        manager.AddRange(readings);
+
+        // Verify summaries have data before clear
+        var hasDataBefore = manager.MeterDataUsageInMoneySummary.PeekUsage > 0 ||
+                           manager.MeterDataUsageInMoneySummary.OffPeekUsage > 0 ||
+                           manager.MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary > 0 ||
+                           manager.MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary > 0 ||
+                           manager.MeterDataUsageInMoneySummary.FlatRateUsagePriceSummary > 0;
+
+        // Act
+        manager.Clear();
+
+        // Assert
+        hasDataBefore.Should().BeTrue("summaries should have data before clear");
+        manager.MeterDataUsageInMoneySummary.PeekUsage.Should().Be(0m);
+        manager.MeterDataUsageInMoneySummary.OffPeekUsage.Should().Be(0m);
+        manager.MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary.Should().Be(0m);
+        manager.MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary.Should().Be(0m);
+        manager.MeterDataUsageInMoneySummary.FlatRateUsagePriceSummary.Should().Be(0m);
+    }
+
+    [Fact]
+    public void Clear_ShouldAllowReAddingDataWithCorrectSummaries()
+    {
+        // Arrange
+        var manager = new MeterDataManager(new List<MeterDataReading>(), DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var readings = new List<MeterDataReading>
+        {
+            CreateReading(2024, 1, 15, 10, 0)
+        };
+        manager.AddRange(readings);
+
+        // Act
+        manager.Clear();
+        manager.AddRange(readings);
+
+        // Assert - After re-adding, summaries should have values again
+        var hasData = manager.MeterDataUsageInKwSummary.PeekUsage > 0 ||
+                     manager.MeterDataUsageInKwSummary.OffPeekUsage > 0 ||
+                     manager.MeterDataUsageInKwSummary.Holiday > 0;
+        hasData.Should().BeTrue("summaries should be recalculated after re-adding data");
+    }
+
     #endregion
 
     #region Edge Cases

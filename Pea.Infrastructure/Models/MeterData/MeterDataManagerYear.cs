@@ -40,6 +40,9 @@ public class MeterDataManagerYear : MeterDataManagerBase<MeterDataManagerMonth>
 
         MeterReadings.Clear();
         DataBucket.Clear();
+
+        MeterDataUsageInKwSummary.Reset();
+        MeterDataUsageInMoneySummary.Reset();
     }
 
     private void Add(List<MeterDataReading> readings)
@@ -55,6 +58,12 @@ public class MeterDataManagerYear : MeterDataManagerBase<MeterDataManagerMonth>
 
             DataBucket[group.Key.Month].AddRange(group.ToList());
         }
+        
+        MeterDataUsageInKwSummary.Reset();
+        MeterDataUsageInMoneySummary.Reset();
+        
+        CalculateMeterDataUsageSummary();
+        CalculateUsagePriceSummaries();
     }
 
     private void CalculateUsagePriceSummaries()

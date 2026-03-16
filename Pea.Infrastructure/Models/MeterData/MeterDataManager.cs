@@ -55,6 +55,9 @@ public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
             DataBucket[group.Key].AddRange(group.ToList());
         }
         
+        MeterDataUsageInKwSummary.Reset();
+        MeterDataUsageInMoneySummary.Reset();
+        
         CalculateMeterDataUsageSummary();
         CalculateUsagePriceSummaries();
     }
@@ -81,5 +84,8 @@ public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
 
         MeterReadings.Clear();
         DataBucket.Clear();
+
+        MeterDataUsageInKwSummary.Reset();
+        MeterDataUsageInMoneySummary.Reset();
     }
 }

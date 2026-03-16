@@ -11,6 +11,7 @@ public class MeterDataUsageInKwSummary
     {
         PeekUsage = 0;
         OffPeekUsage = 0;
+        Holiday = 0;
     }
     
     public void Calculate(List<MeterDataReading> meterReadings)

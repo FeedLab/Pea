@@ -42,6 +42,9 @@ public class MeterDataManagerHour : MeterDataManagerBase<MeterDataManagerQuarter
 
         MeterReadings.Clear();
         DataBucket.Clear();
+
+        MeterDataUsageInKwSummary.Reset();
+        MeterDataUsageInMoneySummary.Reset();
     }
 
     private void Add(List<MeterDataReading> readings)
@@ -55,7 +58,6 @@ public class MeterDataManagerHour : MeterDataManagerBase<MeterDataManagerQuarter
             Quarter = r.PeriodStart.Minute / 15  
         });
 
-        MeterDataUsageInKwSummary.Reset();
         
         foreach (var group in groups)
         {
@@ -67,7 +69,8 @@ public class MeterDataManagerHour : MeterDataManagerBase<MeterDataManagerQuarter
             DataBucket[group.Key.Quarter].AddRange(group.ToList());
             
         }
-
+        MeterDataUsageInKwSummary.Reset();
+        MeterDataUsageInMoneySummary.Reset();
 
         CalculateMeterDataUsageSummary();
         CalculateUsagePriceSummaries();
