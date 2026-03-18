@@ -2,18 +2,36 @@
 
 public class MeterDataManagerDay : MeterDataManagerBase<MeterDataManagerHour>
 {
+    private decimal calculatedSolarProduction;
+    
     public MeterDataManagerDay(decimal flatRatePrice, decimal peekPrice,
         decimal offPeekPrice)
         : base(flatRatePrice, peekPrice, offPeekPrice)
     {
+        TimeResolution = FilterLevel.Day;
     }
 
+    public decimal GetSolarProduction(FilterLevel timeResolution)
+    {
+        if (timeResolution != TimeResolution)
+        {
+            throw new ArgumentException("Time resolution is not the same as the day level");
+        }
+        
+        return calculatedSolarProduction;
+    }
+    
+    public void CalculateSolarProduction(DateOnly date, decimal solarArraySize, decimal panelAzimuth, decimal panelTilt)
+    {
+        calculatedSolarProduction = PvCalculatorService.CalculateKwDaily(date, solarArraySize, panelTilt, panelAzimuth);
+    }
+    
     public List<MeterDataReading> GetReadings(DateTime date, FilterLevel filterLevel)
     {
-        if (filterLevel == FilterLevel.Day)
+        if (filterLevel == TimeResolution)
             return MeterReadings;
 
-        if (filterLevel > FilterLevel.Day)
+        if (filterLevel == FilterLevel.Hour)
         {
             var existsKey = DataBucket.ContainsKey(date.Hour);
 
@@ -22,7 +40,16 @@ public class MeterDataManagerDay : MeterDataManagerBase<MeterDataManagerHour>
                 return DataBucket[date.Hour].GetReadings(date, filterLevel);
             }
         }
+        else
+        {
+            var existsKey = DataBucket.ContainsKey(date.Hour);
 
+            if (existsKey)
+            {
+                return DataBucket[date.Hour].GetReadings(date, filterLevel);
+            }  
+        }
+        
         return MeterReadings;
     }
 

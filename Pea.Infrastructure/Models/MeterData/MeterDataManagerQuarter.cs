@@ -6,6 +6,7 @@ public class MeterDataManagerQuarter : MeterDataManagerBase<MeterDataManagerQuar
         decimal offPeekPrice)
         : base(flatRatePrice, peekPrice, offPeekPrice)
     {
+        TimeResolution = FilterLevel.Quarter;
     }
 
     public List<MeterDataReading> GetReadings()
@@ -21,7 +22,7 @@ public class MeterDataManagerQuarter : MeterDataManagerBase<MeterDataManagerQuar
         MeterDataUsageInKwSummary.Calculate(MeterReadings);
         
         MeterDataUsageInMoneySummary.Reset();
-        MeterDataUsageInMoneySummary.Calculate(MeterReadings, FlatRatePrice, PeekPrice, OffPeekPrice);
+        MeterDataUsageInMoneySummary.Calculate(MeterReadings);
     }
 
     public void Clear()

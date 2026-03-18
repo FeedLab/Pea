@@ -16,6 +16,12 @@ public class MeterDataManagerFilterLevelTests
     private const decimal PeekPrice = 2.0m;
     private const decimal OffPeekPrice = 1.0m;
 
+    private const int QuartersPerHour = 4;
+    private const int HoursPerDay = 24;
+    private const int ReadingsPerDay = QuartersPerHour * HoursPerDay; // 96
+    private const int MinutesPerQuarter = 15;
+    private const int DaysInLeapYear = 366;
+
     #region FilterLevel.None Tests
 
     [Fact]
@@ -441,10 +447,11 @@ public class MeterDataManagerFilterLevelTests
 
         // Add full year of data
         var startDate = new DateTime(2024, 1, 1, 0, 0, 0);
-        for (int i = 0; i < 366 * 24 * 4; i++) // Leap year
+        var totalReadings = DaysInLeapYear * HoursPerDay * QuartersPerHour;
+        for (int i = 0; i < totalReadings; i++)
         {
             allReadings.Add(new MeterDataReading(
-                startDate.AddMinutes(i * 15),
+                startDate.AddMinutes(i * MinutesPerQuarter),
                 PeekUsage, OffPeekUsage, HolidayUsage
             ));
         }
@@ -454,7 +461,7 @@ public class MeterDataManagerFilterLevelTests
         var result = manager.GetReadings(new DateTime(2024, 6, 15), FilterLevel.Day);
 
         // Assert
-        result.Should().HaveCount(96); // 24 hours * 4 quarters
+        result.Should().HaveCount(ReadingsPerDay);
         result.All(r => r.PeriodStart.Date == new DateTime(2024, 6, 15)).Should().BeTrue();
     }
 

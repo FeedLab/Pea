@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
+using Pea.Infrastructure;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Extension;
 using Pea.Meter.Models;

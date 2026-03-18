@@ -1,6 +1,6 @@
 ﻿namespace Pea.Infrastructure.Models.MeterData;
 
-public class MeterDataUsageInMoneySummary
+public class MeterDataUsageInMoneySummary(decimal flatRatePrice, decimal peekPrice, decimal offPeekPrice)
 {
     public decimal PeekUsage { get; set; }
     public decimal OffPeekUsage { get; set; }
@@ -22,7 +22,7 @@ public class MeterDataUsageInMoneySummary
         FlatRateUsagePriceSummary = 0;
     }
     
-    public void Calculate(List<MeterDataReading> meterReadings, decimal flatRatePrice, decimal peekPrice, decimal offPeekPrice)
+    public void Calculate(List<MeterDataReading> meterReadings)
     {
         PeekTouUsagePriceSummary += meterReadings.Sum(r => r.PeekUsage) * peekPrice;
         OffPeekTouUsagePriceSummary += meterReadings.Sum(r => r.OffPeekUsage) * offPeekPrice;

@@ -16,6 +16,13 @@ public class MeterDataManagerIntegrationTests
     private const decimal PeekPrice = 2.0m;
     private const decimal OffPeekPrice = 1.0m;
 
+    // Time-related constants
+    private const int MinutesPerQuarter = 15;
+    private const int QuartersPerHour = 4;
+    private const int HoursPerDay = 24;
+    private const int MonthsInYear = 12;
+    private const int ReadingsPerDay = 96; // 24 hours * 4 quarters
+
     #region Full Day Integration Tests
 
     [Fact]
@@ -134,7 +141,7 @@ public class MeterDataManagerIntegrationTests
         var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
         var readings = new List<MeterDataReading>();
 
-        for (int month = 1; month <= 12; month++)
+        for (int month = 1; month <= MonthsInYear; month++)
         {
             readings.Add(CreateReading(2024, month, 15, 12, 0));
         }
@@ -143,7 +150,7 @@ public class MeterDataManagerIntegrationTests
         manager.AddRange(readings);
 
         // Assert
-        readings.Should().HaveCount(12);
+        readings.Should().HaveCount(MonthsInYear);
     }
 
     [Fact]
@@ -210,8 +217,8 @@ public class MeterDataManagerIntegrationTests
         manager.AddRange(batch2);
 
         // Assert
-        batch1.Should().HaveCount(4);
-        batch2.Should().HaveCount(4);
+        batch1.Should().HaveCount(QuartersPerHour);
+        batch2.Should().HaveCount(QuartersPerHour);
     }
 
     #endregion
@@ -225,7 +232,7 @@ public class MeterDataManagerIntegrationTests
         var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
         var readings = new List<MeterDataReading>();
 
-        for (int hour = 0; hour < 24; hour++)
+        for (int hour = 0; hour < HoursPerDay; hour++)
         {
             readings.Add(CreateReading(2024, 1, 15, hour, 0));
         }
@@ -234,7 +241,7 @@ public class MeterDataManagerIntegrationTests
         manager.AddRange(readings);
 
         // Assert
-        readings.Should().HaveCount(24);
+        readings.Should().HaveCount(HoursPerDay);
     }
 
     [Fact]
@@ -276,7 +283,7 @@ public class MeterDataManagerIntegrationTests
         var readings = new List<MeterDataReading>();
 
         // Add readings for each month
-        for (int month = 1; month <= 12; month++)
+        for (int month = 1; month <= MonthsInYear; month++)
         {
             readings.AddRange(GenerateFullDayReadings(2024, month, 15));
         }
@@ -307,7 +314,7 @@ public class MeterDataManagerIntegrationTests
             manager.Clear();
 
             // Assert
-            readings.Should().HaveCount(96);
+            readings.Should().HaveCount(ReadingsPerDay);
         }
     }
 
@@ -407,12 +414,13 @@ public class MeterDataManagerIntegrationTests
         var readings = new List<MeterDataReading>();
 
         var startDate = new DateTime(2024, 1, 1, 0, 0, 0);
-        var totalQuarters = 365 * 24 * 4; // Leap year 2024: 366 days
+        const int daysInYear2024 = 366; // Leap year 2024
+        var totalQuarters = daysInYear2024 * HoursPerDay * QuartersPerHour;
 
         for (int i = 0; i < totalQuarters; i++)
         {
             readings.Add(new MeterDataReading(
-                startDate.AddMinutes(i * 15),
+                startDate.AddMinutes(i * MinutesPerQuarter),
                 PeekUsage,
                 OffPeekUsage,
                 HolidayUsage
@@ -433,15 +441,17 @@ public class MeterDataManagerIntegrationTests
         // Arrange
         var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
         var totalReadingsAdded = 0;
+        const int batchCount = 100;
+        const int readingsPerBatch = 100;
 
-        // Act - Add 100 batches of 100 readings each
-        for (int batch = 0; batch < 100; batch++)
+        // Act
+        for (int batch = 0; batch < batchCount; batch++)
         {
             var readings = new List<MeterDataReading>();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < readingsPerBatch; i++)
             {
-                var date = new DateTime(2024, 1, 1, 0, 0, 0).AddMinutes((batch * 100 + i) * 15);
+                var date = new DateTime(2024, 1, 1, 0, 0, 0).AddMinutes((batch * readingsPerBatch + i) * MinutesPerQuarter);
                 readings.Add(new MeterDataReading(date, PeekUsage, OffPeekUsage, HolidayUsage));
             }
 
@@ -450,7 +460,7 @@ public class MeterDataManagerIntegrationTests
         }
 
         // Assert
-        totalReadingsAdded.Should().Be(10000);
+        totalReadingsAdded.Should().Be(batchCount * readingsPerBatch);
     }
 
     #endregion
@@ -531,11 +541,11 @@ public class MeterDataManagerIntegrationTests
     {
         var readings = new List<MeterDataReading>();
 
-        for (int hour = 0; hour < 24; hour++)
+        for (int hour = 0; hour < HoursPerDay; hour++)
         {
-            for (int quarter = 0; quarter < 4; quarter++)
+            for (int quarter = 0; quarter < QuartersPerHour; quarter++)
             {
-                var minute = quarter * 15;
+                var minute = quarter * MinutesPerQuarter;
                 readings.Add(CreateReading(year, month, day, hour, minute));
             }
         }
@@ -547,9 +557,9 @@ public class MeterDataManagerIntegrationTests
     {
         var readings = new List<MeterDataReading>();
 
-        for (int quarter = 0; quarter < 4; quarter++)
+        for (int quarter = 0; quarter < QuartersPerHour; quarter++)
         {
-            var minute = quarter * 15;
+            var minute = quarter * MinutesPerQuarter;
             readings.Add(CreateReading(year, month, day, hour, minute));
         }
 
@@ -656,7 +666,7 @@ public class MeterDataManagerIntegrationTests
         manager.MeterDataUsageInMoneySummary.Reset();
 
         // Act
-        manager.MeterDataUsageInMoneySummary.Calculate(readings, FlatRatePrice, PeekPrice, OffPeekPrice);
+        manager.MeterDataUsageInMoneySummary.Calculate(readings);
 
         // Assert
         // PeekUsage: (10.5 + 10.5) * 2.0 = 42.0

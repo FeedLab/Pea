@@ -2,17 +2,37 @@
 
 public class MeterDataManagerYear : MeterDataManagerBase<MeterDataManagerMonth>
 {
+    private decimal calculatedSolarProduction;
+    
+    internal Dictionary<int, MeterDataManagerMonth> MonthsData => DataBucket;
+
     public MeterDataManagerYear(decimal flatRatePrice, decimal peekPrice, decimal offPeekPrice)
         : base(flatRatePrice, peekPrice, offPeekPrice)
     {
+        TimeResolution = FilterLevel.Year;
     }
 
+    public decimal GetSolarProduction()
+    {
+        return calculatedSolarProduction;
+    }
+    
+    public void CalculateSolarProduction(int year, decimal solarArraySize, decimal panelAzimuth, decimal panelTilt)
+    {
+        foreach (var meterData in DataBucket)
+        {
+            meterData.Value.CalculateSolarProduction(year, meterData.Key, solarArraySize, panelAzimuth, panelTilt);
+        }
+        
+        calculatedSolarProduction = DataBucket.Sum(s => s.Value.GetSolarProduction());
+    }
+    
     public List<MeterDataReading> GetReadings(DateTime date, FilterLevel filterLevel)
     {
-        if (filterLevel == FilterLevel.Year)
+        if (filterLevel == TimeResolution)
             return MeterReadings;
 
-        if (filterLevel > FilterLevel.Year)
+        if (filterLevel == FilterLevel.Month)
         {
             var existsKey = DataBucket.ContainsKey(date.Month);
 
@@ -21,7 +41,16 @@ public class MeterDataManagerYear : MeterDataManagerBase<MeterDataManagerMonth>
                 return DataBucket[date.Month].GetReadings(date, filterLevel);
             }
         }
+        else
+        {
+            var existsKey = DataBucket.ContainsKey(date.Month);
 
+            if (existsKey)
+            {
+                return DataBucket[date.Month].GetReadings(date, filterLevel);
+            }  
+        }
+        
         return MeterReadings;
     }
 

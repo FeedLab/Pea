@@ -9,10 +9,13 @@ public class MeterDataManagerBase<T>
     protected readonly decimal PeekPrice;
     protected readonly decimal OffPeekPrice;
 
+    public FilterLevel TimeResolution = FilterLevel.None;
+    
+    public readonly SolarProductionDataSummary SolarProductionDataSummary;
     public readonly MeterDataUsageInKwSummary MeterDataUsageInKwSummary;
     public readonly MeterDataUsageInMoneySummary MeterDataUsageInMoneySummary;
 
-    
+        
     protected MeterDataManagerBase(decimal flatRatePrice, decimal peekPrice, decimal offPeekPrice)
     {
         FlatRatePrice = flatRatePrice;
@@ -20,6 +23,7 @@ public class MeterDataManagerBase<T>
         OffPeekPrice = offPeekPrice;
         
         MeterDataUsageInKwSummary = new MeterDataUsageInKwSummary();
-        MeterDataUsageInMoneySummary = new MeterDataUsageInMoneySummary();
+        MeterDataUsageInMoneySummary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice);
+        SolarProductionDataSummary = new SolarProductionDataSummary(FlatRatePrice, PeekPrice, OffPeekPrice);
     }
 }

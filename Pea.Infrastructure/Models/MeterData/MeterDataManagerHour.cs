@@ -6,11 +6,19 @@ public class MeterDataManagerHour : MeterDataManagerBase<MeterDataManagerQuarter
         decimal offPeekPrice)
         : base(flatRatePrice, peekPrice, offPeekPrice)
     {
+        TimeResolution = FilterLevel.Hour;
+    }
+    
+    public void CalculateSolarProduction()
+    {
+        foreach (var meterData in DataBucket.Values)
+        {
+        }
     }
     
     public List<MeterDataReading> GetReadings(DateTime date, FilterLevel filterLevel)
     {
-        if (filterLevel == FilterLevel.Hour)
+        if (filterLevel == TimeResolution)
             return MeterReadings;
 
         if (filterLevel == FilterLevel.Quarter)
