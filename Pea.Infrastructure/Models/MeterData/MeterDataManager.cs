@@ -12,7 +12,12 @@ public enum FilterLevel
 
 public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
 {
+    public decimal AverageKwUsedBetween08To17Monthly { get; private set; }
+    public decimal SumKwUsedBetween08To17Monthly { get; private set; }
+    public decimal CalculatedBatteryNeeded { get; private set; }
+    
     private decimal calculatedSolarProduction;
+    private decimal calculatedBatteryProduction;
 
     public MeterDataManager(List<MeterDataReading> meterReadings, decimal flatRatePrice, decimal peekPrice, decimal offPeekPrice)
     : base(flatRatePrice, peekPrice, offPeekPrice)
@@ -26,14 +31,22 @@ public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
         return calculatedSolarProduction;
     }
     
-    public void CalculateSolarProduction(decimal solarArraySize, decimal panelAzimuth, decimal panelTilt)
+    public decimal GetBatteryProduction()
+    {
+        return calculatedBatteryProduction;
+    }
+    
+    public void CalculateSolarProduction(decimal solarArraySize, decimal batterySizeNeeded, decimal panelAzimuth,
+        decimal panelTilt)
     {
         foreach (var meterData in DataBucket)
         {
-            meterData.Value.CalculateSolarProduction(meterData.Key, solarArraySize, panelAzimuth, panelTilt);
+            meterData.Value.CalculateSolarProduction(meterData.Key, solarArraySize, batterySizeNeeded, panelAzimuth, panelTilt);
         }
         
         calculatedSolarProduction = DataBucket.Sum(s => s.Value.GetSolarProduction());
+        calculatedBatteryProduction = DataBucket.Average(s => s.Value.GetBatteryProduction());
+        SolarProduction.Calculate(calculatedSolarProduction, CalculatedBatteryNeeded, MeterDataUsageInKw, MeterDataUsageInMoney);
     }
     
     public List<MeterDataReading> GetReadings(DateTime date, FilterLevel filterLevel = FilterLevel.None)
@@ -79,17 +92,15 @@ public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
         var currentDate = new DateTime(startYear, startMonth, 1);
         var endDate = new DateTime(endYear, endMonth, 1);
 
-        while (currentDate <= endDate)
+        while (currentDate <= endDate)  
         {
             // Check if year exists
-            if (DataBucket.ContainsKey(currentDate.Year))
+            if (DataBucket.TryGetValue(currentDate.Year, out var yearManager))
             {
-                var yearManager = DataBucket[currentDate.Year];
-
-                // Check if month exists in that year
-                if (yearManager.MonthsData.ContainsKey(currentDate.Month))
+                // Check if a month exists in that year
+                if (yearManager.MonthsData.TryGetValue(currentDate.Month, out var value))
                 {
-                    result.Add(yearManager.MonthsData[currentDate.Month]);
+                    result.Add(value);
                 }
             }
 
@@ -103,6 +114,7 @@ public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
     
     public void AddRange(List<MeterDataReading> readings)
     {
+        
         MeterReadings.AddRange(readings);
 
         var groups = readings.GroupBy(r => r.PeriodStart.Year);
@@ -111,14 +123,20 @@ public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
         {
             if (!DataBucket.ContainsKey(group.Key))
             {
-                DataBucket[group.Key] = new MeterDataManagerYear( FlatRatePrice, PeekPrice, OffPeekPrice);
+                var date = new DateOnly(group.Key, 1, 1);
+                DataBucket[group.Key] = new MeterDataManagerYear( date, FlatRatePrice, PeekPrice, OffPeekPrice);
             }
 
             DataBucket[group.Key].AddRange(group.ToList());
         }
         
-        MeterDataUsageInKwSummary.Reset();
-        MeterDataUsageInMoneySummary.Reset();
+        AverageKwUsedBetween08To17Monthly = DataBucket.Average(d => d.Value.SumKwUsedBetween08To17Monthly);
+        SumKwUsedBetween08To17Monthly = DataBucket.Average(d => d.Value.SumKwUsedBetween08To17Monthly);
+        CalculatedBatteryNeeded = DataBucket.Sum(d => d.Value.CalculatedBatteryNeeded);
+
+        
+        MeterDataUsageInKw.Reset();
+        MeterDataUsageInMoney.Reset();
         
         CalculateMeterDataUsageSummary();
         CalculateUsagePriceSummaries();
@@ -126,15 +144,16 @@ public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
 
     private void CalculateUsagePriceSummaries()
     {
-        MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary = DataBucket.Sum(s => s.Value.MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary);
-        MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary = DataBucket.Sum(s => s.Value.MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary);
-    }
+        MeterDataUsageInMoney.PeekTouUsagePriceSummary = DataBucket.Sum(s => s.Value.MeterDataUsageInMoney.PeekTouUsagePriceSummary);
+        MeterDataUsageInMoney.OffPeekTouUsagePriceSummary = DataBucket.Sum(s => s.Value.MeterDataUsageInMoney.OffPeekTouUsagePriceSummary);
+        MeterDataUsageInMoney.FlatRateUsagePriceSummary =
+            DataBucket.Sum(s => s.Value.MeterDataUsageInMoney.FlatRateUsagePriceSummary);    }
 
     private void CalculateMeterDataUsageSummary()
     {
-        MeterDataUsageInKwSummary.PeekUsage = DataBucket.Sum(s => s.Value.MeterDataUsageInKwSummary.PeekUsage);
-        MeterDataUsageInKwSummary.OffPeekUsage = DataBucket.Sum(s => s.Value.MeterDataUsageInKwSummary.OffPeekUsage);
-        MeterDataUsageInKwSummary.Holiday = DataBucket.Sum(s => s.Value.MeterDataUsageInKwSummary.Holiday);
+        MeterDataUsageInKw.PeekUsage = DataBucket.Sum(s => s.Value.MeterDataUsageInKw.PeekUsage);
+        MeterDataUsageInKw.OffPeekUsage = DataBucket.Sum(s => s.Value.MeterDataUsageInKw.OffPeekUsage);
+        MeterDataUsageInKw.Holiday = DataBucket.Sum(s => s.Value.MeterDataUsageInKw.Holiday);
     }
 
     public void Clear()
@@ -147,7 +166,7 @@ public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
         MeterReadings.Clear();
         DataBucket.Clear();
 
-        MeterDataUsageInKwSummary.Reset();
-        MeterDataUsageInMoneySummary.Reset();
+        MeterDataUsageInKw.Reset();
+        MeterDataUsageInMoney.Reset();
     }
 }

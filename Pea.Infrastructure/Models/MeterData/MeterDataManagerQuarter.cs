@@ -18,18 +18,18 @@ public class MeterDataManagerQuarter : MeterDataManagerBase<MeterDataManagerQuar
     {
         MeterReadings.AddRange(readings);
 
-        MeterDataUsageInKwSummary.Reset();
-        MeterDataUsageInKwSummary.Calculate(MeterReadings);
+        MeterDataUsageInKw.Reset();
+        MeterDataUsageInKw.Calculate(MeterReadings);
         
-        MeterDataUsageInMoneySummary.Reset();
-        MeterDataUsageInMoneySummary.Calculate(MeterReadings);
+        MeterDataUsageInMoney.Reset();
+        MeterDataUsageInMoney.Calculate(MeterReadings);
     }
 
     public void Clear()
     {
         MeterReadings.Clear();
 
-        MeterDataUsageInKwSummary.Reset();
-        MeterDataUsageInMoneySummary.Reset();
+        MeterDataUsageInKw.Reset();
+        MeterDataUsageInMoney.Reset();
     }
 }

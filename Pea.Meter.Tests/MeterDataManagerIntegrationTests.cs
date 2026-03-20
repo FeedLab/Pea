@@ -586,7 +586,7 @@ public class MeterDataManagerIntegrationTests
 
         // Assert - Not tested yet because summaries might not be calculated in AddRange
         // This test documents the current behavior
-        manager.MeterDataUsageInKwSummary.Should().NotBeNull();
+        manager.MeterDataUsageInKw.Should().NotBeNull();
     }
 
     [Fact]
@@ -605,7 +605,7 @@ public class MeterDataManagerIntegrationTests
 
         // Assert - Not tested yet because summaries might not be calculated in AddRange
         // This test documents the current behavior
-        manager.MeterDataUsageInMoneySummary.Should().NotBeNull();
+        manager.MeterDataUsageInMoney.Should().NotBeNull();
     }
 
     [Fact]
@@ -620,12 +620,12 @@ public class MeterDataManagerIntegrationTests
         manager.AddRange(readings);
 
         // Act
-        manager.MeterDataUsageInKwSummary.Reset();
+        manager.MeterDataUsageInKw.Reset();
 
         // Assert
-        manager.MeterDataUsageInKwSummary.PeekUsage.Should().Be(0m);
-        manager.MeterDataUsageInKwSummary.OffPeekUsage.Should().Be(0m);
-        manager.MeterDataUsageInKwSummary.Holiday.Should().Be(0m);
+        manager.MeterDataUsageInKw.PeekUsage.Should().Be(0m);
+        manager.MeterDataUsageInKw.OffPeekUsage.Should().Be(0m);
+        manager.MeterDataUsageInKw.Holiday.Should().Be(0m);
     }
 
     [Fact]
@@ -640,14 +640,12 @@ public class MeterDataManagerIntegrationTests
         manager.AddRange(readings);
 
         // Act
-        manager.MeterDataUsageInMoneySummary.Reset();
+        manager.MeterDataUsageInMoney.Reset();
 
         // Assert
-        manager.MeterDataUsageInMoneySummary.PeekUsage.Should().Be(0m);
-        manager.MeterDataUsageInMoneySummary.OffPeekUsage.Should().Be(0m);
-        manager.MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary.Should().Be(0m);
-        manager.MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary.Should().Be(0m);
-        manager.MeterDataUsageInMoneySummary.FlatRateUsagePriceSummary.Should().Be(0m);
+        manager.MeterDataUsageInMoney.PeekTouUsagePriceSummary.Should().Be(0m);
+        manager.MeterDataUsageInMoney.OffPeekTouUsagePriceSummary.Should().Be(0m);
+        manager.MeterDataUsageInMoney.FlatRateUsagePriceSummary.Should().Be(0m);
     }
 
     [Fact]
@@ -663,18 +661,18 @@ public class MeterDataManagerIntegrationTests
         manager.AddRange(readings);
 
         // Reset to test Calculate method independently
-        manager.MeterDataUsageInMoneySummary.Reset();
+        manager.MeterDataUsageInMoney.Reset();
 
         // Act
-        manager.MeterDataUsageInMoneySummary.Calculate(readings);
+        manager.MeterDataUsageInMoney.Calculate(readings);
 
         // Assert
         // PeekUsage: (10.5 + 10.5) * 2.0 = 42.0
-        manager.MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary.Should().Be(42.0m);
+        manager.MeterDataUsageInMoney.PeekTouUsagePriceSummary.Should().Be(42.0m);
         // OffPeekUsage: (20.3 + 20.3) * 1.0 = 40.6
-        manager.MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary.Should().Be(40.6m);
+        manager.MeterDataUsageInMoney.OffPeekTouUsagePriceSummary.Should().Be(40.6m);
         // HolidayUsage: (15.7 + 15.7) * 1.5 = 47.1
-        manager.MeterDataUsageInMoneySummary.FlatRateUsagePriceSummary.Should().Be(47.1m);
+        manager.MeterDataUsageInMoney.FlatRateUsagePriceSummary.Should().Be(47.1m);
     }
 
     [Fact]
@@ -682,11 +680,11 @@ public class MeterDataManagerIntegrationTests
     {
         // Arrange
         var manager = new MeterDataManager(new List<MeterDataReading>(), FlatRatePrice, PeekPrice, OffPeekPrice);
-        manager.MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary = 100m;
-        manager.MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary = 50m;
+        manager.MeterDataUsageInMoney.PeekTouUsagePriceSummary = 100m;
+        manager.MeterDataUsageInMoney.OffPeekTouUsagePriceSummary = 50m;
 
         // Act
-        var total = manager.MeterDataUsageInMoneySummary.TotalTouUsagePriceSummary;
+        var total = manager.MeterDataUsageInMoney.TotalTouUsagePriceSummary;
 
         // Assert
         total.Should().Be(150m);

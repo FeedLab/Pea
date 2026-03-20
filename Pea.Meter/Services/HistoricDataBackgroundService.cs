@@ -83,17 +83,19 @@ public class HistoricDataBackgroundService
         // Create database context and repository
         using var dbContext = dbContextFactory.CreateDbContext();
         var repository = new MeterReadingRepository(dbContext);
-        
+
         var startDate = DateTime.Now.Date.AddDays(-1);
-    //    var startDate = await GetOldestPeriodStartAsync(cancellationToken, repository);
+        var startDateOldest = await GetOldestPeriodStartAsync(cancellationToken, repository);
         var maxDaysToTry = 365 * 2; // Safety limit: don't go back more than 2 years
+        var oldestDateToImport = startDate.AddDays(-maxDaysToTry);
         logger.LogInformation(
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
             startDate, "N/A");
 
         var totalReadings = 0;
+        var targetDate = startDate;
 
-        for (int i = 0; i < maxDaysToTry; i++)
+        do
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -101,9 +103,7 @@ public class HistoricDataBackgroundService
                 break;
             }
 
-            var targetDate = startDate.AddDays(-i);
-
-            var  historyLengthTs = DateTime.Now.Date - targetDate;
+            var historyLengthTs = DateTime.Now.Date - targetDate;
             if (historyLengthTs.TotalDays > maxDaysToTry)
             {
                 logger.LogWarning(
@@ -121,6 +121,9 @@ public class HistoricDataBackgroundService
                 {
                     logger.LogInformation("Data already exists for {Date}, skipping",
                         targetDate.ToString("yyyy-MM-dd"));
+
+                    logger.LogInformation("Skipping over to date {Date}", startDateOldest.ToString("yyyy-MM-dd"));
+                    targetDate = startDateOldest;
                     continue;
                 }
 
@@ -146,13 +149,15 @@ public class HistoricDataBackgroundService
                 }
 
                 // Add a small delay between requests to avoid overwhelming the server
-                await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
+                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error importing data for {Date}", targetDate.ToString("yyyy-MM-dd"));
             }
-        }
+
+            targetDate = targetDate.AddDays(-1);
+        } while (targetDate > oldestDateToImport);
 
         logger.LogInformation("Import completed. Total readings imported and saved: {Total}", totalReadings);
     }

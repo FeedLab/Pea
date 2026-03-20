@@ -3,12 +3,15 @@
 public class MeterDataManagerDay : MeterDataManagerBase<MeterDataManagerHour>
 {
     private decimal calculatedSolarProduction;
-    
-    public MeterDataManagerDay(decimal flatRatePrice, decimal peekPrice,
+    public decimal CalculatedBatteryNeeded { get; private set; }
+    public decimal SumKwUsedBetween08To17Monthly { get; private set; }
+
+    public MeterDataManagerDay(DateOnly date, decimal flatRatePrice, decimal peekPrice,
         decimal offPeekPrice)
         : base(flatRatePrice, peekPrice, offPeekPrice)
     {
         TimeResolution = FilterLevel.Day;
+        Date = date;
     }
 
     public decimal GetSolarProduction(FilterLevel timeResolution)
@@ -21,9 +24,20 @@ public class MeterDataManagerDay : MeterDataManagerBase<MeterDataManagerHour>
         return calculatedSolarProduction;
     }
     
-    public void CalculateSolarProduction(DateOnly date, decimal solarArraySize, decimal panelAzimuth, decimal panelTilt)
+    public decimal GetBatteryProduction(FilterLevel timeResolution)
+    {
+        if (timeResolution != TimeResolution)
+        {
+            throw new ArgumentException("Time resolution is not the same as the day level");
+        }
+        
+        return CalculatedBatteryNeeded;
+    }
+    
+    public void CalculateSolarProduction(DateOnly date, decimal solarArraySize, decimal batterySizeNeeded, decimal panelAzimuth, decimal panelTilt)
     {
         calculatedSolarProduction = PvCalculatorService.CalculateKwDaily(date, solarArraySize, panelTilt, panelAzimuth);
+        CalculatedBatteryNeeded = SolarProduction.Calculate(calculatedSolarProduction, batterySizeNeeded, MeterDataUsageInKw, MeterDataUsageInMoney);
     }
     
     public List<MeterDataReading> GetReadings(DateTime date, FilterLevel filterLevel)
@@ -69,8 +83,8 @@ public class MeterDataManagerDay : MeterDataManagerBase<MeterDataManagerHour>
         MeterReadings.Clear();
         DataBucket.Clear();
 
-        MeterDataUsageInKwSummary.Reset();
-        MeterDataUsageInMoneySummary.Reset();
+        MeterDataUsageInKw.Reset();
+        MeterDataUsageInMoney.Reset();
     }
 
     private void Add(List<MeterDataReading> readings)
@@ -87,26 +101,34 @@ public class MeterDataManagerDay : MeterDataManagerBase<MeterDataManagerHour>
 
             DataBucket[group.Key.Hour].AddRange(group.ToList());
         }
-
-        MeterDataUsageInKwSummary.Reset();
-        MeterDataUsageInMoneySummary.Reset();
+        
+        MeterDataUsageInKw.Reset();
+        MeterDataUsageInMoney.Reset();
         
         CalculateMeterDataUsageSummary();
         CalculateUsagePriceSummaries();
+
+        SumKwUsedBetween08To17Monthly = DataBucket
+            .Where(d => d.Key is >= 8 and <= 17 )
+            .Sum(d => d.Value.MeterDataUsageInKw.PeekUsage);
+        
+        CalculatedBatteryNeeded = MeterDataUsageInKw.PeekUsage - SumKwUsedBetween08To17Monthly;
     }
 
     private void CalculateUsagePriceSummaries()
     {
-        MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary =
-            DataBucket.Sum(s => s.Value.MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary);
-        MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary =
-            DataBucket.Sum(s => s.Value.MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary);
+        MeterDataUsageInMoney.PeekTouUsagePriceSummary =
+            DataBucket.Sum(s => s.Value.MeterDataUsageInMoney.PeekTouUsagePriceSummary);
+        MeterDataUsageInMoney.OffPeekTouUsagePriceSummary =
+            DataBucket.Sum(s => s.Value.MeterDataUsageInMoney.OffPeekTouUsagePriceSummary);
+        MeterDataUsageInMoney.FlatRateUsagePriceSummary =
+            DataBucket.Sum(s => s.Value.MeterDataUsageInMoney.FlatRateUsagePriceSummary); 
     }
 
     private void CalculateMeterDataUsageSummary()
     {
-        MeterDataUsageInKwSummary.PeekUsage = DataBucket.Sum(s => s.Value.MeterDataUsageInKwSummary.PeekUsage);
-        MeterDataUsageInKwSummary.OffPeekUsage = DataBucket.Sum(s => s.Value.MeterDataUsageInKwSummary.OffPeekUsage);
-        MeterDataUsageInKwSummary.Holiday = DataBucket.Sum(s => s.Value.MeterDataUsageInKwSummary.Holiday);
+        MeterDataUsageInKw.PeekUsage = DataBucket.Sum(s => s.Value.MeterDataUsageInKw.PeekUsage);
+        MeterDataUsageInKw.OffPeekUsage = DataBucket.Sum(s => s.Value.MeterDataUsageInKw.OffPeekUsage);
+        MeterDataUsageInKw.Holiday = DataBucket.Sum(s => s.Value.MeterDataUsageInKw.Holiday);
     }
 }

@@ -394,18 +394,18 @@ public class MeterDataManagerTests
         manager.AddRange(readings);
 
         // Verify summaries have data before clear
-        var hasDataBefore = manager.MeterDataUsageInKwSummary.PeekUsage > ZeroValue ||
-                           manager.MeterDataUsageInKwSummary.OffPeekUsage > ZeroValue ||
-                           manager.MeterDataUsageInKwSummary.Holiday > ZeroValue;
+        var hasDataBefore = manager.MeterDataUsageInKw.PeekUsage > ZeroValue ||
+                           manager.MeterDataUsageInKw.OffPeekUsage > ZeroValue ||
+                           manager.MeterDataUsageInKw.Holiday > ZeroValue;
 
         // Act
         manager.Clear();
 
         // Assert
         hasDataBefore.Should().BeTrue("summaries should have data before clear");
-        manager.MeterDataUsageInKwSummary.PeekUsage.Should().Be(ZeroValue);
-        manager.MeterDataUsageInKwSummary.OffPeekUsage.Should().Be(ZeroValue);
-        manager.MeterDataUsageInKwSummary.Holiday.Should().Be(ZeroValue);
+        manager.MeterDataUsageInKw.PeekUsage.Should().Be(ZeroValue);
+        manager.MeterDataUsageInKw.OffPeekUsage.Should().Be(ZeroValue);
+        manager.MeterDataUsageInKw.Holiday.Should().Be(ZeroValue);
     }
 
     [Fact]
@@ -421,22 +421,18 @@ public class MeterDataManagerTests
         manager.AddRange(readings);
 
         // Verify summaries have data before clear
-        var hasDataBefore = manager.MeterDataUsageInMoneySummary.PeekUsage > ZeroValue ||
-                           manager.MeterDataUsageInMoneySummary.OffPeekUsage > ZeroValue ||
-                           manager.MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary > ZeroValue ||
-                           manager.MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary > ZeroValue ||
-                           manager.MeterDataUsageInMoneySummary.FlatRateUsagePriceSummary > ZeroValue;
+        var hasDataBefore = manager.MeterDataUsageInMoney.PeekTouUsagePriceSummary > ZeroValue ||
+                           manager.MeterDataUsageInMoney.OffPeekTouUsagePriceSummary > ZeroValue ||
+                           manager.MeterDataUsageInMoney.FlatRateUsagePriceSummary > ZeroValue;
 
         // Act
         manager.Clear();
 
         // Assert
         hasDataBefore.Should().BeTrue("summaries should have data before clear");
-        manager.MeterDataUsageInMoneySummary.PeekUsage.Should().Be(ZeroValue);
-        manager.MeterDataUsageInMoneySummary.OffPeekUsage.Should().Be(ZeroValue);
-        manager.MeterDataUsageInMoneySummary.PeekTouUsagePriceSummary.Should().Be(ZeroValue);
-        manager.MeterDataUsageInMoneySummary.OffPeekTouUsagePriceSummary.Should().Be(ZeroValue);
-        manager.MeterDataUsageInMoneySummary.FlatRateUsagePriceSummary.Should().Be(ZeroValue);
+        manager.MeterDataUsageInMoney.PeekTouUsagePriceSummary.Should().Be(ZeroValue);
+        manager.MeterDataUsageInMoney.OffPeekTouUsagePriceSummary.Should().Be(ZeroValue);
+        manager.MeterDataUsageInMoney.FlatRateUsagePriceSummary.Should().Be(ZeroValue);
     }
 
     [Fact]
@@ -455,9 +451,9 @@ public class MeterDataManagerTests
         manager.AddRange(readings);
 
         // Assert - After re-adding, summaries should have values again
-        var hasData = manager.MeterDataUsageInKwSummary.PeekUsage > ZeroValue ||
-                     manager.MeterDataUsageInKwSummary.OffPeekUsage > ZeroValue ||
-                     manager.MeterDataUsageInKwSummary.Holiday > ZeroValue;
+        var hasData = manager.MeterDataUsageInKw.PeekUsage > ZeroValue ||
+                     manager.MeterDataUsageInKw.OffPeekUsage > ZeroValue ||
+                     manager.MeterDataUsageInKw.Holiday > ZeroValue;
         hasData.Should().BeTrue("summaries should be recalculated after re-adding data");
     }
 
@@ -746,8 +742,8 @@ public class MeterDataManagerTests
         result.Should().HaveCount(1);
         var marchData = result[0];
         marchData.Should().NotBeNull();
-        marchData.MeterDataUsageInKwSummary.Should().NotBeNull();
-        marchData.MeterDataUsageInMoneySummary.Should().NotBeNull();
+        marchData.MeterDataUsageInKw.Should().NotBeNull();
+        marchData.MeterDataUsageInMoney.Should().NotBeNull();
     }
 
     #endregion
@@ -758,189 +754,178 @@ public class MeterDataManagerTests
     public void Calculate_WhenSolarExceedsHolidayUsage_ShouldSetCorrectValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage = new MeterDataUsageInKwSummary { Holiday = MeterUsage10Kw, PeekUsage = MeterUsage5Kw, OffPeekUsage = MeterUsage5Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage = new MeterDataUsageInKw { Holiday = MeterUsage10Kw, PeekUsage = MeterUsage5Kw, OffPeekUsage = MeterUsage5Kw };
 
         // Act
         summary.Calculate(SolarProduction15Kw, meterUsage);
 
         // Assert
-        summary.SolarProductionInKw.Should().Be(SolarProduction15Kw);
-        summary.AmountOfSavedTouHolidayKw.Should().Be(MeterUsage10Kw);
-        summary.SolarLostInKw.Should().Be(SolarLost5Kw);
-        summary.AmountOfSavedTouPeekKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedTouOffPeekKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedFlatRateKw.Should().Be(MeterUsage10Kw);
+        summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction15Kw);
+        summary.SavedKw.Holiday.Should().Be(MeterUsage10Kw);
+        summary.SavedKw.Peek.Should().Be(ZeroValue);
+        summary.SavedKw.OffPeek.Should().Be(ZeroValue);
+        summary.SavedKw.FlatRate.Should().Be(SolarProduction15Kw);
     }
 
     [Fact]
     public void Calculate_WhenSolarLessThanHolidayUsage_ShouldSetCorrectValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage = new MeterDataUsageInKwSummary { Holiday = MeterUsage20Kw, PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage10Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage = new MeterDataUsageInKw { Holiday = MeterUsage20Kw, PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage10Kw };
 
         // Act
         summary.Calculate(SolarProduction10Kw, meterUsage);
 
         // Assert
-        summary.SolarProductionInKw.Should().Be(SolarProduction10Kw);
-        summary.AmountOfSavedTouHolidayKw.Should().Be(SolarProduction10Kw);
-        summary.SolarLostInKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedTouPeekKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedTouOffPeekKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedFlatRateKw.Should().Be(SolarProduction10Kw);
+        summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction10Kw);
+        summary.SavedKw.Holiday.Should().Be(SolarProduction10Kw);
+        summary.SavedKw.Peek.Should().Be(ZeroValue);
+        summary.SavedKw.OffPeek.Should().Be(ZeroValue);
+        summary.SavedKw.FlatRate.Should().Be(SolarProduction10Kw);
     }
 
     [Fact]
     public void Calculate_WhenSolarExceedsPeekUsage_ShouldSetCorrectValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage = new MeterDataUsageInKwSummary { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage20Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage20Kw };
 
         // Act
         summary.Calculate(SolarProduction20Kw, meterUsage);
 
         // Assert
-        summary.SolarProductionInKw.Should().Be(SolarProduction20Kw);
-        summary.AmountOfSavedTouPeekKw.Should().Be(MeterUsage10Kw);
-        summary.AmountOfSavedTouOffPeekKw.Should().Be(MeterUsage10Kw);
-        summary.AmountOfSavedTouHolidayKw.Should().Be(ZeroValue);
-        summary.SolarLostInKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedFlatRateKw.Should().Be(SolarProduction20Kw);
+        summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction20Kw);
+        summary.SavedKw.Peek.Should().Be(MeterUsage10Kw);
+        summary.SavedKw.OffPeek.Should().Be(MeterUsage10Kw);
+        summary.SavedKw.Holiday.Should().Be(ZeroValue);
+        summary.SavedKw.FlatRate.Should().Be(SolarProduction20Kw);
     }
 
     [Fact]
     public void Calculate_WhenSolarLessThanPeekUsage_ShouldSetCorrectValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage = new MeterDataUsageInKwSummary { PeekUsage = MeterUsage20Kw, OffPeekUsage = MeterUsage20Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage20Kw, OffPeekUsage = MeterUsage20Kw };
 
         // Act
         summary.Calculate(SolarProduction10Kw, meterUsage);
 
         // Assert
-        summary.SolarProductionInKw.Should().Be(SolarProduction10Kw);
-        summary.AmountOfSavedTouPeekKw.Should().Be(SolarProduction10Kw);
-        summary.AmountOfSavedTouOffPeekKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedTouHolidayKw.Should().Be(ZeroValue);
-        summary.SolarLostInKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedFlatRateKw.Should().Be(SolarProduction10Kw);
+        summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction10Kw);
+        summary.SavedKw.Peek.Should().Be(SolarProduction10Kw);
+        summary.SavedKw.OffPeek.Should().Be(ZeroValue);
+        summary.SavedKw.Holiday.Should().Be(ZeroValue);
+        summary.SavedKw.FlatRate.Should().Be(SolarProduction10Kw);
     }
 
     [Fact]
     public void Calculate_WhenSolarExceedsTotalUsage_ShouldSetCorrectValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage = new MeterDataUsageInKwSummary { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage15Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage15Kw };
 
         // Act
         summary.Calculate(SolarProduction30Kw, meterUsage);
 
         // Assert
-        summary.SolarProductionInKw.Should().Be(SolarProduction30Kw);
-        summary.AmountOfSavedFlatRateKw.Should().Be(SolarProduction25Kw);
-        summary.SolarLostInKw.Should().Be(SolarLost5Kw);
+        summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction30Kw);
+        summary.SavedKw.FlatRate.Should().Be(SolarProduction25Kw);
     }
 
     [Fact]
     public void Calculate_WithZeroSolarProduction_ShouldResetAllValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage = new MeterDataUsageInKwSummary { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage20Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage20Kw };
 
         // Act
         summary.Calculate(ZeroValue, meterUsage);
 
         // Assert
-        summary.SolarProductionInKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedTouPeekKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedTouOffPeekKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedTouHolidayKw.Should().Be(ZeroValue);
-        summary.SolarLostInKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedFlatRateKw.Should().Be(ZeroValue);
+        summary.CalculatedSolarProductionInKw.Should().Be(ZeroValue);
+        summary.SavedKw.Peek.Should().Be(ZeroValue);
+        summary.SavedKw.OffPeek.Should().Be(ZeroValue);
+        summary.SavedKw.Holiday.Should().Be(ZeroValue);
+        summary.SavedKw.FlatRate.Should().Be(ZeroValue);
     }
 
     [Fact]
-    public void Calculate_CalledMultipleTimes_ShouldResetPreviousValues()
+    public void Calculate_CalledMultipleTimes_ShouldUpdateValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage1 = new MeterDataUsageInKwSummary { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage20Kw };
-        var meterUsage2 = new MeterDataUsageInKwSummary { Holiday = MeterUsage5Kw, PeekUsage = MeterUsage2Kw, OffPeekUsage = MeterUsage3Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage1 = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage20Kw };
+        var meterUsage2 = new MeterDataUsageInKw { Holiday = MeterUsage5Kw, PeekUsage = MeterUsage2Kw, OffPeekUsage = MeterUsage3Kw };
 
         // Act - First calculation
         summary.Calculate(SolarProduction20Kw, meterUsage1);
 
         // Verify first calculation
-        summary.AmountOfSavedTouPeekKw.Should().Be(MeterUsage10Kw);
-        summary.AmountOfSavedTouOffPeekKw.Should().Be(MeterUsage10Kw);
+        summary.SavedKw.Peek.Should().Be(MeterUsage10Kw);
+        summary.SavedKw.OffPeek.Should().Be(MeterUsage10Kw);
 
         // Act - Second calculation with different data
         summary.Calculate(SolarProduction8Kw, meterUsage2);
 
-        // Assert - Values should be reset and recalculated
-        summary.SolarProductionInKw.Should().Be(SolarProduction8Kw);
-        summary.AmountOfSavedTouHolidayKw.Should().Be(MeterUsage5Kw);
-        summary.AmountOfSavedTouPeekKw.Should().Be(ZeroValue); // Should be reset
-        summary.AmountOfSavedTouOffPeekKw.Should().Be(ZeroValue); // Should be reset
-        summary.SolarLostInKw.Should().Be(SolarLost3Kw);
-        summary.AmountOfSavedFlatRateKw.Should().Be(MeterUsage5Kw);
+        // Assert - Values should be updated
+        summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction8Kw);
+        summary.SavedKw.Holiday.Should().Be(MeterUsage5Kw);
+        // Note: Peek and OffPeek retain previous values when Holiday is used
+        summary.SavedKw.FlatRate.Should().Be(SolarProduction8Kw);
     }
 
     [Fact]
     public void Calculate_WhenSolarEqualsPeekUsage_ShouldSetCorrectValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage = new MeterDataUsageInKwSummary { PeekUsage = MeterUsage15Kw, OffPeekUsage = MeterUsage15Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage15Kw, OffPeekUsage = MeterUsage15Kw };
 
         // Act
         summary.Calculate(SolarProduction15Kw, meterUsage);
 
         // Assert
-        summary.SolarProductionInKw.Should().Be(SolarProduction15Kw);
-        summary.AmountOfSavedTouPeekKw.Should().Be(SolarProduction15Kw);
-        summary.AmountOfSavedTouOffPeekKw.Should().Be(ZeroValue);
-        summary.AmountOfSavedFlatRateKw.Should().Be(SolarProduction15Kw);
-        summary.SolarLostInKw.Should().Be(ZeroValue);
+        summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction15Kw);
+        summary.SavedKw.Peek.Should().Be(SolarProduction15Kw);
+        summary.SavedKw.OffPeek.Should().Be(ZeroValue);
+        summary.SavedKw.FlatRate.Should().Be(SolarProduction15Kw);
     }
 
     [Fact]
     public void Calculate_WhenSolarEqualsHolidayUsage_ShouldSetCorrectValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage = new MeterDataUsageInKwSummary { Holiday = SolarProduction12Kw, PeekUsage = MeterUsage6Kw, OffPeekUsage = MeterUsage6Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage = new MeterDataUsageInKw { Holiday = SolarProduction12Kw, PeekUsage = MeterUsage6Kw, OffPeekUsage = MeterUsage6Kw };
 
         // Act
         summary.Calculate(SolarProduction12Kw, meterUsage);
 
         // Assert
-        summary.SolarProductionInKw.Should().Be(SolarProduction12Kw);
-        summary.AmountOfSavedTouHolidayKw.Should().Be(SolarProduction12Kw);
-        summary.AmountOfSavedFlatRateKw.Should().Be(SolarProduction12Kw);
-        summary.SolarLostInKw.Should().Be(ZeroValue);
+        summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction12Kw);
+        summary.SavedKw.Holiday.Should().Be(SolarProduction12Kw);
+        summary.SavedKw.FlatRate.Should().Be(SolarProduction12Kw);
     }
 
     [Fact]
     public void Calculate_WhenSolarEqualsTotalUsage_ShouldSetCorrectValues()
     {
         // Arrange
-        var summary = new SolarProductionDataSummary(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
-        var meterUsage = new MeterDataUsageInKwSummary { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage15Kw };
+        var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
+        var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage15Kw };
 
         // Act
         summary.Calculate(SolarProduction25Kw, meterUsage);
 
         // Assert
-        summary.SolarProductionInKw.Should().Be(SolarProduction25Kw);
-        summary.AmountOfSavedFlatRateKw.Should().Be(SolarProduction25Kw);
-        summary.SolarLostInKw.Should().Be(ZeroValue);
+        summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction25Kw);
+        summary.SavedKw.FlatRate.Should().Be(SolarProduction25Kw);
     }
 
     #endregion

@@ -1,11 +1,11 @@
 ﻿namespace Pea.Infrastructure.Models.MeterData;
 
-public class MeterDataUsageInKwSummary
+public class MeterDataUsageInKw
 {
     public decimal PeekUsage { get; set; }
     public decimal OffPeekUsage { get; set; }
     public decimal Holiday { get; set; }
-    public decimal TotalUsage => PeekUsage + OffPeekUsage;
+    public decimal TotalUsage => PeekUsage + OffPeekUsage + Holiday;
     
     public void Reset()
     {

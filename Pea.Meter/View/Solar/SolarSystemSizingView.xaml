@@ -82,8 +82,8 @@
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Peek"
-                                            XBindingPath="Date"
-                                            YBindingPath="CostSummaryTouPeek"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInMoney.PeekTouUsagePriceSummary"
                                             GroupingLabel="CostSummaryToU"
                                             Fill="#FF7043"
                                             Stroke="#E64A19"
@@ -97,8 +97,8 @@
 
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="OffPeek"
-                                            XBindingPath="Date"
-                                            YBindingPath="CostSummaryTouOffPeek"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInMoney.OffPeekTouUsagePriceSummary"
                                             GroupingLabel="CostSummaryToU"
                                             Fill="#EC407A"
                                             Stroke="#C2185B"
@@ -112,8 +112,8 @@
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="FlatRate"
-                                            XBindingPath="Date"
-                                            YBindingPath="CostSummaryFlatRate"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInMoney.FlatRateUsagePriceSummary"
                                             GroupingLabel="CostSummaryFlatRate"
                                             Fill="#7CB342"
                                             Stroke="#558B2F"
@@ -127,8 +127,8 @@
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Peek Solar"
-                                            XBindingPath="Date"
-                                            YBindingPath="PeekTouDiscounted"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.DiscountedMoney.Peek"
                                             GroupingLabel="CostSummaryToUSolar"
                                             Fill="#B184B2"
                                             Stroke="#806182"
@@ -142,8 +142,8 @@
 
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="OffPeek Solar"
-                                            XBindingPath="Date"
-                                            YBindingPath="OffPeekTouDiscounted"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.DiscountedMoney.OffPeek"
                                             GroupingLabel="CostSummaryToUSolar"
                                             Fill="#FFCA28"
                                             Stroke="#F9A825"
@@ -158,8 +158,8 @@
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="FlatRate Solar"
-                                            XBindingPath="Date"
-                                            YBindingPath="FlatRateDiscounted"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.DiscountedMoney.FlatRate"
                                             GroupingLabel="CostSummaryFlatRateSolar"
                                             Fill="#26C6DA"
                                             Stroke="#00838F"
@@ -237,8 +237,8 @@
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Peek"
-                                            XBindingPath="Date"
-                                            YBindingPath="KwUsedAtPeek"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInKw.PeekUsage"
                                             GroupingLabel="KwUsed"
                                             Fill="#FF9800"
                                             Stroke="#E65100"
@@ -252,8 +252,8 @@
 
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="OffPeek"
-                                            XBindingPath="Date"
-                                            YBindingPath="KwUsedAtOffPeek"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInKw.OffPeekUsage"
                                             GroupingLabel="KwUsed"
                                             Fill="#FFC107"
                                             Stroke="#FF6F00"
@@ -267,8 +267,8 @@
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Solar"
-                                            XBindingPath="Date"
-                                            YBindingPath="CalculateProducedSolarKwMonthly"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.CalculatedSolarProductionInKw"
                                             GroupingLabel="KwProduced"
                                             Fill="#26A69A"
                                             Stroke="#00695C"
@@ -282,8 +282,8 @@
 
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Battery"
-                                            XBindingPath="Date"
-                                            YBindingPath="BatteryKwProducedMonthly"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.CalculatedBatteryNeeded"
                                             GroupingLabel="KwProduced"
                                             Fill="#5C6BC0"
                                             Stroke="#283593"
@@ -321,7 +321,7 @@
                 TextColor="Black"
                 Margin="24"
                 LineBreakMode="WordWrap"
-                FontSize="16">
+                FontSize="15">
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="With an annual consumption of " />

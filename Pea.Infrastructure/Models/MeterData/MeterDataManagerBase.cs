@@ -4,16 +4,18 @@ public class MeterDataManagerBase<T>
 {
     protected readonly List<MeterDataReading> MeterReadings = [];
     protected readonly Dictionary<int, T> DataBucket = [];
-    
+    public DateOnly Date { get; set; }
+    public DateTime DateAsDateTime => Date.ToDateTime(TimeOnly.MinValue);
+
     protected readonly decimal FlatRatePrice;
     protected readonly decimal PeekPrice;
     protected readonly decimal OffPeekPrice;
 
-    public FilterLevel TimeResolution = FilterLevel.None;
-    
-    public readonly SolarProductionDataSummary SolarProductionDataSummary;
-    public readonly MeterDataUsageInKwSummary MeterDataUsageInKwSummary;
-    public readonly MeterDataUsageInMoneySummary MeterDataUsageInMoneySummary;
+    public FilterLevel TimeResolution { get; set; } = FilterLevel.None;
+
+    public SolarProduction SolarProduction { get; }
+    public MeterDataUsageInKw MeterDataUsageInKw { get; }
+    public MeterDataUsageInMoney MeterDataUsageInMoney { get; }
 
         
     protected MeterDataManagerBase(decimal flatRatePrice, decimal peekPrice, decimal offPeekPrice)
@@ -22,8 +24,13 @@ public class MeterDataManagerBase<T>
         PeekPrice = peekPrice;
         OffPeekPrice = offPeekPrice;
         
-        MeterDataUsageInKwSummary = new MeterDataUsageInKwSummary();
-        MeterDataUsageInMoneySummary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice);
-        SolarProductionDataSummary = new SolarProductionDataSummary(FlatRatePrice, PeekPrice, OffPeekPrice);
+        MeterDataUsageInKw = new MeterDataUsageInKw();
+        MeterDataUsageInMoney = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice);
+        SolarProduction = new SolarProduction(FlatRatePrice, PeekPrice, OffPeekPrice);
+    }
+    
+    public Dictionary<int, T> GetBuckets()
+    {
+        return DataBucket;
     }
 }

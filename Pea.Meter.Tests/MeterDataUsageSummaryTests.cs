@@ -94,7 +94,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInKwSummary_Constructor_ShouldInitializeProperties()
     {
         // Arrange & Act
-        var summary = new MeterDataUsageInKwSummary
+        var summary = new MeterDataUsageInKw
         {
             PeekUsage = SmallPeekUsage,
             OffPeekUsage = SmallOffPeekUsage
@@ -109,7 +109,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInKwSummary_TotalUsage_ShouldSumPeekAndOffPeek()
     {
         // Arrange
-        var summary = new MeterDataUsageInKwSummary
+        var summary = new MeterDataUsageInKw
         {
             PeekUsage = SmallPeekUsage,
             OffPeekUsage = SmallOffPeekUsage
@@ -126,7 +126,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInKwSummary_TotalUsage_WithZeroValues_ShouldReturnZero()
     {
         // Arrange
-        var summary = new MeterDataUsageInKwSummary
+        var summary = new MeterDataUsageInKw
         {
             PeekUsage = Zero,
             OffPeekUsage = Zero
@@ -143,7 +143,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInKwSummary_TotalUsage_WithNegativeValues_ShouldCalculateCorrectly()
     {
         // Arrange
-        var summary = new MeterDataUsageInKwSummary
+        var summary = new MeterDataUsageInKw
         {
             PeekUsage = MediumPeekUsage,
             OffPeekUsage = NegativeOffPeekUsage
@@ -160,7 +160,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInKwSummary_TotalUsage_WithLargeValues_ShouldCalculateCorrectly()
     {
         // Arrange
-        var summary = new MeterDataUsageInKwSummary
+        var summary = new MeterDataUsageInKw
         {
             PeekUsage = LargePeekUsage,
             OffPeekUsage = LargeOffPeekUsage
@@ -177,7 +177,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInKwSummary_TotalUsage_WithDecimalPrecision_ShouldMaintainAccuracy()
     {
         // Arrange
-        var summary = new MeterDataUsageInKwSummary
+        var summary = new MeterDataUsageInKw
         {
             PeekUsage = TinyPeekUsage,
             OffPeekUsage = TinyOffPeekUsage
@@ -194,7 +194,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInKwSummary_Holiday_ShouldStoreValue()
     {
         // Arrange & Act
-        var summary = new MeterDataUsageInKwSummary
+        var summary = new MeterDataUsageInKw
         {
             Holiday = HolidayUsageValue
         };
@@ -204,10 +204,10 @@ public class MeterDataUsageSummaryTests
     }
 
     [Fact]
-    public void MeterDataUsageInKwSummary_TotalUsage_ShouldNotIncludeHoliday()
+    public void MeterDataUsageInKwSummary_TotalUsage_ShouldIncludeHoliday()
     {
         // Arrange
-        var summary = new MeterDataUsageInKwSummary
+        var summary = new MeterDataUsageInKw
         {
             PeekUsage = MediumPeekUsage,
             OffPeekUsage = MediumOffPeekUsage,
@@ -218,15 +218,15 @@ public class MeterDataUsageSummaryTests
         var total = summary.TotalUsage;
 
         // Assert
-        // TotalUsage should only be PeekUsage + OffPeekUsage, not including Holiday
-        total.Should().Be(MediumTotalUsageWithHoliday);
+        // TotalUsage should be PeekUsage + OffPeekUsage + Holiday
+        total.Should().Be(MediumPeekUsage + MediumOffPeekUsage + HolidayUsageValueRound);
     }
 
     [Fact]
     public void MeterDataUsageInKwSummary_Reset_ShouldClearAllProperties()
     {
         // Arrange
-        var summary = new MeterDataUsageInKwSummary
+        var summary = new MeterDataUsageInKw
         {
             PeekUsage = MediumPeekUsage,
             OffPeekUsage = MediumOffPeekUsage,
@@ -246,94 +246,12 @@ public class MeterDataUsageSummaryTests
 
     #region MeterDataUsageInMoneySummary Tests
 
-    [Fact]
-    public void MeterDataUsageInMoneySummary_Constructor_ShouldInitializeProperties()
-    {
-        // Arrange & Act
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
-        {
-            PeekUsage = MediumPeekMoney,
-            OffPeekUsage = MediumOffPeekMoney
-        };
-
-        // Assert
-        summary.PeekUsage.Should().Be(MediumPeekMoney);
-        summary.OffPeekUsage.Should().Be(MediumOffPeekMoney);
-    }
-
-    [Fact]
-    public void MeterDataUsageInMoneySummary_TotalUsage_ShouldSumPeekAndOffPeek()
-    {
-        // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
-        {
-            PeekUsage = MediumPeekMoney,
-            OffPeekUsage = MediumOffPeekMoney
-        };
-
-        // Act
-        var total = summary.TotalUsage;
-
-        // Assert
-        total.Should().Be(MediumTotalMoney);
-    }
-
-    [Fact]
-    public void MeterDataUsageInMoneySummary_TotalUsage_WithZeroValues_ShouldReturnZero()
-    {
-        // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
-        {
-            PeekUsage = Zero,
-            OffPeekUsage = Zero
-        };
-
-        // Act
-        var total = summary.TotalUsage;
-
-        // Assert
-        total.Should().Be(Zero);
-    }
-
-    [Fact]
-    public void MeterDataUsageInMoneySummary_TotalUsage_WithCurrencyPrecision_ShouldCalculateCorrectly()
-    {
-        // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
-        {
-            PeekUsage = PrecisionPeekMoney,
-            OffPeekUsage = PrecisionOffPeekMoney
-        };
-
-        // Act
-        var total = summary.TotalUsage;
-
-        // Assert
-        total.Should().Be(PrecisionTotalMoney);
-    }
-
-    [Fact]
-    public void MeterDataUsageInMoneySummary_TotalUsage_WithLargeMonetaryValues_ShouldCalculateCorrectly()
-    {
-        // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
-        {
-            PeekUsage = LargePeekMoney,
-            OffPeekUsage = LargeOffPeekMoney
-        };
-
-        // Act
-        var total = summary.TotalUsage;
-
-        // Assert
-        total.Should().Be(LargeTotalMoney);
-    }
 
     [Fact]
     public void MeterDataUsageInMoneySummary_PeekTouUsagePriceSummary_ShouldStoreValue()
     {
         // Arrange & Act
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice)
         {
             PeekTouUsagePriceSummary = PeekTouPrice
         };
@@ -346,7 +264,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInMoneySummary_OffPeekTouUsagePriceSummary_ShouldStoreValue()
     {
         // Arrange & Act
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice)
         {
             OffPeekTouUsagePriceSummary = OffPeekTouPrice
         };
@@ -359,7 +277,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInMoneySummary_FlatRateUsagePriceSummary_ShouldStoreValue()
     {
         // Arrange & Act
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice)
         {
             FlatRateUsagePriceSummary = FlatRatePrice450
         };
@@ -369,10 +287,10 @@ public class MeterDataUsageSummaryTests
     }
 
     [Fact]
-    public void MeterDataUsageInMoneySummary_TotalTouUsagePriceSummary_ShouldSumPeekAndOffPeekTou()
+    public void MeterDataUsageInMoneySummary_TotalTouUsagePriceSummary_ShouldSumAllPrices()
     {
         // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice)
         {
             PeekTouUsagePriceSummary = PeekTouPrice,
             OffPeekTouUsagePriceSummary = OffPeekTouPrice,
@@ -383,14 +301,15 @@ public class MeterDataUsageSummaryTests
         var total = summary.TotalTouUsagePriceSummary;
 
         // Assert
-        total.Should().Be(TotalTouPrice);
+        // TotalTouUsagePriceSummary now includes PeekTou + OffPeekTou + FlatRate
+        total.Should().Be(PeekTouPrice + OffPeekTouPrice + FlatRatePrice450);
     }
 
     [Fact]
     public void MeterDataUsageInMoneySummary_TotalTouUsagePriceSummary_WithZeroValues_ShouldReturnZero()
     {
         // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice)
         {
             PeekTouUsagePriceSummary = Zero,
             OffPeekTouUsagePriceSummary = Zero
@@ -407,10 +326,8 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInMoneySummary_Reset_ShouldClearAllProperties()
     {
         // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice)
         {
-            PeekUsage = MediumPeekUsage,
-            OffPeekUsage = MediumOffPeekUsage,
             PeekTouUsagePriceSummary = PeekTouPriceRound,
             OffPeekTouUsagePriceSummary = OffPeekTouPriceRound,
             FlatRateUsagePriceSummary = FlatRatePriceRound
@@ -420,8 +337,6 @@ public class MeterDataUsageSummaryTests
         summary.Reset();
 
         // Assert
-        summary.PeekUsage.Should().Be(Zero);
-        summary.OffPeekUsage.Should().Be(Zero);
         summary.PeekTouUsagePriceSummary.Should().Be(Zero);
         summary.OffPeekTouUsagePriceSummary.Should().Be(Zero);
         summary.FlatRateUsagePriceSummary.Should().Be(Zero);
@@ -431,7 +346,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInMoneySummary_Calculate_ShouldCalculatePricesCorrectly()
     {
         // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice);
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice);
         var readings = new List<MeterDataReading>
         {
             new MeterDataReading(DateTime.Now, ReadingPeek1, ReadingOffPeek1, ReadingHoliday1), // Peek: 10, OffPeek: 5, Holiday: 2
@@ -454,7 +369,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInMoneySummary_Calculate_WithEmptyList_ShouldNotChange()
     {
         // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice)
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice)
         {
             PeekTouUsagePriceSummary = PresetPeekTouPrice100,
             OffPeekTouUsagePriceSummary = PresetOffPeekTouPrice50,
@@ -475,7 +390,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInMoneySummary_Calculate_CalledMultipleTimes_ShouldAccumulate()
     {
         // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice);
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice);
         var readings1 = new List<MeterDataReading>
         {
             new MeterDataReading(DateTime.Now, ReadingPeek1, ReadingOffPeek1, ReadingHoliday1)
@@ -502,7 +417,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInMoneySummary_Calculate_WithZeroReadings_ShouldResultInZero()
     {
         // Arrange
-        var summary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice);
+        var summary = new MeterDataUsageInMoney(FlatRatePrice, PeekPrice, OffPeekPrice);
         var readings = new List<MeterDataReading>
         {
             new MeterDataReading(DateTime.Now, Zero, Zero, Zero)
@@ -521,7 +436,7 @@ public class MeterDataUsageSummaryTests
     public void MeterDataUsageInMoneySummary_Calculate_WithDecimalPrices_ShouldCalculateAccurately()
     {
         // Arrange
-        var summary = new MeterDataUsageInMoneySummary(DecimalFlatRatePrice, DecimalPeekPrice, DecimalOffPeekPrice);
+        var summary = new MeterDataUsageInMoney(DecimalFlatRatePrice, DecimalPeekPrice, DecimalOffPeekPrice);
         var readings = new List<MeterDataReading>
         {
             new MeterDataReading(DateTime.Now, DecimalPeekUsage, DecimalOffPeekUsage, DecimalHolidayUsage)
@@ -537,23 +452,6 @@ public class MeterDataUsageSummaryTests
         summary.OffPeekTouUsagePriceSummary.Should().Be(ExpectedDecimalOffPeekPrice);
         // HolidayUsage: 2.7 * 1.25 = 3.375
         summary.FlatRateUsagePriceSummary.Should().Be(ExpectedDecimalFlatRatePrice);
-    }
-
-    #endregion
-
-    #region Comparison Tests
-
-    [Fact]
-    public void MeterDataUsageInKwSummary_And_MeterDataUsageInMoneySummary_ShouldHaveSameStructure()
-    {
-        // Arrange
-        var kwSummary = new MeterDataUsageInKwSummary { PeekUsage = MediumPeekUsage, OffPeekUsage = MediumOffPeekUsage };
-        var moneySummary = new MeterDataUsageInMoneySummary(FlatRatePrice, PeekPrice, OffPeekPrice) { PeekUsage = MediumPeekUsage, OffPeekUsage = MediumOffPeekUsage };
-
-        // Act & Assert
-        kwSummary.TotalUsage.Should().Be(moneySummary.TotalUsage);
-        kwSummary.PeekUsage.Should().Be(moneySummary.PeekUsage);
-        kwSummary.OffPeekUsage.Should().Be(moneySummary.OffPeekUsage);
     }
 
     #endregion
