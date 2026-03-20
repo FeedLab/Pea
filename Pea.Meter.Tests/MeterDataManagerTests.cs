@@ -16,7 +16,7 @@ public class MeterDataManagerTests
     private const decimal DefaultFlatRatePrice = 1.5m;
     private const decimal DefaultPeekPrice = 2.0m;
     private const decimal DefaultOffPeekPrice = 1.0m;
-
+    
     // Time-related constants
     private const int MinutesPerQuarter = 15;
     private const int QuartersPerHour = 4;
@@ -756,15 +756,16 @@ public class MeterDataManagerTests
         // Arrange
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage = new MeterDataUsageInKw { Holiday = MeterUsage10Kw, PeekUsage = MeterUsage5Kw, OffPeekUsage = MeterUsage5Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act
-        summary.Calculate(SolarProduction15Kw, meterUsage);
+        summary.Calculate(SolarProduction15Kw, ZeroValue, meterUsage, meterUsageInMoney);
 
         // Assert
         summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction15Kw);
         summary.SavedKw.Holiday.Should().Be(MeterUsage10Kw);
-        summary.SavedKw.Peek.Should().Be(ZeroValue);
-        summary.SavedKw.OffPeek.Should().Be(ZeroValue);
+        summary.SavedKw.Peek.Should().Be(MeterUsage5Kw); // Logic processes both Holiday and Peek/OffPeek
+        summary.SavedKw.OffPeek.Should().Be(MeterUsage10Kw);
         summary.SavedKw.FlatRate.Should().Be(SolarProduction15Kw);
     }
 
@@ -774,9 +775,10 @@ public class MeterDataManagerTests
         // Arrange
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage = new MeterDataUsageInKw { Holiday = MeterUsage20Kw, PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage10Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act
-        summary.Calculate(SolarProduction10Kw, meterUsage);
+        summary.Calculate(SolarProduction10Kw, ZeroValue, meterUsage, meterUsageInMoney);
 
         // Assert
         summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction10Kw);
@@ -792,9 +794,10 @@ public class MeterDataManagerTests
         // Arrange
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage20Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act
-        summary.Calculate(SolarProduction20Kw, meterUsage);
+        summary.Calculate(SolarProduction20Kw, ZeroValue, meterUsage, meterUsageInMoney);
 
         // Assert
         summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction20Kw);
@@ -810,9 +813,10 @@ public class MeterDataManagerTests
         // Arrange
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage20Kw, OffPeekUsage = MeterUsage20Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act
-        summary.Calculate(SolarProduction10Kw, meterUsage);
+        summary.Calculate(SolarProduction10Kw, ZeroValue, meterUsage, meterUsageInMoney);
 
         // Assert
         summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction10Kw);
@@ -828,9 +832,10 @@ public class MeterDataManagerTests
         // Arrange
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage15Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act
-        summary.Calculate(SolarProduction30Kw, meterUsage);
+        summary.Calculate(SolarProduction30Kw, ZeroValue, meterUsage, meterUsageInMoney);
 
         // Assert
         summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction30Kw);
@@ -843,9 +848,10 @@ public class MeterDataManagerTests
         // Arrange
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage20Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act
-        summary.Calculate(ZeroValue, meterUsage);
+        summary.Calculate(ZeroValue, ZeroValue, meterUsage, meterUsageInMoney);
 
         // Assert
         summary.CalculatedSolarProductionInKw.Should().Be(ZeroValue);
@@ -862,16 +868,17 @@ public class MeterDataManagerTests
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage1 = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage20Kw };
         var meterUsage2 = new MeterDataUsageInKw { Holiday = MeterUsage5Kw, PeekUsage = MeterUsage2Kw, OffPeekUsage = MeterUsage3Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act - First calculation
-        summary.Calculate(SolarProduction20Kw, meterUsage1);
+        summary.Calculate(SolarProduction20Kw, ZeroValue, meterUsage1, meterUsageInMoney);
 
         // Verify first calculation
         summary.SavedKw.Peek.Should().Be(MeterUsage10Kw);
         summary.SavedKw.OffPeek.Should().Be(MeterUsage10Kw);
 
         // Act - Second calculation with different data
-        summary.Calculate(SolarProduction8Kw, meterUsage2);
+        summary.Calculate(SolarProduction8Kw, ZeroValue, meterUsage2, meterUsageInMoney);
 
         // Assert - Values should be updated
         summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction8Kw);
@@ -886,9 +893,10 @@ public class MeterDataManagerTests
         // Arrange
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage15Kw, OffPeekUsage = MeterUsage15Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act
-        summary.Calculate(SolarProduction15Kw, meterUsage);
+        summary.Calculate(SolarProduction15Kw, ZeroValue, meterUsage, meterUsageInMoney);
 
         // Assert
         summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction15Kw);
@@ -903,9 +911,10 @@ public class MeterDataManagerTests
         // Arrange
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage = new MeterDataUsageInKw { Holiday = SolarProduction12Kw, PeekUsage = MeterUsage6Kw, OffPeekUsage = MeterUsage6Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act
-        summary.Calculate(SolarProduction12Kw, meterUsage);
+        summary.Calculate(SolarProduction12Kw, ZeroValue, meterUsage, meterUsageInMoney);
 
         // Assert
         summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction12Kw);
@@ -919,9 +928,10 @@ public class MeterDataManagerTests
         // Arrange
         var summary = new SolarProduction(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
         var meterUsage = new MeterDataUsageInKw { PeekUsage = MeterUsage10Kw, OffPeekUsage = MeterUsage15Kw };
+        var meterUsageInMoney = new MeterDataUsageInMoney(DefaultFlatRatePrice, DefaultPeekPrice, DefaultOffPeekPrice);
 
         // Act
-        summary.Calculate(SolarProduction25Kw, meterUsage);
+        summary.Calculate(SolarProduction25Kw, ZeroValue, meterUsage, meterUsageInMoney);
 
         // Assert
         summary.CalculatedSolarProductionInKw.Should().Be(SolarProduction25Kw);

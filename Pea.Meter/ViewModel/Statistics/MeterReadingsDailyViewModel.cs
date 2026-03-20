@@ -47,26 +47,28 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
         
         WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (r, m) =>
         {
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                MainThread.InvokeOnMainThreadAsync(async () =>
+                await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     try
                     {
-                        MeterDataDailyAggregated.Clear();
+                        try
+                        {
+                            MeterDataDailyAggregated.Clear();
 
-                        MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
-                    }
-                    catch (Exception e)
-                    {
-                        logger.LogError(e, "Error in {Method}: {Message}", "MeterDataDailyAggregated", e.Message);
-                    }
+                            MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogError(e, "Error in {Method}: {Message}", "MeterDataDailyAggregated", e.Message);
+                        }
                     
-                    return Task.CompletedTask;
+                        return Task.FromResult(Task.CompletedTask);
+                    }
+                    catch (Exception exception)
+                    {
+                        return Task.FromException<Task>(exception);
+                    }
                 });
-                
-                return Task.CompletedTask;
-            });
         });
         
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this, async (r, m) =>

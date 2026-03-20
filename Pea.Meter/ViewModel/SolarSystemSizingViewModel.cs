@@ -41,8 +41,6 @@ public partial class SolarSystemSizingViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this,
             (r, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(() =>
-                {
                     try
                     {
                         PopulateChartData();
@@ -51,9 +49,6 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                     {
                         logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
                     }
-
-                    return Task.FromResult(Task.CompletedTask);
-                });
             });
     }
 
@@ -62,8 +57,6 @@ public partial class SolarSystemSizingViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this,
             (r, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(() =>
-                {
                     try
                     {
                         PopulateChartData();
@@ -72,9 +65,6 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                     {
                         logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
                     }
-
-                    return Task.FromResult(Task.CompletedTask);
-                });
             });
     }
 
@@ -83,8 +73,6 @@ public partial class SolarSystemSizingViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
             (r, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(() =>
-                {
                     try
                     {
                         PopulateChartData();
@@ -93,9 +81,6 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                     {
                         logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
                     }
-
-                    return Task.FromResult(Task.CompletedTask);
-                });
             });
     }
 
@@ -131,61 +116,28 @@ public partial class SolarSystemSizingViewModel : ObservableObject
             var yearlyConsumptionPeekKw = last12FullOrderedMonths.Sum(s => s.MeterDataUsageInKw.PeekUsage);
             var yearlyConsumptionOffPeekKw = last12FullOrderedMonths.Sum(s => s.MeterDataUsageInKw.OffPeekUsage);
             var yearlyConsumptionHoliday = last12FullOrderedMonths.Sum(s => s.MeterDataUsageInKw.Holiday);
-            var yearlyConsumptionFlatRate = last12FullOrderedMonths.Sum(s => s.MeterDataUsageInKw.TotalUsage);
             var yearlyConsumptionTotalKw =
                 yearlyConsumptionPeekKw + yearlyConsumptionOffPeekKw + yearlyConsumptionHoliday;
-            AverageKwUsedBetween08To17Monthly = last12FullOrderedMonths.Average(s => s.AverageKwUsedBetween08To17Monthly );
+            var averageUsedBetween08To17Monthly =
+                last12FullOrderedMonths.Average(s => s.AverageKwUsedBetween08To17Monthly);
             var dailyConsumptionAveragePeekKw = yearlyConsumptionPeekKw / numberOfDaysInPeriod;
 
-            YearlyConsumption = yearlyConsumptionTotalKw;
-            DailyUsageAveragePeekKw = dailyConsumptionAveragePeekKw;
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                AverageKwUsedBetween08To17Monthly = averageUsedBetween08To17Monthly;
 
+                YearlyConsumption = yearlyConsumptionTotalKw;
+                DailyUsageAveragePeekKw = dailyConsumptionAveragePeekKw;
+                BatterySizeNeeded = (dailyConsumptionAveragePeekKw - averageUsedBetween08To17Monthly)
+                    .RoundUpToNearestFive();
 
-            BatterySizeNeeded = (dailyConsumptionAveragePeekKw - AverageKwUsedBetween08To17Monthly).RoundUpToNearestFive();
-        
-            var solarArraySize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
-            meterDataManager.CalculateSolarProduction(solarArraySize, BatterySizeNeeded, 180, 3);
+                var solarArraySize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
+                meterDataManager.CalculateSolarProduction(solarArraySize, BatterySizeNeeded, 180, 3);
 
-            SolarSizeNeeded = solarArraySize;
-            
-            EnergyProducedMonthlySummary = last12FullOrderedMonths.ToObservableCollection();
+                SolarSizeNeeded = solarArraySize;
 
-            //     .Select(s => new MeterReadingMonthlySummary
-            //     {
-            //         Date = s.Date.ToDateTime(TimeOnly.MinValue),
-            //         KwUsedAtPeek = s.MeterDataUsageInKw.PeekUsage,
-            //         KwUsedAtOffPeek = s.MeterDataUsageInKw.OffPeekUsage,
-            //         KwUsedTotal = s.MeterDataUsageInKw.TotalUsage,
-            //
-            //         CostSummaryFlatRate = s.MeterDataUsageInMoney.FlatRateUsagePriceSummary,
-            //         CostSummaryTouPeek = s.MeterDataUsageInMoney.PeekTouUsagePriceSummary,
-            //         CostSummaryTouOffPeek = s.MeterDataUsageInMoney.OffPeekTouUsagePriceSummary,
-            //         CostSummaryTouTotal = s.MeterDataUsageInMoney.TotalTouUsagePriceSummary,
-            //
-            //         PeekTouDiscounted = s.SolarProduction.DiscountedMoney.Peek,
-            //         OffPeekTouDiscounted = s.SolarProduction.DiscountedMoney.OffPeek,
-            //         FlatRateDiscounted = s.SolarProduction.DiscountedMoney.Holiday,
-            //
-            //         PeekTouSaving = s.SolarProduction.DiscountedMoney.Peek,
-            //         OffPeekTouSaving = s.SolarProduction.DiscountedMoney.OffPeek,
-            //         FlatRateSaving = s.SolarProduction.DiscountedMoney.Holiday,
-            //
-            //         // average per day
-            //         // AverageKwUsedAtPeekPerDay = daysInMonth > 0 ? peekSum / daysInMonth : 0,
-            //         // AverageKwUsedAtOffPeekPerDay = daysInMonth > 0 ? offPeekSum / daysInMonth : 0,
-            //         //
-            //         CalculateProducedSolarKwMonthly = s.SolarProduction.CalculatedSolarProduction,
-            //         //     CalculateProducedSolarKwDaily = s.SolarProductionDataSummary.SolarProductionInKw / numberOfDaysInPeriod,
-            //         BatteryKwProducedMonthly = 0,
-            //         //
-            //         SolarArraySize = solarArraySize,
-            //         // BatterySize = batterySize
-            //
-            //         BatterySize = GetBatterySize(),
-            //     })
-            //     .ToObservableCollection();
-            //
-            // EnergyProducedMonthlySummary = foo;
+                EnergyProducedMonthlySummary = last12FullOrderedMonths.ToObservableCollection();
+            });
         }
         catch (Exception e)
         {

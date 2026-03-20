@@ -114,32 +114,41 @@ public class MeterDataManager : MeterDataManagerBase<MeterDataManagerYear>
     
     public void AddRange(List<MeterDataReading> readings)
     {
-        
-        MeterReadings.AddRange(readings);
-
-        var groups = readings.GroupBy(r => r.PeriodStart.Year);
-
-        foreach (var group in groups)
+        try
         {
-            if (!DataBucket.ContainsKey(group.Key))
+            MeterReadings.AddRange(readings);
+
+            var groups = readings.GroupBy(r => r.PeriodStart.Year);
+
+            foreach (var group in groups)
             {
-                var date = new DateOnly(group.Key, 1, 1);
-                DataBucket[group.Key] = new MeterDataManagerYear( date, FlatRatePrice, PeekPrice, OffPeekPrice);
+                if (!DataBucket.ContainsKey(group.Key))
+                {
+                    var date = new DateOnly(group.Key, 1, 1);
+                    DataBucket[group.Key] = new MeterDataManagerYear(date, FlatRatePrice, PeekPrice, OffPeekPrice);
+                }
+
+                DataBucket[group.Key].AddRange(group.ToList());
             }
 
-            DataBucket[group.Key].AddRange(group.ToList());
-        }
-        
-        AverageKwUsedBetween08To17Monthly = DataBucket.Average(d => d.Value.SumKwUsedBetween08To17Monthly);
-        SumKwUsedBetween08To17Monthly = DataBucket.Average(d => d.Value.SumKwUsedBetween08To17Monthly);
-        CalculatedBatteryNeeded = DataBucket.Sum(d => d.Value.CalculatedBatteryNeeded);
+            if (DataBucket.Count > 0)
+            {
+                AverageKwUsedBetween08To17Monthly = DataBucket.Average(d => d.Value.SumKwUsedBetween08To17Monthly);
+                SumKwUsedBetween08To17Monthly = DataBucket.Sum(d => d.Value.SumKwUsedBetween08To17Monthly);
+                CalculatedBatteryNeeded = DataBucket.Sum(d => d.Value.CalculatedBatteryNeeded);
+            }
 
-        
-        MeterDataUsageInKw.Reset();
-        MeterDataUsageInMoney.Reset();
-        
-        CalculateMeterDataUsageSummary();
-        CalculateUsagePriceSummaries();
+
+            MeterDataUsageInKw.Reset();
+            MeterDataUsageInMoney.Reset();
+
+            CalculateMeterDataUsageSummary();
+            CalculateUsagePriceSummaries();
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error adding meter data readings", e);
+        }
     }
 
     private void CalculateUsagePriceSummaries()

@@ -138,7 +138,10 @@ public class HistoricDataBackgroundService
                     logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count,
                         targetDate.ToString("yyyy-MM-dd"));
 
-                    WeakReferenceMessenger.Default.Send(new DataImportedMessage(readings, targetDate));
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        WeakReferenceMessenger.Default.Send(new DataImportedMessage(readings, targetDate));
+                    });
                 }
                 else
                 {

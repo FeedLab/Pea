@@ -91,20 +91,17 @@ public partial class StorageService : ObservableObject
 
                     var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
 
-                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    try
                     {
-                        try
-                        {
-                            AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
-                            ProcessAggregations();
-                            WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
-                        }
-                        catch (Exception e)
-                        {
-                            logger.LogError(e, "Error in {Method}: {Message}", nameof(CheckForNewDayBackgroundTask),
-                                e.Message);
-                        }
-                    });
+                        AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
+                        ProcessAggregations();
+                        WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CheckForNewDayBackgroundTask),
+                            e.Message);
+                    }
 
                     await InitNewDay(oldDate, newDate);
 
