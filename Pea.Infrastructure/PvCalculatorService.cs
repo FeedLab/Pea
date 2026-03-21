@@ -1,11 +1,12 @@
-﻿namespace Pea.Meter.Services;
+﻿namespace Pea.Infrastructure;
 
 public class PvCalculatorService
 {
     private const double ThailandLatitude = 15.274053;
     private const double ThailandLongitude = 102.622572;
-    
-    const double SolarConstant = 1361;   // W/m2 outside atmosphere
+
+    const double SolarConstant = 1361; // W/m2 outside atmosphere
+
     // System efficiency accounts for:
     // - Inverter losses (~4%)
     // - Wiring losses (~2%)
@@ -14,6 +15,17 @@ public class PvCalculatorService
     // - Mismatch/shading (~3%)
     // Combined: 0.96 × 0.98 × 0.85 × 0.95 × 0.97 ≈ 0.58
     const double SystemEfficiency = 0.58;
+
+    public static decimal CalculateKwDaily(
+        DateOnly date,
+        decimal systemKWp,
+        decimal tilt,
+        decimal panelAzimuth,
+        int timezone = 7)
+    {
+        return (decimal)CalculateKwDaily(ThailandLatitude, ThailandLongitude,
+            date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Unspecified), (double)systemKWp, (double)tilt, (double)panelAzimuth, timezone);
+    }
 
     public static double CalculateKwDaily(
         DateTime time,
@@ -45,7 +57,7 @@ public class PvCalculatorService
 
         return totalKwh;
     }
-    
+
     public static double CalculateKwMonthly(
         DateTime time,
         double systemKWp,
@@ -55,7 +67,7 @@ public class PvCalculatorService
     {
         return CalculateKwMonthly(ThailandLatitude, ThailandLongitude, time, systemKWp, tilt, panelAzimuth, timezone);
     }
-    
+
     public static double CalculateKwMonthly(double latitude,
         double longitude,
         DateTime time,
@@ -96,7 +108,8 @@ public class PvCalculatorService
         int timezone = 7,
         double fraction = 0.03)
     {
-        return GetProductiveSolarHours(ThailandLatitude, ThailandLongitude, time, systemKWp, tilt, panelAzimuth, timezone, fraction);
+        return GetProductiveSolarHours(ThailandLatitude, ThailandLongitude, time, systemKWp, tilt, panelAzimuth,
+            timezone, fraction);
     }
 
     public static int GetProductiveSolarHours(
@@ -124,14 +137,14 @@ public class PvCalculatorService
             var currentTime = dayStart.AddHours(hour);
             var powerKw = CalculateKw(latitude, longitude, currentTime, systemKWp, tilt, panelAzimuth, timezone);
 
-            if (powerKw >= threshold)
+            if (powerKw > threshold)
                 productiveHours++;
         }
 
         return productiveHours;
     }
 
-    
+
     public static double CalculateKw(
         double latitude,
         double longitude,

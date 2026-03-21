@@ -4,8 +4,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              x:Class="Pea.Meter.View.Solar.SolarSystemSizingView">
-
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6*" />
@@ -20,7 +18,7 @@
         <Border
             Grid.Column="0"
             Grid.Row="0"
-            Margin="24"
+            Margin="24, 12"
             BackgroundColor="White"
             Stroke="Black"
             StrokeThickness="0"
@@ -42,10 +40,26 @@
                     <Shadow Brush="Gray" Opacity="0.3" Radius="10" Offset="5,5" />
                 </chart:SfCartesianChart.Shadow>
 
+                <chart:SfCartesianChart.Resources>
+                    <DataTemplate x:Key="tooltipTemplate">
+                        <StackLayout Orientation="Horizontal" Padding="8">
+                            <Label Text="{Binding Item.YValue, StringFormat='{0:0}'}"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </chart:SfCartesianChart.Resources>
+                
+                <chart:SfCartesianChart.TooltipBehavior>
+                    <chart:ChartTooltipBehavior />
+                </chart:SfCartesianChart.TooltipBehavior>
+                
                 <chart:SfCartesianChart.Legend>
                     <chart:ChartLegend>
                         <chart:ChartLegend.LabelStyle>
-                            <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="18"
+                            <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="16"
                                                          FontAttributes="None" />
                         </chart:ChartLegend.LabelStyle>
                     </chart:ChartLegend>
@@ -66,7 +80,7 @@
                     <chart:CategoryAxis
                         Interval="1">
                         <chart:CategoryAxis.LabelStyle>
-                            <chart:ChartAxisLabelStyle LabelFormat="MMM" />
+                            <chart:ChartAxisLabelStyle  LabelFormat="MMM"/>
                         </chart:CategoryAxis.LabelStyle>
                     </chart:CategoryAxis>
                 </chart:SfCartesianChart.XAxes>
@@ -76,98 +90,113 @@
                         <chart:NumericalAxis.Title>
                             <chart:ChartAxisTitle Text="Bath Per Month" />
                         </chart:NumericalAxis.Title>
+                        <chart:NumericalAxis.LabelStyle>
+                            <chart:ChartAxisLabelStyle />
+                        </chart:NumericalAxis.LabelStyle>
                     </chart:NumericalAxis>
                 </chart:SfCartesianChart.YAxes>
 
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Peek"
-                                            XBindingPath="Date"
-                                            YBindingPath="CostSummaryTouPeek"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInMoney.PeekTouUsagePriceSummary"
                                             GroupingLabel="CostSummaryToU"
                                             Fill="#FF7043"
                                             Stroke="#E64A19"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="0,0,0,0">
+                                            CornerRadius="0,0,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
 
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="OffPeek"
-                                            XBindingPath="Date"
-                                            YBindingPath="CostSummaryTouOffPeek"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInMoney.OffPeekTouUsagePriceSummary"
                                             GroupingLabel="CostSummaryToU"
                                             Fill="#EC407A"
                                             Stroke="#C2185B"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="2,2,0,0">
+                                            CornerRadius="2,2,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="FlatRate"
-                                            XBindingPath="Date"
-                                            YBindingPath="CostSummaryFlatRate"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInMoney.FlatRateUsagePriceSummary"
                                             GroupingLabel="CostSummaryFlatRate"
                                             Fill="#7CB342"
                                             Stroke="#558B2F"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="2,2,0,0">
+                                            CornerRadius="2,2,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Peek Solar"
-                                            XBindingPath="Date"
-                                            YBindingPath="PeekTouDiscounted"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.DiscountedMoney.Peek"
                                             GroupingLabel="CostSummaryToUSolar"
                                             Fill="#B184B2"
                                             Stroke="#806182"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="0,0,0,0">
+                                            CornerRadius="0,0,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
 
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="OffPeek Solar"
-                                            XBindingPath="Date"
-                                            YBindingPath="OffPeekTouDiscounted"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.DiscountedMoney.OffPeek"
                                             GroupingLabel="CostSummaryToUSolar"
                                             Fill="#FFCA28"
                                             Stroke="#F9A825"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="2,2,0,0">
+                                            CornerRadius="2,2,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
 
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="FlatRate Solar"
-                                            XBindingPath="Date"
-                                            YBindingPath="FlatRateDiscounted"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.DiscountedMoney.FlatRate"
                                             GroupingLabel="CostSummaryFlatRateSolar"
                                             Fill="#26C6DA"
                                             Stroke="#00838F"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="2,2,0,0">
+                                            CornerRadius="2,2,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
                 
             </chart:SfCartesianChart>
@@ -176,7 +205,7 @@
         <Border
             Grid.Row="0"
             Grid.Column="1"
-            Margin="24"
+            Margin="24,12"
             BackgroundColor="White"
             Stroke="Black"
             StrokeThickness="0"
@@ -193,14 +222,30 @@
 
             <chart:SfCartesianChart
                 HorizontalOptions="Fill">
+                <chart:SfCartesianChart.Resources>
+                    <DataTemplate x:Key="tooltipTemplate">
+                        <StackLayout Orientation="Horizontal" Padding="8">
+                            <Label Text="{Binding Item.Value, StringFormat='{0:0}'}"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </chart:SfCartesianChart.Resources>
+
                 <chart:SfCartesianChart.Shadow>
                     <Shadow Brush="Gray" Opacity="0.3" Radius="10" Offset="5,5" />
                 </chart:SfCartesianChart.Shadow>
 
+                <chart:SfCartesianChart.TooltipBehavior>
+                    <chart:ChartTooltipBehavior />
+                </chart:SfCartesianChart.TooltipBehavior>
+
                 <chart:SfCartesianChart.Legend>
                     <chart:ChartLegend>
                         <chart:ChartLegend.LabelStyle>
-                            <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="18"
+                            <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="16"
                                                          FontAttributes="None" />
                         </chart:ChartLegend.LabelStyle>
                     </chart:ChartLegend>
@@ -221,7 +266,7 @@
                     <chart:CategoryAxis
                         Interval="1">
                         <chart:CategoryAxis.LabelStyle>
-                            <chart:ChartAxisLabelStyle LabelFormat="MMM" />
+                            <chart:ChartAxisLabelStyle  LabelFormat="MMM"/>
                         </chart:CategoryAxis.LabelStyle>
                     </chart:CategoryAxis>
                 </chart:SfCartesianChart.XAxes>
@@ -231,67 +276,78 @@
                         <chart:NumericalAxis.Title>
                             <chart:ChartAxisTitle Text="KWh Per Month" />
                         </chart:NumericalAxis.Title>
+                        <chart:NumericalAxis.LabelStyle>
+                            <chart:ChartAxisLabelStyle />
+                        </chart:NumericalAxis.LabelStyle>
                     </chart:NumericalAxis>
                 </chart:SfCartesianChart.YAxes>
 
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Peek"
-                                            XBindingPath="Date"
-                                            YBindingPath="KwUsedAtPeek"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInKw.PeekUsage"
                                             GroupingLabel="KwUsed"
                                             Fill="#FF9800"
                                             Stroke="#E65100"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="0,0,0,0">
+                                            CornerRadius="0,0,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
 
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="OffPeek"
-                                            XBindingPath="Date"
-                                            YBindingPath="KwUsedAtOffPeek"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="MeterDataUsageInKw.OffPeekUsage"
                                             GroupingLabel="KwUsed"
                                             Fill="#FFC107"
                                             Stroke="#FF6F00"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="2,2,0,0">
+                                            CornerRadius="2,2,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
                 <!-- Stacked column series with colored data labels -->
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Solar"
-                                            XBindingPath="Date"
-                                            YBindingPath="CalculateProducedSolarKwMonthly"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.CalculatedSolarProductionInKw"
                                             GroupingLabel="KwProduced"
                                             Fill="#26A69A"
                                             Stroke="#00695C"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="0,0,0,0">
+                                            CornerRadius="0,0,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
 
                 <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
                                             Label="Battery"
-                                            XBindingPath="Date"
-                                            YBindingPath="BatteryKwProducedMonthly"
+                                            XBindingPath="DateAsDateTime"
+                                            YBindingPath="SolarProduction.CalculatedBatteryNeeded"
                                             GroupingLabel="KwProduced"
                                             Fill="#5C6BC0"
                                             Stroke="#283593"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="True"
+                                            EnableTooltip="False"
+                                            TooltipTemplate="{StaticResource tooltipTemplate}"
                                             Spacing="0.3"
-                                            CornerRadius="2,2,0,0">
+                                            CornerRadius="2,2,0,0"
+                                            ShowDataLabels="False">
                 </chart:StackingColumnSeries>
             </chart:SfCartesianChart>
         </Border>
@@ -321,7 +377,7 @@
                 TextColor="Black"
                 Margin="24"
                 LineBreakMode="WordWrap"
-                FontSize="16">
+                FontSize="15">
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="With an annual consumption of " />

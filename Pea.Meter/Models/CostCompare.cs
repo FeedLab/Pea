@@ -36,28 +36,28 @@ public partial class CostCompare : ObservableObject
         if (meterReading.PeriodStart.Hour is >= 9 and < 22 && isWeekday)
         {
             TouCost += meterReading.Total * peekPrice;
-            KwCostAtPeek += meterReading.Total * peekPrice;
+            KwCostAtPeek += meterReading.Total;
             
             isPeekPeriod = true;
         }
         else if (meterReading.PeriodStart.Hour >= 22 && isWeekday)
         {
             TouCost += meterReading.Total * offPeekPrice;
-            KwCostAtOffPeek += meterReading.Total * offPeekPrice;
+            KwCostAtOffPeek += meterReading.Total;
             
             isPeekPeriod = false;
         }
         else if (meterReading.PeriodStart.Hour < 9 && isWeekday)
         {
             TouCost += meterReading.Total * offPeekPrice;
-            KwCostAtOffPeek += meterReading.Total * offPeekPrice;
+            KwCostAtOffPeek += meterReading.Total;
        
             isPeekPeriod = false;
         }
         else if (isWeekend)
         {
             TouCost += meterReading.Total * offPeekPrice;
-            KwCostAtOffPeek += meterReading.Total * offPeekPrice;
+            KwCostAtOffPeek += meterReading.Total;
             
             isPeekPeriod = false;
         }

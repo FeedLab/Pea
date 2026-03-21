@@ -2,9 +2,42 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:sfButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:sfEffects="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:Class="Pea.Meter.Components.ToolbarComponent"
              x:Name="Root">
+
+    <ContentView.Resources>
+        <Style x:Key="IconBorderStyle" TargetType="Border">
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="StrokeShape">
+                <RoundRectangle CornerRadius="4" />
+            </Setter>
+            <Setter Property="Shadow">
+                <Shadow Brush="Black" Radius="10" Opacity="0.3" Offset="0,2" />
+            </Setter>
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <Setter.Value>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="1.0" />
+                                    <Setter Property="Opacity" Value="1.0" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="1.1" />
+                                    <Setter Property="Opacity" Value="0.9" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentView.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -13,19 +46,19 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Style="{StaticResource IconBorder}">
+        <Border Grid.Column="0" Style="{StaticResource IconBorderStyle}">
             <Label Text="&#xf013;"
                    ToolTipProperties.Text="Configuration"
                    Style="{StaticResource IconLabel}" />
         </Border>
 
-        <Border Grid.Column="1" Style="{StaticResource IconBorder}">
+        <Border Grid.Column="1" Style="{StaticResource IconBorderStyle}">
             <Label Text="&#xf57d;"
                    ToolTipProperties.Text="Language"
                    Style="{StaticResource IconLabel}" />
         </Border>
 
-        <Border Grid.Column="2" Style="{StaticResource IconBorder}" Margin="32,0,0,0">
+        <Border Grid.Column="2" Style="{StaticResource IconBorderStyle}" Margin="32,0,0,0">
             <Label Text="&#xf2f5;"
                    ToolTipProperties.Text="Quit"
                    Style="{StaticResource IconLabel}" />

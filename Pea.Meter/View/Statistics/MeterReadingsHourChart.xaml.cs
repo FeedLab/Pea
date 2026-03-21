@@ -1,10 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using Pea.Infrastructure.Models;
+using Pea.Meter.Services;
+using Pea.Meter.ViewModel.Statistics;
 
 namespace Pea.Meter.View.Statistics;
 
 public partial class MeterReadingsHourChart : ContentView
 {
+    private readonly MeterReadingsHourViewModel viewModel;
+
     public static readonly BindableProperty ChartTitleProperty =
         BindableProperty.Create(nameof(ChartTitle), typeof(string), typeof(MeterReadingsHourChart), string.Empty);
 
@@ -53,5 +57,44 @@ public partial class MeterReadingsHourChart : ContentView
     public MeterReadingsHourChart()
     {
         InitializeComponent();
+        
+        if (AppService.Current != null)
+            viewModel = AppService.Current.GetRequiredService<ViewModel.Statistics.MeterReadingsHourViewModel>();
+        else
+            throw new InvalidOperationException("AppService is not initialized");
+        
+        BindingContext = viewModel;
+    }
+
+    private void OnSelectedDateTapGestureTapped(object? sender, TappedEventArgs e)
+    {
+#if ANDROID || IOS
+        // this.SelectedTimePicker.Reset();
+        this.SelectedTimePicker.IsOpen = true;
+#else
+        // this.StartTimePicker.Reset();
+        this.SelectedTimePicker.IsOpen = true;
+#endif
+        
+
+    }
+
+    private void OnSelectedDatePickerOkButtonClicked(object? sender, EventArgs e)
+    {
+        if (SelectedTimePicker.SelectedDate == null)
+            return;
+        
+        viewModel.SelectedDate = SelectedTimePicker.SelectedDate.Value;
+        ChartTitle = SelectedTimePicker.SelectedDate.Value.ToLongDateString();
+    }
+
+    private void OnNextDayTapped(object? sender, TappedEventArgs e)
+    {
+        viewModel.SelectedDate = viewModel.SelectedDate.AddDays(1);
+    }
+
+    private void OnPreviousDayTapped(object? sender, TappedEventArgs e)
+    {
+        viewModel.SelectedDate = viewModel.SelectedDate.AddDays(-1);
     }
 }

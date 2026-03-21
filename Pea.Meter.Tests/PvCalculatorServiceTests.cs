@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Pea.Infrastructure;
 using Pea.Meter.Services;
 using Xunit.Abstractions;
 
@@ -948,16 +949,6 @@ public class PvCalculatorServiceTests
         var time = new DateTime(TestYear, SummerMonth, TestDay, 0, 0, 0);
 
         // Act
-        var strictHours = PvCalculatorService.GetProductiveSolarHours(
-            BangkokLatitude,
-            BangkokLongitude,
-            time,
-            StandardSystemKWp,
-            StandardTilt,
-            SouthFacingAzimuth,
-            ThailandTimezone,
-            0.01); // 1% - strict
-
         var lenientHours = PvCalculatorService.GetProductiveSolarHours(
             BangkokLatitude,
             BangkokLongitude,
@@ -966,10 +957,20 @@ public class PvCalculatorServiceTests
             StandardTilt,
             SouthFacingAzimuth,
             ThailandTimezone,
-            0.10); // 10% - lenient
+            0.01); // 1% fraction = lower threshold = lenient (more hours pass)
+
+        var strictHours = PvCalculatorService.GetProductiveSolarHours(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone,
+            0.10); // 10% fraction = higher threshold = strict (fewer hours pass)
 
         // Assert
-        // Lower threshold percentage (stricter) should give fewer or equal hours
+        // Higher threshold (strict) should give fewer or equal hours than lower threshold (lenient)
         strictHours.Should().BeLessThanOrEqualTo(lenientHours);
     }
 
@@ -1182,4 +1183,60 @@ public class PvCalculatorServiceTests
     }
 
     #endregion
+
+    [Fact]
+    public void CalculateKwMonthly_2026Estimate_ShouldProduceRealisticYearlyPattern()
+    {
+        // Arrange - 21 kWp system at Wanphen Farm location for all months in 2026
+        const double systemSize = 21.0; // kWp
+        const double tiltAngle = 3.0;
+        const int year = 2026;
+
+        var monthlyProduction = new Dictionary<string, double>();
+        double totalYearlyProduction = 0;
+
+        // Act - Calculate monthly production for each month in 2026
+        for (int month = 1; month <= 12; month++)
+        {
+            var time = new DateTime(year, month, 1);
+            var monthlyKwh = PvCalculatorService.CalculateKwMonthly(
+                BangkokLatitude,
+                BangkokLongitude,
+                time,
+                systemSize,
+                tiltAngle,
+                SouthFacingAzimuth,
+                ThailandTimezone);
+
+            monthlyProduction[time.ToString("MMMM")] = monthlyKwh;
+            totalYearlyProduction += monthlyKwh;
+        }
+
+        // Assert
+        // For 21 kWp system in Thailand:
+        // - Daily average: ~94 kWh/day (from CalculateKwDaily test)
+        // - Yearly estimate: 94 kWh/day × 365 days = ~34,310 kWh/year
+        // - Monthly average: ~2,859 kWh/month
+        totalYearlyProduction.Should().BeGreaterThan(30000); // Minimum reasonable yearly production
+        totalYearlyProduction.Should().BeLessThanOrEqualTo(38000); // Maximum realistic yearly production
+
+        // Each month should produce reasonable amounts
+        foreach (var kvp in monthlyProduction)
+        {
+            kvp.Value.Should().BeGreaterThan(2000); // Minimum for any month (rainy season)
+            kvp.Value.Should().BeLessThanOrEqualTo(3200); // Maximum for any month (dry season)
+        }
+
+        // Output monthly breakdown for debugging
+        testOutputHelper.WriteLine($"2026 Monthly Production Estimates for {systemSize} kWp system:");
+        testOutputHelper.WriteLine("-----------------------------------------------------------");
+        foreach (var kvp in monthlyProduction)
+        {
+            testOutputHelper.WriteLine($"{kvp.Key,-12}: {kvp.Value,8:F2} kWh");
+        }
+        testOutputHelper.WriteLine("-----------------------------------------------------------");
+        testOutputHelper.WriteLine($"{"Total Yearly",-12}: {totalYearlyProduction,8:F2} kWh");
+        testOutputHelper.WriteLine($"{"Average Daily",-12}: {totalYearlyProduction / 365,8:F2} kWh/day");
+        testOutputHelper.WriteLine($"{"Average Monthly",-12}: {totalYearlyProduction / 12,8:F2} kWh/month");
+    }
 }

@@ -356,23 +356,32 @@ public class PeaAdapter
 
     public async Task<IList<PeaMeterReading>> ShowDailyReadings(DateTime selectedDate)
     {
-        var result = await ShowDailyReadingsInternal(selectedDate);
-
-        if (result == null)
+        try
         {
-            var isAuthenticated = await ValidateCredential(userName, password);
+            var result = await ShowDailyReadingsInternal(selectedDate);
 
-            if (isAuthenticated == false)
+            if (result == null)
             {
-                return new List<PeaMeterReading>();
+                var isAuthenticated = await ValidateCredential(userName, password);
+
+                if (isAuthenticated == false)
+                {
+                    return new List<PeaMeterReading>();
+                }
+
+                result = await ShowDailyReadingsInternal(selectedDate);
+
+                return result ?? new List<PeaMeterReading>();
             }
 
-            result = await ShowDailyReadingsInternal(selectedDate);
-
-            return result ?? new List<PeaMeterReading>();
+            return result;
         }
-
-        return result;
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occurred during ShowDailyReadings");
+        }
+        
+        return new List<PeaMeterReading>();
     }
 
     public async Task<IList<PeaMeterReading>?> ShowDailyReadingsInternal(DateTime selectedDate)

@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
+using Pea.Infrastructure;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Extension;
 using Pea.Meter.Models;
@@ -90,20 +91,17 @@ public partial class StorageService : ObservableObject
 
                     var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
 
-                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    try
                     {
-                        try
-                        {
-                            AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
-                            ProcessAggregations();
-                            WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
-                        }
-                        catch (Exception e)
-                        {
-                            logger.LogError(e, "Error in {Method}: {Message}", nameof(CheckForNewDayBackgroundTask),
-                                e.Message);
-                        }
-                    });
+                        AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
+                        ProcessAggregations();
+                        WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CheckForNewDayBackgroundTask),
+                            e.Message);
+                    }
 
                     await InitNewDay(oldDate, newDate);
 

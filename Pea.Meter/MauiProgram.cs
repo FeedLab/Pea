@@ -6,8 +6,6 @@ using Pea.Meter.Services;
 using Pea.Meter.View;
 using Pea.Meter.ViewModel;
 using Pea.Meter.ViewModel.Statistics;
-using Polly;
-using Refit;
 using Serilog;
 using Syncfusion.Maui.Core.Hosting;
 using MeterReadingsHourViewModel = Pea.Meter.ViewModel.Statistics.MeterReadingsHourViewModel;
@@ -88,21 +86,6 @@ namespace Pea.Meter
             builder.Services.AddSingleton<ILoginHelper, LoginHelper>();
             builder.Services.AddSingleton<InfoViewModel>();
             
-            // builder.Services.AddRefitClient<IFooApi>()
-            //     .ConfigureHttpClient((sp, client) =>
-            //     {
-            //         client.BaseAddress = new Uri($"https://api.openweathermap.org");
-            //     //    client.DefaultRequestHeaders.Add("x-api-key", ["c3d47c3c9326cf557f14aa414f0bb984"]);
-            //     })
-            //     .AddHttpMessageHandler(() => new ApiKeyHandler("c3d47c3c9326cf557f14aa414f0bb984"))
-            //     .AddStandardResilienceHandler(options =>
-            //     {
-            //         // Customize retry strategy
-            //         options.Retry.MaxRetryAttempts = 2;
-            //         options.Retry.BackoffType = DelayBackoffType.Exponential;
-            //         options.Retry.Delay = TimeSpan.FromSeconds(2);
-            //         options.Retry.UseJitter = true;
-            //     });
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
