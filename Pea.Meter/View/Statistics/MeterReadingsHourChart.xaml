@@ -33,10 +33,16 @@
                         TextColor="Black"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
-                        Text="&#xf100;">
+                        Text="&#xf100;"
+                        IsEnabled="{Binding IsPreviousDayButtonEnabled}">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnPreviousDayTapped" />
                         </Label.GestureRecognizers>
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsEnabled, Source={RelativeSource Self}}" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Label.Triggers>
                     </Label>
                     
                     <Border
@@ -59,10 +65,13 @@
                                 x:Name="SelectedTimePicker"
                                 Grid.Column="1" 
                                 Mode="Dialog"
+                                EnableLooping="True"
                                 RelativePosition="AlignBottom"
                                 TextDisplayMode="FadeAndShrink"
                                 RelativeView="{x:Reference SelectedDateCtrl}"
                                 SelectedDate="{Binding SelectedDate}"
+                                MaximumDate="{Binding CurrentTimePickerMaximumDate}"
+                                MinimumDate="{Binding CurrentTimePickerMinimumDate}"      
                                 OkButtonClicked="OnSelectedDatePickerOkButtonClicked">
                                 <picker:SfDatePicker.HeaderView>
                                     <picker:PickerHeaderView Text="Start date" Height="40" />
@@ -104,10 +113,16 @@
                         TextColor="Black"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
-                        Text="&#xf101;">
+                        Text="&#xf101;"
+                        IsEnabled="{Binding IsNextDayButtonEnabled}">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnNextDayTapped" />
                         </Label.GestureRecognizers>
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsEnabled, Source={RelativeSource Self}}" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Label.Triggers>
                     </Label>
 
                     <!-- <Label -->

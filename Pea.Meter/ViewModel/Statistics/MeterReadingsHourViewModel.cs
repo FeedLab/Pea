@@ -16,10 +16,13 @@ namespace Pea.Meter.ViewModel.Statistics;
 public partial class MeterReadingsHourViewModel : ObservableObject
 {
     private readonly ILogger<MeterReadingsHourViewModel> logger;
-    private readonly PeaAdapter peaAdapter;
     private readonly StorageService storageService;
-    [ObservableProperty] private DateTime selectedDate = DateTime.Today; 
-    
+    [ObservableProperty] private DateTime selectedDate;
+    [ObservableProperty] private bool isNextDayButtonEnabled;
+    [ObservableProperty] private bool isPreviousDayButtonEnabled;
+    [ObservableProperty] private DateTime currentTimePickerMaximumDate;
+    [ObservableProperty] private DateTime currentTimePickerMinimumDate;
+
     [ObservableProperty] private ObservableCollection<PeaMeterReading> todayData = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage1 = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage7 = [];
@@ -29,10 +32,8 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         StorageService storageService)
     {
         this.logger = logger;
-        this.peaAdapter = peaAdapter;
         this.storageService = storageService;
 
-        
         CreateLoggedInSubscription();
         CreateLoggedOutSubscription();
         CreateAllAggregationsCompletedSubscription();
@@ -53,14 +54,15 @@ public partial class MeterReadingsHourViewModel : ObservableObject
                     }
                     catch (Exception e)
                     {
-                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateDataImportedSubscription), e.Message);
+                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateDataImportedSubscription),
+                            e.Message);
                     }
 
                     return Task.CompletedTask;
                 });
             });
     }
-    
+
     private void CreateNewDaySubscription()
     {
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
@@ -95,7 +97,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
                 MeterDataAverage1 = [];
                 MeterDataAverage7 = [];
                 MeterDataAverage30 = [];
-                
+
                 return Task.CompletedTask;
             });
         });
@@ -103,10 +105,11 @@ public partial class MeterReadingsHourViewModel : ObservableObject
 
     private void CreateLoggedInSubscription()
     {
-        WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
-        {
-            storageService.DailyPeriodReadings.CollectionChanged += DailyPeriodPeaMeterDataCollectionChanged;
-        });
+        WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this,
+            async (r, m) =>
+            {
+                storageService.DailyPeriodReadings.CollectionChanged += DailyPeriodPeaMeterDataCollectionChanged;
+            });
     }
 
     private void CreateAllAggregationsCompletedSubscription()
@@ -115,7 +118,9 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         {
             try
             {
-                await PopulateChartData();
+                SelectedDate = DateTime.Today;
+
+                //await PopulateChartData();
             }
             catch (Exception e)
             {
@@ -151,7 +156,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
             {
                 TodayData.AddRange(meterDataAverageDays0);
             }
-            
+
             MeterDataAverage1.AddRange(meterDataAverageDays1);
             MeterDataAverage7.AddRange(meterDataAverageDays7);
             MeterDataAverage30.AddRange(meterDataAverageDays30);
@@ -162,10 +167,38 @@ public partial class MeterReadingsHourViewModel : ObservableObject
     {
         try
         {
-            SelectedDate = value;
+            var orderedPeaMeterReadingList = storageService.HourlyAggregated
+                .OrderBy(o => o.PeriodStart)
+                .ToList();
+
+            var firstRecord = orderedPeaMeterReadingList.FirstOrDefault();
+            var lastRecord = orderedPeaMeterReadingList.LastOrDefault();
+
+            if (firstRecord == null || lastRecord == null )
+            {
+                return;
+            }
+
+            if (value >= lastRecord.PeriodStart.Date)
+            {
+                IsNextDayButtonEnabled = false;
+                IsPreviousDayButtonEnabled = true;
+            }
+            else if (value <= firstRecord.PeriodStart.Date)
+            {
+                IsNextDayButtonEnabled = true;
+                IsPreviousDayButtonEnabled = false;
+            }
+            else
+            {
+                IsNextDayButtonEnabled = true;
+                IsPreviousDayButtonEnabled = true;
+            }
+
+            CurrentTimePickerMinimumDate = firstRecord.PeriodStart.Date;
+            CurrentTimePickerMaximumDate = lastRecord.PeriodStart.Date;
 
             await PopulateChartData();
-
         }
         catch (Exception e)
         {

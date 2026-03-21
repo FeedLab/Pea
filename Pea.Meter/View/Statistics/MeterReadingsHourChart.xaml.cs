@@ -68,6 +68,8 @@ public partial class MeterReadingsHourChart : ContentView
 
     private void OnSelectedDateTapGestureTapped(object? sender, TappedEventArgs e)
     {
+        SelectedTimePicker.SelectedDate = viewModel.SelectedDate;
+        
 #if ANDROID || IOS
         // this.SelectedTimePicker.Reset();
         this.SelectedTimePicker.IsOpen = true;
