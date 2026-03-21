@@ -18,12 +18,12 @@ public partial class MeterReadingsHourViewModel : ObservableObject
     private readonly ILogger<MeterReadingsHourViewModel> logger;
     private readonly PeaAdapter peaAdapter;
     private readonly StorageService storageService;
-
+    [ObservableProperty] private DateTime selectedDate = DateTime.Today; 
+    
     [ObservableProperty] private ObservableCollection<PeaMeterReading> todayData = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage1 = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage7 = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage30 = [];
-    [ObservableProperty] private DateTime dateMeterData = DateTime.Today;
 
     public MeterReadingsHourViewModel(ILogger<MeterReadingsHourViewModel> logger, PeaAdapter peaAdapter,
         StorageService storageService)
@@ -32,6 +32,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         this.peaAdapter = peaAdapter;
         this.storageService = storageService;
 
+        
         CreateLoggedInSubscription();
         CreateLoggedOutSubscription();
         CreateAllAggregationsCompletedSubscription();
@@ -69,7 +70,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
                 {
                     try
                     {
-                        DateMeterData = m.NewDate;
+                        SelectedDate = m.NewDate;
                         await PopulateChartData();
                     }
                     catch (Exception e)
@@ -126,7 +127,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
 
     private async Task PopulateChartData()
     {
-        var today = DateTime.Today;
+        var today = SelectedDate;
         var timeStart1 = today.AddDays(-1);
         var timeStart7 = today.AddDays(-7);
         var timeStart30 = today.AddDays(-30);
@@ -146,11 +147,30 @@ public partial class MeterReadingsHourViewModel : ObservableObject
             MeterDataAverage7.Clear();
             MeterDataAverage30.Clear();
 
-            TodayData.AddRange(meterDataAverageDays0);
+            if (SelectedDate == DateTime.Today)
+            {
+                TodayData.AddRange(meterDataAverageDays0);
+            }
+            
             MeterDataAverage1.AddRange(meterDataAverageDays1);
             MeterDataAverage7.AddRange(meterDataAverageDays7);
             MeterDataAverage30.AddRange(meterDataAverageDays30);
         });
+    }
+
+    async partial void OnSelectedDateChanged(DateTime value)
+    {
+        try
+        {
+            SelectedDate = value;
+
+            await PopulateChartData();
+
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in {Method}: {Message}", nameof(OnSelectedDateChanged), e.Message);
+        }
     }
 
     private void DailyPeriodPeaMeterDataCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
