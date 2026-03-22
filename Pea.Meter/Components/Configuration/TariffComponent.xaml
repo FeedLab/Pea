@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sliders="http://schemas.syncfusion.com/maui"
+             x:Class="Pea.Meter.Components.Configuration.TariffComponent">
+
+    <Grid
+        BackgroundColor="DarkOliveGreen"
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill">
+        
+        <sliders:SfSlider x:Name="slider"
+                          Margin="24,0"
+                          WidthRequest="222"
+                          BackgroundColor="Aqua"
+                          HorizontalOptions="Start"
+                          VerticalOptions="Start"
+                          Minimum="2.0"
+                          Maximum="3.0"
+                          Value="2.64"
+                          StepSize="0.01">
+
+            <sliders:SfSlider.ThumbStyle>
+                <sliders:SliderThumbStyle Radius="19" Fill="Red" />
+            </sliders:SfSlider.ThumbStyle>
+
+            <sliders:SfSlider.ThumbIcon>
+                <VerticalStackLayout>
+                    <HorizontalStackLayout>
+                        <Label Margin="16" Text="{Binding Source={x:Reference slider}, Path=Value}" TextColor="Black"
+                               x:DataType="sliders:SfSlider" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </sliders:SfSlider.ThumbIcon>
+        </sliders:SfSlider>
+    </Grid>
+</ContentView>

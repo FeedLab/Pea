@@ -8,6 +8,7 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:core="http://schemas.syncfusion.com/maui"
+    xmlns:configuration="clr-namespace:Pea.Meter.Components.Configuration"
     x:TypeArguments="system:Boolean"
     x:Class="Pea.Meter.Popup.ConfigurationPopup">
 
@@ -76,14 +77,20 @@
             <tabView:SfTabView.Items>
                 <tabView:SfTabItem Header="Tariff" x:Name="Tariff" AutomationId="Tariff" TextColor="White" FontSize="14">
                     <tabView:SfTabItem.Content>
-                        <Grid BackgroundColor="Transparent">
+                        <Grid BackgroundColor="#EFFFEF"
+                              HorizontalOptions="Fill"
+                              VerticalOptions="Fill">
+                            <configuration:TariffComponent
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Fill"/>
                         </Grid>
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
                 <tabView:SfTabItem Header="Language" x:Name="Language" AutomationId="Language" TextColor="White" FontSize="14">
                     <tabView:SfTabItem.Content>
-                        <Grid BackgroundColor="Transparent">
+                        <Grid BackgroundColor="#EFFFEF">
+                            <configuration:LanguageComponent/>
                         </Grid>
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
