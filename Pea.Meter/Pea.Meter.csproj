@@ -122,6 +122,9 @@
 	  <MauiXaml Update="View\Statistics\MeterReadingsDailyView.xaml">
 	    <SubType>Designer</SubType>
 	  </MauiXaml>
+	  <MauiXaml Update="Popup\ConfigurationPopup.xaml">
+	    <SubType>Designer</SubType>
+	  </MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -139,6 +142,10 @@
 	  </Compile>
 	  <Compile Update="View\Statistics\MeterReadingsDailyView.xaml.cs">
 	    <DependentUpon>MeterReadingsDailyView.xaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Popup\ConfigurationPopup.xaml.cs">
+	    <DependentUpon>ConfigurationPopup.xaml</DependentUpon>
 	    <SubType>Code</SubType>
 	  </Compile>
 	</ItemGroup>

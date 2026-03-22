@@ -5,6 +5,7 @@ using CommunityToolkit.Maui.Extensions;
 using Microsoft.Extensions.Logging;
 using Pea.Meter.Popup;
 using Pea.Meter.Services;
+using Syncfusion.Maui.Core;
 
 namespace Pea.Meter.Components;
 
@@ -12,6 +13,8 @@ public partial class ToolbarComponent : ContentView
 {
     private readonly ILogger<ToolbarComponent> logger;
     private readonly IPopupService popupService;
+    private bool isProcessingQuit;
+    private bool isProcessingonfiguration;
 
     public static readonly BindableProperty Button1ImageSourceProperty =
         BindableProperty.Create(nameof(Button1ImageSource), typeof(ImageSource), typeof(ToolbarComponent), null);
@@ -70,7 +73,7 @@ public partial class ToolbarComponent : ContentView
     public ToolbarComponent()
     {
         InitializeComponent();
-        
+
         popupService = AppService.GetRequiredService<IPopupService>();
         logger = AppService.GetRequiredService<ILogger<ToolbarComponent>>();
     }
@@ -79,6 +82,11 @@ public partial class ToolbarComponent : ContentView
     {
         try
         {
+            if (isProcessingQuit)
+                return;
+
+            isProcessingQuit = true;
+
             var popup = new QuitPopup(
                 message: "Quit Current Session?",
                 yesText: "Yes, I'm done for today",
@@ -88,22 +96,113 @@ public partial class ToolbarComponent : ContentView
             {
                 CanBeDismissedByTappingOutsideOfPopup = false
             };
-            
+
             var popupResult = await Window?.Page?.ShowPopupAsync<bool>(popup, popupOptions, CancellationToken.None)!;
-         
-            if (popupResult.Result is true)
+
+            if (popupResult.Result)
             {
                 Application.Current?.Quit();
             }
-            else
-            {
-                // User clicked "Discard"
-            }
-
         }
         catch (Exception exception)
         {
             logger.LogError(exception, "Error occurred while handling quit popup result");
+        }
+        finally
+        {
+            isProcessingQuit = false;
+            EffectsViewQuit.Reset();
+        }
+    }
+
+    private void OnLanguageTapped(object? sender, TappedEventArgs e)
+    {
+        try
+        {
+        }
+        finally
+        {
+            // EffectsViewLanguage.IsSelected = !EffectsViewQuit.IsSelected;
+            EffectsViewLanguage.Reset();
+        }
+    }
+
+    private async void OnConfigurationTapped(object? sender, TappedEventArgs e)
+    {
+        try
+        {
+            if (isProcessingonfiguration)
+                return;
+
+            isProcessingonfiguration = true;
+
+            var popup = new ConfigurationPopup();
+
+            var popupOptions = new PopupOptions
+            {
+                CanBeDismissedByTappingOutsideOfPopup = false
+            };
+
+            var popupResult = await Window?.Page?.ShowPopupAsync<bool>(popup, popupOptions, CancellationToken.None)!;
+
+            if (popupResult.Result)
+            {
+            }
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error occurred while handling quit popup result");
+        }
+        finally
+        {
+            isProcessingonfiguration = false;
+            EffectsViewConfiguration.Reset();
+        }
+    }
+
+    private void EffectSelectionChanged(object? sender, EventArgs e)
+    {
+        // if (sender != null)
+        // {
+        //     var effectsView = (SfEffectsView)sender;
+        //
+        //     if (effectsView.IsSelected)
+        //     {
+        //         effectsView.ScaleFactor = 1.0;
+        //         effectsView.TouchUpEffects = SfEffects.None;
+        //         effectsView.TouchDownEffects = SfEffects.Scale;
+        //         effectsView.ScaleAnimationDuration = 250;
+        //     }
+        //     else
+        //     {
+        //         effectsView.ScaleFactor = 0.85;
+        //         effectsView.TouchDownEffects = SfEffects.Scale;
+        //         effectsView.TouchUpEffects = SfEffects.None;
+        //         effectsView.ScaleAnimationDuration = 250;
+        //     }
+        // }
+    }
+
+    private void EffectsViewQuit_OnAnimationCompleted(object? sender, EventArgs e)
+    {
+        if (sender != null)
+        {
+            var effectsView = (SfEffectsView)sender;
+
+            // if (effectsView.IsSelected)
+            // {
+            //     effectsView.ScaleFactor = 1.0;
+            //     effectsView.TouchUpEffects = SfEffects.None;
+            //     effectsView.TouchDownEffects = SfEffects.Scale;
+            //     effectsView.ScaleAnimationDuration = 250;
+            // }
+            // else
+            // {
+            //     effectsView.ScaleFactor = 0.85;
+            //     effectsView.TouchDownEffects = SfEffects.Scale;
+            //     effectsView.TouchUpEffects = SfEffects.None;
+            //     effectsView.ScaleAnimationDuration = 250;
+            // }
         }
     }
 }

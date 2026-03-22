@@ -7,7 +7,7 @@
              x:Name="Root">
 
     <ContentView.Resources>
-        <Style x:Key="IconBorderStyle" TargetType="Border">
+        <Style x:Key="IconBorderStyleForDesktop" TargetType="Border">
             <Setter Property="Padding" Value="8,4" />
             <Setter Property="StrokeThickness" Value="0" />
             <Setter Property="StrokeShape">
@@ -37,35 +37,110 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="IconBorderStyleForPad" TargetType="sfEffects:SfEffectsView">
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="Angle" Value="360" />
+            <Setter Property="TouchDownEffects" Value="Rotation" />
+            <Setter Property="ScaleAnimationDuration" Value="350" />
+        </Style>
     </ContentView.Resources>
 
-    <Grid>
+    <Grid Padding="8,4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Style="{StaticResource IconBorderStyle}">
-            <Label Text="&#xf013;"
-                   ToolTipProperties.Text="Configuration"
-                   Style="{StaticResource IconLabel}" />
-        </Border>
+        <ContentView Grid.Column="0">
+            <OnIdiom x:TypeArguments="View">
+                <OnIdiom.Tablet>
+                    <sfEffects:SfEffectsView
+                        x:Name="EffectsViewConfiguration"
+                        Style="{StaticResource IconBorderStyleForPad}"
+                        >
+                        <sfEffects:SfEffectsView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnConfigurationTapped" />
+                        </sfEffects:SfEffectsView.GestureRecognizers>
+                        <Label Text="&#xf013;"
+                               Margin="6, 8"
+                               InputTransparent="True"
+                               ToolTipProperties.Text="Configuration"
+                               Style="{StaticResource IconLabel}" />
+                    </sfEffects:SfEffectsView>
+                </OnIdiom.Tablet>
+                <OnIdiom.Desktop>
+                    <Border Style="{StaticResource IconBorderStyleForDesktop}">
+                        <Label Text="&#xf013;"
+                               ToolTipProperties.Text="Configuration"
+                               Style="{StaticResource IconLabel}" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnConfigurationTapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </OnIdiom.Desktop>
+            </OnIdiom>
+        </ContentView>
 
-        <Border Grid.Column="1" Style="{StaticResource IconBorderStyle}">
-            <Label Text="&#xf57d;"
-                   ToolTipProperties.Text="Language"
-                   Style="{StaticResource IconLabel}" />
-        </Border>
 
-        <Border Grid.Column="2" Style="{StaticResource IconBorderStyle}" Margin="32,0,0,0">
-            <Label Text="&#xf2f5;"
-                   ToolTipProperties.Text="Quit"
-                   Style="{StaticResource IconLabel}" />
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnQuitTapped" />
-            </Border.GestureRecognizers>
-        </Border>
+        <ContentView Grid.Column="1">
+            <OnIdiom x:TypeArguments="View">
+                <OnIdiom.Desktop>
+                    <Border Style="{StaticResource IconBorderStyleForDesktop}">
+                        <Label Text="&#xf57d;"
+                               ToolTipProperties.Text="Language"
+                               Style="{StaticResource IconLabel}" />
+                    </Border>
+                </OnIdiom.Desktop>
+                <OnIdiom.Tablet>
+                    <sfEffects:SfEffectsView
+                        x:Name="EffectsViewLanguage"
+                        Style="{StaticResource IconBorderStyleForPad}"
+                        >
+                        <sfEffects:SfEffectsView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLanguageTapped" />
+                        </sfEffects:SfEffectsView.GestureRecognizers>
+                        <Label Text="&#xf57d;"
+                               Margin="6, 8"
+                               InputTransparent="True"
+                               ToolTipProperties.Text="Language"
+                               Style="{StaticResource IconLabel}" />
+                    </sfEffects:SfEffectsView>
+                </OnIdiom.Tablet>
+            </OnIdiom>
+        </ContentView>
+
+        <ContentView Grid.Column="2" Margin="32,0,0,0">
+            <OnIdiom x:TypeArguments="View">
+                <OnIdiom.Desktop>
+                    <Border Style="{StaticResource IconBorderStyleForDesktop}">
+                        <Label Text="&#xf2f5;"
+                               ToolTipProperties.Text="Quit"
+                               Style="{StaticResource IconLabel}" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnQuitTapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </OnIdiom.Desktop>
+                <OnIdiom.Tablet>
+                    <sfEffects:SfEffectsView
+                        x:Name="EffectsViewQuit"
+                        AnimationCompleted="EffectsViewQuit_OnAnimationCompleted"
+                        Style="{StaticResource IconBorderStyleForPad}"
+                        >
+                        <sfEffects:SfEffectsView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnQuitTapped" />
+                        </sfEffects:SfEffectsView.GestureRecognizers>
+                        <Label
+                            Text="&#xf2f5;"
+                            InputTransparent="True"
+                            ToolTipProperties.Text="Quit"
+                            Style="{StaticResource IconLabel}" />
+                    </sfEffects:SfEffectsView>
+                </OnIdiom.Tablet>
+            </OnIdiom>
+        </ContentView>
 
     </Grid>
 </ContentView>
