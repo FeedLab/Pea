@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:core="http://schemas.syncfusion.com/maui"
+    x:TypeArguments="system:Boolean"
+    x:Class="Pea.Meter.Popup.QuitPopup">
+
+    <Grid
+        Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Image
+            Grid.Row="0"
+            Margin="-20"
+            Grid.RowSpan="2"
+            WidthRequest="500"
+            HeightRequest="200"
+            Source="quit_background.png" Aspect="Fill" Opacity="0.6" />
+
+        <Label
+            Grid.Row="0"
+            Margin="0,2,0,0"
+            TextColor="#002684"
+            Text="{Binding Message}"
+            FontSize="34"
+            FontAttributes="Bold"
+            FontFamily="OpenSansSemibold"
+            VerticalOptions="Start"
+            HorizontalOptions="Center" />
+
+        <HorizontalStackLayout
+            Grid.Row="1"
+            Spacing="20"
+            Margin="0,0,0,16"
+            VerticalOptions="Center"
+            HorizontalOptions="Center">
+            <core:SfEffectsView TouchDownEffects="Ripple">
+                <button:SfButton Text="{Binding YesText}" Background="#EFE1E1" TextColor="#002684" Stroke="DarkRed"
+                                 StrokeThickness="4" CornerRadius="15" Clicked="OnYes" />
+            </core:SfEffectsView>
+
+            <core:SfEffectsView TouchDownEffects="Ripple">
+                <button:SfButton Text="{Binding NoText}" Background="#EFFFEF" TextColor="#002684" Stroke="DarkGreen"
+                                 StrokeThickness="4" CornerRadius="15" Clicked="OnNo" />
+            </core:SfEffectsView>
+        </HorizontalStackLayout>
+    </Grid>
+
+
+</toolkit:Popup>

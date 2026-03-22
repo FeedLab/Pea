@@ -1,9 +1,18 @@
 using System.Windows.Input;
+using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Extensions;
+using Microsoft.Extensions.Logging;
+using Pea.Meter.Popup;
+using Pea.Meter.Services;
 
 namespace Pea.Meter.Components;
 
 public partial class ToolbarComponent : ContentView
 {
+    private readonly ILogger<ToolbarComponent> logger;
+    private readonly IPopupService popupService;
+
     public static readonly BindableProperty Button1ImageSourceProperty =
         BindableProperty.Create(nameof(Button1ImageSource), typeof(ImageSource), typeof(ToolbarComponent), null);
 
@@ -61,10 +70,40 @@ public partial class ToolbarComponent : ContentView
     public ToolbarComponent()
     {
         InitializeComponent();
+        
+        popupService = AppService.GetRequiredService<IPopupService>();
+        logger = AppService.GetRequiredService<ILogger<ToolbarComponent>>();
     }
 
-    private void OnQuitTapped(object sender, EventArgs e)
+    private async void OnQuitTapped(object sender, EventArgs e)
     {
-        Application.Current?.Quit();
+        try
+        {
+            var popup = new QuitPopup(
+                message: "Quit Current Session?",
+                yesText: "Yes, I'm done for today",
+                noText: "No, it was my FAT fingers");
+
+            var popupOptions = new PopupOptions
+            {
+                CanBeDismissedByTappingOutsideOfPopup = false
+            };
+            
+            var popupResult = await Window?.Page?.ShowPopupAsync<bool>(popup, popupOptions, CancellationToken.None)!;
+         
+            if (popupResult.Result is true)
+            {
+                Application.Current?.Quit();
+            }
+            else
+            {
+                // User clicked "Discard"
+            }
+
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error occurred while handling quit popup result");
+        }
     }
 }

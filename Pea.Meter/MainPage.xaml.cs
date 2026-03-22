@@ -12,6 +12,7 @@ namespace Pea.Meter
         private readonly IAuthData? authData;
         private readonly CustomerProfileViewModel customerProfile;
         private readonly StorageService storageService;
+        private bool hasAppeared;
 
         public MainPage()
         {
@@ -76,6 +77,11 @@ namespace Pea.Meter
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            if (hasAppeared)
+                return;
+
+            hasAppeared = true;
 
             if (storageService.IsAuthenticated)
             {
