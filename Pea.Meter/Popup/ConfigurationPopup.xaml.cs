@@ -96,4 +96,8 @@ public partial class ConfigurationPopup : Popup<bool>
         
         return image;
     }
+
+    private void OnHeaderTapped(object? sender, TappedEventArgs e)
+    {
+    }
 }

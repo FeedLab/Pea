@@ -3,36 +3,114 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:sliders="http://schemas.syncfusion.com/maui"
-             x:Class="Pea.Meter.Components.Configuration.TariffComponent">
+             xmlns:components="clr-namespace:Pea.Meter.Components"
+             x:Class="Pea.Meter.Components.Configuration.TariffComponent"
+             x:Name="This">
 
-    <Grid
-        BackgroundColor="DarkOliveGreen"
-        HorizontalOptions="Fill"
-        VerticalOptions="Fill">
-        
-        <sliders:SfSlider x:Name="slider"
-                          Margin="24,0"
-                          WidthRequest="222"
-                          BackgroundColor="Aqua"
-                          HorizontalOptions="Start"
-                          VerticalOptions="Start"
-                          Minimum="2.0"
-                          Maximum="3.0"
-                          Value="2.64"
-                          StepSize="0.01">
+    <ScrollView Padding="0,0,16,0">
+        <VerticalStackLayout
+            HorizontalOptions="Fill"
+            VerticalOptions="Start">
 
-            <sliders:SfSlider.ThumbStyle>
-                <sliders:SliderThumbStyle Radius="19" Fill="Red" />
-            </sliders:SfSlider.ThumbStyle>
+            <components:SwitchComponent
+                LabelText="Type Of Tariff"
+                IsOn="{Binding Source={x:Reference This}, Path=TariffConfiguration.IsTariffTypeTimeOfUse}"
+                TextWhenOn="Time Of Use"
+                TextWhenOff="FlatRate" />
 
-            <sliders:SfSlider.ThumbIcon>
-                <VerticalStackLayout>
-                    <HorizontalStackLayout>
-                        <Label Margin="16" Text="{Binding Source={x:Reference slider}, Path=Value}" TextColor="Black"
-                               x:DataType="sliders:SfSlider" />
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </sliders:SfSlider.ThumbIcon>
-        </sliders:SfSlider>
-    </Grid>
+
+            <components:SliderComponent
+                LabelText="FlatRate Price"
+                Minimum="3.5"
+                Maximum="4.5"
+                Value="{Binding Source={x:Reference This}, Path=TariffConfiguration.FlatRatePrice}"
+                StepSize="0.01"
+                Interval="0.25"
+                NumberFormat="0.00"
+                ThumbColor="#C2FFFF" />
+
+            <components:SliderComponent
+                LabelText="Peak Price"
+                Minimum="4.75"
+                Maximum="6.0"
+                Value="{Binding Source={x:Reference This}, Path=TariffConfiguration.PeekPrice}"
+                StepSize="0.01"
+                Interval="0.25"
+                NumberFormat="0.00"
+                ThumbColor="Red" />
+
+            <components:SliderComponent
+                LabelText="OffPeak Price"
+                Minimum="2.0"
+                Maximum="3.0"
+                Value="{Binding Source={x:Reference This}, Path=TariffConfiguration.OffPeekPrice}"
+                StepSize="0.01"
+                Interval="0.25"
+                NumberFormat="0.00"
+                ThumbColor="Green" />
+
+
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+    <!-- <Border -->
+    <!--     HorizontalOptions="Start" -->
+    <!--     VerticalOptions="Start" -->
+    <!--     Stroke="LightGray" -->
+    <!--     StrokeThickness="0" -->
+    <!--     BackgroundColor="White" -->
+    <!--     WidthRequest="380" -->
+    <!--     Margin="8" -->
+    <!--     StrokeShape="RoundRectangle 8"> -->
+    <!--     <Border.Shadow> -->
+    <!--         <Shadow Brush="Black" -->
+    <!--                 Offset="5,5" -->
+    <!--                 Radius="8" -->
+    <!--                 Opacity="0.5" /> -->
+    <!--     </Border.Shadow> -->
+    <!--     <Grid -->
+    <!--         HorizontalOptions="Start" -->
+    <!--         VerticalOptions="Start"> -->
+    <!--         <Grid.RowDefinitions> -->
+    <!--             <RowDefinition Height="Auto"></RowDefinition> -->
+    <!--             <RowDefinition Height="*"></RowDefinition> -->
+    <!--         </Grid.RowDefinitions> -->
+    <!-- -->
+    <!--         <Label  -->
+    <!--             Margin="12,8,0,0" -->
+    <!--             Grid.Row="0" Text="OffPeek Price" /> -->
+    <!-- -->
+    <!--         <sliders:SfSlider -->
+    <!--             x:Name="Slider" -->
+    <!--             Grid.Row="1" -->
+    <!--             Margin="8,8" -->
+    <!--             HorizontalOptions="Fill" -->
+    <!--             VerticalOptions="Start" -->
+    <!--             NumberFormat="0.00" -->
+    <!--             EdgeLabelsPlacement="Default" -->
+    <!--             Interval="0.25" -->
+    <!--             ShowLabels="True" -->
+    <!--             ShowTicks="True" -->
+    <!--             Minimum="2.0" -->
+    <!--             Maximum="3.0" -->
+    <!--             Value="2.64" -->
+    <!--             StepSize="0.01"> -->
+    <!-- -->
+    <!--             <sliders:SfSlider.ThumbStyle> -->
+    <!--                 <sliders:SliderThumbStyle Radius="19" Fill="Red" /> -->
+    <!--             </sliders:SfSlider.ThumbStyle> -->
+    <!-- -->
+    <!--             <sliders:SfSlider.ThumbIcon> -->
+    <!--                 <VerticalStackLayout> -->
+    <!--                     <HorizontalStackLayout> -->
+    <!--                         <Label Margin="16" Text="{Binding Source={x:Reference Slider}, Path=Value}" -->
+    <!--                                TextColor="Black" -->
+    <!--                                x:DataType="sliders:SfSlider" /> -->
+    <!--                     </HorizontalStackLayout> -->
+    <!--                 </VerticalStackLayout> -->
+    <!--             </sliders:SfSlider.ThumbIcon> -->
+    <!--         </sliders:SfSlider> -->
+    <!--     </Grid> -->
+    <!-- </Border> -->
 </ContentView>

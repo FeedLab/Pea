@@ -111,6 +111,11 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                 .OrderBy(o => o.Date.Month)
                 .ToList();
 
+            if (!last12FullOrderedMonths.Any())
+            {
+                return;
+            }
+
             var numberOfDaysInPeriod = last12FullOrderedMonths.Sum(s => s.GetBuckets().Count);
 
             var yearlyConsumptionPeekKw = last12FullOrderedMonths.Sum(s => s.MeterDataUsageInKw.PeekUsage);

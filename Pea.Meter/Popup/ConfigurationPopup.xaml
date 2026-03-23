@@ -13,7 +13,6 @@
     x:Class="Pea.Meter.Popup.ConfigurationPopup">
 
     <Grid
-        WidthRequest="1100"
         Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -26,41 +25,56 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        
+
         <Label
             Grid.Row="0"
             Grid.Column="1"
-            Grid.ColumnSpan="1"
             Margin="0,2,0,0"
             TextColor="#002684"
             Text="{Binding Header}"
             FontSize="34"
             FontAttributes="Bold"
             FontFamily="OpenSansSemibold"
-            VerticalOptions="Start"
-            HorizontalOptions="Center" />
-        
+            HorizontalOptions="Center"
+            VerticalOptions="Start">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnHeaderTapped" />
+            </Label.GestureRecognizers>
+        </Label>
+
         <Grid
             Grid.Row="0"
             Grid.Column="0"
             Margin="0"
-            Grid.RowSpan="2">
+            Grid.RowSpan="2"
+            WidthRequest="500"
+            HeightRequest="500"
+            BackgroundColor="AliceBlue"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill">
+            <Grid.Shadow>
+                <Shadow Brush="Black"
+                Offset="5,5"
+                Radius="8"
+                Opacity="0.5" />
+            </Grid.Shadow>
+            
             <Image
                 x:Name="TariffImage"
-                WidthRequest="500"
-                HeightRequest="500"
                 Source="config_tariff.png"
-                Aspect="Fill"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                Aspect="AspectFit"
                 Opacity="0.85" />
             <Image
                 x:Name="LanguageImage"
-                WidthRequest="500"
-                HeightRequest="500"
-                Source="config_language.png"
-                Aspect="Fill"
-                Opacity="0" />
-        </Grid>
 
+                Source="config_language.png"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                Aspect="AspectFit"
+                Opacity="0.0" />
+        </Grid>
 
 
         <tabView:SfTabView
@@ -68,29 +82,36 @@
             Grid.Row="1"
             Grid.Column="1"
             Margin="0,0"
-            EnableSwiping="True"
+            WidthRequest="500"
+            HeightRequest="450"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            EnableSwiping="False"
             TabBarPlacement="Bottom"
             TabWidthMode="SizeToContent"
             TabBarBackground="#CC000000"
             IndicatorBackground="#4CAF50"
             SelectionChanged="TabView_OnSelectionChanged">
             <tabView:SfTabView.Items>
-                <tabView:SfTabItem Header="Tariff" x:Name="Tariff" AutomationId="Tariff" TextColor="White" FontSize="14">
+                <tabView:SfTabItem Header="Tariff" x:Name="Tariff" AutomationId="Tariff" TextColor="White"
+                                   FontSize="14">
                     <tabView:SfTabItem.Content>
-                        <Grid BackgroundColor="#EFFFEF"
+                        <Grid BackgroundColor="Transparent"
                               HorizontalOptions="Fill"
                               VerticalOptions="Fill">
                             <configuration:TariffComponent
+                                Margin="16,0,8,0"
                                 HorizontalOptions="Fill"
-                                VerticalOptions="Fill"/>
+                                VerticalOptions="Fill" />
                         </Grid>
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="Language" x:Name="Language" AutomationId="Language" TextColor="White" FontSize="14">
+                <tabView:SfTabItem Header="Language" x:Name="Language" AutomationId="Language" TextColor="White"
+                                   FontSize="14">
                     <tabView:SfTabItem.Content>
-                        <Grid BackgroundColor="#EFFFEF">
-                            <configuration:LanguageComponent/>
+                        <Grid BackgroundColor="Transparent">
+                            <configuration:LanguageComponent />
                         </Grid>
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
