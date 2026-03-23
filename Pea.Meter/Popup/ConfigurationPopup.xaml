@@ -17,7 +17,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -42,6 +41,18 @@
             </Label.GestureRecognizers>
         </Label>
 
+        <HorizontalStackLayout
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="0,0,0,0"
+            VerticalOptions="Center"
+            HorizontalOptions="End">
+            <core:SfEffectsView TouchDownEffects="Ripple">
+                <button:SfButton Text="Close" Background="#EFFFEF" TextColor="#002684" Stroke="DarkGreen"
+                                 StrokeThickness="4" CornerRadius="15" Clicked="OnClose" />
+            </core:SfEffectsView>
+        </HorizontalStackLayout>
+
         <Grid
             Grid.Row="0"
             Grid.Column="0"
@@ -54,11 +65,11 @@
             VerticalOptions="Fill">
             <Grid.Shadow>
                 <Shadow Brush="Black"
-                Offset="5,5"
-                Radius="8"
-                Opacity="0.5" />
+                        Offset="5,5"
+                        Radius="8"
+                        Opacity="0.5" />
             </Grid.Shadow>
-            
+
             <Image
                 x:Name="TariffImage"
                 Source="config_tariff.png"
@@ -77,60 +88,50 @@
         </Grid>
 
 
-        <tabView:SfTabView
-            x:Name="TabView"
+        <Grid
             Grid.Row="1"
             Grid.Column="1"
-            Margin="0,0"
-            WidthRequest="500"
-            HeightRequest="450"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill"
-            EnableSwiping="False"
-            TabBarPlacement="Bottom"
-            TabWidthMode="SizeToContent"
-            TabBarBackground="#CC000000"
-            IndicatorBackground="#4CAF50"
-            SelectionChanged="TabView_OnSelectionChanged">
-            <tabView:SfTabView.Items>
-                <tabView:SfTabItem Header="Tariff" x:Name="Tariff" AutomationId="Tariff" TextColor="White"
-                                   FontSize="14">
-                    <tabView:SfTabItem.Content>
-                        <Grid BackgroundColor="Transparent"
-                              HorizontalOptions="Fill"
-                              VerticalOptions="Fill">
-                            <configuration:TariffComponent
-                                Margin="16,0,8,0"
-                                HorizontalOptions="Fill"
-                                VerticalOptions="Fill" />
-                        </Grid>
-                    </tabView:SfTabItem.Content>
-                </tabView:SfTabItem>
+            >
+            <tabView:SfTabView
+                x:Name="TabView"
+                Margin="0,0"
+                WidthRequest="500"
+                HeightRequest="450"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                EnableSwiping="False"
+                TabBarPlacement="Bottom"
+                TabWidthMode="SizeToContent"
+                TabBarBackground="#CC000000"
+                IndicatorBackground="#4CAF50"
+                SelectionChanged="TabView_OnSelectionChanged">
+                <tabView:SfTabView.Items>
+                    <tabView:SfTabItem Header="Tariff" x:Name="Tariff" AutomationId="Tariff" TextColor="White"
+                                       FontSize="14">
+                        <tabView:SfTabItem.Content>
+                            <Grid BackgroundColor="Transparent"
+                                  HorizontalOptions="Fill"
+                                  VerticalOptions="Fill">
+                                <configuration:TariffComponent
+                                    Margin="16,0,8,0"
+                                    HorizontalOptions="Fill"
+                                    VerticalOptions="Fill" />
+                            </Grid>
+                        </tabView:SfTabItem.Content>
+                    </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="Language" x:Name="Language" AutomationId="Language" TextColor="White"
-                                   FontSize="14">
-                    <tabView:SfTabItem.Content>
-                        <Grid BackgroundColor="Transparent">
-                            <configuration:LanguageComponent />
-                        </Grid>
-                    </tabView:SfTabItem.Content>
-                </tabView:SfTabItem>
+                    <tabView:SfTabItem Header="Language" x:Name="Language" AutomationId="Language" TextColor="White"
+                                       FontSize="14">
+                        <tabView:SfTabItem.Content>
+                            <Grid BackgroundColor="Transparent">
+                                <configuration:LanguageComponent />
+                            </Grid>
+                        </tabView:SfTabItem.Content>
+                    </tabView:SfTabItem>
 
-            </tabView:SfTabView.Items>
-        </tabView:SfTabView>
-
-        <HorizontalStackLayout
-            Grid.Row="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="0,12,0,0"
-            VerticalOptions="Center"
-            HorizontalOptions="End">
-            <core:SfEffectsView TouchDownEffects="Ripple">
-                <button:SfButton Text="Close" Background="#EFFFEF" TextColor="#002684" Stroke="DarkGreen"
-                                 StrokeThickness="4" CornerRadius="15" Clicked="OnClose" />
-            </core:SfEffectsView>
-        </HorizontalStackLayout>
+                </tabView:SfTabView.Items>
+            </tabView:SfTabView>
+        </Grid>
     </Grid>
 
 

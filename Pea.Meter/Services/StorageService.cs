@@ -25,15 +25,18 @@ public partial class StorageService : ObservableObject
     [ObservableProperty] private ObservableCollection<PeaMeterReading> weeklyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> monthlyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyPeriodReadings = [];
+    
+    [ObservableProperty] private ConfigurationTariffModel configurationTariffModel;
+    [ObservableProperty] private ConfigurationLanguageModel configurationLanguageModel;
+
     private readonly ILogger logger;
     private readonly PeaDbContextFactory dbContextFactory;
     private readonly PeaAdapter peaAdapter;
     private CancellationTokenSource? cancellationTokenSource;
     private Timer? backgroundTimer;
     private DateTime currentDay = DateTime.MinValue; // MinValue - Will trigger a new day on the first run
-    private Timer backgroundTimerNewDay;
+    private Timer? backgroundTimerNewDay;
     private CancellationTokenSource newDayCancellationTokenSource;
-
     public bool IsAuthenticated { get; set; }
 
     public StorageService(ILogger<StorageService> logger, PeaDbContextFactory dbContextFactory, PeaAdapter peaAdapter)
@@ -41,7 +44,12 @@ public partial class StorageService : ObservableObject
         this.logger = logger;
         this.dbContextFactory = dbContextFactory;
         this.peaAdapter = peaAdapter;
+        
+        ConfigurationTariffModel = ConfigurationTariffModel.Load();
+        ConfigurationLanguageModel = ConfigurationLanguageModel.Load();
 
+        newDayCancellationTokenSource = new CancellationTokenSource();
+        
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this, async void (r, m) =>
         {
             try

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:buttons="http://schemas.syncfusion.com/maui"
+        x:Class="Pea.Meter.Components.Configuration.LanguageItemComponent"
+        Stroke="Black"
+        Background="White"
+        StrokeThickness="1"
+        Padding="5"
+        Margin="5,10">
+    
+    <Border.Triggers>
+        <Trigger TargetType="Border" Property="IsEnabled" Value="False">
+            <Setter Property="Opacity" Value="0.35" />
+        </Trigger>
+    </Border.Triggers>
+    <Border.Shadow>
+        <Shadow Brush="Black"
+                Offset="5,5"
+                Radius="8"
+                Opacity="0.5" />
+    </Border.Shadow>
+    <Border.StrokeShape>
+        <RoundRectangle CornerRadius="5" />
+    </Border.StrokeShape>
+    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+        <Image x:Name="FlagImage" Grid.Column="0" WidthRequest="44" HeightRequest="44"
+               VerticalOptions="Center" />
+        <buttons:SfRadioButton x:Name="RadioButton" Grid.Column="1" EnabledAnimation="True"
+                               VerticalOptions="Center" />
+    </Grid>
+</Border>

@@ -1,7 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:buttons="http://schemas.syncfusion.com/maui"
+             xmlns:local="clr-namespace:Pea.Meter.Components.Configuration"
              x:Class="Pea.Meter.Components.Configuration.LanguageComponent">
-    
+
+    <ScrollView Margin="16,0,16,0">
+        <VerticalStackLayout Margin="16,10,16,0" x:Name="LanguageSelector">
+
+            <local:LanguageItemComponent FlagSource="gb.png" LanguageName="English" LanguageValue="English"
+                                          IsEnabled="True" StateChanged="OnLanguageTapped" />
+
+            <local:LanguageItemComponent FlagSource="th.png" LanguageName="Thai" LanguageValue="Thai"
+                                         IsEnabled="True" StateChanged="OnLanguageTapped" />
+            
+            <local:LanguageItemComponent FlagSource="se.png" LanguageName="Swedish" LanguageValue="Swedish"
+                                          IsEnabled="False" StateChanged="OnLanguageTapped" />
+            
+            <local:LanguageItemComponent FlagSource="de.png" LanguageName="German" LanguageValue="German"
+                                          IsEnabled="False" StateChanged="OnLanguageTapped" />
+
+            <local:LanguageItemComponent FlagSource="fr.png" LanguageName="French" LanguageValue="French"
+                                          IsEnabled="False" StateChanged="OnLanguageTapped" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentView>
