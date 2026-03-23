@@ -19,6 +19,10 @@ Pea is a mobile application built with .NET MAUI (Multi-platform App UI) that he
 - **Serilog** - Logging framework
 - **HtmlAgilityPack** - HTML parsing
 
+
+## Location for country flags
+https://github.com/lipis/flag-icons/blob/main/flags/4x3/fr.svg
+
 ## Project Structure
 
 ```
