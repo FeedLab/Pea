@@ -59,8 +59,8 @@
             <sliders:SfSlider.ThumbIcon>
                 <VerticalStackLayout>
                     <HorizontalStackLayout>
-                        <Label Margin="16"
-                               Text="{Binding Source={x:Reference Slider}, Path=Value, StringFormat='{0:0.00}'}"
+                        <Label Margin="18"
+                               Text="{Binding Source={x:Reference Slider}, Path=Value, StringFormat='{Binding ThumbNumberFormat, Source={x:Reference Root}}'}"
                                TextColor="Black"
                                x:DataType="sliders:SfSlider" />
                     </HorizontalStackLayout>

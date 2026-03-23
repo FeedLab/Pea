@@ -26,6 +26,7 @@ public partial class ConfigurationTariffModel : ObservableObject
     [ObservableProperty] private decimal flatRatePrice;
     [ObservableProperty] private decimal peekPrice;
     [ObservableProperty] private decimal offPeekPrice;
+    [ObservableProperty] private int invoiceDayInMonth;
 
     private readonly ILogger<ConfigurationTariffModel> logger;
     private static bool isLoadingConfiguration;
@@ -34,6 +35,7 @@ public partial class ConfigurationTariffModel : ObservableObject
     {
         logger = AppService.GetRequiredService<ILogger<ConfigurationTariffModel>>();
 
+        InvoiceDayInMonth = 26;
         IsTariffTypeTimeOfUse = false;
         FlatRatePrice = 3.89m;
         OffPeekPrice = 2.64m;
@@ -60,6 +62,11 @@ public partial class ConfigurationTariffModel : ObservableObject
         Save(this);
     }
 
+    partial void OnInvoiceDayInMonthChanged(int value)
+    {
+        Save(this);
+    }
+    
     private void Save(ConfigurationTariffModel configurationTariffModel)
     {
         try
@@ -74,7 +81,8 @@ public partial class ConfigurationTariffModel : ObservableObject
                 IsTariffTypeTimeOfUse = configurationTariffModel.IsTariffTypeTimeOfUse,
                 FlatRatePrice = configurationTariffModel.FlatRatePrice,
                 PeekPrice = configurationTariffModel.PeekPrice,
-                OffPeekPrice = configurationTariffModel.OffPeekPrice
+                OffPeekPrice = configurationTariffModel.OffPeekPrice,
+                InvoiceDayInMonth = configurationTariffModel.InvoiceDayInMonth
             };
             var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(SettingsFilePath, json);
@@ -105,7 +113,8 @@ public partial class ConfigurationTariffModel : ObservableObject
                     model.PeekPrice = peekPrice.GetDecimal();
                 if (data.TryGetProperty("OffPeekPrice", out var offPeekPrice))
                     model.OffPeekPrice = offPeekPrice.GetDecimal();
-
+                if (data.TryGetProperty("InvoiceDayInMonth", out var invoiceDayInMonth))
+                    model.InvoiceDayInMonth = invoiceDayInMonth.GetInt32();
                 return model;
             }
         }

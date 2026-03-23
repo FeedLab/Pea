@@ -94,7 +94,7 @@
             >
             <tabView:SfTabView
                 x:Name="TabView"
-                Margin="0,0"
+                Margin="8,0"
                 WidthRequest="500"
                 HeightRequest="450"
                 HorizontalOptions="Fill"

@@ -27,6 +27,7 @@
                 StepSize="0.01"
                 Interval="0.25"
                 NumberFormat="0.00"
+                ThumbNumberFormat="{}{0:N2}"
                 ThumbColor="#C2FFFF" />
 
             <components:SliderComponent
@@ -37,6 +38,7 @@
                 StepSize="0.01"
                 Interval="0.25"
                 NumberFormat="0.00"
+                ThumbNumberFormat="{}{0:N2}"
                 ThumbColor="Red" />
 
             <components:SliderComponent
@@ -47,9 +49,20 @@
                 StepSize="0.01"
                 Interval="0.25"
                 NumberFormat="0.00"
-                ThumbColor="Green" />
+                ThumbNumberFormat="{}{0:N2}"
+                ThumbColor="MediumSeaGreen" />
 
 
+            <components:SliderComponent
+                LabelText="Invoice Day (Day in month)"
+                Minimum="1"
+                Maximum="31"
+                Value="{Binding Source={x:Reference This}, Path=TariffConfiguration.InvoiceDayInMonth}"
+                StepSize="1"
+                Interval="5"
+                NumberFormat="0"
+                ThumbNumberFormat="{}{0:N0}"
+                ThumbColor="Coral" />
 
 
         </VerticalStackLayout>

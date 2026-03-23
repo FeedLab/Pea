@@ -25,6 +25,9 @@ public partial class SliderComponent : Border
     public static readonly BindableProperty NumberFormatProperty =
         BindableProperty.Create(nameof(NumberFormat), typeof(string), typeof(SliderComponent), "0.00");
 
+    public static readonly BindableProperty ThumbNumberFormatProperty =
+        BindableProperty.Create(nameof(ThumbNumberFormat), typeof(string), typeof(SliderComponent), "{}{0:N0}");
+    
     public static readonly BindableProperty ThumbColorProperty =
         BindableProperty.Create(nameof(ThumbColor), typeof(Color), typeof(SliderComponent), Colors.Red);
 
@@ -70,6 +73,12 @@ public partial class SliderComponent : Border
         set => SetValue(NumberFormatProperty, value);
     }
 
+    public string ThumbNumberFormat
+    {
+        get => (string)GetValue(ThumbNumberFormatProperty);
+        set => SetValue(ThumbNumberFormatProperty, value);
+    }
+    
     public Color ThumbColor
     {
         get => (Color)GetValue(ThumbColorProperty);

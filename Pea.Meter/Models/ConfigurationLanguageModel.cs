@@ -22,19 +22,12 @@ public partial class ConfigurationLanguageModel : ObservableObject
         }
     }
 
-    [ObservableProperty] private string selectedLanguage;
+    [ObservableProperty] private string? selectedLanguage;
 
-    private readonly ILogger<ConfigurationLanguageModel> logger;
+    private readonly ILogger<ConfigurationLanguageModel> logger = AppService.GetRequiredService<ILogger<ConfigurationLanguageModel>>();
     private static bool isLoadingConfiguration;
 
-    public ConfigurationLanguageModel()
-    {
-        logger = AppService.GetRequiredService<ILogger<ConfigurationLanguageModel>>();
-
-        SelectedLanguage = "English";
-    }
-
-    partial void OnSelectedLanguageChanged(string value)
+    partial void OnSelectedLanguageChanged(string? value)
     {
         Save(this);
     }
