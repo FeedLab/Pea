@@ -1,3 +1,4 @@
+using Pea.Meter.Models;
 using Syncfusion.Maui.Buttons;
 
 namespace Pea.Meter.Components.Configuration;
@@ -16,6 +17,15 @@ public partial class LanguageItemComponent : Border
     public static readonly BindableProperty IsCheckedProperty =
         BindableProperty.Create(nameof(IsChecked), typeof(bool), typeof(LanguageItemComponent), false, BindingMode.TwoWay, propertyChanged: OnIsCheckedChanged);
 
+    public static readonly BindableProperty CultureCodeProperty =
+        BindableProperty.Create(nameof(CultureCode), typeof(string), typeof(LanguageItemComponent), ConfigurationLanguageModel.DefaultCultureCode, BindingMode.TwoWay, propertyChanged: OnCultureCodeChanged);
+
+    public string CultureCode
+    {
+        get => (string)GetValue(CultureCodeProperty);
+        set => SetValue(CultureCodeProperty, value);
+    }   
+    
     public string FlagSource
     {
         get => (string)GetValue(FlagSourceProperty);
@@ -48,6 +58,14 @@ public partial class LanguageItemComponent : Border
         RadioButton.StateChanged += OnRadioButtonStateChanged;
     }
 
+    private static void OnCultureCodeChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is LanguageItemComponent component)
+        {
+            component.CultureCode = newValue as string;
+        }
+    }
+    
     private static void OnFlagSourceChanged(BindableObject bindable, object oldValue, object newValue)
     {
         if (bindable is LanguageItemComponent component)

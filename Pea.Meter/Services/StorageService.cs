@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
@@ -48,6 +49,9 @@ public partial class StorageService : ObservableObject
         ConfigurationTariffModel = ConfigurationTariffModel.Load();
         ConfigurationLanguageModel = ConfigurationLanguageModel.Load();
 
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(ConfigurationLanguageModel.CultureCode);
+        Thread.CurrentThread.CurrentCulture = new CultureInfo(ConfigurationLanguageModel.CultureCode);
+        
         newDayCancellationTokenSource = new CancellationTokenSource();
         
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this, async void (r, m) =>

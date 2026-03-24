@@ -98,6 +98,14 @@
 	<ItemGroup>
 		<EmbeddedResource Include="appsettings.json" />
 		<EmbeddedResource Include="appsettings.Development.json" />
+		<EmbeddedResource Update="Resources\Strings\AppResources.resx">
+		  <Generator>ResXFileCodeGenerator</Generator>
+		  <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\AppResources.se.resx">
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\AppResources.th.resx">
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -156,6 +164,15 @@
 	    <DependentUpon>PeaServicesView.xaml</DependentUpon>
 	    <SubType>Code</SubType>
 	  </Compile>
+	  <Compile Update="Resources\Strings\AppResources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>AppResources.resx</DependentUpon>
+	  </Compile>
 	</ItemGroup>
+
+	<PropertyGroup>
+		<NeutralLanguage>en</NeutralLanguage>
+	</PropertyGroup>
 
 </Project>

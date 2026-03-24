@@ -85,6 +85,9 @@ public partial class ToolbarComponent : ContentView
         if (storageService?.ConfigurationLanguageModel != null)
         {
             storageService.ConfigurationLanguageModel.PropertyChanged += OnLanguageModelPropertyChanged;
+
+            // Defer property change notification until after construction
+            MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(FlagSource)));
         }
         else
         {

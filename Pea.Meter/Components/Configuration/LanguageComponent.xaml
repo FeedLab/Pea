@@ -9,19 +9,19 @@
     <ScrollView Margin="16,0,16,0">
         <VerticalStackLayout Margin="16,10,16,0" x:Name="LanguageSelector">
 
-            <local:LanguageItemComponent FlagSource="gb.png" LanguageName="English" LanguageValue="English"
+            <local:LanguageItemComponent FlagSource="gb.png" CultureCode="gb" LanguageName="English" LanguageValue="English"
                                           IsEnabled="True" StateChanged="OnLanguageTapped" />
 
-            <local:LanguageItemComponent FlagSource="th.png" LanguageName="Thai" LanguageValue="Thai"
+            <local:LanguageItemComponent FlagSource="th.png" CultureCode="th" LanguageName="Thai" LanguageValue="Thai"
                                          IsEnabled="True" StateChanged="OnLanguageTapped" />
             
-            <local:LanguageItemComponent FlagSource="se.png" LanguageName="Swedish" LanguageValue="Swedish"
-                                          IsEnabled="False" StateChanged="OnLanguageTapped" />
+            <local:LanguageItemComponent FlagSource="se.png" CultureCode="se" LanguageName="Swedish" LanguageValue="Swedish"
+                                          IsEnabled="True" StateChanged="OnLanguageTapped" />
             
-            <local:LanguageItemComponent FlagSource="de.png" LanguageName="German" LanguageValue="German"
+            <local:LanguageItemComponent FlagSource="de.png" CultureCode="de" LanguageName="German" LanguageValue="German"
                                           IsEnabled="False" StateChanged="OnLanguageTapped" />
 
-            <local:LanguageItemComponent FlagSource="fr.png" LanguageName="French" LanguageValue="French"
+            <local:LanguageItemComponent FlagSource="fr.png" CultureCode="fr" LanguageName="French" LanguageValue="French"
                                           IsEnabled="False" StateChanged="OnLanguageTapped" />
 
         </VerticalStackLayout>

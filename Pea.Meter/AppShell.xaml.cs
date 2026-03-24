@@ -10,10 +10,13 @@ namespace Pea.Meter
         {
             InitializeComponent();
 
-            var storageService = AppService.Current.GetRequiredService<StorageService>();
-            var authDataOptions = AppService.Current.GetRequiredService<AuthDataOptions>();
-            var customerProfile = AppService.Current.GetRequiredService<CustomerProfileViewModel>();
-            var historicDataBackgroundService = AppService.Current.GetRequiredService<HistoricDataBackgroundService>();
+            // Set title from current culture
+            Title = Pea.Meter.Resources.Strings.AppResources.MainTitle;
+
+            var storageService = AppService.GetRequiredService<StorageService>();
+            var authDataOptions = AppService.GetRequiredService<AuthDataOptions>();
+            var customerProfile = AppService.GetRequiredService<CustomerProfileViewModel>();
+            var historicDataBackgroundService = AppService.GetRequiredService<HistoricDataBackgroundService>();
 
             var authData = authDataOptions.AuthData;
 

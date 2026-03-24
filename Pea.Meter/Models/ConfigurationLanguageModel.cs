@@ -10,6 +10,7 @@ public partial class ConfigurationLanguageModel : ObservableObject
     private static readonly string SettingsFilePath;
     public const string DefaultLanguage = "English";
     public const string DefaultLanguagePng = "gb.png";
+    public const string DefaultCultureCode = "gb";
 
     static ConfigurationLanguageModel()
     {
@@ -24,23 +25,50 @@ public partial class ConfigurationLanguageModel : ObservableObject
         }
     }
 
+
+
     [ObservableProperty] private string selectedLanguage = DefaultLanguage;
     [ObservableProperty] private string flagSource = DefaultLanguagePng;
+    [ObservableProperty] private string cultureCode = DefaultCultureCode;
 
     private readonly ILogger<ConfigurationLanguageModel> logger = AppService.GetRequiredService<ILogger<ConfigurationLanguageModel>>();
+    private bool canSave = true;
     private static bool isLoadingConfiguration;
 
     partial void OnSelectedLanguageChanged(string? value)
     {
         Save(this);
     }
-
-
-    private void Save(ConfigurationLanguageModel model)
+    
+    public void Save(string languageSelected, string codeOfCulture, string sourceFlag)
     {
         try
         {
-            if (isLoadingConfiguration)
+            canSave = false;
+
+            SelectedLanguage = languageSelected;
+            CultureCode = codeOfCulture;
+            FlagSource = sourceFlag;
+
+            canSave = true;
+            
+            Save(this);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, $"Failed to save language configuration: {ex.Message}");
+        }
+        finally
+        {
+            canSave = true;
+        }
+    }
+
+    private  void Save(ConfigurationLanguageModel model)
+    {
+        try
+        {
+            if (isLoadingConfiguration || !canSave)
             {
                 return;
             }
@@ -48,6 +76,7 @@ public partial class ConfigurationLanguageModel : ObservableObject
             var data = new
             {
                 SelectedLanguage = model.SelectedLanguage,
+                CultureCode = model.CultureCode,
                 FlagSource = model.FlagSource
             };
             var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
@@ -89,7 +118,15 @@ public partial class ConfigurationLanguageModel : ObservableObject
                 {
                     model.FlagSource = DefaultLanguagePng;
                 }
-                
+                             
+                if (data.TryGetProperty("CultureCode", out var cultureCode))
+                {
+                    model.CultureCode = cultureCode.GetString() ?? DefaultCultureCode;
+                }
+                else
+                {
+                    model.CultureCode = DefaultCultureCode;
+                }   
                 return model;
             }
         }

@@ -2,5 +2,5 @@
 <Values xmlns="urn:tom-englert.de/Configuration/1/0">
   <Value Key="SortFileContentOnSave">True</Value>
   <Value Key="PrefixTranslations">True</Value>
-  <Value Key="CultureCountyOverrides">se-sv</Value>
+  <Value Key="CultureCountyOverrides"></Value>
 </Values>
