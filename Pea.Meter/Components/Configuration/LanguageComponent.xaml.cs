@@ -49,6 +49,7 @@ public partial class LanguageComponent : ContentView
 
             oldLanguageItem = languageItem;
             LanguageConfiguration.SelectedLanguage = languageItem.LanguageValue;
+            LanguageConfiguration.FlagSource = languageItem.FlagSource;
         }
     }
 }

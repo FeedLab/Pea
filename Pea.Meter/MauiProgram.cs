@@ -67,7 +67,6 @@ namespace Pea.Meter
             builder.Services.AddSingleton<CustomerProfileViewModel>();
             builder.Services.AddSingleton<StatisticsViewModel>();
             builder.Services.AddSingleton<MeterReadingsHourViewModel>();
-            builder.Services.AddSingleton<PeaServicesViewModel>();
             builder.Services.AddSingleton<CustomerInfoViewModel>();
             builder.Services.AddSingleton<TouVsFlatRateViewModel>();
             builder.Services.AddSingleton<MeterReadingsDailyViewModel>();

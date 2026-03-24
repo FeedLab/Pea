@@ -8,6 +8,8 @@ namespace Pea.Meter.Models;
 public partial class ConfigurationLanguageModel : ObservableObject
 {
     private static readonly string SettingsFilePath;
+    public const string DefaultLanguage = "English";
+    public const string DefaultLanguagePng = "gb.png";
 
     static ConfigurationLanguageModel()
     {
@@ -22,7 +24,8 @@ public partial class ConfigurationLanguageModel : ObservableObject
         }
     }
 
-    [ObservableProperty] private string? selectedLanguage;
+    [ObservableProperty] private string selectedLanguage = DefaultLanguage;
+    [ObservableProperty] private string flagSource = DefaultLanguagePng;
 
     private readonly ILogger<ConfigurationLanguageModel> logger = AppService.GetRequiredService<ILogger<ConfigurationLanguageModel>>();
     private static bool isLoadingConfiguration;
@@ -44,7 +47,8 @@ public partial class ConfigurationLanguageModel : ObservableObject
 
             var data = new
             {
-                SelectedLanguage = model.SelectedLanguage
+                SelectedLanguage = model.SelectedLanguage,
+                FlagSource = model.FlagSource
             };
             var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(SettingsFilePath, json);
@@ -70,12 +74,22 @@ public partial class ConfigurationLanguageModel : ObservableObject
 
                 if (data.TryGetProperty("SelectedLanguage", out var selectedLanguage))
                 {
-                    model.SelectedLanguage = selectedLanguage.GetString() ?? "English";
+                    model.SelectedLanguage = selectedLanguage.GetString() ?? DefaultLanguage;
                 }
                 else
                 {
-                    model.SelectedLanguage = "English";
+                    model.SelectedLanguage = DefaultLanguage;
                 }
+                
+                if (data.TryGetProperty("FlagSource", out var flagSource))
+                {
+                    model.FlagSource = flagSource.GetString() ?? DefaultLanguagePng;
+                }
+                else
+                {
+                    model.FlagSource = DefaultLanguagePng;
+                }
+                
                 return model;
             }
         }

@@ -1,8 +1,10 @@
+using System.ComponentModel;
 using System.Windows.Input;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Extensions;
 using Microsoft.Extensions.Logging;
+using Pea.Meter.Models;
 using Pea.Meter.Popup;
 using Pea.Meter.Services;
 using Syncfusion.Maui.Core;
@@ -12,9 +14,11 @@ namespace Pea.Meter.Components;
 public partial class ToolbarComponent : ContentView
 {
     private readonly ILogger<ToolbarComponent> logger;
-    private readonly IPopupService popupService;
     private bool isProcessingQuit;
-    private bool isProcessingonfiguration;
+    private bool isProcessingConfiguration;
+    private readonly StorageService? storageService;
+
+    public string FlagSource => storageService?.ConfigurationLanguageModel?.FlagSource ?? ConfigurationLanguageModel.DefaultLanguagePng;
 
     public static readonly BindableProperty Button1ImageSourceProperty =
         BindableProperty.Create(nameof(Button1ImageSource), typeof(ImageSource), typeof(ToolbarComponent), null);
@@ -74,8 +78,26 @@ public partial class ToolbarComponent : ContentView
     {
         InitializeComponent();
 
-        popupService = AppService.GetRequiredService<IPopupService>();
+        storageService = AppService.GetRequiredService<StorageService>();
         logger = AppService.GetRequiredService<ILogger<ToolbarComponent>>();
+
+        // Subscribe to ConfigurationLanguageModel property changes
+        if (storageService?.ConfigurationLanguageModel != null)
+        {
+            storageService.ConfigurationLanguageModel.PropertyChanged += OnLanguageModelPropertyChanged;
+        }
+        else
+        {
+            logger.LogError("ConfigurationLanguageModel is null");
+        }
+    }
+
+    private void OnLanguageModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ConfigurationLanguageModel.FlagSource))
+        {
+            OnPropertyChanged(nameof(FlagSource));
+        }
     }
 
     private async void OnQuitTapped(object sender, EventArgs e)
@@ -115,26 +137,14 @@ public partial class ToolbarComponent : ContentView
         }
     }
 
-    private void OnLanguageTapped(object? sender, TappedEventArgs e)
-    {
-        try
-        {
-        }
-        finally
-        {
-            // EffectsViewLanguage.IsSelected = !EffectsViewQuit.IsSelected;
-            EffectsViewLanguage.Reset();
-        }
-    }
-
     private async void OnConfigurationTapped(object? sender, TappedEventArgs e)
     {
         try
         {
-            if (isProcessingonfiguration)
+            if (isProcessingConfiguration)
                 return;
 
-            isProcessingonfiguration = true;
+            isProcessingConfiguration = true;
 
             var popup = new ConfigurationPopup();
 
@@ -155,7 +165,7 @@ public partial class ToolbarComponent : ContentView
         }
         finally
         {
-            isProcessingonfiguration = false;
+            isProcessingConfiguration = false;
             EffectsViewConfiguration.Reset();
         }
     }

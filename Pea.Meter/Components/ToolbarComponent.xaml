@@ -48,18 +48,18 @@
 
     <Grid Padding="8,4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <ContentView Grid.Column="0">
+        <ContentView Grid.Column="0"
+                     VerticalOptions="Center">
             <OnIdiom x:TypeArguments="View">
                 <OnIdiom.Tablet>
                     <sfEffects:SfEffectsView
                         x:Name="EffectsViewConfiguration"
-                        Style="{StaticResource IconBorderStyleForPad}"
-                        >
+                        Style="{StaticResource IconBorderStyleForPad}">
                         <sfEffects:SfEffectsView.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnConfigurationTapped" />
                         </sfEffects:SfEffectsView.GestureRecognizers>
@@ -84,32 +84,19 @@
         </ContentView>
 
 
-        <ContentView Grid.Column="1">
-            <OnIdiom x:TypeArguments="View">
-                <OnIdiom.Desktop>
-                    <Border Style="{StaticResource IconBorderStyleForDesktop}">
-                        <Label Text="&#xf57d;"
-                               ToolTipProperties.Text="Language"
-                               Style="{StaticResource IconLabel}" />
-                    </Border>
-                </OnIdiom.Desktop>
-                <OnIdiom.Tablet>
-                    <sfEffects:SfEffectsView
-                        x:Name="EffectsViewLanguage"
-                        Style="{StaticResource IconBorderStyleForPad}"
-                        >
-                        <sfEffects:SfEffectsView.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnLanguageTapped" />
-                        </sfEffects:SfEffectsView.GestureRecognizers>
-                        <Label Text="&#xf57d;"
-                               Margin="6, 8"
-                               InputTransparent="True"
-                               ToolTipProperties.Text="Language"
-                               Style="{StaticResource IconLabel}" />
-                    </sfEffects:SfEffectsView>
-                </OnIdiom.Tablet>
-            </OnIdiom>
-        </ContentView>
+        <Border
+            Grid.Column="1" 
+            Margin="8"
+            VerticalOptions="Center"
+            >
+            <Image Source="{Binding FlagSource, Source={x:Reference Root}}"
+                   HeightRequest="34"
+                   Aspect="AspectFit"
+                   ToolTipProperties.Text="Language" />
+            <Border.Shadow>
+                <StaticResource Key="PanelShadow" />
+            </Border.Shadow>
+        </Border>
 
         <ContentView Grid.Column="2" Margin="32,0,0,0">
             <OnIdiom x:TypeArguments="View">
@@ -127,8 +114,7 @@
                     <sfEffects:SfEffectsView
                         x:Name="EffectsViewQuit"
                         AnimationCompleted="EffectsViewQuit_OnAnimationCompleted"
-                        Style="{StaticResource IconBorderStyleForPad}"
-                        >
+                        Style="{StaticResource IconBorderStyleForPad}">
                         <sfEffects:SfEffectsView.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnQuitTapped" />
                         </sfEffects:SfEffectsView.GestureRecognizers>

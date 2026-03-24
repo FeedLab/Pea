@@ -45,6 +45,7 @@
             Grid.Row="0"
             Grid.Column="1"
             Margin="0,0,0,0"
+            HeightRequest="34"
             VerticalOptions="Center"
             HorizontalOptions="End">
             <core:SfEffectsView TouchDownEffects="Ripple">
