@@ -43,10 +43,7 @@
             WidthRequest="720"
             StrokeThickness="0">
         <Border.Shadow>
-            <Shadow Brush="Black"
-                    Offset="5,5"
-                    Radius="8"
-                    Opacity="0.5" />
+            <StaticResource Key="PanelShadow" />
         </Border.Shadow>
 
         <Border BackgroundColor="White"

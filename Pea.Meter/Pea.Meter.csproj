@@ -126,6 +126,9 @@
 	  <MauiXaml Update="Popup\ConfigurationPopup.xaml">
 	    <SubType>Designer</SubType>
 	  </MauiXaml>
+	  <MauiXaml Update="View\Components\PeaServicesView.xaml">
+	    <SubType>Designer</SubType>
+	  </MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -147,6 +150,10 @@
 	  </Compile>
 	  <Compile Update="Popup\ConfigurationPopup.xaml.cs">
 	    <DependentUpon>ConfigurationPopup.xaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="View\Components\PeaServicesView.xaml.cs">
+	    <DependentUpon>PeaServicesView.xaml</DependentUpon>
 	    <SubType>Code</SubType>
 	  </Compile>
 	</ItemGroup>

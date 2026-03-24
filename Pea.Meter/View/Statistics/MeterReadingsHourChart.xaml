@@ -24,7 +24,9 @@
             </chart:SfCartesianChart.Legend>
 
             <chart:SfCartesianChart.Title>
-                <HorizontalStackLayout HorizontalOptions="Center">
+                <HorizontalStackLayout 
+                    Margin="12"
+                    HorizontalOptions="Center">
 
                     <Label
                         Margin="0,0,18,0"
@@ -43,6 +45,9 @@
                                 <Setter Property="Opacity" Value="0.5" />
                             </DataTrigger>
                         </Label.Triggers>
+                        <Label.Shadow>
+                            <StaticResource Key="PanelShadow" />
+                        </Label.Shadow>
                     </Label>
                     
                     <Border
@@ -51,6 +56,9 @@
                         StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="Center" VerticalOptions="Center"
                         Margin="0"
                         Padding="0">
+                        <Border.Shadow>
+                            <StaticResource Key="PanelShadow" />
+                        </Border.Shadow>
                         <Grid
                             Margin="4,0,10,0"
                             VerticalOptions="Center"
@@ -123,6 +131,10 @@
                                 <Setter Property="Opacity" Value="0.5" />
                             </DataTrigger>
                         </Label.Triggers>
+                        
+                        <Label.Shadow>
+                            <StaticResource Key="PanelShadow" />
+                        </Label.Shadow>
                     </Label>
 
                     <!-- <Label -->

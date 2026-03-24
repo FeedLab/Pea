@@ -64,10 +64,7 @@
             HorizontalOptions="Fill"
             VerticalOptions="Fill">
             <Grid.Shadow>
-                <Shadow Brush="Black"
-                        Offset="5,5"
-                        Radius="8"
-                        Opacity="0.5" />
+                <StaticResource Key="PanelShadow" />
             </Grid.Shadow>
 
             <Image
@@ -94,7 +91,7 @@
             >
             <tabView:SfTabView
                 x:Name="TabView"
-                Margin="8,0"
+                Margin="24,0"
                 WidthRequest="500"
                 HeightRequest="450"
                 HorizontalOptions="Fill"

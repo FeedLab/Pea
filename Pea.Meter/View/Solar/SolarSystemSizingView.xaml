@@ -24,10 +24,7 @@
             StrokeThickness="0"
             Padding="8">
             <Border.Shadow>
-                <Shadow Brush="Black"
-                        Offset="5,5"
-                        Radius="8"
-                        Opacity="0.5" />
+                <StaticResource Key="PanelShadow" />
             </Border.Shadow>
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="5" />
@@ -211,10 +208,7 @@
             StrokeThickness="0"
             Padding="8">
             <Border.Shadow>
-                <Shadow Brush="Black"
-                        Offset="5,5"
-                        Radius="8"
-                        Opacity="0.5" />
+                <StaticResource Key="PanelShadow" />
             </Border.Shadow>
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="5" />

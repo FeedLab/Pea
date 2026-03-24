@@ -44,7 +44,7 @@ public partial class ConfigurationLanguageModel : ObservableObject
 
             var data = new
             {
-                IsTariffTypeTimeOfUse = model.SelectedLanguage
+                SelectedLanguage = model.SelectedLanguage
             };
             var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(SettingsFilePath, json);
@@ -67,10 +67,15 @@ public partial class ConfigurationLanguageModel : ObservableObject
                 var data = JsonSerializer.Deserialize<JsonElement>(json);
 
                 var model = new ConfigurationLanguageModel();
-                
-                if (data.TryGetProperty("SelectedLanguage", out var selectedLanguage))
-                    model.SelectedLanguage = selectedLanguage.GetString() ?? "English";
 
+                if (data.TryGetProperty("SelectedLanguage", out var selectedLanguage))
+                {
+                    model.SelectedLanguage = selectedLanguage.GetString() ?? "English";
+                }
+                else
+                {
+                    model.SelectedLanguage = "English";
+                }
                 return model;
             }
         }
