@@ -6,10 +6,10 @@ namespace Pea.Meter.View.Components;
 public partial class MeterReadingsDailyChart : ContentView
 {
     public static readonly BindableProperty ChartTitleProperty =
-        BindableProperty.Create(nameof(ChartTitle), typeof(string), typeof(MeterReadingsDailyChart), "Overview Per Day");
+        BindableProperty.Create(nameof(ChartTitle), typeof(string), typeof(MeterReadingsDailyChart), Pea.Meter.Resources.Strings.AppResources.OverviewPerDay);
 
     public static readonly BindableProperty YAxisTitleProperty =
-        BindableProperty.Create(nameof(YAxisTitle), typeof(string), typeof(MeterReadingsDailyChart), "Energy consumption in KW per Day");
+        BindableProperty.Create(nameof(YAxisTitle), typeof(string), typeof(MeterReadingsDailyChart), Pea.Meter.Resources.Strings.AppResources.EnergyConsumptionInKWPerDay);
 
     public static readonly BindableProperty SeriesColorProperty =
         BindableProperty.Create(nameof(SeriesColor), typeof(Color), typeof(MeterReadingsDailyChart), Colors.Green);

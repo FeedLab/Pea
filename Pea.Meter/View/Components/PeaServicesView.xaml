@@ -3,6 +3,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:components="clr-namespace:Pea.Meter.Components"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.Components.PeaServicesView">
 
     <Grid Margin="0,26" VerticalOptions="Fill">
@@ -17,32 +18,32 @@
         <components:ServiceBoxComponent 
             Grid.Column="0"
             ImageSource="pea_e_bill.png"
-            Title="Electronic Billing"
-            Description="Go paperless in Thailand! Save time and trees by getting secure monthly invoices sent to your inbox."
+            Title="{x:Static properties:AppResources.ElectronicBilling}"
+            Description="{x:Static properties:AppResources.GoPaperlessInThailand}"
             Url="https://eservice.pea.co.th/ebill" />
 
         <!-- Item 2 -->
         <components:ServiceBoxComponent 
             Grid.Column="1"
             ImageSource="pea_e_service.png"
-            Title="Smart Services"
-            Description="Swift, paperless, and global. Securely access all our services from any device, anywhere on Earth"
+            Title="{x:Static properties:AppResources.SmartServices}"
+            Description="{x:Static properties:AppResources.SwiftPaperlessAndGlobalSecurelyAccess}"
             Url="https://sabuyservice.pea.co.th/" />
 
         <!-- Item 3 -->
         <components:ServiceBoxComponent 
             Grid.Column="2"
             ImageSource="pea_solar.png"
-            Title="PEA SOLAR"
-            Description="Sustainable solar for farms and homes. Powering irrigation and off-grid life 24/7 with zero emissions"
+            Title="{x:Static properties:AppResources.PEASOLAR}"
+            Description="{x:Static properties:AppResources.SustainableSolarForFarmsAndHomes}"
             Url="https://peasolar.pea.co.th/" />
 
         <!-- Item 4 -->
         <components:ServiceBoxComponent 
             Grid.Column="3"
             ImageSource="pea_transformer.png"
-            Title="{OnIdiom Desktop='Transformer Lifecycle Management', Default='Transformer Management'}"
-            Description="Comprehensive diagnostic testing, oil analysis, and preventative repairs to ensure grid stability and peak electrical efficiency"
+            Title="{OnIdiom Desktop={x:Static properties:AppResources.TransformerLifecycleManagement}, Default={x:Static properties:AppResources.TransformerManagement}}"
+            Description="{x:Static properties:AppResources.ComprehensiveDiagnosticTestingOil}"
             Url="https://sabuyservice.pea.co.th/service/f54569de-88df-4188-1408-08dcb7573509" />
     </Grid>
 </ContentView>

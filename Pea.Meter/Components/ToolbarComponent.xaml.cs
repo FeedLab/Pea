@@ -136,31 +136,16 @@ public partial class ToolbarComponent : ContentView
         finally
         {
             isProcessingQuit = false;
-            EffectsViewQuit.Reset();
         }
     }
 
+
+    
     private async void OnConfigurationTapped(object? sender, TappedEventArgs e)
     {
         try
         {
-            if (isProcessingConfiguration)
-                return;
-
-            isProcessingConfiguration = true;
-
-            var popup = new ConfigurationPopup();
-
-            var popupOptions = new PopupOptions
-            {
-                CanBeDismissedByTappingOutsideOfPopup = false
-            };
-
-            var popupResult = await Window?.Page?.ShowPopupAsync<bool>(popup, popupOptions, CancellationToken.None)!;
-
-            if (popupResult.Result)
-            {
-            }
+            await LaunchConfigurationPopup(SelectedTab.Tariff);
         }
         catch (Exception exception)
         {
@@ -169,53 +154,37 @@ public partial class ToolbarComponent : ContentView
         finally
         {
             isProcessingConfiguration = false;
-            EffectsViewConfiguration.Reset();
         }
     }
 
-    private void EffectSelectionChanged(object? sender, EventArgs e)
+    private async void OnConfigurationFlagTapped(object? sender, TappedEventArgs e)
     {
-        // if (sender != null)
-        // {
-        //     var effectsView = (SfEffectsView)sender;
-        //
-        //     if (effectsView.IsSelected)
-        //     {
-        //         effectsView.ScaleFactor = 1.0;
-        //         effectsView.TouchUpEffects = SfEffects.None;
-        //         effectsView.TouchDownEffects = SfEffects.Scale;
-        //         effectsView.ScaleAnimationDuration = 250;
-        //     }
-        //     else
-        //     {
-        //         effectsView.ScaleFactor = 0.85;
-        //         effectsView.TouchDownEffects = SfEffects.Scale;
-        //         effectsView.TouchUpEffects = SfEffects.None;
-        //         effectsView.ScaleAnimationDuration = 250;
-        //     }
-        // }
-    }
-
-    private void EffectsViewQuit_OnAnimationCompleted(object? sender, EventArgs e)
-    {
-        if (sender != null)
+        try
         {
-            var effectsView = (SfEffectsView)sender;
-
-            // if (effectsView.IsSelected)
-            // {
-            //     effectsView.ScaleFactor = 1.0;
-            //     effectsView.TouchUpEffects = SfEffects.None;
-            //     effectsView.TouchDownEffects = SfEffects.Scale;
-            //     effectsView.ScaleAnimationDuration = 250;
-            // }
-            // else
-            // {
-            //     effectsView.ScaleFactor = 0.85;
-            //     effectsView.TouchDownEffects = SfEffects.Scale;
-            //     effectsView.TouchUpEffects = SfEffects.None;
-            //     effectsView.ScaleAnimationDuration = 250;
-            // }
+            await LaunchConfigurationPopup(SelectedTab.Language);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error occurred while handling quit popup result");
         }
     }
+    
+    private async Task<bool> LaunchConfigurationPopup(SelectedTab selectedTab)
+    {
+        if (isProcessingConfiguration)
+            return true;
+
+        isProcessingConfiguration = true;
+
+        var popup = new ConfigurationPopup(selectedTab);
+
+        var popupOptions = new PopupOptions
+        {
+            CanBeDismissedByTappingOutsideOfPopup = false
+        };
+
+        _ = await Window?.Page?.ShowPopupAsync<bool>(popup, popupOptions, CancellationToken.None)!;
+        return false;
+    }
+
 }

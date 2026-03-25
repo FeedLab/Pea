@@ -29,7 +29,7 @@ namespace Pea.Meter.Resources.Strings {
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public AppResources() {
+        internal AppResources() {
         }
         
         /// <summary>
@@ -61,11 +61,164 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 30 Days Summary.
+        /// </summary>
+        public static string _30DaysSummary {
+            get {
+                return ResourceManager.GetString("_30DaysSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Historic Readings.
+        /// </summary>
+        public static string AllHistoricReadings {
+            get {
+                return ResourceManager.GetString("AllHistoricReadings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Meter Readings.
+        /// </summary>
+        public static string AllMeterReadings {
+            get {
+                return ResourceManager.GetString("AllMeterReadings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Average usage (30 days).
+        /// </summary>
+        public static string AverageUsage30Days {
+            get {
+                return ResourceManager.GetString("AverageUsage30Days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Average usage (7 days).
+        /// </summary>
+        public static string AverageUsage7Days {
+            get {
+                return ResourceManager.GetString("AverageUsage7Days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Average usage (Yesterday).
+        /// </summary>
+        public static string AverageUsageYesterday {
+            get {
+                return ResourceManager.GetString("AverageUsageYesterday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bath Per Month.
+        /// </summary>
+        public static string BathPerMonth {
+            get {
+                return ResourceManager.GetString("BathPerMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Battery.
+        /// </summary>
+        public static string Battery {
+            get {
+                return ResourceManager.GetString("Battery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comprehensive diagnostic testing, oil analysis, and preventative repairs to ensure grid stability and peak electrical efficiency.
+        /// </summary>
+        public static string ComprehensiveDiagnosticTestingOil {
+            get {
+                return ResourceManager.GetString("ComprehensiveDiagnosticTestingOil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cost Calculation.
+        /// </summary>
+        public static string CostCalculation {
+            get {
+                return ResourceManager.GetString("CostCalculation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Customer.
         /// </summary>
         public static string Customer {
             get {
                 return ResourceManager.GetString("Customer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Electronic Billing.
+        /// </summary>
+        public static string ElectronicBilling {
+            get {
+                return ResourceManager.GetString("ElectronicBilling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Energy consumption in KW per Day.
+        /// </summary>
+        public static string EnergyConsumptionInKWPerDay {
+            get {
+                return ResourceManager.GetString("EnergyConsumptionInKWPerDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Energy consumption in KW per Hour.
+        /// </summary>
+        public static string EnergyConsumptionInKWPerHour {
+            get {
+                return ResourceManager.GetString("EnergyConsumptionInKWPerHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Estimation Of Solar Array Size.
+        /// </summary>
+        public static string EstimationOfSolarArraySize {
+            get {
+                return ResourceManager.GetString("EstimationOfSolarArraySize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FlatRate.
+        /// </summary>
+        public static string FlatRate {
+            get {
+                return ResourceManager.GetString("FlatRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FlatRate Solar.
+        /// </summary>
+        public static string FlatRateSolar {
+            get {
+                return ResourceManager.GetString("FlatRateSolar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go paperless in Thailand! Save time and trees by getting secure monthly invoices sent to your inbox..
+        /// </summary>
+        public static string GoPaperlessInThailand {
+            get {
+                return ResourceManager.GetString("GoPaperlessInThailand", resourceCulture);
             }
         }
         
@@ -93,6 +246,132 @@ namespace Pea.Meter.Resources.Strings {
         public static string MeterNumber {
             get {
                 return ResourceManager.GetString("MeterNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OffPeek.
+        /// </summary>
+        public static string OffPeek {
+            get {
+                return ResourceManager.GetString("OffPeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OffPeek Solar.
+        /// </summary>
+        public static string OffPeekSolar {
+            get {
+                return ResourceManager.GetString("OffPeekSolar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {OnIdiom Desktop=&apos;Transformer Lifecycle Management&apos;, Default=&apos;Transformer Management&apos;}.
+        /// </summary>
+        public static string OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement {
+            get {
+                return ResourceManager.GetString("OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overview Per Day.
+        /// </summary>
+        public static string OverviewPerDay {
+            get {
+                return ResourceManager.GetString("OverviewPerDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PEA SOLAR.
+        /// </summary>
+        public static string PEASOLAR {
+            get {
+                return ResourceManager.GetString("PEASOLAR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peek.
+        /// </summary>
+        public static string Peek {
+            get {
+                return ResourceManager.GetString("Peek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peek Solar.
+        /// </summary>
+        public static string PeekSolar {
+            get {
+                return ResourceManager.GetString("PeekSolar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smart Services.
+        /// </summary>
+        public static string SmartServices {
+            get {
+                return ResourceManager.GetString("SmartServices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solar.
+        /// </summary>
+        public static string Solar {
+            get {
+                return ResourceManager.GetString("Solar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sustainable solar for farms and homes. Powering irrigation and off-grid life 24/7 with zero emissions.
+        /// </summary>
+        public static string SustainableSolarForFarmsAndHomes {
+            get {
+                return ResourceManager.GetString("SustainableSolarForFarmsAndHomes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Swift, paperless, and global. Securely access all our services from any device, anywhere on Earth.
+        /// </summary>
+        public static string SwiftPaperlessAndGlobalSecurelyAccess {
+            get {
+                return ResourceManager.GetString("SwiftPaperlessAndGlobalSecurelyAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Today.
+        /// </summary>
+        public static string Today {
+            get {
+                return ResourceManager.GetString("Today", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transformer Lifecycle Management.
+        /// </summary>
+        public static string TransformerLifecycleManagement {
+            get {
+                return ResourceManager.GetString("TransformerLifecycleManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transformer Management.
+        /// </summary>
+        public static string TransformerManagement {
+            get {
+                return ResourceManager.GetString("TransformerManagement", resourceCulture);
             }
         }
     }

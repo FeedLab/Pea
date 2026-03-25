@@ -1,22 +1,67 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:element name="root" msdata:IsDataSet="true"></xsd:element>
-  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>1.3</value>
+    <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AllHistoricReadings" xml:space="preserve">
+    <value>All Historic Readings</value>
+  </data>
+  <data name="AllMeterReadings" xml:space="preserve">
+    <value>All Meter Readings</value>
+  </data>
+  <data name="AverageUsage30Days" xml:space="preserve">
+    <value>Average usage (30 days)</value>
+  </data>
+  <data name="AverageUsage7Days" xml:space="preserve">
+    <value>Average usage (7 days)</value>
+  </data>
+  <data name="AverageUsageYesterday" xml:space="preserve">
+    <value>Average usage (Yesterday)</value>
+  </data>
+  <data name="BathPerMonth" xml:space="preserve">
+    <value>Bath Per Month</value>
+  </data>
+  <data name="Battery" xml:space="preserve">
+    <value>Battery</value>
+  </data>
+  <data name="ComprehensiveDiagnosticTestingOil" xml:space="preserve">
+    <value>Comprehensive diagnostic testing, oil analysis, and preventative repairs to ensure grid stability and peak electrical efficiency</value>
+  </data>
+  <data name="CostCalculation" xml:space="preserve">
+    <value>Cost Calculation</value>
+  </data>
   <data name="Customer" xml:space="preserve">
     <value>Customer</value>
+  </data>
+  <data name="ElectronicBilling" xml:space="preserve">
+    <value>Electronic Billing</value>
+  </data>
+  <data name="EnergyConsumptionInKWPerDay" xml:space="preserve">
+    <value>Energy consumption in KW per Day</value>
+  </data>
+  <data name="EnergyConsumptionInKWPerHour" xml:space="preserve">
+    <value>Energy consumption in KW per Hour</value>
+  </data>
+  <data name="EstimationOfSolarArraySize" xml:space="preserve">
+    <value>Estimation Of Solar Array Size</value>
+  </data>
+  <data name="FlatRate" xml:space="preserve">
+    <value>FlatRate</value>
+  </data>
+  <data name="FlatRateSolar" xml:space="preserve">
+    <value>FlatRate Solar</value>
+  </data>
+  <data name="GoPaperlessInThailand" xml:space="preserve">
+    <value>Go paperless in Thailand! Save time and trees by getting secure monthly invoices sent to your inbox.</value>
   </data>
   <data name="Id" xml:space="preserve">
     <value>Id</value>
@@ -26,5 +71,50 @@
   </data>
   <data name="MeterNumber" xml:space="preserve">
     <value>Meter</value>
+  </data>
+  <data name="OffPeek" xml:space="preserve">
+    <value>OffPeek</value>
+  </data>
+  <data name="OffPeekSolar" xml:space="preserve">
+    <value>OffPeek Solar</value>
+  </data>
+  <data name="OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement" xml:space="preserve">
+    <value>{OnIdiom Desktop='Transformer Lifecycle Management', Default='Transformer Management'}</value>
+  </data>
+  <data name="OverviewPerDay" xml:space="preserve">
+    <value>Overview Per Day</value>
+  </data>
+  <data name="PEASOLAR" xml:space="preserve">
+    <value>PEA SOLAR</value>
+  </data>
+  <data name="Peek" xml:space="preserve">
+    <value>Peek</value>
+  </data>
+  <data name="PeekSolar" xml:space="preserve">
+    <value>Peek Solar</value>
+  </data>
+  <data name="SmartServices" xml:space="preserve">
+    <value>Smart Services</value>
+  </data>
+  <data name="Solar" xml:space="preserve">
+    <value>Solar</value>
+  </data>
+  <data name="SustainableSolarForFarmsAndHomes" xml:space="preserve">
+    <value>Sustainable solar for farms and homes. Powering irrigation and off-grid life 24/7 with zero emissions</value>
+  </data>
+  <data name="SwiftPaperlessAndGlobalSecurelyAccess" xml:space="preserve">
+    <value>Swift, paperless, and global. Securely access all our services from any device, anywhere on Earth</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="TransformerLifecycleManagement" xml:space="preserve">
+    <value>Transformer Lifecycle Management</value>
+  </data>
+  <data name="TransformerManagement" xml:space="preserve">
+    <value>Transformer Management</value>
+  </data>
+  <data name="_30DaysSummary" xml:space="preserve">
+    <value>30 Days Summary</value>
   </data>
 </root>

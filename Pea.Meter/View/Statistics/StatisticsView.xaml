@@ -7,6 +7,7 @@
              xmlns:components="clr-namespace:Pea.Meter.View.Components"
              xmlns:local="clr-namespace:Pea.Meter.View"
              xmlns:statistics="clr-namespace:Pea.Meter.View.Statistics"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.Statistics.StatisticsView">
 
     <Grid>
@@ -18,8 +19,8 @@
                            HeaderHorizontalTextAlignment="Center"
                            IndicatorCornerRadius ="5"
                            IndicatorPlacement="Bottom"
-                           IndicatorBackground="Blue"
-                           EnableSwiping="True"
+                           IndicatorBackground="#4CAF50"
+                           EnableSwiping="False"
                            HorizontalOptions="Fill"
                            TabBarPlacement="Top"
                            TabWidthMode="SizeToContent"
@@ -28,14 +29,14 @@
                            >
             <tabView:SfTabView.Items>
 
-                <tabView:SfTabItem Header="30 Days Summary" x:Name="Summary30Days" Background="White"
+                <tabView:SfTabItem Header="{x:Static properties:AppResources._30DaysSummary}" x:Name="Summary30Days" Background="White"
                                    TextColor="Black" FontSize="18">
                     <tabView:SfTabItem.Content>
                         <statistics:MeterReadingsHourView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="All Historic Readings" x:Name="AllHistoricReadings" Background="White" TextColor="Black" FontSize="18">
+                <tabView:SfTabItem Header="{x:Static properties:AppResources.AllHistoricReadings}" x:Name="AllHistoricReadings" Background="White" TextColor="Black" FontSize="18">
                     <tabView:SfTabItem.Content>
                         <statistics:MeterReadingsDailyView />
                     </tabView:SfTabItem.Content>

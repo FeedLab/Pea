@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.Statistics.MeterReadingsHourChart"
              x:Name="MeterComparisonChartControl">
 
@@ -178,14 +179,14 @@
             <chart:SfCartesianChart.YAxes>
                 <chart:NumericalAxis>
                     <chart:NumericalAxis.Title>
-                        <chart:ChartAxisTitle Text="Energy consumption in KW per Hour" />
+                        <chart:ChartAxisTitle Text="{x:Static properties:AppResources.EnergyConsumptionInKWPerHour}" />
                     </chart:NumericalAxis.Title>
                 </chart:NumericalAxis>
             </chart:SfCartesianChart.YAxes>
 
             <chart:SplineSeries
                 ItemsSource="{Binding Source={x:Reference MeterComparisonChartControl}, Path=TodayData}"
-                Label="Today"
+                Label="{x:Static properties:AppResources.Today}"
                 XBindingPath="PeriodStart"
                 YBindingPath="Total"
                 Fill="Red"
@@ -195,7 +196,7 @@
 
             <chart:SplineSeries
                 ItemsSource="{Binding Source={x:Reference MeterComparisonChartControl}, Path=Average1DayData}"
-                Label="Average usage (Yesterday)"
+                Label="{x:Static properties:AppResources.AverageUsageYesterday}"
                 XBindingPath="PeriodStart"
                 YBindingPath="Total"
                 Fill="Orange"
@@ -205,7 +206,7 @@
 
             <chart:SplineSeries
                 ItemsSource="{Binding Source={x:Reference MeterComparisonChartControl}, Path=Average7DaysData}"
-                Label="Average usage (7 days)"
+                Label="{x:Static properties:AppResources.AverageUsage7Days}"
                 XBindingPath="PeriodStart"
                 YBindingPath="Total"
                 Fill="Blue"
@@ -215,7 +216,7 @@
 
             <chart:SplineSeries
                 ItemsSource="{Binding Source={x:Reference MeterComparisonChartControl}, Path=Average30DaysData}"
-                Label="Average usage (30 days)"
+                Label="{x:Static properties:AppResources.AverageUsage30Days}"
                 XBindingPath="PeriodStart"
                 YBindingPath="Total"
                 Fill="Green"

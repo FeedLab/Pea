@@ -6,45 +6,6 @@
              x:Class="Pea.Meter.Components.ToolbarComponent"
              x:Name="Root">
 
-    <ContentView.Resources>
-        <Style x:Key="IconBorderStyleForDesktop" TargetType="Border">
-            <Setter Property="Padding" Value="8,4" />
-            <Setter Property="StrokeThickness" Value="0" />
-            <Setter Property="StrokeShape">
-                <RoundRectangle CornerRadius="4" />
-            </Setter>
-            <Setter Property="Shadow">
-                <Shadow Brush="Black" Radius="10" Opacity="0.3" Offset="0,2" />
-            </Setter>
-            <Setter Property="VisualStateManager.VisualStateGroups">
-                <Setter.Value>
-                    <VisualStateGroupList>
-                        <VisualStateGroup x:Name="CommonStates">
-                            <VisualState x:Name="Normal">
-                                <VisualState.Setters>
-                                    <Setter Property="Scale" Value="1.0" />
-                                    <Setter Property="Opacity" Value="1.0" />
-                                </VisualState.Setters>
-                            </VisualState>
-                            <VisualState x:Name="PointerOver">
-                                <VisualState.Setters>
-                                    <Setter Property="Scale" Value="1.1" />
-                                    <Setter Property="Opacity" Value="0.9" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateGroupList>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="IconBorderStyleForPad" TargetType="sfEffects:SfEffectsView">
-            <Setter Property="Padding" Value="8,4" />
-            <Setter Property="Angle" Value="360" />
-            <Setter Property="TouchDownEffects" Value="Rotation" />
-            <Setter Property="ScaleAnimationDuration" Value="350" />
-        </Style>
-    </ContentView.Resources>
 
     <Grid Padding="8,4">
         <Grid.ColumnDefinitions>
@@ -53,80 +14,52 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <ContentView Grid.Column="0"
-                     VerticalOptions="Center">
-            <OnIdiom x:TypeArguments="View">
-                <OnIdiom.Tablet>
-                    <sfEffects:SfEffectsView
-                        x:Name="EffectsViewConfiguration"
-                        Style="{StaticResource IconBorderStyleForPad}">
-                        <sfEffects:SfEffectsView.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnConfigurationTapped" />
-                        </sfEffects:SfEffectsView.GestureRecognizers>
-                        <Label Text="&#xf013;"
-                               Margin="6, 8"
-                               InputTransparent="True"
-                               ToolTipProperties.Text="Configuration"
-                               Style="{StaticResource IconLabel}" />
-                    </sfEffects:SfEffectsView>
-                </OnIdiom.Tablet>
-                <OnIdiom.Desktop>
-                    <Border Style="{StaticResource IconBorderStyleForDesktop}">
-                        <Label Text="&#xf013;"
-                               ToolTipProperties.Text="Configuration"
-                               Style="{StaticResource IconLabel}" />
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnConfigurationTapped" />
-                        </Border.GestureRecognizers>
-                    </Border>
-                </OnIdiom.Desktop>
-            </OnIdiom>
-        </ContentView>
+        <Label Grid.Column="0" Margin="0,0,8,0" Text="&#xf013;"
+               ToolTipProperties.Text="Configuration"
+               Style="{StaticResource IconLabel}">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnConfigurationTapped" />
+            </Label.GestureRecognizers>
+            <Label.Shadow>
+                <Shadow Radius="15"
+                        Opacity="0.6"
+                        Brush="Black"
+                        Offset="10,10" />
+            </Label.Shadow>
+        </Label>
+
+        <Image
+            Grid.Column="1"
+            Margin="8,10,8,8"
+            Source="{Binding FlagSource, Source={x:Reference Root}}"
+            HeightRequest="28"
+            Aspect="AspectFit"
+            ToolTipProperties.Text="Language">
+            <Image.Shadow>
+                <Shadow Radius="15"
+                        Opacity="0.6"
+                        Brush="Black"
+                        Offset="10,10" />
+            </Image.Shadow>
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnConfigurationFlagTapped" />
+            </Image.GestureRecognizers>
+        </Image>
 
 
-        <Border
-            Grid.Column="1" 
-            Margin="8"
-            VerticalOptions="Center"
-            >
-            <Image Source="{Binding FlagSource, Source={x:Reference Root}}"
-                   HeightRequest="34"
-                   Aspect="AspectFit"
-                   ToolTipProperties.Text="Language" />
-            <Border.Shadow>
-                <StaticResource Key="PanelShadow" />
-            </Border.Shadow>
-        </Border>
-
-        <ContentView Grid.Column="2" Margin="32,0,0,0">
-            <OnIdiom x:TypeArguments="View">
-                <OnIdiom.Desktop>
-                    <Border Style="{StaticResource IconBorderStyleForDesktop}">
-                        <Label Text="&#xf2f5;"
-                               ToolTipProperties.Text="Quit"
-                               Style="{StaticResource IconLabel}" />
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnQuitTapped" />
-                        </Border.GestureRecognizers>
-                    </Border>
-                </OnIdiom.Desktop>
-                <OnIdiom.Tablet>
-                    <sfEffects:SfEffectsView
-                        x:Name="EffectsViewQuit"
-                        AnimationCompleted="EffectsViewQuit_OnAnimationCompleted"
-                        Style="{StaticResource IconBorderStyleForPad}">
-                        <sfEffects:SfEffectsView.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnQuitTapped" />
-                        </sfEffects:SfEffectsView.GestureRecognizers>
-                        <Label
-                            Text="&#xf2f5;"
-                            InputTransparent="True"
-                            ToolTipProperties.Text="Quit"
-                            Style="{StaticResource IconLabel}" />
-                    </sfEffects:SfEffectsView>
-                </OnIdiom.Tablet>
-            </OnIdiom>
-        </ContentView>
+        <Label Grid.Column="2" Margin="40,0,0,0" Text="&#xf2f5;"
+               ToolTipProperties.Text="Quit"
+               Style="{StaticResource IconLabel}">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnQuitTapped" />
+            </Label.GestureRecognizers>
+            <Label.Shadow>
+                <Shadow Radius="15"
+                        Opacity="0.6"
+                        Brush="Black"
+                        Offset="10,10" />
+            </Label.Shadow>
+        </Label>
 
     </Grid>
 </ContentView>

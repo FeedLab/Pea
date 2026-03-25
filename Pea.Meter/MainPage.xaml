@@ -89,7 +89,7 @@
             Grid.Row="1"
             x:Name="TabView"
             Margin="0,0"
-            EnableSwiping="True"
+            EnableSwiping="False"
             TabBarPlacement="Bottom"
             TabWidthMode="SizeToContent"
             TabBarBackground="#CC000000"

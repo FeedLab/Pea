@@ -10,15 +10,34 @@ using Syncfusion.Maui.TabView;
 
 namespace Pea.Meter.Popup;
 
+public enum SelectedTab
+{
+    Tariff,
+    Language
+};
+
 public partial class ConfigurationPopup : Popup<bool>
 {
     private readonly ILogger<QuitPopup> logger;
 
-    public ConfigurationPopup()
+    public ConfigurationPopup(SelectedTab selectedTab)
     {
         InitializeComponent();
 
         logger = AppService.GetRequiredService<ILogger<QuitPopup>>();
+
+        if (selectedTab == SelectedTab.Tariff)
+        {
+            TabView.SelectedIndex = TabView.Items.IndexOf(Tariff);
+        }
+        else if (selectedTab == SelectedTab.Language)
+        {
+            TabView.SelectedIndex = TabView.Items.IndexOf(Language);
+        }
+        else
+        {
+            throw new Exception("Unknown tab");
+        }
 
         Header = "Configuration";
         BindingContext = this;

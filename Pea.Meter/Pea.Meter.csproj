@@ -104,8 +104,6 @@
 		</EmbeddedResource>
 		<EmbeddedResource Update="Resources\Strings\AppResources.se.resx">
 		</EmbeddedResource>
-		<EmbeddedResource Update="Resources\Strings\AppResources.th.resx">
-		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
