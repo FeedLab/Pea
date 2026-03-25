@@ -27,7 +27,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Label
-                        TextColor="Black" 
+                        TextColor="CadetBlue" 
                         FontSize="15"
                         FontFamily="FontSolid" 
                         HorizontalOptions="Center"

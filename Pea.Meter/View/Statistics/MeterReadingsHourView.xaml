@@ -10,6 +10,8 @@
              x:DataType="statistics:MeterReadingsHourViewModel">
 
     <statistics1:MeterReadingsHourChart 
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill"
         ChartTitle="{Binding SelectedDate, StringFormat='{0:D}'}"
         TodayData="{Binding TodayData}"
         Average1DayData="{Binding MeterDataAverage1}"

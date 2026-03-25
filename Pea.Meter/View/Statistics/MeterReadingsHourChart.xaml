@@ -47,7 +47,10 @@
                             </DataTrigger>
                         </Label.Triggers>
                         <Label.Shadow>
-                            <StaticResource Key="PanelShadow" />
+                            <Shadow Radius="15"
+                        Opacity="0.6"
+                        Brush="Black"
+                        Offset="10,10" />
                         </Label.Shadow>
                     </Label>
                     
@@ -55,7 +58,7 @@
                         BackgroundColor="White"
                         Stroke="LightBlue"
                         StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="Center" VerticalOptions="Center"
-                        Margin="0"
+                        Margin="8"
                         Padding="0">
                         <Border.Shadow>
                             <StaticResource Key="PanelShadow" />
@@ -103,7 +106,14 @@
                             <Label x:Name="SelectedDateCtrl" Grid.Column="2"
                                    Text="{Binding SelectedDate,  StringFormat='{0:D}'}" FontSize="15"
                                    TextColor="Black"
-                                   VerticalTextAlignment="Center" LineBreakMode="WordWrap" />
+                                   VerticalTextAlignment="Center" LineBreakMode="WordWrap" >
+                                <Label.Shadow>
+                                    <Shadow Radius="15"
+                        Opacity="0.6"
+                        Brush="Black"
+                        Offset="10,10" />
+                                </Label.Shadow>
+                            </Label>
 
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnSelectedDateTapGestureTapped" />
@@ -132,9 +142,12 @@
                                 <Setter Property="Opacity" Value="0.5" />
                             </DataTrigger>
                         </Label.Triggers>
-                        
+
                         <Label.Shadow>
-                            <StaticResource Key="PanelShadow" />
+                            <Shadow Radius="15"
+                        Opacity="0.6"
+                        Brush="Black"
+                        Offset="10,10" />
                         </Label.Shadow>
                     </Label>
 

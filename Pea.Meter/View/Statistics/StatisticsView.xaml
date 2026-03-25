@@ -10,33 +10,53 @@
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.Statistics.StatisticsView">
 
-    <Grid>
+    <Border 
+        Stroke="Black"
+        Background="White"
+        StrokeThickness="0"
+        Padding="5"
+        Margin="32,32">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="20" />
+        </Border.StrokeShape>
+        <Border.Shadow>
+            <StaticResource Key="PanelShadow" />
+        </Border.Shadow>
+
         <tabView:SfTabView x:Name="TabViewStatistics"
-                           Margin="0"
+                           Margin="12"
                            FontAutoScalingEnabled="True"
                            ContentTransitionDuration ="500"
                            EnableRippleAnimation="True"
-                           HeaderHorizontalTextAlignment="Center"
+                           HeaderHorizontalTextAlignment="Center"                          
                            IndicatorCornerRadius ="5"
                            IndicatorPlacement="Bottom"
                            IndicatorBackground="#4CAF50"
                            EnableSwiping="False"
                            HorizontalOptions="Fill"
+                           VerticalOptions="Fill"
                            TabBarPlacement="Top"
                            TabWidthMode="SizeToContent"
                            TabBarBackground="Transparent"
+                          
                            TabHeaderPadding="0"
                            >
+
             <tabView:SfTabView.Items>
 
-                <tabView:SfTabItem Header="{x:Static properties:AppResources._30DaysSummary}" x:Name="Summary30Days" Background="White"
-                                   TextColor="Black" FontSize="18">
+                <tabView:SfTabItem Header="&#x1F4C6; 30 Days Summary"
+                                   x:Name="Summary30Days"
+                                   Background="White"
+                                   TextColor="Black"
+                                   FontSize="14"
+                                   FontFamily="SegoeMDL2">
+
                     <tabView:SfTabItem.Content>
                         <statistics:MeterReadingsHourView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="{x:Static properties:AppResources.AllHistoricReadings}" x:Name="AllHistoricReadings" Background="White" TextColor="Black" FontSize="18">
+                <tabView:SfTabItem x:Name="AllHistoricReadings" Background="White" TextColor="Black" FontSize="14" FontFamily="SegoeMDL2">
                     <tabView:SfTabItem.Content>
                         <statistics:MeterReadingsDailyView />
                     </tabView:SfTabItem.Content>
@@ -46,5 +66,5 @@
             </tabView:SfTabView.Items>
         </tabView:SfTabView>
 
-    </Grid>
+    </Border>
 </ContentView>

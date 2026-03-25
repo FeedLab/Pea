@@ -6,16 +6,16 @@
              xmlns:local="clr-namespace:Pea.Meter.Components.Configuration"
              x:Class="Pea.Meter.Components.Configuration.LanguageComponent">
 
-    <ScrollView Margin="16,0,16,0">
-        <VerticalStackLayout Margin="16,10,16,0" x:Name="LanguageSelector">
+    <ScrollView Margin="4,0,0,0">
+        <VerticalStackLayout Margin="16,10,24,0" x:Name="LanguageSelector">
 
             <local:LanguageItemComponent FlagSource="gb.png" CultureCode="gb" LanguageName="English" LanguageValue="English"
                                           IsEnabled="True" StateChanged="OnLanguageTapped" />
 
             <local:LanguageItemComponent FlagSource="th.png" CultureCode="th" LanguageName="Thai" LanguageValue="Thai"
                                          IsEnabled="True" StateChanged="OnLanguageTapped" />
-            
-            <local:LanguageItemComponent FlagSource="se.png" CultureCode="se" LanguageName="Swedish" LanguageValue="Swedish"
+
+            <local:LanguageItemComponent FlagSource="se.png" CultureCode="sv-SE" LanguageName="Swedish" LanguageValue="Swedish"
                                           IsEnabled="True" StateChanged="OnLanguageTapped" />
             
             <local:LanguageItemComponent FlagSource="de.png" CultureCode="de" LanguageName="German" LanguageValue="German"

@@ -8,10 +8,12 @@ public partial class StatisticsView : ContentView
     public StatisticsView()
     {
         InitializeComponent();
-        
+
         if (AppService.Current != null)
             BindingContext = AppService.Current.GetRequiredService<StatisticsViewModel>();
         else
             throw new InvalidOperationException("AppService is not initialized");
+
+        AllHistoricReadings.Header = $"\U0001F4C8 {Pea.Meter.Resources.Strings.AppResources.AllHistoricReadings}";
     }
 }

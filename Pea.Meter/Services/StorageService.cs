@@ -49,9 +49,16 @@ public partial class StorageService : ObservableObject
         ConfigurationTariffModel = ConfigurationTariffModel.Load();
         ConfigurationLanguageModel = ConfigurationLanguageModel.Load();
 
-        Thread.CurrentThread.CurrentUICulture = new CultureInfo(ConfigurationLanguageModel.CultureCode);
-        Thread.CurrentThread.CurrentCulture = new CultureInfo(ConfigurationLanguageModel.CultureCode);
-        
+        try
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(ConfigurationLanguageModel.CultureCode);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(ConfigurationLanguageModel.CultureCode);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error setting culture: {Message}", e.Message);
+        }
+
         newDayCancellationTokenSource = new CancellationTokenSource();
         
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this, async void (r, m) =>
