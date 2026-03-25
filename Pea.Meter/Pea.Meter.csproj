@@ -99,7 +99,7 @@
 		<EmbeddedResource Include="appsettings.json" />
 		<EmbeddedResource Include="appsettings.Development.json" />
 		<EmbeddedResource Update="Resources\Strings\AppResources.resx">
-		  <Generator>ResXFileCodeGenerator</Generator>
+		  <Generator>PublicResXFileCodeGenerator</Generator>
 		  <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 		<EmbeddedResource Update="Resources\Strings\AppResources.se.resx">

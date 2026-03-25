@@ -10,13 +10,13 @@ namespace Pea.Meter
         {
             InitializeComponent();
 
-            // Set title from current culture
-            Title = Pea.Meter.Resources.Strings.AppResources.MainTitle;
-
             var storageService = AppService.GetRequiredService<StorageService>();
             var authDataOptions = AppService.GetRequiredService<AuthDataOptions>();
             var customerProfile = AppService.GetRequiredService<CustomerProfileViewModel>();
             var historicDataBackgroundService = AppService.GetRequiredService<HistoricDataBackgroundService>();
+
+            // Set title from current culture (after StorageService initializes the culture)
+            Title = Pea.Meter.Resources.Strings.AppResources.MainTitle;
 
             var authData = authDataOptions.AuthData;
 

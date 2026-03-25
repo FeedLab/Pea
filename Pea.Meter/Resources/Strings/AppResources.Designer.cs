@@ -22,21 +22,21 @@ namespace Pea.Meter.Resources.Strings {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AppResources {
+    public class AppResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal AppResources() {
+        public AppResources() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Pea.Meter.Resources.Strings.AppResources", typeof(AppResources).Assembly);
@@ -51,7 +51,7 @@ namespace Pea.Meter.Resources.Strings {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Pea.Meter.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Customer.
         /// </summary>
-        internal static string Customer {
+        public static string Customer {
             get {
                 return ResourceManager.GetString("Customer", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Pea.Meter.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Id.
         /// </summary>
-        internal static string Id {
+        public static string Id {
             get {
                 return ResourceManager.GetString("Id", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Pea.Meter.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to PEA Electric Meter.
         /// </summary>
-        internal static string MainTitle {
+        public static string MainTitle {
             get {
                 return ResourceManager.GetString("MainTitle", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Pea.Meter.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Meter.
         /// </summary>
-        internal static string MeterNumber {
+        public static string MeterNumber {
             get {
                 return ResourceManager.GetString("MeterNumber", resourceCulture);
             }
