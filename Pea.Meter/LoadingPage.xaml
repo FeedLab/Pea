@@ -11,8 +11,9 @@
         HorizontalOptions="Fill"
         BackgroundColor="Black">
 
-        <Image Source="pea_load_splash.png" Aspect="AspectFit" />
-
+        <!-- <Image Source="pea_load_splash.png" Aspect="AspectFit" /> -->
+        <Image Source="pea_amr_intro.png" Aspect="AspectFit" />
+        
         <ActivityIndicator
             IsRunning="True"
             HorizontalOptions="Center"

@@ -1,0 +1,230 @@
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AComparisonBetweenTheTimeOfUseTOUTariffAndTheFlatRateTariffShowsTheFinancialImpactUnderTheCurrentConsumptionPattern">
+    <value>การเปรียบเทียบระหว่างอัตราค่าไฟฟ้าแบบเวลาที่ใช้ (TOU) กับอัตราภาษีแบบคงที่แสดงให้เห็นถึงผลกระทบทางการเงินภายใต้รูปแบบการใช้ปัจจุบัน</value>
+  </data>
+  <data name="AllHistoricReadings">
+    <value>การอ่านค่าประวัติทั้งหมด</value>
+  </data>
+  <data name="AllMeterReadings">
+    <value>การอ่านค่ามิเตอร์ทั้งหมด</value>
+  </data>
+  <data name="AverageUsage30Days">
+    <value>การใช้งานเฉลี่ย (30 วัน)</value>
+  </data>
+  <data name="AverageUsage7Days">
+    <value>การใช้งานเฉลี่ย (7 วัน)</value>
+  </data>
+  <data name="AverageUsageYesterday">
+    <value>การใช้งานเฉลี่ย (เมื่อวาน)</value>
+  </data>
+  <data name="BathPerMonth">
+    <value>บาทต่อเดือน</value>
+  </data>
+  <data name="Battery">
+    <value>แบตเตอรี่</value>
+  </data>
+  <data name="Cancel">
+    <value>ยกเลิก</value>
+  </data>
+  <data name="Close">
+    <value>ปิด</value>
+  </data>
+  <data name="ComprehensiveDiagnosticTestingOil">
+    <value>ทดสอบการวินิจฉัยทั่วถึง การวิเคราะห์น้ำมัน และการซ่อมแซมป้องกันเพื่อให้มั่นใจในความเสถียรของกริดและประสิทธิภาพไฟฟ้าสูงสุด</value>
+  </data>
+  <data name="Configuration">
+    <value>การตั้งค่า</value>
+  </data>
+  <data name="CostCalculation">
+    <value>การคำนวณค่าใช้จ่าย</value>
+  </data>
+  <data name="Customer">
+    <value>ลูกค้า</value>
+  </data>
+  <data name="CustomerProfile">
+    <value>โปรไฟล์ลูกค้า</value>
+  </data>
+  <data name="Daily">
+    <value>รายวัน</value>
+  </data>
+  <data name="ElectricityTariffComparisonSummary">
+    <value>สรุปการเปรียบเทียบอัตราค่าไฟฟ้า</value>
+  </data>
+  <data name="ElectronicBilling">
+    <value>การออกบิลทางอิเล็กทรอนิกส์</value>
+  </data>
+  <data name="EndDate">
+    <value>วันสิ้นสุด</value>
+  </data>
+  <data name="EndDate_dash">
+    <value>วันสิ้นสุด - </value>
+  </data>
+  <data name="EnergyConsumptionInKWPerDay">
+    <value>การใช้พลังงานเป็นกิโลวัตต์ต่อวัน</value>
+  </data>
+  <data name="EnergyConsumptionInKWPerHour">
+    <value>การใช้พลังงานเป็นกิโลวัตต์ต่อชั่วโมง</value>
+  </data>
+  <data name="Error">
+    <value>ข้อผิดพลาด</value>
+  </data>
+  <data name="EstimationOfSolarArraySize">
+    <value>การประมาณขนาดแผงพลังงานแสงอาทิตย์</value>
+  </data>
+  <data name="FlatRate">
+    <value>อัตราคงที่</value>
+  </data>
+  <data name="FlatRateInConclusionBased">
+    <value>ผลลัพธ์ระบุว่าใช้ไฟฟ้าสูงในช่วงเวลาของอัตราสูงสุด ซึ่งราคาของ TOU สูงกว่า หากการใช้งานไม่เปลี่ยนไปในช่วงที่ไม่แพง อัตราคงที่จะยังคงเป็นทางเลือกที่คุ้มค่ากว่า</value>
+  </data>
+  <data name="FlatRateSolar">
+    <value>อัตราคงที่พลังงานแสงอาทิตย์</value>
+  </data>
+  <data name="GoPaperlessInThailand">
+    <value>ไม่ใช่กระดาษในไทย! ประหยัดเวลาและต้นไม้ด้วยการรับใบแจ้งหนี้รายเดือนที่ปลอดภัยส่งไปยังกล่องอีเมลของคุณ</value>
+  </data>
+  <data name="HigherCostComparedToTheFlatRateOption">
+    <value>% ค่าใช้จ่ายสูงกว่าเมื่อเปรียบเทียบกับตัวเลือกอัตราคงที่</value>
+  </data>
+  <data name="Id">
+    <value>รหัส</value>
+  </data>
+  <data name="Info">
+    <value>ข้อมูล</value>
+  </data>
+  <data name="KWhPer15Minute">
+    <value>กิโลวัตต์ชั่วโมงต่อ 15 นาที</value>
+  </data>
+  <data name="KWhPerMonth">
+    <value>กิโลวัตต์ชั่วโมงต่อเดือน</value>
+  </data>
+  <data name="Language">
+    <value>ภาษา</value>
+  </data>
+  <data name="Loading">
+    <value>กำลังโหลด...</value>
+  </data>
+  <data name="MainTitle">
+    <value>มิเตอร์ไฟฟ้าของ กฟภ.</value>
+  </data>
+  <data name="MeterNumber">
+    <value>มิเตอร์</value>
+  </data>
+  <data name="Minimum6Characters">
+    <value>ขั้นต่ำ 6 ตัวอักษร</value>
+  </data>
+  <data name="OffPeek">
+    <value>นอกช่วงพีค</value>
+  </data>
+  <data name="OffPeekSolar">
+    <value>นอกช่วงพีคพลังงานแสงอาทิตย์</value>
+  </data>
+  <data name="OK">
+    <value>ตกลง</value>
+  </data>
+  <data name="OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement">
+    <value>{OnIdiom Desktop='การจัดการอายุการใช้งานหม้อแปลง', Default='การจัดการหม้อแปลง'}</value>
+  </data>
+  <data name="OverviewPerDay">
+    <value>ภาพรวมต่อวัน</value>
+  </data>
+  <data name="Password">
+    <value>รหัสผ่าน</value>
+  </data>
+  <data name="PEA">
+    <value>กฟภ.</value>
+  </data>
+  <data name="PEASOLAR">
+    <value>พลังงานแสงอาทิตย์ กฟภ.</value>
+  </data>
+  <data name="Peek">
+    <value>ช่วงพีค</value>
+  </data>
+  <data name="PeekSolar">
+    <value>ช่วงพีคพลังงานแสงอาทิตย์</value>
+  </data>
+  <data name="Personal">
+    <value>ส่วนบุคคล</value>
+  </data>
+  <data name="PleaseLogin">
+    <value>กรุณาเข้าสู่ระบบ</value>
+  </data>
+  <data name="Quit">
+    <value>ออก</value>
+  </data>
+  <data name="SmartServices">
+    <value>บริการอัจฉริยะ</value>
+  </data>
+  <data name="Solar">
+    <value>พลังงานแสงอาทิตย์</value>
+  </data>
+  <data name="SolarSystemCalculationExperimental">
+    <value>การคำนวณระบบพลังงานแสงอาทิตย์ (ทดลอง)</value>
+  </data>
+  <data name="StartDate">
+    <value>วันเริ่มต้น</value>
+  </data>
+  <data name="StartDate_dash">
+    <value>วันเริ่มต้น - </value>
+  </data>
+  <data name="Statistics">
+    <value>สถิติ</value>
+  </data>
+  <data name="SustainableSolarForFarmsAndHomes">
+    <value>พลังงานแสงอาทิตย์ที่ยั่งยืนสำหรับฟาร์มและบ้าน ให้พลังงานในการชลประทานและชีวิตนอกเครือข่าย 24/7 โดยไม่มีการปล่อยสารมลพิษ</value>
+  </data>
+  <data name="SwiftPaperlessAndGlobalSecurelyAccess">
+    <value>รวดเร็ว ไร้กระดาษ และทั่วโลก เข้าถึงบริการของเราได้อย่างปลอดภัยจากอุปกรณ์ใดก็ได้ ทุกที่บนโลก</value>
+  </data>
+  <data name="Tariff">
+    <value>อัตราค่าไฟฟ้า</value>
+  </data>
+  <data name="TariffCalculation">
+    <value>การคำนวณอัตราค่าไฟฟ้า</value>
+  </data>
+  <data name="THBMoreExpensiveRepresentingA">
+    <value> บาท แพงกว่า เป็นที่ </value>
+  </data>
+  <data name="ThisMeansTheTOUTariffIs">
+    <value>นี่หมายความว่าอัตราค่าไฟฟ้า TOU คือ </value>
+  </data>
+  <data name="Today">
+    <value>วันนี้</value>
+  </data>
+  <data name="ToUComparisonBetweenTheTimeOfUseTOUTariff">
+    <value>การเปรียบเทียบระหว่างอัตราค่าไฟฟ้าแบบ Time-of-Use (TOU) และอัตราคงหน้าแสดงถึงข้อได้เปรียบทางการเงินที่ชัดเจนสำหรับ TOU ภายใต้รูปแบบการใช้งานในปัจจุบัน</value>
+  </data>
+  <data name="ToUInConclusionBased">
+    <value>โดยสรุปจากข้อมูลปัจจุบัน อัตราค่าไฟฟ้า TOU เป็นตัวเลือกที่ประหยัดกว่า มอบการประหยัดค่าใช้จ่ายที่มีความหมายโดยไม่ต้องเปลี่ยนแปลงการใช้ทั้งหมด</value>
+  </data>
+  <data name="TOUTotalCost">
+    <value>• ค่าใช้จ่ายรวมของ TOU: </value>
+  </data>
+  <data name="TransformerLifecycleManagement">
+    <value>การจัดการอายุการใช้งานหม้อแปลง</value>
+  </data>
+  <data name="TransformerManagement">
+    <value>การจัดการหม้อแปลง</value>
+  </data>
+  <data name="Username">
+    <value>ชื่อผู้ใช้</value>
+  </data>
+  <data name="_10FlatRateTotalCost">
+    <value>&amp;#10;• ค่าใช้จ่ายรวมของอัตราคงที่: </value>
+  </data>
+  <data name="_30DaysSummary">
+    <value>สรุป 30 วัน</value>
+  </data>
+</root>
