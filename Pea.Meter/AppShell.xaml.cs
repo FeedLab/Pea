@@ -20,13 +20,27 @@ namespace Pea.Meter
 
             var authData = authDataOptions.AuthData;
 
-            _ = InitializeAsync(authData, customerProfile, storageService, historicDataBackgroundService);
+            // Ensure LoadingPage is displayed before starting initialization
+            Dispatcher.Dispatch(async void () =>
+            {
+                try
+                {
+                    await InitializeAsync(authData, customerProfile, storageService, historicDataBackgroundService);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            });
         }
 
         private async Task InitializeAsync(IAuthData? authData, CustomerProfileViewModel customerProfile,
             StorageService storageService, HistoricDataBackgroundService historicDataBackgroundService)
         {
+            // LoadingPage is shown by default (first ShellContent in AppShell.xaml)
             await InitializeUserSession(authData, customerProfile, storageService, historicDataBackgroundService);
+            
+            // Navigate to MainPage after initialization completes
             await GoToAsync("//MainPage");
         }
 

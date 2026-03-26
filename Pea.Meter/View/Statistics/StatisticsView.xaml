@@ -48,15 +48,14 @@
                                    x:Name="Summary30Days"
                                    Background="White"
                                    TextColor="Black"
-                                   FontSize="14"
-                                   FontFamily="SegoeMDL2">
+                                   FontSize="14">
 
                     <tabView:SfTabItem.Content>
                         <statistics:MeterReadingsHourView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem x:Name="AllHistoricReadings" Background="White" TextColor="Black" FontSize="14" FontFamily="SegoeMDL2">
+                <tabView:SfTabItem x:Name="AllHistoricReadings" Background="White" TextColor="Black" FontSize="14">
                     <tabView:SfTabItem.Content>
                         <statistics:MeterReadingsDailyView />
                     </tabView:SfTabItem.Content>

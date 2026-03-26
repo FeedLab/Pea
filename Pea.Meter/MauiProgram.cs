@@ -38,8 +38,8 @@ namespace Pea.Meter
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                    fonts.AddFont("Font Awesome 7 Free-Solid-900.otf", "FontSolid");
-                    fonts.AddFont("Font Awesome 7 Free-Regular-400.otf", "FontRegular");
+                    fonts.AddFont("FontAwesome7FreeSolid900.otf", "FontSolid");
+                    fonts.AddFont("FontAwesome7FreeRegular400.otf", "FontRegular");
                     fonts.AddFont("Roboto-Regular.ttf", "Roboto-Regular");
                 });
 

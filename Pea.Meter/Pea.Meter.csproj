@@ -58,16 +58,18 @@
 		<AndroidResource Include="Platforms\Android\Resources\mipmap-xxhdpi\appicon.png" />
 		<AndroidResource Include="Platforms\Android\Resources\mipmap-xxxhdpi\appicon.png" />
 
+		<!-- Splash Screen Drawable -->
+
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185"/>
 		
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-		<MauiImage Include="Resources\Splash\pea_amr_intro.png" />
+		<MauiSplashScreen Include="Resources\Splash\pea_amr_intro_splash.png" BaseSize="3840,2160" Color="#000000" />
 	</ItemGroup>
 
 	<ItemGroup>
