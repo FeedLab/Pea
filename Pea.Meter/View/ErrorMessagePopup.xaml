@@ -3,12 +3,13 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.ErrorMessagePopup">
 
     <VerticalStackLayout Padding="20" Spacing="15" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="300">
 
         <!-- Error Label -->
-        <Label Text="Error"
+        <Label Text="{x:Static properties:AppResources.Error}"
                TextColor="DarkRed"
                FontSize="20"
                FontAttributes="Bold"
@@ -23,7 +24,7 @@
                LineBreakMode="WordWrap"/>
 
         <!-- Close Button -->
-        <buttons:SfButton Text="Close"
+        <buttons:SfButton Text="{x:Static properties:AppResources.Close}"
                           Command="{Binding CloseCommand}"
                           WidthRequest="100"
                           HorizontalOptions="Center"/>

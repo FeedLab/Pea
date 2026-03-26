@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.CustomerProfileView">
 
     <ContentView.Resources>
@@ -60,7 +61,7 @@
                                    TabWidthMode="SizeToContent">
 
                     <!-- Personal Information Tab -->
-                    <tabView:SfTabItem Header="Personal">
+                    <tabView:SfTabItem Header="{x:Static properties:AppResources.Personal}">
                         <ScrollView Padding="20">
                             <VerticalStackLayout Spacing="12">
 

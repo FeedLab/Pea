@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.Components.TouVsFlatRateView.FlatRateCalculationResult">
     <Border Stroke="LightGray"
             StrokeThickness="0"
@@ -24,7 +25,7 @@
                 VerticalOptions="Start" />
 
             <!-- Title -->
-            <Label Text="Electricity Tariff Comparison Summary"
+            <Label Text="{x:Static properties:AppResources.ElectricityTariffComparisonSummary}"
                    FontSize="20"
                    FontAttributes="Bold"
                    TextColor="Black"
@@ -32,19 +33,19 @@
 
             <!-- Intro -->
             <Label
-                Text="A comparison between the Time-of-Use (TOU) tariff and the Flat Rate tariff shows the financial impact under the current consumption pattern."
-                FontSize="14"
-                TextColor="DimGray"
+                Text="{x:Static properties:AppResources.FlatRateAComparisonBetweenTheTimeOfUse}"
+                FontSize="16"
+                TextColor="Black"
                 LineBreakMode="WordWrap" />
 
             <!-- Key figures with mixed styles -->
             <Label>
                 <Label.FormattedText>
                     <FormattedString>
-                        <Span Text="• TOU total cost: " FontSize="14" TextColor="Black" />
+                        <Span Text="{x:Static properties:AppResources.TOUTotalCost}" FontSize="14" TextColor="Black" />
                         <Span Text="{Binding TouTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
                               FontAttributes="Bold" TextColor="Crimson" />
-                        <Span Text="&#10;• Flat rate total cost: " FontSize="14" TextColor="Black" />
+                        <Span Text="{x:Static properties:AppResources._10FlatRateTotalCost}" FontSize="14" TextColor="Black" />
                         <Span Text="{Binding FlatRateTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
                               FontAttributes="Bold" TextColor="ForestGreen" />
                     </FormattedString>
@@ -57,15 +58,15 @@
                    LineBreakMode="WordWrap">
                 <Label.FormattedText>
                     <FormattedString>
-                        <Span Text="This means the TOU tariff is "
+                        <Span Text="{x:Static properties:AppResources.ThisMeansTheTOUTariffIs}"
                               TextColor="Black" />
                         <Span Text="{Binding DiffInCurrency, StringFormat='{}{0:N0}'}"
                               TextColor="ForestGreen" />
-                        <Span Text=" THB, more expensive, representing a "
+                        <Span Text="{x:Static properties:AppResources.THBMoreExpensiveRepresentingA}"
                               TextColor="Black" />
                         <Span Text="{Binding DiffInPercent, StringFormat='{}{0:n1}'}"
                               TextColor="ForestGreen" />
-                        <Span Text="% higher cost compared to the Flat Rate option."
+                        <Span Text="{x:Static properties:AppResources.HigherCostComparedToTheFlatRateOption}"
                               TextColor="Black" />
                     </FormattedString>
                 </Label.FormattedText>
@@ -73,7 +74,7 @@
 
             <!-- Conclusion -->
             <Label
-                Text="The result indicates significant electricity usage during peak-rate hours, where TOU pricing is higher. Unless consumption shifts to off-peak periods, the Flat Rate tariff remains the more cost-efficient choice."
+                Text="{x:Static properties:AppResources.FlatRateInConclusionBased}"
                 FontSize="14"
                 TextColor="DimGray"
                 LineBreakMode="WordWrap" />

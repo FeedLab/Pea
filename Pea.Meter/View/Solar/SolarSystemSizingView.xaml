@@ -269,7 +269,7 @@
                 <chart:SfCartesianChart.YAxes>
                     <chart:NumericalAxis>
                         <chart:NumericalAxis.Title>
-                            <chart:ChartAxisTitle Text="KWh Per Month" />
+                            <chart:ChartAxisTitle Text="{x:Static properties:AppResources.KWhPerMonth}" />
                         </chart:NumericalAxis.Title>
                         <chart:NumericalAxis.LabelStyle>
                             <chart:ChartAxisLabelStyle />

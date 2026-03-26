@@ -2,6 +2,7 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.LoadingPage"
              Shell.NavBarIsVisible="False"
              BackgroundColor="Black">
@@ -16,6 +17,6 @@
             IsRunning="True"
             HorizontalOptions="Center"
             VerticalOptions="Center" />
-        <Label Text="Loading..." Margin="0,20,0,0" />
+        <Label Text="{x:Static properties:AppResources.Loading}" Margin="0,20,0,0" />
     </Grid>
 </ContentPage>

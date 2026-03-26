@@ -6,6 +6,7 @@
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:view="using:Pea.Meter.View"
              xmlns:components="clr-namespace:Pea.Meter.View.Components"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.InfoView">
     <ContentView.Resources>
         <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
@@ -103,13 +104,13 @@
                     <chart:SfCartesianChart.YAxes>
                         <chart:NumericalAxis>
                             <chart:NumericalAxis.Title>
-                                <chart:ChartAxisTitle Text="KWh per 15 minute" />
+                                <chart:ChartAxisTitle Text="{x:Static properties:AppResources.KWhPer15Minute}" />
                             </chart:NumericalAxis.Title>
                         </chart:NumericalAxis>
                     </chart:SfCartesianChart.YAxes>
 
                     <chart:SplineSeries ItemsSource="{Binding MeterData}"
-                                        Label="Daily"
+                                        Label="{x:Static properties:AppResources.Daily}"
                                         XBindingPath="PeriodStart"
                                         YBindingPath="Total"
                                         Fill="Red"
@@ -118,7 +119,7 @@
                                         EnableTooltip="True" />
 
                     <chart:SplineSeries ItemsSource="{Binding MeterDataAverage1}"
-                                        Label="Average usage (Yesterday)"
+                                        Label="{x:Static properties:AppResources.AverageUsageYesterday}"
                                         XBindingPath="PeriodStart"
                                         YBindingPath="Total"
                                         Fill="Orange"
@@ -127,7 +128,7 @@
                                         EnableTooltip="True" />
 
                     <chart:SplineSeries ItemsSource="{Binding MeterDataAverage7}"
-                                        Label="Average usage (7 days)"
+                                        Label="{x:Static properties:AppResources.AverageUsage7Days}"
                                         XBindingPath="PeriodStart"
                                         YBindingPath="Total"
                                         Fill="Blue"
@@ -136,7 +137,7 @@
                                         EnableTooltip="True" />
 
                     <chart:SplineSeries ItemsSource="{Binding MeterDataAverage30}"
-                                        Label="Average usage (30 days)"
+                                        Label="{x:Static properties:AppResources.AverageUsage30Days}"
                                         XBindingPath="PeriodStart"
                                         YBindingPath="Total"
                                         Fill="Green"

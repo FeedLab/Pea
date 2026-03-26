@@ -5,6 +5,7 @@
              xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
              xmlns:components="clr-namespace:Pea.Meter.Components"
              xmlns:touVsFlatRateView="clr-namespace:Pea.Meter.Components.TouVsFlatRateView"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.TouVsFlatRateView">
 
     <VerticalStackLayout
@@ -17,8 +18,8 @@
             <components:DatePickerComponent
                 x:Name="StartDatePicker"
                 Glyph="&#x1F4C6;"
-                Label="Start Date - "
-                HeaderText="Start date"
+                Label="{x:Static properties:AppResources.StartDate_dash}"
+                HeaderText="{x:Static properties:AppResources.StartDate}"
                 SelectedDate="{Binding StartDate}"
                 MinimumDate="{Binding StartTimePickerMinimumDate}"
                 MaximumDate="{Binding StartTimePickerMaximumDate}"
@@ -28,8 +29,8 @@
             <components:DatePickerComponent
                 x:Name="EndDatePicker"
                 Glyph="&#x1F4C6;"
-                Label="End Date - "
-                HeaderText="End date"
+                Label="{x:Static properties:AppResources.EndDate_dash}"
+                HeaderText="{x:Static properties:AppResources.EndDate}"
                 SelectedDate="{Binding EndDate}"
                 MinimumDate="{Binding EndTimePickerMinimumDate}"
                 MaximumDate="{Binding EndTimePickerMaximumDate}"

@@ -12,6 +12,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AComparisonBetweenTheTimeOfUseTOUTariffAndTheFlatRateTariffShowsTheFinancialImpactUnderTheCurrentConsumptionPattern" xml:space="preserve">
+    <value>A comparison between the Time-of-Use (TOU) tariff and the Flat Rate tariff shows the financial impact under the current consumption pattern.</value>
+  </data>
   <data name="AllHistoricReadings" xml:space="preserve">
     <value>All Historic Readings</value>
   </data>
@@ -33,8 +36,17 @@
   <data name="Battery" xml:space="preserve">
     <value>Battery</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
   <data name="ComprehensiveDiagnosticTestingOil" xml:space="preserve">
     <value>Comprehensive diagnostic testing, oil analysis, and preventative repairs to ensure grid stability and peak electrical efficiency</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>Configuration</value>
   </data>
   <data name="CostCalculation" xml:space="preserve">
     <value>Cost Calculation</value>
@@ -42,8 +54,23 @@
   <data name="Customer" xml:space="preserve">
     <value>Customer</value>
   </data>
+  <data name="CustomerProfile" xml:space="preserve">
+    <value>Customer Profile</value>
+  </data>
+  <data name="Daily" xml:space="preserve">
+    <value>Daily</value>
+  </data>
+  <data name="ElectricityTariffComparisonSummary" xml:space="preserve">
+    <value>Electricity Tariff Comparison Summary</value>
+  </data>
   <data name="ElectronicBilling" xml:space="preserve">
     <value>Electronic Billing</value>
+  </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>End date</value>
+  </data>
+  <data name="EndDate_dash" xml:space="preserve">
+    <value>End Date - </value>
   </data>
   <data name="EnergyConsumptionInKWPerDay" xml:space="preserve">
     <value>Energy consumption in KW per Day</value>
@@ -51,11 +78,17 @@
   <data name="EnergyConsumptionInKWPerHour" xml:space="preserve">
     <value>Energy consumption in KW per Hour</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
   <data name="EstimationOfSolarArraySize" xml:space="preserve">
     <value>Estimation Of Solar Array Size</value>
   </data>
   <data name="FlatRate" xml:space="preserve">
     <value>FlatRate</value>
+  </data>
+  <data name="FlatRateInConclusionBased" xml:space="preserve">
+    <value>The result indicates significant electricity usage during peak-rate hours, where TOU pricing is higher. Unless consumption shifts to off-peak periods, the Flat Rate tariff remains the more cost-efficient choice.</value>
   </data>
   <data name="FlatRateSolar" xml:space="preserve">
     <value>FlatRate Solar</value>
@@ -63,8 +96,26 @@
   <data name="GoPaperlessInThailand" xml:space="preserve">
     <value>Go paperless in Thailand! Save time and trees by getting secure monthly invoices sent to your inbox.</value>
   </data>
+  <data name="HigherCostComparedToTheFlatRateOption" xml:space="preserve">
+    <value>% higher cost compared to the Flat Rate option.</value>
+  </data>
   <data name="Id" xml:space="preserve">
     <value>Id</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="KWhPer15Minute" xml:space="preserve">
+    <value>KWh per 15 minute</value>
+  </data>
+  <data name="KWhPerMonth" xml:space="preserve">
+    <value>KWh Per Month</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading...</value>
   </data>
   <data name="MainTitle" xml:space="preserve">
     <value>PEA Electric Meter</value>
@@ -72,17 +123,29 @@
   <data name="MeterNumber" xml:space="preserve">
     <value>Meter</value>
   </data>
+  <data name="Minimum6Characters" xml:space="preserve">
+    <value>Minimum 6 characters</value>
+  </data>
   <data name="OffPeek" xml:space="preserve">
     <value>OffPeek</value>
   </data>
   <data name="OffPeekSolar" xml:space="preserve">
     <value>OffPeek Solar</value>
   </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement" xml:space="preserve">
     <value>{OnIdiom Desktop='Transformer Lifecycle Management', Default='Transformer Management'}</value>
   </data>
   <data name="OverviewPerDay" xml:space="preserve">
     <value>Overview Per Day</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PEA" xml:space="preserve">
+    <value>PEA</value>
   </data>
   <data name="PEASOLAR" xml:space="preserve">
     <value>PEA SOLAR</value>
@@ -93,11 +156,32 @@
   <data name="PeekSolar" xml:space="preserve">
     <value>Peek Solar</value>
   </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Personal</value>
+  </data>
+  <data name="PleaseLogin" xml:space="preserve">
+    <value>Please login</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>Quit</value>
+  </data>
   <data name="SmartServices" xml:space="preserve">
     <value>Smart Services</value>
   </data>
   <data name="Solar" xml:space="preserve">
     <value>Solar</value>
+  </data>
+  <data name="SolarSystemCalculationExperimental" xml:space="preserve">
+    <value>Solar System Calculation (Experimental)</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>Start date</value>
+  </data>
+  <data name="StartDate_dash" xml:space="preserve">
+    <value>Start Date - </value>
+  </data>
+  <data name="Statistics" xml:space="preserve">
+    <value>Statistics</value>
   </data>
   <data name="SustainableSolarForFarmsAndHomes" xml:space="preserve">
     <value>Sustainable solar for farms and homes. Powering irrigation and off-grid life 24/7 with zero emissions</value>
@@ -105,14 +189,41 @@
   <data name="SwiftPaperlessAndGlobalSecurelyAccess" xml:space="preserve">
     <value>Swift, paperless, and global. Securely access all our services from any device, anywhere on Earth</value>
   </data>
+  <data name="Tariff" xml:space="preserve">
+    <value>Tariff</value>
+  </data>
+  <data name="TariffCalculation" xml:space="preserve">
+    <value>Tariff Calculation</value>
+  </data>
+  <data name="THBMoreExpensiveRepresentingA" xml:space="preserve">
+    <value> THB, more expensive, representing a </value>
+  </data>
+  <data name="ThisMeansTheTOUTariffIs" xml:space="preserve">
+    <value>This means the TOU tariff is </value>
+  </data>
   <data name="Today" xml:space="preserve">
     <value>Today</value>
+  </data>
+  <data name="ToUComparisonBetweenTheTimeOfUseTOUTariff" xml:space="preserve">
+    <value>A comparison between the Time-of-Use (TOU) tariff and the Flat Rate tariff shows a clear financial advantage for TOU under the current consumption pattern.</value>
+  </data>
+  <data name="ToUInConclusionBased" xml:space="preserve">
+    <value>In conclusion, based on current data, the TOU tariff is the more economical choice, delivering meaningful cost savings without requiring changes in overall consumption.</value>
+  </data>
+  <data name="TOUTotalCost" xml:space="preserve">
+    <value>• TOU total cost: </value>
   </data>
   <data name="TransformerLifecycleManagement" xml:space="preserve">
     <value>Transformer Lifecycle Management</value>
   </data>
   <data name="TransformerManagement" xml:space="preserve">
     <value>Transformer Management</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="_10FlatRateTotalCost" xml:space="preserve">
+    <value>&amp;#10;• Flat rate total cost: </value>
   </data>
   <data name="_30DaysSummary" xml:space="preserve">
     <value>30 Days Summary</value>

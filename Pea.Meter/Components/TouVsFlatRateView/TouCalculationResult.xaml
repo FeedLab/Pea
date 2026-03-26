@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.Components.TouVsFlatRateView.TouCalculationResult">
     <Border
         HorizontalOptions="Center"
@@ -26,7 +27,7 @@
                 VerticalOptions="Start" />
 
             <!-- Title -->
-            <Label Text="Electricity Tariff Comparison Summary"
+            <Label Text="{x:Static properties:AppResources.ElectricityTariffComparisonSummary}"
                    FontSize="20"
                    FontAttributes="Bold"
                    TextColor="Black"
@@ -34,9 +35,9 @@
 
             <!-- Intro -->
             <Label
-                Text="A comparison between the Time-of-Use (TOU) tariff and the Flat Rate tariff shows a clear financial advantage for TOU under the current consumption pattern."
-                FontSize="14"
-                TextColor="DimGray"
+                Text="{x:Static properties:AppResources.ToUComparisonBetweenTheTimeOfUseTOUTariff}"
+                FontSize="16"
+                TextColor="Black"
                 LineBreakMode="WordWrap" />
 
             <!-- Key figures with mixed styles -->
@@ -46,7 +47,7 @@
                         <Span Text="• TOU total cost: " FontSize="14" TextColor="Black" />
                         <Span Text="{Binding TouTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
                               FontAttributes="Bold" TextColor="ForestGreen" />
-                        <Span Text="&#10;• Flat rate total cost: " FontSize="14" TextColor="Black" />
+                        <Span Text="&#10;• Flat rate total cost: " TextColor="Black" />
                         <Span Text="{Binding FlatRateTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
                               FontAttributes="Bold" TextColor="Crimson" />
                     </FormattedString>
@@ -75,7 +76,7 @@
 
             <!-- Conclusion -->
             <Label
-                Text="In conclusion, based on current data, the TOU tariff is the more economical choice, delivering meaningful cost savings without requiring changes in overall consumption."
+                Text="{x:Static properties:AppResources.ToUInConclusionBased}"
                 FontSize="14"
                 TextColor="Black"
                 LineBreakMode="WordWrap" />

@@ -35,7 +35,7 @@
 
             <HorizontalStackLayout
                 Grid.Row="1"
-                Margin="48,12,0,8">
+                Margin="32,8,0,8">
                 <sliders:SfSwitch
                     x:Name="Switch"
                     IsOn="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=IsOn, Mode=TwoWay}" />

@@ -86,7 +86,7 @@
                                 MinimumDate="{Binding CurrentTimePickerMinimumDate}"      
                                 OkButtonClicked="OnSelectedDatePickerOkButtonClicked">
                                 <picker:SfDatePicker.HeaderView>
-                                    <picker:PickerHeaderView Text="Start date" Height="40" />
+                                    <picker:PickerHeaderView Text="{x:Static properties:AppResources.StartDate}" Height="40" />
                                 </picker:SfDatePicker.HeaderView>
 
                                 <picker:SfDatePicker.FooterView>
