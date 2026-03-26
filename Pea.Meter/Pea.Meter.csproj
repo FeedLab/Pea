@@ -51,7 +51,12 @@
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\pea_raw.png" ForegroundScale="1" />
 
-
+		<!-- Android Platform-Specific Icons -->
+		<AndroidResource Include="Platforms\Android\Resources\mipmap-mdpi\appicon.png" />
+		<AndroidResource Include="Platforms\Android\Resources\mipmap-hdpi\appicon.png" />
+		<AndroidResource Include="Platforms\Android\Resources\mipmap-xhdpi\appicon.png" />
+		<AndroidResource Include="Platforms\Android\Resources\mipmap-xxhdpi\appicon.png" />
+		<AndroidResource Include="Platforms\Android\Resources\mipmap-xxxhdpi\appicon.png" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -62,6 +67,7 @@
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+		<MauiImage Include="Resources\Splash\pea_amr_intro.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -113,7 +119,6 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Splash\pea_splash.png" />
-	  <MauiSplashScreen Include="Resources\Splash\pea_splash.png" Color="#0A1628" ForegroundScale="1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -18,8 +18,7 @@
             <chart:SfCartesianChart.Legend>
                 <chart:ChartLegend>
                     <chart:ChartLegend.LabelStyle>
-                        <chart:ChartLegendLabelStyle TextColor="Blue" Margin="5" FontSize="16"
-                                                     FontAttributes="None" />
+                        <StaticResource Key="DefaultChartLegendLabelStyle" />
                     </chart:ChartLegend.LabelStyle>
                 </chart:ChartLegend>
             </chart:SfCartesianChart.Legend>
@@ -86,7 +85,7 @@
                                 MinimumDate="{Binding CurrentTimePickerMinimumDate}"      
                                 OkButtonClicked="OnSelectedDatePickerOkButtonClicked">
                                 <picker:SfDatePicker.HeaderView>
-                                    <picker:PickerHeaderView Text="Start date" Height="40" />
+                                    <picker:PickerHeaderView Text="{x:Static properties:AppResources.StartDate}" Height="40" />
                                 </picker:SfDatePicker.HeaderView>
 
                                 <picker:SfDatePicker.FooterView>

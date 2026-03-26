@@ -1,0 +1,230 @@
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AComparisonBetweenTheTimeOfUseTOUTariffAndTheFlatRateTariffShowsTheFinancialImpactUnderTheCurrentConsumptionPattern">
+    <value>En jämförelse mellan Tidsstyrd tariff (TOU) och Fast tariff visar den ekonomiska effekten under det nuvarande konsumtionsmönstret.</value>
+  </data>
+  <data name="AllHistoricReadings">
+    <value>Alla historiska mätvärden</value>
+  </data>
+  <data name="AllMeterReadings">
+    <value>Alla mätarsavläsningar</value>
+  </data>
+  <data name="AverageUsage30Days">
+    <value>Genomsnittlig förbrukning (30 dagar)</value>
+  </data>
+  <data name="AverageUsage7Days">
+    <value>Genomsnittlig förbrukning (7 dagar)</value>
+  </data>
+  <data name="AverageUsageYesterday">
+    <value>Genomsnittlig förbrukning (Igår)</value>
+  </data>
+  <data name="BathPerMonth">
+    <value>Bath per månad</value>
+  </data>
+  <data name="Battery">
+    <value>Batteri</value>
+  </data>
+  <data name="Cancel">
+    <value>Avbryt</value>
+  </data>
+  <data name="Close">
+    <value>Stäng</value>
+  </data>
+  <data name="ComprehensiveDiagnosticTestingOil">
+    <value>Omfattande diagnostiska tester, oljeanalys och förebyggande reparationer för att säkerställa nätstabilitet och maximal elektrisk effektivitet</value>
+  </data>
+  <data name="Configuration">
+    <value>Konfiguration</value>
+  </data>
+  <data name="CostCalculation">
+    <value>Kostnadsberäkning</value>
+  </data>
+  <data name="Customer">
+    <value>Kund</value>
+  </data>
+  <data name="CustomerProfile">
+    <value>Kundprofil</value>
+  </data>
+  <data name="Daily">
+    <value>Daglig</value>
+  </data>
+  <data name="ElectricityTariffComparisonSummary">
+    <value>Sammanställning av jämförelse av eltariffer</value>
+  </data>
+  <data name="ElectronicBilling">
+    <value>Elektronisk fakturering</value>
+  </data>
+  <data name="EndDate">
+    <value>Slutdatum</value>
+  </data>
+  <data name="EndDate_dash">
+    <value>Slutdatum - </value>
+  </data>
+  <data name="EnergyConsumptionInKWPerDay">
+    <value>Energiförbrukning i KW per dag</value>
+  </data>
+  <data name="EnergyConsumptionInKWPerHour">
+    <value>Energiförbrukning i KW per timme</value>
+  </data>
+  <data name="Error">
+    <value>Fel</value>
+  </data>
+  <data name="EstimationOfSolarArraySize">
+    <value>Beräkning av solpanelsystemets storlek</value>
+  </data>
+  <data name="FlatRate">
+    <value>Fast pris</value>
+  </data>
+  <data name="FlatRateInConclusionBased">
+    <value>Resultatet indikerar betydande elförbrukning under högprismodulen, där TOU-prissättningen är högre. Om inte förbrukningen förflyttas till lågtider, förblir fast pristariffen det mer kostnadseffektiva valet.</value>
+  </data>
+  <data name="FlatRateSolar">
+    <value>Fast pris PV</value>
+  </data>
+  <data name="GoPaperlessInThailand">
+    <value>Gå papperslös i Thailand! Spara tid och träd genom att få säkra månadsfakturor skickade till din inkorg.</value>
+  </data>
+  <data name="HigherCostComparedToTheFlatRateOption">
+    <value>% högre kostnad jämfört med fast prisalternativet.</value>
+  </data>
+  <data name="Id">
+    <value>ID</value>
+  </data>
+  <data name="Info">
+    <value>Info</value>
+  </data>
+  <data name="KWhPer15Minute">
+    <value>KWh per 15 minut</value>
+  </data>
+  <data name="KWhPerMonth">
+    <value>KWh per månad</value>
+  </data>
+  <data name="Language">
+    <value>Språk</value>
+  </data>
+  <data name="Loading">
+    <value>Laddar...</value>
+  </data>
+  <data name="MainTitle">
+    <value>PEA elmätare</value>
+  </data>
+  <data name="MeterNumber">
+    <value>Mätare</value>
+  </data>
+  <data name="Minimum6Characters">
+    <value>Minst 6 tecken</value>
+  </data>
+  <data name="OffPeek">
+    <value>Lågtid</value>
+  </data>
+  <data name="OffPeekSolar">
+    <value>Lågpris PV</value>
+  </data>
+  <data name="OK">
+    <value>OK</value>
+  </data>
+  <data name="OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement">
+    <value>{På svenska skrivbordet='Transformator Livscykelhantering', Standard='Transformatorhantering'}</value>
+  </data>
+  <data name="OverviewPerDay">
+    <value>Översikt per dag</value>
+  </data>
+  <data name="Password">
+    <value>Lösenord</value>
+  </data>
+  <data name="PEA">
+    <value>PEA</value>
+  </data>
+  <data name="PEASOLAR">
+    <value>PEA SOLAR</value>
+  </data>
+  <data name="Peek">
+    <value>Högpris</value>
+  </data>
+  <data name="PeekSolar">
+    <value>Högpris PV</value>
+  </data>
+  <data name="Personal">
+    <value>Personlig</value>
+  </data>
+  <data name="PleaseLogin">
+    <value>Vänligen logga in</value>
+  </data>
+  <data name="Quit">
+    <value>Avsluta</value>
+  </data>
+  <data name="SmartServices">
+    <value>Smarta tjänster</value>
+  </data>
+  <data name="Solar">
+    <value>PV</value>
+  </data>
+  <data name="SolarSystemCalculationExperimental">
+    <value>Beredning av solsystemets utforming (experimentell)</value>
+  </data>
+  <data name="StartDate">
+    <value>Startdatum</value>
+  </data>
+  <data name="StartDate_dash">
+    <value>Startdatum - </value>
+  </data>
+  <data name="Statistics">
+    <value>Statistik</value>
+  </data>
+  <data name="SustainableSolarForFarmsAndHomes">
+    <value>Hållbar solenergi för gårdar och hem. Driver bevattning och off-grid liv dygnet runt utan utsläpp</value>
+  </data>
+  <data name="SwiftPaperlessAndGlobalSecurelyAccess">
+    <value>Snabb, papperslös och global tjänster. Kom åt alla våra tjänster säkert från vilken enhet som helst, var som helst på jorden</value>
+  </data>
+  <data name="Tariff">
+    <value>Tariff</value>
+  </data>
+  <data name="TariffCalculation">
+    <value>Tariffberäkning</value>
+  </data>
+  <data name="THBMoreExpensiveRepresentingA">
+    <value> THB, dyrare, vilket representerar en </value>
+  </data>
+  <data name="ThisMeansTheTOUTariffIs">
+    <value>Detta betyder att TOU-tariffen är </value>
+  </data>
+  <data name="Today">
+    <value>Idag</value>
+  </data>
+  <data name="ToUComparisonBetweenTheTimeOfUseTOUTariff">
+    <value>En jämförelse mellan Time-of-Use (TOU) tariffen och fast pris tariffen visar en tydlig finansiell fördel för TOU under nuvarande förbrukningsmönster.</value>
+  </data>
+  <data name="ToUInConclusionBased">
+    <value>Sammanfattningsvis, baserat på nuvarande data, är TOU-tariffen det mer ekonomiska valet, vilket ger betydande kostnadsbesparingar utan att kräva förändringar i den totala förbrukningen.</value>
+  </data>
+  <data name="TOUTotalCost">
+    <value>• TOU totalkostnad: </value>
+  </data>
+  <data name="TransformerLifecycleManagement">
+    <value>Transformator Livscykelhantering</value>
+  </data>
+  <data name="TransformerManagement">
+    <value>Transformatorhantering</value>
+  </data>
+  <data name="Username">
+    <value>Användarnamn</value>
+  </data>
+  <data name="_10FlatRateTotalCost">
+    <value>&amp;#10;• Fast pris totalkostnad: </value>
+  </data>
+  <data name="_30DaysSummary">
+    <value>30 Dagars Översikt</value>
+  </data>
+</root>

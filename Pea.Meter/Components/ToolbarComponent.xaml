@@ -3,6 +3,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:sfEffects="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.Components.ToolbarComponent"
              x:Name="Root">
 
@@ -15,7 +16,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Column="0" Margin="0,0,8,0" Text="&#xf013;"
-               ToolTipProperties.Text="Configuration"
+               ToolTipProperties.Text="{x:Static properties:AppResources.Configuration}"
                Style="{StaticResource IconLabel}">
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnConfigurationTapped" />
@@ -34,7 +35,7 @@
             Source="{Binding FlagSource, Source={x:Reference Root}}"
             HeightRequest="28"
             Aspect="AspectFit"
-            ToolTipProperties.Text="Language">
+            ToolTipProperties.Text="{x:Static properties:AppResources.Language}">
             <Image.Shadow>
                 <Shadow Radius="15"
                         Opacity="0.6"
@@ -48,7 +49,7 @@
 
 
         <Label Grid.Column="2" Margin="40,0,0,0" Text="&#xf2f5;"
-               ToolTipProperties.Text="Quit"
+               ToolTipProperties.Text="{x:Static properties:AppResources.Quit}"
                Style="{StaticResource IconLabel}">
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnQuitTapped" />

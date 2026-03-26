@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.LoginPopup">
 
     <Grid WidthRequest="900">
@@ -33,19 +34,19 @@
                HorizontalOptions="Center"/>
 
         <!-- Login text -->
-        <Label Text="Please login"
+        <Label Text="{x:Static properties:AppResources.PleaseLogin}"
                TextColor="Black"
                FontSize="16"
                HorizontalOptions="Center"/>
        
         <!-- User input field -->
-        <syncfusion:SfTextInputLayout Hint="Username"
+        <syncfusion:SfTextInputLayout Hint="{x:Static properties:AppResources.Username}"
                                       ContainerType="Outlined"
                                       OutlineCornerRadius="8"
                                       FocusedStrokeThickness="4"
                                       UnfocusedStrokeThickness="2"
                                       WidthRequest="350"
-                                      HelperText="Minimum 6 characters"
+                                      HelperText="{x:Static properties:AppResources.Minimum6Characters}"
                                       CharMaxLength="20"
                                       ShowCharCount="True">
                
@@ -63,13 +64,13 @@
         </syncfusion:SfTextInputLayout>
 
         <!-- Password input field -->
-        <syncfusion:SfTextInputLayout Hint="Password"
+        <syncfusion:SfTextInputLayout Hint="{x:Static properties:AppResources.Password}"
                                       ContainerType="Outlined"
                                       OutlineCornerRadius="8"
                                       FocusedStrokeThickness="4"
                                       UnfocusedStrokeThickness="2"
                                       WidthRequest="350"
-                                      HelperText="Minimum 6 characters"
+                                      HelperText="{x:Static properties:AppResources.Minimum6Characters}"
                                       EnablePasswordVisibilityToggle="True"
                                       CharMaxLength="50">
                
@@ -94,10 +95,10 @@
         
         <!-- OK and Cancel buttons -->
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-            <buttons:SfButton Text="OK"
+            <buttons:SfButton Text="{x:Static properties:AppResources.OK}"
                             Command="{Binding OkCommand}"
                             WidthRequest="100"/>
-            <buttons:SfButton Text="Cancel"
+            <buttons:SfButton Text="{x:Static properties:AppResources.Cancel}"
                             Command="{Binding CancelCommand}"
                             WidthRequest="100"/>
         </HorizontalStackLayout>
