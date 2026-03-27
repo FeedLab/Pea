@@ -7,7 +7,8 @@
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              xmlns:buttons="http://schemas.syncfusion.com/maui"
              x:Class="Pea.Meter.Components.Configuration.DataImportComponent"
-             x:Name="Root">
+             x:Name="Root"
+             HorizontalOptions="FillAndExpand">
 
     <VerticalStackLayout
         Spacing="12"
@@ -25,7 +26,7 @@
             VerticalOptions="Start"
             Text="Use the calendar below to pick the day you want your records to start." />
 
-        <VerticalStackLayout Spacing="8">
+        <VerticalStackLayout Spacing="0">
             <components:DatePickerComponent
                 x:Name="StartDatePicker"
                 Glyph="{x:Static local:Glyphs.Calendar}"
@@ -36,21 +37,27 @@
                 MinimumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMinimumDate}"
                 MaximumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMaximumDate}"
                 DateSelected="OnStartDateSelected"
-                Margin="0,12,0,0" />
+                Margin="0,-24,0,4" />
 
             <!-- Warning Message -->
-            <HorizontalStackLayout Spacing="8">
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
                 <Label
+                    Grid.Column="0"
                     Text="⚠️"
                     FontSize="20"
                     VerticalOptions="Start" />
 
                 <Label
+                    Grid.Column="1"
                     LineBreakMode="WordWrap"
                     FontFamily="OpenSansRegular"
-                    FontSize="14"
+                    FontSize="13"
                     TextColor="Black"
-                    HorizontalOptions="FillAndExpand"
                     VerticalOptions="Start">
                     <Label.FormattedText>
                         <FormattedString>
@@ -64,10 +71,8 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-            </HorizontalStackLayout>
+            </Grid>
         </VerticalStackLayout>
-        />
-
 
         <!-- <Label -->
         <!--     LineBreakMode="WordWrap" -->

@@ -90,8 +90,8 @@ public class HistoricDataBackgroundService
 
         var startDate = DateTime.Now.Date.AddDays(-1);
         var startDateOldest = await GetOldestPeriodStartAsync(cancellationToken, repository);
-        var maxDaysToTry = 365 * 2; // Safety limit: don't go back more than 2 years
-        var oldestDateToImport = startDate.AddDays(-maxDaysToTry);
+        var oldestDateToImport = storageService.ConfigurationDataImportModel.EarliestImportedDate;
+        
         logger.LogInformation(
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
             startDate, "N/A");
@@ -107,21 +107,11 @@ public class HistoricDataBackgroundService
                 break;
             }
 
-            var historyLengthTs = DateTime.Now.Date - targetDate;
-            if (historyLengthTs.TotalDays > maxDaysToTry)
-            {
-                logger.LogWarning(
-                    "Reached maximum history length of {MaxDays} days. Stopping import to avoid excessive data fetching.",
-                    maxDaysToTry);
-
-                break;
-            }
-
             try
             {
                 // Check if data already exists for this date in the database
-                // var hasExistingData = await repository.HasReadingsForDateAsync(targetDate, cancellationToken);
-                if (storageService.DailyAggregated.Any(r => r.PeriodStart == targetDate))
+                var hasExistingData = await repository.HasReadingsForDateAsync(targetDate, cancellationToken);
+                if (hasExistingData)
                 {
                     logger.LogInformation("Data already exists for {Date}, skipping",
                         targetDate.ToString("yyyy-MM-dd"));

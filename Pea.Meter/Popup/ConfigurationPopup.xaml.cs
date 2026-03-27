@@ -13,7 +13,8 @@ namespace Pea.Meter.Popup;
 public enum SelectedTab
 {
     Tariff,
-    Language
+    Language,
+    DataImport
 };
 
 public partial class ConfigurationPopup : Popup<bool>
@@ -33,6 +34,10 @@ public partial class ConfigurationPopup : Popup<bool>
         else if (selectedTab == SelectedTab.Language)
         {
             TabView.SelectedIndex = TabView.Items.IndexOf(Language);
+        }
+        else if (selectedTab == SelectedTab.DataImport)
+        {
+            TabView.SelectedIndex = TabView.Items.IndexOf(DataImport);
         }
         else
         {
@@ -110,9 +115,10 @@ public partial class ConfigurationPopup : Popup<bool>
         {
             "Tariff" => TariffImage,
             "Language" => LanguageImage,
+            "DataImport" => DataImportImage,
             _ => throw new Exception("Unknown tab")
         };
-        
+
         return image;
     }
 

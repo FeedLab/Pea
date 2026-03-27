@@ -17,7 +17,7 @@
         <!-- Item 1 -->
         <components:ServiceBoxComponent 
             Grid.Column="0"
-            ImageSource="pea_e_bill.png"
+            ImageSource="pay_your_bill.png"
             Title="{x:Static properties:AppResources.ElectronicBilling}"
             Description="{x:Static properties:AppResources.GoPaperlessInThailand}"
             Url="https://eservice.pea.co.th/ebill" />
@@ -25,7 +25,7 @@
         <!-- Item 2 -->
         <components:ServiceBoxComponent 
             Grid.Column="1"
-            ImageSource="pea_e_service.png"
+            ImageSource="e_service_everywhere.png"
             Title="{x:Static properties:AppResources.SmartServices}"
             Description="{x:Static properties:AppResources.SwiftPaperlessAndGlobalSecurelyAccess}"
             Url="https://sabuyservice.pea.co.th/" />
@@ -33,7 +33,7 @@
         <!-- Item 3 -->
         <components:ServiceBoxComponent 
             Grid.Column="2"
-            ImageSource="pea_solar.png"
+            ImageSource="green_energy_with_solar.png"
             Title="{x:Static properties:AppResources.PEASOLAR}"
             Description="{x:Static properties:AppResources.SustainableSolarForFarmsAndHomes}"
             Url="https://peasolar.pea.co.th/" />
@@ -41,7 +41,7 @@
         <!-- Item 4 -->
         <components:ServiceBoxComponent 
             Grid.Column="3"
-            ImageSource="pea_transformer.png"
+            ImageSource="transformer_lifecycle_management.png"
             Title="{OnIdiom Desktop={x:Static properties:AppResources.TransformerLifecycleManagement}, Default={x:Static properties:AppResources.TransformerManagement}}"
             Description="{x:Static properties:AppResources.ComprehensiveDiagnosticTestingOil}"
             Url="https://sabuyservice.pea.co.th/service/f54569de-88df-4188-1408-08dcb7573509" />

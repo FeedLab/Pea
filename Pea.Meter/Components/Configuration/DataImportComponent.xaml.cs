@@ -49,9 +49,13 @@ public partial class DataImportComponent : ContentView
 
             using var dbContext = dbContextFactory.CreateDbContext();
             var repository = new MeterReadingRepository(dbContext);
+            
             await repository.DeleteBeforeDateAsync(StartDate);
             logger.LogInformation("Data before {StartDate} has been deleted", StartDate);
 
+            await storageService.ResetHistoricalData();
+            logger.LogInformation("Historical data has been reset");
+            
             historicDataBackgroundService.TriggerImport(false);
             logger.LogInformation("Data import has been triggered");
         }

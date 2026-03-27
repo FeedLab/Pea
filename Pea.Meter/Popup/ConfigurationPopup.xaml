@@ -65,8 +65,14 @@
                 Opacity="0.85" />
             <Image
                 x:Name="LanguageImage"
-
                 Source="config_language.png"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                Aspect="AspectFit"
+                Opacity="0.0" />
+            <Image
+                x:Name="DataImportImage"
+                Source="configuration_data_import.png"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill"
                 Aspect="AspectFit"

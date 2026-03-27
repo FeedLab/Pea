@@ -8,15 +8,54 @@ namespace Pea.Data.Repositories;
 /// <summary>
 /// Repository implementation for meter readings
 /// </summary>
-public class MeterReadingRepository : IMeterReadingRepository
+public class MeterReadingRepository(PeaDbContext context) : IMeterReadingRepository
 {
-    private readonly PeaDbContext context;
-
-    public MeterReadingRepository(PeaDbContext context)
+    public async Task AddRangeUpsertAsync(IEnumerable<PeaMeterReading> readings,
+        CancellationToken cancellationToken = default)
     {
-        this.context = context;
-    }
+        var utcNow = DateTime.UtcNow;
+        var readingsList = readings.ToList();
 
+        // Get existing records by PeriodStart
+        var periodStarts = readingsList.Select(r => r.PeriodStart).ToList();
+        var existingEntities = await context.MeterReadings
+            .Where(m => periodStarts.Contains(m.PeriodStart))
+            .ToListAsync(cancellationToken);
+
+        var existingDict = existingEntities.ToDictionary(e => e.PeriodStart);
+
+        foreach (var reading in readingsList)
+        {
+            if (existingDict.TryGetValue(reading.PeriodStart, out var existingEntity))
+            {
+                // Update existing
+                existingEntity.PeriodEnd = reading.PeriodEnd;
+                existingEntity.RateA = reading.RateA;
+                existingEntity.RateB = reading.RateB;
+                existingEntity.RateC = reading.RateC;
+                existingEntity.Total = reading.Total;
+                existingEntity.UpdatedAt = utcNow;
+            }
+            else
+            {
+                // Insert new
+                var newEntity = new MeterReadingEntity
+                {
+                    PeriodStart = reading.PeriodStart,
+                    PeriodEnd = reading.PeriodEnd,
+                    RateA = reading.RateA,
+                    RateB = reading.RateB,
+                    RateC = reading.RateC,
+                    Total = reading.Total,
+                    CreatedAt = utcNow,
+                    UpdatedAt = utcNow
+                };
+                await context.MeterReadings.AddAsync(newEntity, cancellationToken);
+            }
+        }
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
 
     public async Task AddRangeAsync(IEnumerable<PeaMeterReading> readings, CancellationToken cancellationToken = default)
     {

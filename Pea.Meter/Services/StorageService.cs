@@ -237,6 +237,18 @@ public partial class StorageService : ObservableObject
         cancellationTokenSource?.Dispose();
     }
 
+    public async Task ResetHistoricalData()
+    {
+        AllMeterReadingsAsync.Clear();
+        
+        var context = dbContextFactory.CreateDbContext();
+        var meterReadingRepository = new MeterReadingRepository(context);
+        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
+        AllMeterReadingsAsync = readingsFromDb.ToObservableCollection();
+        
+        ProcessAggregations();
+    }
+
     private void ProcessAggregations()
     {
         HourlyAggregated.Clear();
