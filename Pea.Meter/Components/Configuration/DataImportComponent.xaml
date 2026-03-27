@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Pea.Meter.Components"
+             xmlns:local="clr-namespace:Pea.Meter"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
+             x:Class="Pea.Meter.Components.Configuration.DataImportComponent"
+             x:Name="Root">
+
+    <VerticalStackLayout
+        Spacing="12"
+        Margin="32">
+
+        <Label
+            FontAttributes="Bold"
+            Text="Ready to bring in your history?" />
+
+        <Label
+            LineBreakMode="WordWrap"
+            HorizontalOptions="Start"
+            VerticalOptions="Start"
+            Text="Use the calendar below to pick the day you want your records to start." />
+
+        <Label
+            LineBreakMode="WordWrap"
+            HorizontalOptions="Start"
+            VerticalOptions="Start"
+            Text="Important Note: Selecting a date will immediately start the process of bringing in your information. Please be aware that any data you have already added will be permanently removed to make room for the new history. This ensures your records stay organized and up to date." />
+
+        <components:DatePickerComponent
+            x:Name="StartDatePicker"
+            Glyph="{x:Static local:Glyphs.Calendar}"
+            TextColorGlyph="CadetBlue"
+            Label="{x:Static properties:AppResources.StartDate_dash}"
+            HeaderText="{x:Static properties:AppResources.StartDate}"
+            SelectedDate="{Binding Source={x:Reference Root}, Path=StartDate}"
+            MinimumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMinimumDate}"
+            MaximumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMaximumDate}"
+            DateSelected="OnStartDateSelected"
+            Margin="0,12,0,0" />
+    </VerticalStackLayout>
+</ContentView>

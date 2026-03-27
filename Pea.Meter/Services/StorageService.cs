@@ -27,8 +27,9 @@ public partial class StorageService : ObservableObject
     [ObservableProperty] private ObservableCollection<PeaMeterReading> monthlyAggregated = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> dailyPeriodReadings = [];
     
-    [ObservableProperty] private ConfigurationTariffModel? configurationTariffModel;
-    [ObservableProperty] private ConfigurationLanguageModel? configurationLanguageModel;
+    [ObservableProperty] private ConfigurationTariffModel configurationTariffModel;
+    [ObservableProperty] private ConfigurationLanguageModel configurationLanguageModel;
+    [ObservableProperty] private ConfigurationDataImportModel configurationDataImportModel;
 
     private readonly ILogger logger;
     private readonly PeaDbContextFactory dbContextFactory;
@@ -48,6 +49,7 @@ public partial class StorageService : ObservableObject
         
         ConfigurationTariffModel = ConfigurationTariffModel.Load();
         ConfigurationLanguageModel = ConfigurationLanguageModel.Load();
+        ConfigurationDataImportModel = ConfigurationDataImportModel.Load();
 
         try
         {

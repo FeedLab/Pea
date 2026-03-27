@@ -6,6 +6,7 @@
              xmlns:components="clr-namespace:Pea.Meter.Components"
              xmlns:touVsFlatRateView="clr-namespace:Pea.Meter.Components.TouVsFlatRateView"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
+             xmlns:local="clr-namespace:Pea.Meter"
              x:Class="Pea.Meter.View.TouVsFlatRateView">
 
     <VerticalStackLayout
@@ -17,7 +18,8 @@
             Margin="0,0,0,8">
             <components:DatePickerComponent
                 x:Name="StartDatePicker"
-                Glyph="&#x1F4C6;"
+                Glyph="{x:Static local:Glyphs.Calendar}"
+                TextColorGlyph="CadetBlue"
                 Label="{x:Static properties:AppResources.StartDate_dash}"
                 HeaderText="{x:Static properties:AppResources.StartDate}"
                 SelectedDate="{Binding StartDate}"
@@ -28,7 +30,8 @@
 
             <components:DatePickerComponent
                 x:Name="EndDatePicker"
-                Glyph="&#x1F4C6;"
+                Glyph="{x:Static local:Glyphs.Calendar}"
+                TextColorGlyph="CadetBlue"
                 Label="{x:Static properties:AppResources.EndDate_dash}"
                 HeaderText="{x:Static properties:AppResources.EndDate}"
                 SelectedDate="{Binding EndDate}"

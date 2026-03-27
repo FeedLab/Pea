@@ -20,6 +20,9 @@ public partial class DatePickerComponent : ContentView
     public static readonly BindableProperty GlyphProperty =
         BindableProperty.Create(nameof(Glyph), typeof(string), typeof(DatePickerComponent), "&#x1F4C6;");
 
+    public static readonly BindableProperty TextColorGlyphProperty =
+        BindableProperty.Create(nameof(TextColorGlyph), typeof(Color), typeof(DatePickerComponent), Colors.Black);
+
     public string Label
     {
         get => (string)GetValue(LabelProperty);
@@ -54,6 +57,12 @@ public partial class DatePickerComponent : ContentView
     {
         get => (string)GetValue(GlyphProperty);
         set => SetValue(GlyphProperty, value);
+    }
+
+    public Color TextColorGlyph
+    {
+        get => (Color)GetValue(TextColorGlyphProperty);
+        set => SetValue(TextColorGlyphProperty, value);
     }
 
     public event EventHandler<DateTime>? DateSelected;
