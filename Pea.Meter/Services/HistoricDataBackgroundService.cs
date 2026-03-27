@@ -60,9 +60,13 @@ public class HistoricDataBackgroundService
     /// <summary>
     /// Triggers the background import to start
     /// </summary>
-    public void TriggerImport()
+    public void TriggerImport(bool cancelPreviousImport = true)
     {
-        CancelImport();
+        if (cancelPreviousImport)
+        {
+            CancelImport();
+        }
+        
         TriggerImportTask();
     }
 

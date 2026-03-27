@@ -5,6 +5,7 @@
              xmlns:components="clr-namespace:Pea.Meter.Components"
              xmlns:local="clr-namespace:Pea.Meter"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
+             xmlns:buttons="http://schemas.syncfusion.com/maui"
              x:Class="Pea.Meter.Components.Configuration.DataImportComponent"
              x:Name="Root">
 
@@ -14,30 +15,78 @@
 
         <Label
             FontAttributes="Bold"
+            FontFamily="OpenSansRegular"
             Text="Ready to bring in your history?" />
 
         <Label
             LineBreakMode="WordWrap"
+            FontFamily="OpenSansRegular"
             HorizontalOptions="Start"
             VerticalOptions="Start"
             Text="Use the calendar below to pick the day you want your records to start." />
 
-        <Label
-            LineBreakMode="WordWrap"
-            HorizontalOptions="Start"
-            VerticalOptions="Start"
-            Text="Important Note: Selecting a date will immediately start the process of bringing in your information. Please be aware that any data you have already added will be permanently removed to make room for the new history. This ensures your records stay organized and up to date." />
+        <VerticalStackLayout Spacing="8">
+            <components:DatePickerComponent
+                x:Name="StartDatePicker"
+                Glyph="{x:Static local:Glyphs.Calendar}"
+                TextColorGlyph="CadetBlue"
+                Label="{x:Static properties:AppResources.StartDate_dash}"
+                HeaderText="{x:Static properties:AppResources.StartDate}"
+                SelectedDate="{Binding Source={x:Reference Root}, Path=StartDate}"
+                MinimumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMinimumDate}"
+                MaximumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMaximumDate}"
+                DateSelected="OnStartDateSelected"
+                Margin="0,12,0,0" />
 
-        <components:DatePickerComponent
-            x:Name="StartDatePicker"
-            Glyph="{x:Static local:Glyphs.Calendar}"
-            TextColorGlyph="CadetBlue"
-            Label="{x:Static properties:AppResources.StartDate_dash}"
-            HeaderText="{x:Static properties:AppResources.StartDate}"
-            SelectedDate="{Binding Source={x:Reference Root}, Path=StartDate}"
-            MinimumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMinimumDate}"
-            MaximumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMaximumDate}"
-            DateSelected="OnStartDateSelected"
-            Margin="0,12,0,0" />
+            <!-- Warning Message -->
+            <HorizontalStackLayout Spacing="8">
+                <Label
+                    Text="⚠️"
+                    FontSize="20"
+                    VerticalOptions="Start" />
+
+                <Label
+                    LineBreakMode="WordWrap"
+                    FontFamily="OpenSansRegular"
+                    FontSize="14"
+                    TextColor="Black"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="Start">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Important Note: " FontAttributes="Bold" />
+                            <Span
+                                Text="Selecting a date will immediately start the process of bringing in your information. " />
+                            <Span Text="Please be aware " FontAttributes="Bold" />
+                            <Span
+                                Text="that any data you have already added will be permanently removed to make room for the new history. " />
+                            <Span Text="This ensures your records stay organized and up to date." />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+        />
+
+
+        <!-- <Label -->
+        <!--     LineBreakMode="WordWrap" -->
+        <!--     HorizontalOptions="Start" -->
+        <!--     VerticalOptions="Start" -->
+        <!--     Text="Important Note: Selecting a date will immediately start the process of bringing in your information. Please be aware that any data you have already added will be permanently removed to make room for the new history. This ensures your records stay organized and up to date." /> -->
+
+
+        <buttons:SfButton
+            Margin="0,8,0,8"
+            Text="Start Importing Historical Data..."
+            Background="#EFFFEF"
+            TextColor="#002684"
+            Stroke="DarkGreen"
+            StrokeThickness="4"
+            CornerRadius="15"
+            EnableRippleEffect="True"
+            Clicked="OnStartImportClicked" />
+
+
     </VerticalStackLayout>
 </ContentView>

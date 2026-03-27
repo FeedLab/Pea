@@ -26,4 +26,13 @@ public interface IMeterReadingRepository
     /// Gets the oldest period start date
     /// </summary>
     Task<DateTime> GetOldestPeriodStartAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes all readings before a specific date
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task DeleteBeforeDateAsync(DateTime date, CancellationToken cancellationToken = default);
+
 }

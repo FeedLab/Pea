@@ -69,4 +69,12 @@ public class MeterReadingRepository : IMeterReadingRepository
         }
         return await context.MeterReadings.MinAsync(m => m.PeriodStart, cancellationToken);
     }
+    
+    public async Task DeleteBeforeDateAsync(DateTime date, CancellationToken cancellationToken = default)
+    {
+        await context.MeterReadings
+            .Where(m => m.PeriodStart < date)
+            .ExecuteDeleteAsync(cancellationToken);
+    }
+    
 }
