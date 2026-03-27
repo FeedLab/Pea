@@ -6,7 +6,8 @@
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.Components.PeaServicesView">
 
-    <Grid Margin="0,26" VerticalOptions="Fill">
+    <Grid 
+        VerticalOptions="Fill">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25*" />
             <ColumnDefinition Width="25*" />
@@ -17,6 +18,7 @@
         <!-- Item 1 -->
         <components:ServiceBoxComponent 
             Grid.Column="0"
+            Margin="16,0,16,0"
             ImageSource="pay_your_bill.png"
             Title="{x:Static properties:AppResources.ElectronicBilling}"
             Description="{x:Static properties:AppResources.GoPaperlessInThailand}"
@@ -25,6 +27,7 @@
         <!-- Item 2 -->
         <components:ServiceBoxComponent 
             Grid.Column="1"
+            Margin="16,0,16,0"
             ImageSource="e_service_everywhere.png"
             Title="{x:Static properties:AppResources.SmartServices}"
             Description="{x:Static properties:AppResources.SwiftPaperlessAndGlobalSecurelyAccess}"
@@ -33,7 +36,8 @@
         <!-- Item 3 -->
         <components:ServiceBoxComponent 
             Grid.Column="2"
-            ImageSource="green_energy_with_solar.png"
+            Margin="16,0,16,0"
+            ImageSource="green_energy_with_solar_1200.png"
             Title="{x:Static properties:AppResources.PEASOLAR}"
             Description="{x:Static properties:AppResources.SustainableSolarForFarmsAndHomes}"
             Url="https://peasolar.pea.co.th/" />
@@ -41,7 +45,8 @@
         <!-- Item 4 -->
         <components:ServiceBoxComponent 
             Grid.Column="3"
-            ImageSource="transformer_lifecycle_management.png"
+            Margin="16,0,16,0"
+            ImageSource="transformer_lifecycle_management_1200.png"
             Title="{OnIdiom Desktop={x:Static properties:AppResources.TransformerLifecycleManagement}, Default={x:Static properties:AppResources.TransformerManagement}}"
             Description="{x:Static properties:AppResources.ComprehensiveDiagnosticTestingOil}"
             Url="https://sabuyservice.pea.co.th/service/f54569de-88df-4188-1408-08dcb7573509" />

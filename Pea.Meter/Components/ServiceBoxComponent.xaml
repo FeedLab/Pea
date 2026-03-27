@@ -6,8 +6,8 @@
         x:Name="Root"
         BackgroundColor="White"
         StrokeThickness="0"
-        VerticalOptions="Fill"
-        Margin="32,0">
+        VerticalOptions="Center"
+        HorizontalOptions="Center">
     <Border.StrokeShape>
         <RoundRectangle CornerRadius="8" />
     </Border.StrokeShape>
@@ -17,18 +17,36 @@
     <Border.GestureRecognizers>
         <TapGestureRecognizer Tapped="OnTapped" />
     </Border.GestureRecognizers>
-    
-    <VerticalStackLayout Spacing="8" Padding="12" Margin="8" HorizontalOptions="Center">
-        <Image Source="{Binding ImageSource, Source={x:Reference Root}}" Aspect="AspectFit" />
-        <Label Text="{Binding Title, Source={x:Reference Root}}" 
-               FontAttributes="{OnIdiom Desktop=Bold, Default=Bold}"
-               HorizontalTextAlignment="{OnIdiom Desktop=Start, Default=Center}"
-               TextColor="Black"
-               FontSize="12" />
-        <Label Text="{Binding Description, Source={x:Reference Root}}"
-               HorizontalTextAlignment="Start"
-               TextColor="Black"
-               FontSize="10"
-               IsVisible="{OnIdiom Desktop=True, Default=False}" />
-    </VerticalStackLayout>
+
+    <Grid Padding="12" Margin="8" HorizontalOptions="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Image
+            Grid.Row="0"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            Source="{Binding ImageSource, Source={x:Reference Root}}" Aspect="AspectFit" />
+        <Label
+            Grid.Row="1"
+            Text="{Binding Title, Source={x:Reference Root}}"
+            FontAttributes="{OnIdiom Desktop=Bold, Default=Bold}"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            HorizontalTextAlignment="{OnIdiom Desktop=Start, Default=Center}"
+            TextColor="Black"
+            FontSize="12" />
+        <Label
+            Grid.Row="2"
+            Text="{Binding Description, Source={x:Reference Root}}"
+            HorizontalTextAlignment="Start"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            TextColor="Black"
+            FontSize="10"
+            IsVisible="{OnIdiom Desktop=True, Default=False}" />
+    </Grid>
 </Border>
