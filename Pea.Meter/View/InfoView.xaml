@@ -4,7 +4,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
-             xmlns:view="using:Pea.Meter.View"
              xmlns:components="clr-namespace:Pea.Meter.View.Components"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.InfoView">
@@ -46,8 +45,8 @@
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="{OnIdiom Desktop='*', Default='6*'}" />
-                <RowDefinition Height="{OnIdiom Desktop='auto', Default='5*'}" />
+                <RowDefinition Height="{OnIdiom Desktop='*', Default='12*'}" />
+                <RowDefinition Height="{OnIdiom Desktop='auto', Default='13*'}" />
             </Grid.RowDefinitions>
 
             <Border
@@ -148,6 +147,7 @@
 
             <components:PeaServicesView
                 Grid.Row="1"
+                Margin="24,24" 
                 HorizontalOptions="Fill"
                 VerticalOptions="Center" />
         </Grid>

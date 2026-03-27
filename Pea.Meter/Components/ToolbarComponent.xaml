@@ -15,19 +15,22 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Column="0" Margin="0,0,8,0" Text="&#xf013;"
-               ToolTipProperties.Text="{x:Static properties:AppResources.Configuration}"
-               Style="{StaticResource IconLabel}">
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnConfigurationTapped" />
-            </Label.GestureRecognizers>
-            <Label.Shadow>
+        <Image Grid.Column="0" Margin="0,0,8,0"
+               WidthRequest="32" HeightRequest="32"
+               ToolTipProperties.Text="{x:Static properties:AppResources.Configuration}">
+            <Image.Source>
+                <FontImageSource Glyph="&#xf013;" FontFamily="FontSolid" Size="32" Color="#008089" />
+            </Image.Source>
+            <Image.Shadow>
                 <Shadow Radius="15"
                         Opacity="0.6"
                         Brush="Black"
                         Offset="10,10" />
-            </Label.Shadow>
-        </Label>
+            </Image.Shadow>
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnConfigurationTapped" />
+            </Image.GestureRecognizers>
+        </Image>
 
         <Image
             Grid.Column="1"
