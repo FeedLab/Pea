@@ -26,8 +26,9 @@
             if (DeviceInfo.Platform == DevicePlatform.WinUI || 
                 DeviceInfo.Platform == DevicePlatform.MacCatalyst)
             {
-                window.Width = 1920;
-                window.Height = 1080;
+                var scale = 0.65;
+                window.Width = 1920 * scale;
+                window.Height = 1080 * scale;
             }
 
             return window;

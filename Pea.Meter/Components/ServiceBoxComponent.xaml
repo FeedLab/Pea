@@ -18,7 +18,7 @@
         <TapGestureRecognizer Tapped="OnTapped" />
     </Border.GestureRecognizers>
 
-    <Grid Padding="12" Margin="8" HorizontalOptions="Center">
+    <Grid Padding="0" Margin="8" HorizontalOptions="Center">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
