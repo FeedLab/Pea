@@ -77,9 +77,11 @@
                 IsVisible="{Binding IsCustomerProfileVisible}"
                 Margin="0"
                 BackgroundColor="White"
-                Stroke="LightBlue"
+                Stroke="#00A5A5"
                 StrokeThickness="1"
-                Padding="8">
+                HorizontalOptions="Center"
+                VerticalOptions="Center" 
+                Padding="0">
                 <Border.Shadow>
                     <StaticResource Key="PanelShadow" />
                 </Border.Shadow>
