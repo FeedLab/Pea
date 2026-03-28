@@ -18,12 +18,13 @@ namespace Pea.Meter
         {
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1JHaF5cWWdCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdlWXxccXZVQ2FeVEV/XUdWYEo=");
 
-            Console.WriteLine($"Idiom: {DeviceInfo.Idiom}");
+            Console.WriteLine($@"Idiom: {DeviceInfo.Idiom}");
             
             // Configure Serilog
             var logPath = Path.Combine(FileSystem.AppDataDirectory, "logs", "pea.log");
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
+                .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();

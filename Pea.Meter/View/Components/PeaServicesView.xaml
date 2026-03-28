@@ -19,6 +19,7 @@
         <components:ServiceBoxComponent 
             Grid.Column="0"
             Margin="16,0,16,0"
+            VerticalOptions="Fill"
             ImageSource="pay_your_bill.png"
             Title="{x:Static properties:AppResources.ElectronicBilling}"
             Description="{x:Static properties:AppResources.GoPaperlessInThailand}"
@@ -28,6 +29,7 @@
         <components:ServiceBoxComponent 
             Grid.Column="1"
             Margin="16,0,16,0"
+            VerticalOptions="Fill"
             ImageSource="e_service_everywhere.png"
             Title="{x:Static properties:AppResources.SmartServices}"
             Description="{x:Static properties:AppResources.SwiftPaperlessAndGlobalSecurelyAccess}"
@@ -37,6 +39,7 @@
         <components:ServiceBoxComponent 
             Grid.Column="2"
             Margin="16,0,16,0"
+            VerticalOptions="Fill"
             ImageSource="green_energy_with_solar.png"
             Title="{x:Static properties:AppResources.PEASOLAR}"
             Description="{x:Static properties:AppResources.SustainableSolarForFarmsAndHomes}"
@@ -46,6 +49,7 @@
         <components:ServiceBoxComponent 
             Grid.Column="3"
             Margin="16,0,16,0"
+            VerticalOptions="Fill"
             ImageSource="transformer_lifecycle_management.png"
             Title="{OnIdiom Desktop={x:Static properties:AppResources.TransformerLifecycleManagement}, Default={x:Static properties:AppResources.TransformerManagement}}"
             Description="{x:Static properties:AppResources.ComprehensiveDiagnosticTestingOil}"

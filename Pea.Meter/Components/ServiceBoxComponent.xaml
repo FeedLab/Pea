@@ -33,6 +33,8 @@
         <Label
             Grid.Row="1"
             Text="{Binding Title, Source={x:Reference Root}}"
+            MaxLines="1"
+            LineBreakMode="TailTruncation"
             FontAttributes="{OnIdiom Desktop=Bold, Default=Bold}"
             HorizontalOptions="Fill"
             VerticalOptions="Fill"
@@ -42,6 +44,8 @@
         <Label
             Grid.Row="2"
             Text="{Binding Description, Source={x:Reference Root}}"
+            MaxLines="2"
+            LineBreakMode="TailTruncation"
             HorizontalTextAlignment="Start"
             HorizontalOptions="Fill"
             VerticalOptions="Fill"
