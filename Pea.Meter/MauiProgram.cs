@@ -36,11 +36,12 @@ namespace Pea.Meter
                 .ConfigureSyncfusionCore()
                 .ConfigureFonts(fonts =>
                 {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("OpenSansRegular.ttf", "OpenSansRegular");
+                    fonts.AddFont("OpenSansSemibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("FontAwesome7FreeSolid900.otf", "FontSolid");
                     fonts.AddFont("FontAwesome7FreeRegular400.otf", "FontRegular");
-                    fonts.AddFont("Roboto-Regular.ttf", "Roboto-Regular");
+                    fonts.AddFont("FontAwesome7BrandsRegular400.otf", "FontBrands");
+                    fonts.AddFont("RobotoRegular.ttf", "RobotoRegular");
                 });
 
             // Add Serilog to the logging pipeline

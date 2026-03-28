@@ -19,13 +19,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<!-- Enable XAML source generation for faster build times and improved performance.
-		     This generates C# code from XAML at compile time instead of runtime inflation.
-		     To disable, remove this line.
-		     For individual files, you can override by setting Inflator metadata:
-		       <MauiXaml Update="MyPage.xaml" Inflator="Default" /> (reverts to defaults: Runtime for Debug, XamlC for Release)
-		       <MauiXaml Update="MyPage.xaml" Inflator="Runtime" /> (force runtime inflation) -->
-		<MauiXamlInflator>SourceGen</MauiXamlInflator>
 
 		<!-- Display name -->
 		<ApplicationTitle>PEA Smart Meter</ApplicationTitle>
@@ -65,7 +58,12 @@
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185"/>
 		
 		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
+		<MauiFont Include="Resources\Fonts\FontAwesome7BrandsRegular400.otf" />
+		<MauiFont Include="Resources\Fonts\FontAwesome7FreeRegular400.otf" />
+		<MauiFont Include="Resources\Fonts\FontAwesome7FreeSolid900.otf" />
+		<MauiFont Include="Resources\Fonts\OpenSansRegular.ttf" />
+		<MauiFont Include="Resources\Fonts\OpenSansSemibold.ttf" />
+		<MauiFont Include="Resources\Fonts\RobotoRegular.ttf" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />

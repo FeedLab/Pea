@@ -12,12 +12,18 @@
         BackgroundColor="Black">
 
         <!-- <Image Source="pea_load_splash.png" Aspect="AspectFit" /> -->
-        <Image Source="pea_amr_intro.png" Aspect="AspectFit" />
+        <Image Source="pea_amr_intro.png" Aspect="Fill" />
         
         <ActivityIndicator
             IsRunning="True"
             HorizontalOptions="Center"
             VerticalOptions="Center" />
-        <Label Text="{x:Static properties:AppResources.Loading}" Margin="0,20,0,0" />
+        <Label
+            Margin="0,0,0,0" 
+            Text="{x:Static properties:AppResources.Loading}" 
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            FontSize="18"
+            TextColor="White"/>
     </Grid>
 </ContentPage>

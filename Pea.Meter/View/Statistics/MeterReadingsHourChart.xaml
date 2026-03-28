@@ -25,7 +25,6 @@
 
             <chart:SfCartesianChart.Title>
                 <HorizontalStackLayout 
-                    Margin="12"
                     HorizontalOptions="Center">
 
                     <Label
@@ -57,7 +56,7 @@
                         BackgroundColor="White"
                         Stroke="LightBlue"
                         StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="Center" VerticalOptions="Center"
-                        Margin="8"
+                        Margin="0,8,0,18"
                         Padding="0">
                         <Border.Shadow>
                             <StaticResource Key="PanelShadow" />
