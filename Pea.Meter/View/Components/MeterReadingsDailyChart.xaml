@@ -20,17 +20,14 @@
                     HorizontalOptions="Fill"
                     TextColor="Black"
                     HorizontalTextAlignment="Center"
-                    FontAttributes="Bold"
+                    FontFamily="Segoe UI Semibold"
                     FontSize="20"
                     Text="{x:Static properties:AppResources.AllMeterReadings}" />
             </chart:SfCartesianChart.Title>
 
             <chart:SfCartesianChart.XAxes>
-                <chart:DateTimeAxis>
-                    <chart:DateTimeAxis.LabelStyle>
-                        <chart:ChartAxisLabelStyle LabelFormat="yyyy-MM-dd" />
-                    </chart:DateTimeAxis.LabelStyle>
-                </chart:DateTimeAxis>
+                <chart:CategoryAxis ZoomFactor="{Binding ZoomFactor}"
+                                    ZoomPosition="1"/>
             </chart:SfCartesianChart.XAxes>
 
             <chart:SfCartesianChart.YAxes>
@@ -43,17 +40,41 @@
 
             <chart:SfCartesianChart.ZoomPanBehavior>
                 <chart:ChartZoomPanBehavior EnablePanning="True"
-                                            EnablePinchZooming="False"
-                                            ZoomMode="X" />
+                                            EnablePinchZooming="True"
+                                            ZoomMode="X"
+                                            MaximumZoomLevel="{Binding MaximumZoomLevel}"/>
+                
             </chart:SfCartesianChart.ZoomPanBehavior>
+            
+            <chart:StackingColumnSeries ItemsSource="{Binding MeterDataDailyAggregated}"
+                                        Label="{x:Static properties:AppResources.Peek}"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="Peek"
+                                        GroupingLabel="Kw"
+                                        Fill="#CD0000"
+                                        Stroke="#890000"
+                                        StrokeWidth="1"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="False"
+                                        Spacing="0.3"
+                                        CornerRadius="0,0,0,0"
+                                        ShowDataLabels="False">
+            </chart:StackingColumnSeries>
 
-            <chart:SplineSeries ItemsSource="{Binding MeterDataDailyAggregated}"
-                                XBindingPath="PeriodStart"
-                                YBindingPath="Total"
-                                Fill="{Binding Source={x:Reference DailyOverviewChartControl}, Path=SeriesColor}"
-                                StrokeWidth="2"
-                                IsVisibleOnLegend="True"
-                                EnableTooltip="True" />
+            <chart:StackingColumnSeries ItemsSource="{Binding MeterDataDailyAggregated}"
+                                        Label="{x:Static properties:AppResources.OffPeek}"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="OffPeek"
+                                        GroupingLabel="Kw"
+                                        Fill="#96CE96"
+                                        Stroke="#6D966D"
+                                        StrokeWidth="1"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="False"
+                                        Spacing="0.3"
+                                        CornerRadius="2,2,0,0"
+                                        ShowDataLabels="False">
+            </chart:StackingColumnSeries>
         </chart:SfCartesianChart>
     </Grid>
 </ContentView>

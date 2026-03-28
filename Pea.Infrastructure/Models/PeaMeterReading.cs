@@ -27,6 +27,8 @@ public class PeaMeterReading
     public decimal RateC { get;  }
 
     public decimal Total => RateA + RateB + RateC;
+    public decimal Peek => RateA;
+    public decimal OffPeek => RateB + RateC;
 
     public override string ToString()
     {

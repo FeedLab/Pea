@@ -1,10 +1,8 @@
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Pea.Infrastructure.Models;
-using Pea.Meter.Extension;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
 
@@ -16,7 +14,9 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
     private readonly StorageService storageService;
 
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataDailyAggregated = [];
-
+    [ObservableProperty] private decimal maximumZoomLevel = 1.0m;
+    [ObservableProperty] private decimal zoomFactor = 1.0m;
+    
     public MeterReadingsDailyViewModel(ILogger<MeterReadingsDailyViewModel> logger, StorageService storageService)
     {
         this.logger = logger;
@@ -26,10 +26,7 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
         {
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                storageService.DailyAggregated.CollectionChanged += MeterDataAverageDailyOnCollectionChanged;
-
-                MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
-                return Task.CompletedTask;
+                DisplayChart();
             });
         });
         
@@ -37,8 +34,6 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
         {
             MainThread.InvokeOnMainThreadAsync(() =>
             {
-                storageService.DailyAggregated.CollectionChanged -= MeterDataAverageDailyOnCollectionChanged;
-
                 MeterDataDailyAggregated = [];
                 
                 return Task.CompletedTask;
@@ -51,23 +46,14 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
                 {
                     try
                     {
-                        try
-                        {
-                            MeterDataDailyAggregated.Clear();
-
-                            MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
-                        }
-                        catch (Exception e)
-                        {
-                            logger.LogError(e, "Error in {Method}: {Message}", "MeterDataDailyAggregated", e.Message);
-                        }
-                    
-                        return Task.FromResult(Task.CompletedTask);
+                        DisplayChart();
                     }
                     catch (Exception exception)
                     {
                         return Task.FromException<Task>(exception);
                     }
+
+                    return Task.CompletedTask;
                 });
         });
         
@@ -75,8 +61,7 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
         {
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                MeterDataDailyAggregated.Clear();
-                MeterDataDailyAggregated.AddRange(storageService.DailyAggregated);
+                DisplayChart();
             });
         });
 
@@ -84,65 +69,29 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
         {
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                var aggregated = m.Readings
-                    .GroupBy(r => r.PeriodStart.Date)
-                    .Select(g => new PeaMeterReading(
-                        g.Key,
-                        g.Sum(x => x.RateA),
-                        g.Sum(x => x.RateB),
-                        g.Sum(x => x.RateC)
-                    ))
-                    .ToList();
-
-                //        var meterDataAggregatedPerDayAll = storageService.DailyAggregated.FilterByPeriod(DateTime.MinValue, DateTime.MaxValue);
-                MeterDataDailyAggregated.Insert(0, aggregated.First());
-
-                // MeterDataDailyAggregated = meterDataAggregatedPerDayAll
-                //     .OrderBy(o => o.PeriodStart)
-                //     .ToObservableCollection();
-
-                return Task.CompletedTask;
+                DisplayChart();
             });
         });
     }
 
-    private void MeterDataAverageDailyOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void DisplayChart()
     {
-        MainThread.BeginInvokeOnMainThread(() =>
+        try
         {
-            switch (e.Action)
+            if( storageService.DailyAggregated.Count > 0)
             {
-                case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems?.Cast<PeaMeterReading>().ToList() ?? [];
-                    MeterDataDailyAggregated.AddRange(newItems);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (PeaMeterReading item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
-                    {
-                        MeterDataDailyAggregated.Remove(item);
-                    }
-
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    // for (var i = 0; i < e.OldItems.Length; i++)
-                    // {
-                    //     var index = MeterDataAverage30.IndexOf(e.OldItems[i]);
-                    //     if (index >= 0)
-                    //     {
-                    //         MeterDataAverage30[index] = e.NewItems[i];
-                    //     }
-                    // }
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    // For ObservableCollection, typically no action needed as order may not matter
-                    // or rebuild collection if order is important
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    MeterDataDailyAggregated.Clear();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                MaximumZoomLevel = ( storageService.DailyAggregated.Count / 40.0m);
+                ZoomFactor = 1.0m / MaximumZoomLevel;
+                MeterDataDailyAggregated = storageService.DailyAggregated;
             }
-        });
+            else
+            {
+                MeterDataDailyAggregated = [];
+            }
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in {Method}: {Message}", nameof(DisplayChart), e.Message);
+        }
     }
 }
