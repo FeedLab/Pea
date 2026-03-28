@@ -10,9 +10,9 @@
             Opacity="0.5" />
 
     <chart:ChartLegendLabelStyle x:Key="DefaultChartLegendLabelStyle"
-                                 TextColor="Blue"
+                                 TextColor="#002800"
                                  Margin="5"
                                  FontSize="16"
-                                 FontAttributes="None" />
+                                 FontFamily="Segoe UI Semibold" />
 
 </ResourceDictionary>

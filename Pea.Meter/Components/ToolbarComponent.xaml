@@ -17,6 +17,7 @@
 
         <Label Grid.Column="0" Margin="0,0,8,0"
                Text="&#xf013;"
+               FontFamily="FontSolid"
                ToolTipProperties.Text="{x:Static properties:AppResources.Configuration}"
                Style="{StaticResource IconLabel}">
             <Label.Shadow>
@@ -50,6 +51,7 @@
 
 
         <Label Grid.Column="2" Margin="40,0,0,0" Text="&#xf2f5;"
+               FontFamily="FontSolid"
                ToolTipProperties.Text="{x:Static properties:AppResources.Quit}"
                Style="{StaticResource IconLabel}">
             <Label.GestureRecognizers>

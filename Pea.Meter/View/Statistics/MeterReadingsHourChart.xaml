@@ -27,6 +27,7 @@
 
             <chart:SfCartesianChart.Title>
                 <HorizontalStackLayout
+                    Margin="0,0,0,12"
                     HorizontalOptions="Center">
 
                     <Label
@@ -66,7 +67,7 @@
                         MinimumDate="{Binding CurrentTimePickerMaximumDate}"
                         MaximumDate="{Binding CurrentTimePickerMinimumDate}"
                         DateSelected="OnSelectedDatePickerOkButtonClicked"
-                        Margin="0,0,0,16" />
+                        Margin="0,0,0,0" />
 
 
                     <Label

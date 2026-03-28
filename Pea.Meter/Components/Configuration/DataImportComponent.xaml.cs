@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
+using Pea.Infrastructure.Models;
 using Pea.Meter.Services;
 
 namespace Pea.Meter.Components.Configuration;
@@ -52,10 +54,13 @@ public partial class DataImportComponent : ContentView
             
             await repository.DeleteBeforeDateAsync(StartDate);
             logger.LogInformation("Data before {StartDate} has been deleted", StartDate);
-
+            
             await storageService.ResetHistoricalData();
             logger.LogInformation("Historical data has been reset");
-            
+
+            WeakReferenceMessenger.Default.Send(new DataImportedEarlierMessage(new List<PeaMeterReading>(), StartDate));
+            logger.LogInformation("DataImportedEarlierMessage has been sent");
+
             historicDataBackgroundService.TriggerImport(false);
             logger.LogInformation("Data import has been triggered");
         }
