@@ -147,7 +147,7 @@
 
             <components:PeaServicesView
                 Grid.Row="1"
-                Margin="24,24" 
+                Margin="12,24" 
                 HorizontalOptions="Fill"
                 VerticalOptions="Center" />
         </Grid>

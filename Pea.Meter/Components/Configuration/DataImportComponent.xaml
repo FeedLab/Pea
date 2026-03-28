@@ -8,7 +8,7 @@
              xmlns:buttons="http://schemas.syncfusion.com/maui"
              x:Class="Pea.Meter.Components.Configuration.DataImportComponent"
              x:Name="Root"
-             HorizontalOptions="FillAndExpand">
+             HorizontalOptions="Fill">
 
     <VerticalStackLayout
         Spacing="12"
@@ -17,11 +17,14 @@
         <Label
             FontAttributes="Bold"
             FontFamily="OpenSansRegular"
+            TextColor="Black"
+            FontSize="14"
             Text="Ready to bring in your history?" />
 
         <Label
             LineBreakMode="WordWrap"
             FontFamily="OpenSansRegular"
+            TextColor="Black"
             HorizontalOptions="Start"
             VerticalOptions="Start"
             Text="Use the calendar below to pick the day you want your records to start." />
@@ -37,7 +40,7 @@
                 MinimumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMinimumDate}"
                 MaximumDate="{Binding Source={x:Reference Root}, Path=StartTimePickerMaximumDate}"
                 DateSelected="OnStartDateSelected"
-                Margin="0,-24,0,4" />
+                Margin="0,-12,0,4" />
 
             <!-- Warning Message -->
             <Grid ColumnSpacing="8">
@@ -49,6 +52,7 @@
                 <Label
                     Grid.Column="0"
                     Text="⚠️"
+                    TextColor="Black"
                     FontSize="20"
                     VerticalOptions="Start" />
 
@@ -84,9 +88,9 @@
         <buttons:SfButton
             Margin="0,8,0,8"
             Text="Start Importing Historical Data..."
-            Background="#EFFFEF"
+            Background="#DDEBFF"
             TextColor="#002684"
-            Stroke="DarkGreen"
+            Stroke="#6BA6FF"
             StrokeThickness="4"
             CornerRadius="15"
             EnableRippleEffect="True"

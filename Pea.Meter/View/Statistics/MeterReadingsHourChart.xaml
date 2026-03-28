@@ -5,6 +5,8 @@
              xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
+             xmlns:components="clr-namespace:Pea.Meter.Components"
+             xmlns:local="clr-namespace:Pea.Meter"
              x:Class="Pea.Meter.View.Statistics.MeterReadingsHourChart"
              x:Name="MeterComparisonChartControl">
 
@@ -24,8 +26,8 @@
             </chart:SfCartesianChart.Legend>
 
             <chart:SfCartesianChart.Title>
-                <HorizontalStackLayout 
-                    Margin="12"
+                <HorizontalStackLayout
+                    Margin="0,0,0,12"
                     HorizontalOptions="Center">
 
                     <Label
@@ -41,88 +43,32 @@
                             <TapGestureRecognizer Tapped="OnPreviousDayTapped" />
                         </Label.GestureRecognizers>
                         <Label.Triggers>
-                            <DataTrigger TargetType="Label" Binding="{Binding IsEnabled, Source={RelativeSource Self}}" Value="False">
+                            <DataTrigger TargetType="Label" Binding="{Binding IsEnabled, Source={RelativeSource Self}}"
+                                         Value="False">
                                 <Setter Property="Opacity" Value="0.5" />
                             </DataTrigger>
                         </Label.Triggers>
                         <Label.Shadow>
-                            <Shadow Radius="15"
-                        Opacity="0.6"
-                        Brush="Black"
-                        Offset="10,10" />
+                            <Shadow Radius="5"
+                                    Opacity="0.6"
+                                    Brush="Black"
+                                    Offset="10,10" />
                         </Label.Shadow>
                     </Label>
                     
-                    <Border
-                        BackgroundColor="White"
-                        Stroke="LightBlue"
-                        StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="Center" VerticalOptions="Center"
-                        Margin="8"
-                        Padding="0">
-                        <Border.Shadow>
-                            <StaticResource Key="PanelShadow" />
-                        </Border.Shadow>
-                        <Grid
-                            Margin="4,0,10,0"
-                            VerticalOptions="Center"
-                            HeightRequest="40">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                    <components:DatePickerComponent
+                        x:Name="SelectedTimePicker"
+                        Glyph="{x:Static local:Glyphs.Calendar}"
+                        TextColorGlyph="CadetBlue"
+                        Label=""
+                        HeaderText="{x:Static properties:AppResources.StartDate}"
+                        VerticalOptions="Center"
+                        SelectedDate="{Binding SelectedDate}"
+                        MinimumDate="{Binding CurrentTimePickerMaximumDate}"
+                        MaximumDate="{Binding CurrentTimePickerMinimumDate}"
+                        DateSelected="OnSelectedDatePickerOkButtonClicked"
+                        Margin="0,0,0,0" />
 
-                            <picker:SfDatePicker
-                                x:Name="SelectedTimePicker"
-                                Grid.Column="1" 
-                                Mode="Dialog"
-                                EnableLooping="True"
-                                RelativePosition="AlignBottom"
-                                TextDisplayMode="FadeAndShrink"
-                                RelativeView="{x:Reference SelectedDateCtrl}"
-                                SelectedDate="{Binding SelectedDate}"
-                                MaximumDate="{Binding CurrentTimePickerMaximumDate}"
-                                MinimumDate="{Binding CurrentTimePickerMinimumDate}"      
-                                OkButtonClicked="OnSelectedDatePickerOkButtonClicked">
-                                <picker:SfDatePicker.HeaderView>
-                                    <picker:PickerHeaderView Text="{x:Static properties:AppResources.StartDate}" Height="40" />
-                                </picker:SfDatePicker.HeaderView>
-
-                                <picker:SfDatePicker.FooterView>
-                                    <picker:PickerFooterView ShowOkButton="True" Height="40" />
-                                </picker:SfDatePicker.FooterView>
-                            </picker:SfDatePicker>
-                            
-                            <Label
-                                Grid.Column="0"
-                                FontFamily="FontSolid"
-                                FontSize="15"
-                                TextColor="Black"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                Text="&#x1F4C6;" />
-
-                            <Label x:Name="SelectedDateCtrl" Grid.Column="2"
-                                   Text="{Binding SelectedDate,  StringFormat='{0:D}'}" FontSize="15"
-                                   TextColor="Black"
-                                   VerticalTextAlignment="Center" LineBreakMode="WordWrap" >
-                                <Label.Shadow>
-                                    <Shadow Radius="15"
-                        Opacity="0.6"
-                        Brush="Black"
-                        Offset="10,10" />
-                                </Label.Shadow>
-                            </Label>
-
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnSelectedDateTapGestureTapped" />
-                            </Grid.GestureRecognizers>
-
-                            
-                        </Grid>
-
-
-                    </Border>
 
                     <Label
                         Margin="18,0,0,0"
@@ -137,45 +83,19 @@
                             <TapGestureRecognizer Tapped="OnNextDayTapped" />
                         </Label.GestureRecognizers>
                         <Label.Triggers>
-                            <DataTrigger TargetType="Label" Binding="{Binding IsEnabled, Source={RelativeSource Self}}" Value="False">
+                            <DataTrigger TargetType="Label" Binding="{Binding IsEnabled, Source={RelativeSource Self}}"
+                                         Value="False">
                                 <Setter Property="Opacity" Value="0.5" />
                             </DataTrigger>
                         </Label.Triggers>
 
                         <Label.Shadow>
                             <Shadow Radius="15"
-                        Opacity="0.6"
-                        Brush="Black"
-                        Offset="10,10" />
+                                    Opacity="0.6"
+                                    Brush="Black"
+                                    Offset="10,10" />
                         </Label.Shadow>
                     </Label>
-
-                    <!-- <Label -->
-                    <!--     Margin="8" -->
-                    <!--     HorizontalOptions="Fill" -->
-                    <!--     TextColor="Black" -->
-                    <!--     HorizontalTextAlignment="Center" -->
-                    <!--     FontAttributes="Bold" -->
-                    <!--     FontSize="20" -->
-                    <!--     Text="{Binding Source={x:Reference MeterComparisonChartControl}, Path=ChartTitle}" /> -->
-                    <!-- -->
-                    <!-- <Label -->
-                    <!--     Margin="8" -->
-                    <!--     HorizontalOptions="Fill" -->
-                    <!--     TextColor="Black" -->
-                    <!--     HorizontalTextAlignment="Center" -->
-                    <!--     FontAttributes="Bold" -->
-                    <!--     FontSize="20" -->
-                    <!--     Text="{Binding Source={x:Reference MeterComparisonChartControl}, Path=ChartTitle}" /> -->
-                    <!-- -->
-                    <!-- <Label -->
-                    <!--     Margin="8" -->
-                    <!--     HorizontalOptions="Fill" -->
-                    <!--     TextColor="Black" -->
-                    <!--     HorizontalTextAlignment="Center" -->
-                    <!--     FontAttributes="Bold" -->
-                    <!--     FontSize="20" -->
-                    <!--     Text="{Binding Source={x:Reference MeterComparisonChartControl}, Path=ChartTitle}" /> -->
                 </HorizontalStackLayout>
 
             </chart:SfCartesianChart.Title>

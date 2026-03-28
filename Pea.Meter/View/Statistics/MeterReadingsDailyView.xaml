@@ -7,5 +7,5 @@
              x:Class="Pea.Meter.View.Statistics.MeterReadingsDailyView"
              x:DataType="statistics:MeterReadingsDailyViewModel">
 
-    <components:MeterReadingsDailyChart ChartTitle="{Binding MeterDataDailyAggregated, StringFormat='{0:D}'}" />
+    <components:MeterReadingsDailyChart ChartTitle="Daily Readings" />
 </ContentView>

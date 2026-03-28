@@ -1,4 +1,6 @@
-﻿namespace Pea.Meter
+﻿using Serilog;
+
+namespace Pea.Meter
 {
     public partial class App : Application
     {
@@ -8,13 +10,15 @@
 
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {
-                Exception ex = e.ExceptionObject as Exception;
-                // Log or handle
+                if (e.ExceptionObject is Exception ex)
+                {
+                    Log.Fatal(ex, "Unhandled AppDomain exception: {Message}", ex.Message);
+                }
             };
 
             TaskScheduler.UnobservedTaskException += (s, e) =>
             {
-                // Handle async task exceptions
+                Log.Fatal(e.Exception, "Unobserved Task exception: {Message}", e.Exception.Message);
                 e.SetObserved();
             };
         }

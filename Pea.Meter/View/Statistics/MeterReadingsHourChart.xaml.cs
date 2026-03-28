@@ -66,30 +66,28 @@ public partial class MeterReadingsHourChart : ContentView
         BindingContext = viewModel;
     }
 
-    private void OnSelectedDateTapGestureTapped(object? sender, TappedEventArgs e)
+//     private void OnSelectedDateTapGestureTapped(object? sender, TappedEventArgs e)
+//     {
+//         SelectedTimePicker.SelectedDate = viewModel.SelectedDate;
+//         
+// #if ANDROID || IOS
+//         // this.SelectedTimePicker.Reset();
+//         this.SelectedTimePicker.IsOpen = true;
+// #else
+//         // this.StartTimePicker.Reset();
+//         this.SelectedTimePicker.IsOpen = true;
+// #endif
+//         
+//
+//     }
+
+
+    private async void OnSelectedDatePickerOkButtonClicked(object? sender, DateTime selectedDate)
     {
-        SelectedTimePicker.SelectedDate = viewModel.SelectedDate;
-        
-#if ANDROID || IOS
-        // this.SelectedTimePicker.Reset();
-        this.SelectedTimePicker.IsOpen = true;
-#else
-        // this.StartTimePicker.Reset();
-        this.SelectedTimePicker.IsOpen = true;
-#endif
-        
-
+        viewModel.SelectedDate = selectedDate;
+        ChartTitle = selectedDate.ToLongDateString();
     }
-
-    private void OnSelectedDatePickerOkButtonClicked(object? sender, EventArgs e)
-    {
-        if (SelectedTimePicker.SelectedDate == null)
-            return;
-        
-        viewModel.SelectedDate = SelectedTimePicker.SelectedDate.Value;
-        ChartTitle = SelectedTimePicker.SelectedDate.Value.ToLongDateString();
-    }
-
+    
     private void OnNextDayTapped(object? sender, TappedEventArgs e)
     {
         viewModel.SelectedDate = viewModel.SelectedDate.AddDays(1);

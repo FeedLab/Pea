@@ -41,7 +41,7 @@
                 <chart:SfCartesianChart.Resources>
                     <DataTemplate x:Key="tooltipTemplate">
                         <StackLayout Orientation="Horizontal" Padding="8">
-                            <Label Text="{Binding Item.YValue, StringFormat='{0:0}'}"
+                            <Label Text="{Binding Item.YValue, StringFormat='{}{0:0}'}"
                                    TextColor="White"
                                    FontSize="14"
                                    HorizontalOptions="Center"
@@ -219,7 +219,7 @@
                 <chart:SfCartesianChart.Resources>
                     <DataTemplate x:Key="tooltipTemplate">
                         <StackLayout Orientation="Horizontal" Padding="8">
-                            <Label Text="{Binding Item.Value, StringFormat='{0:0}'}"
+                            <Label Text="{Binding Item.Value, StringFormat='{}{0:0}'}"
                                    TextColor="White"
                                    FontSize="14"
                                    HorizontalOptions="Center"

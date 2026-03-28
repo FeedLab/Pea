@@ -136,6 +136,11 @@ public class HistoricDataBackgroundService
                     {
                         WeakReferenceMessenger.Default.Send(new DataImportedMessage(readings, targetDate));
                     });
+
+                    if (targetDate < startDateOldest)
+                    {
+                        WeakReferenceMessenger.Default.Send(new DataImportedEarlierMessage(readings, targetDate));
+                    }
                 }
                 else
                 {
@@ -174,6 +179,18 @@ internal partial class DataImportedMessage : ObservableObject
     [ObservableProperty] private DateTime date;
 
     public DataImportedMessage(IList<PeaMeterReading> readings, DateTime date)
+    {
+        Readings = readings;
+        Date = date;
+    }
+}
+
+internal partial class DataImportedEarlierMessage : ObservableObject
+{
+    [ObservableProperty] private IList<PeaMeterReading> readings;
+    [ObservableProperty] private DateTime date;
+
+    public DataImportedEarlierMessage(IList<PeaMeterReading> readings, DateTime date)
     {
         Readings = readings;
         Date = date;

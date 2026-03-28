@@ -57,7 +57,7 @@
                 <VerticalStackLayout>
                     <HorizontalStackLayout>
                         <Label Margin="18"
-                               Text="{Binding Source={x:Reference Slider}, Path=Value, StringFormat='{Binding ThumbNumberFormat, Source={x:Reference Root}}'}"
+                               Text="{Binding Value, Source={x:Reference Slider}}"
                                TextColor="Black"
                                x:DataType="sliders:SfSlider" />
                     </HorizontalStackLayout>
