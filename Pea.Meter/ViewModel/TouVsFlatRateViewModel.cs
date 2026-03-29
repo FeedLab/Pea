@@ -38,6 +38,28 @@ public partial class TouVsFlatRateViewModel : ObservableObject
         UserLoggedOutSubscription();
         DateChangedSubscription();
         DataImportedSubscription();
+        AllAggregationCompletedSubscription();
+    }
+
+    private void AllAggregationCompletedSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (r, m) =>
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                try
+                {
+                    InitializeDateRange();
+                    await CalculateCostComparisons();
+                }
+                catch (Exception exception)
+                {
+                    return Task.FromException<Task>(exception);
+                }
+
+                return Task.CompletedTask;
+            });
+        });
     }
 
     private void DataImportedSubscription()
@@ -138,20 +160,6 @@ public partial class TouVsFlatRateViewModel : ObservableObject
         {
             try
             {
-                // await MainThread.InvokeOnMainThreadAsync(async () =>
-                // {
-                //     try
-                //     {
-                //
-                //     }
-                //     catch (Exception e)
-                //     {
-                //         logger.LogError(e, "Error in {Method}: {Message}",
-                //             $"{nameof(UserLoggedOutSubscription)}:InvokeOnMainThreadAsync", e.Message);
-                //     }
-                //
-                //     return Task.CompletedTask;
-                // });
             }
             catch (Exception e)
             {

@@ -52,7 +52,6 @@ namespace Pea.Meter
             builder.Services.AddSingleton<IEncryptionHelper, EncryptionHelper>();
             builder.Services.AddSingleton<ISettingsService, SettingsService>();
             builder.Services.AddSingleton<PeaAdapter>();
-            builder.Services.AddSingleton<HistoricDataImportService>();
             builder.Services.AddSingleton<HistoricDataBackgroundService>();
             builder.Services.AddSingleton<StorageService>();
 

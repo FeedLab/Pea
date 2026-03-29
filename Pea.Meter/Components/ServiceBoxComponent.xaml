@@ -25,11 +25,25 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <Image
+        <Border
+                Margin="0"
+                BackgroundColor="White"
+                Stroke="#65A3A3"
+                StrokeThickness="1"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill" 
+                Padding="0">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="3" />
+            </Border.StrokeShape>
+            <Image
             Grid.Row="0"
             HorizontalOptions="Fill"
             VerticalOptions="Fill"
             Source="{Binding ImageSource, Source={x:Reference Root}}" Aspect="AspectFit" />
+        </Border>
+        
         <Label
             Grid.Row="1"
             Text="{Binding Title, Source={x:Reference Root}}"

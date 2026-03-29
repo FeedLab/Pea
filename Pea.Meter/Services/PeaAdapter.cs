@@ -50,7 +50,7 @@ public class PeaAdapter
     public PeaAdapter(ILogger<PeaAdapter> logger)
     {
         this.logger = logger;
-        client = new HttpClient(handler);
+        client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(20) };
     }
 
     public async Task<bool> LoginUser(string username, string password)
@@ -354,7 +354,24 @@ public class PeaAdapter
         Debug.WriteLine("Protected page content:");
     }
 
-    public async Task<IList<PeaMeterReading>> ShowDailyReadings(DateTime selectedDate)
+    private async Task<HttpResponseMessage> GetWithRetryAsync(string requestUri, int maxRetries = 3)
+    {
+        for (var attempt = 1; attempt <= maxRetries; attempt++)
+        {
+            try
+            {
+                return await client.GetAsync(requestUri);
+            }
+            catch (TaskCanceledException) when (attempt < maxRetries)
+            {
+                logger.LogWarning("Request timed out (attempt {Attempt}/{Max}), retrying...", attempt, maxRetries);
+                await Task.Delay(TimeSpan.FromSeconds(10));
+            }
+        }
+        return await client.GetAsync(requestUri);
+    }
+
+    public async Task<IList<PeaMeterReading>?> ShowDailyReadings(DateTime selectedDate)
     {
         try
         {
@@ -366,7 +383,7 @@ public class PeaAdapter
 
                 if (isAuthenticated == false)
                 {
-                    return new List<PeaMeterReading>();
+                    return null;
                 }
 
                 result = await ShowDailyReadingsInternal(selectedDate);
@@ -381,7 +398,7 @@ public class PeaAdapter
             logger.LogError(e, "Error occurred during ShowDailyReadings");
         }
         
-        return new List<PeaMeterReading>();
+        return null;
     }
 
     public async Task<IList<PeaMeterReading>?> ShowDailyReadingsInternal(DateTime selectedDate)
@@ -400,7 +417,7 @@ public class PeaAdapter
         //     return new List<PeaMeterReading>();
         // }
 
-        var protectedResponse = await client.GetAsync(requestUri);
+        var protectedResponse = await GetWithRetryAsync(requestUri);
         var protectedHtml = await protectedResponse.Content.ReadAsStringAsync();
 
         if (protectedHtml.Contains("txtUsername") || protectedHtml.Contains("txtPassword"))

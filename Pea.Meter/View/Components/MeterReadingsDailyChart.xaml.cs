@@ -1,10 +1,15 @@
-﻿using Pea.Meter.Services;
+﻿using Microsoft.Extensions.Logging;
+using Pea.Meter.Services;
 using Pea.Meter.ViewModel.Statistics;
+using Syncfusion.Maui.Buttons;
 
 namespace Pea.Meter.View.Components;
 
 public partial class MeterReadingsDailyChart : ContentView
 {
+    private readonly MeterReadingsDailyViewModel viewModel;
+    private readonly ILogger<MeterReadingsDailyChart> logger;
+
     public static readonly BindableProperty ChartTitleProperty =
         BindableProperty.Create(nameof(ChartTitle), typeof(string), typeof(MeterReadingsDailyChart), Pea.Meter.Resources.Strings.AppResources.OverviewPerDay);
 
@@ -34,11 +39,48 @@ public partial class MeterReadingsDailyChart : ContentView
 
     public MeterReadingsDailyChart()
     {
+        logger = AppService.GetRequiredService<ILogger<MeterReadingsDailyChart>>();
+
         InitializeComponent();
 
         if (AppService.Current != null)
-            BindingContext = AppService.Current.GetRequiredService<MeterReadingsDailyViewModel>();
+        {
+            viewModel = AppService.Current.GetRequiredService<MeterReadingsDailyViewModel>();
+            BindingContext = viewModel;
+        }
         else
+        {
             throw new InvalidOperationException("AppService is not initialized");
+        }
+        
+        RadioButtonDaily.IsChecked = true;
+    }
+
+    private void ToggleButton_OnStateChanged(object? sender, StateChangedEventArgs e)
+    {
+        var toggleButton = sender as SfRadioButton;
+        
+        if(toggleButton == null)
+            return;
+
+        if (e.IsChecked ?? false)
+        {
+            if (toggleButton.Value.ToString() == "Daily")
+            {
+                ColumnSeriesPeek.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateDaily"];
+                ColumnSeriesOffPeek.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateDaily"];
+                viewModel.TimeResolutionChanged(MeterReadingsDailyViewModel.TimeResolutionType.Daily);
+            }
+            else if (toggleButton.Value.ToString() == "Monthly")
+            {
+                ColumnSeriesPeek.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateMonthly"];
+                ColumnSeriesOffPeek.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateMonthly"];
+                viewModel.TimeResolutionChanged(MeterReadingsDailyViewModel.TimeResolutionType.Monthly);
+            }
+            else
+            {
+                logger.LogError("Unknown toggle button value");
+            }
+        }
     }
 }

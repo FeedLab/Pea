@@ -4,9 +4,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
+             xmlns:buttons="http://schemas.syncfusion.com/maui"
              x:Class="Pea.Meter.View.Components.MeterReadingsDailyChart"
              x:Name="DailyOverviewChartControl">
 
+    <ContentView.Resources>
+        <DataTemplate x:Key="StackedTooltipTemplateMonthly">
+            <VerticalStackLayout Padding="8,6" Spacing="2">
+                <Label Text="{Binding Item.PeriodStart, StringFormat='{0:MMM yyyy}'}"
+                           FontAttributes="Bold" TextColor="White" FontSize="12" />
+                <Label Text="{Binding Item.Peek, StringFormat='Peak: {0:N0} kWh'}"
+                           TextColor="#FF9999" FontSize="11" />
+                <Label Text="{Binding Item.OffPeek, StringFormat='Off-peak: {0:N0} kWh'}"
+                           TextColor="#96CE96" FontSize="11" />
+                <Label Text="{Binding Item.Total, StringFormat='Total: {0:N0} kWh'}"
+                           TextColor="White" FontSize="11" FontAttributes="Bold" />
+            </VerticalStackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="StackedTooltipTemplateDaily">
+            <VerticalStackLayout Padding="8,6" Spacing="2">
+                <Label Text="{Binding Item.PeriodStart, StringFormat='{0:D}'}"
+                           FontAttributes="Bold" TextColor="White" FontSize="12" />
+                <Label Text="{Binding Item.Peek, StringFormat='Peak: {0:N0} kWh'}"
+                           TextColor="#FF9999" FontSize="11" />
+                <Label Text="{Binding Item.OffPeek, StringFormat='Off-peak: {0:N0} kWh'}"
+                           TextColor="#96CE96" FontSize="11" />
+                <Label Text="{Binding Item.Total, StringFormat='Total: {0:N0} kWh'}"
+                           TextColor="White" FontSize="11" FontAttributes="Bold" />
+            </VerticalStackLayout>
+        </DataTemplate>
+    </ContentView.Resources>
+    
     <Grid BackgroundColor="White">
         <chart:SfCartesianChart
             Margin="16"
@@ -14,26 +43,58 @@
             VerticalOptions="Fill"
             BackgroundColor="Transparent">
 
+            <chart:SfCartesianChart.TooltipBehavior>
+                <chart:ChartTooltipBehavior Duration="10" />
+            </chart:SfCartesianChart.TooltipBehavior>
+
             <chart:SfCartesianChart.Title>
-                <Label
-                    Margin="8"
-                    HorizontalOptions="Fill"
-                    TextColor="Black"
-                    HorizontalTextAlignment="Center"
-                    FontFamily="Segoe UI Semibold"
-                    FontSize="20"
-                    Text="{x:Static properties:AppResources.AllMeterReadings}" />
+                <HorizontalStackLayout
+                    HorizontalOptions="Center">
+                    <Label
+                        Margin="0,0,32,0"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Center"
+                        TextColor="Black"
+                        HorizontalTextAlignment="Center"
+                        FontFamily="Segoe UI Semibold"
+                        FontSize="20"
+                        Text="{x:Static properties:AppResources.AllMeterReadings}" />
+
+                    <buttons:SfRadioGroup
+                        Orientation="Horizontal"
+                        VerticalOptions="Center">
+                        <buttons:SfRadioButton
+                            x:Name="RadioButtonDaily"
+                            Text="Daily" Value="Daily"
+                            StateChanged="ToggleButton_OnStateChanged" />
+                        <buttons:SfRadioButton
+                            x:Name="RadioButtonMonthly"
+                            Text="Monthly" Value="Monthly"
+                            StateChanged="ToggleButton_OnStateChanged" />
+                    </buttons:SfRadioGroup>
+
+                </HorizontalStackLayout>
+
             </chart:SfCartesianChart.Title>
+
+            <chart:SfCartesianChart.Legend>
+                <chart:ChartLegend>
+                    <chart:ChartLegend.LabelStyle>
+                        <StaticResource Key="DefaultChartLegendLabelStyle" />
+                    </chart:ChartLegend.LabelStyle>
+                </chart:ChartLegend>
+            </chart:SfCartesianChart.Legend>
 
             <chart:SfCartesianChart.XAxes>
                 <chart:CategoryAxis ZoomFactor="{Binding ZoomFactor}"
-                                    ZoomPosition="1"/>
+                                    ZoomPosition="{Binding ZoomPosition}" />
             </chart:SfCartesianChart.XAxes>
 
             <chart:SfCartesianChart.YAxes>
                 <chart:NumericalAxis>
                     <chart:NumericalAxis.Title>
-                        <chart:ChartAxisTitle Text="{Binding Source={x:Reference DailyOverviewChartControl}, Path=YAxisTitle}" />
+                        <chart:ChartAxisTitle
+                            Text="{Binding Source={x:Reference DailyOverviewChartControl}, Path=YAxisTitle}" />
                     </chart:NumericalAxis.Title>
                 </chart:NumericalAxis>
             </chart:SfCartesianChart.YAxes>
@@ -42,11 +103,11 @@
                 <chart:ChartZoomPanBehavior EnablePanning="True"
                                             EnablePinchZooming="True"
                                             ZoomMode="X"
-                                            MaximumZoomLevel="{Binding MaximumZoomLevel}"/>
-                
+                                            MaximumZoomLevel="{Binding MaximumZoomLevel}" />
+
             </chart:SfCartesianChart.ZoomPanBehavior>
-            
-            <chart:StackingColumnSeries ItemsSource="{Binding MeterDataDailyAggregated}"
+
+            <chart:StackingColumnSeries x:Name="ColumnSeriesPeek" ItemsSource="{Binding MeterDataAggregated}"
                                         Label="{x:Static properties:AppResources.Peek}"
                                         XBindingPath="PeriodStart"
                                         YBindingPath="Peek"
@@ -55,13 +116,13 @@
                                         Stroke="#890000"
                                         StrokeWidth="1"
                                         IsVisibleOnLegend="True"
-                                        EnableTooltip="False"
+                                        EnableTooltip="True"
                                         Spacing="0.3"
                                         CornerRadius="0,0,0,0"
                                         ShowDataLabels="False">
             </chart:StackingColumnSeries>
 
-            <chart:StackingColumnSeries ItemsSource="{Binding MeterDataDailyAggregated}"
+            <chart:StackingColumnSeries x:Name="ColumnSeriesOffPeek" ItemsSource="{Binding MeterDataAggregated}"
                                         Label="{x:Static properties:AppResources.OffPeek}"
                                         XBindingPath="PeriodStart"
                                         YBindingPath="OffPeek"
@@ -70,7 +131,7 @@
                                         Stroke="#6D966D"
                                         StrokeWidth="1"
                                         IsVisibleOnLegend="True"
-                                        EnableTooltip="False"
+                                        EnableTooltip="True"
                                         Spacing="0.3"
                                         CornerRadius="2,2,0,0"
                                         ShowDataLabels="False">

@@ -32,7 +32,7 @@
             Margin="0,2,0,0"
             TextColor="#002684"
             Text="{Binding Header}"
-            FontSize="34"
+            FontSize="28"
             FontAttributes="Bold"
             FontFamily="OpenSansSemibold"
             HorizontalOptions="Center"

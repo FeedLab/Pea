@@ -16,6 +16,8 @@ public partial class SolarSystemSizingViewModel : ObservableObject
     private readonly ILogger<SolarSystemSizingViewModel> logger;
     private readonly StorageService storageService;
 
+    private DateTime lastPopulateChartData = DateTime.MinValue;
+
     [ObservableProperty] private ObservableCollection<MeterDataManagerMonth> costCompareMonthList = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataMonthSummary = [];
     [ObservableProperty] private ObservableCollection<MeterDataManagerMonth> energyProducedMonthlySummary = [];
@@ -33,22 +35,39 @@ public partial class SolarSystemSizingViewModel : ObservableObject
 
         CreateLoggedInSubscription();
         CreateNewDaySubscription();
-        CreateDataImportedSubscription();
+        CreateAllDataImportedSubscription();
+        CreateAllAggregationsCompletedSubscription();
     }
 
-    private void CreateDataImportedSubscription()
+    private void CreateAllAggregationsCompletedSubscription()
     {
-        WeakReferenceMessenger.Default.Register<DataImportedMessage>(this,
+        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this,
             (r, m) =>
             {
-                    try
-                    {
-                        PopulateChartData();
-                    }
-                    catch (Exception e)
-                    {
-                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
-                    }
+                try
+                {
+                    PopulateChartData();
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateAllAggregationsCompletedSubscription), e.Message);
+                }
+            });
+    }
+    
+    private void CreateAllDataImportedSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<AllImportedDataCompletedMessage>(this,
+            (r, m) =>
+            {
+                try
+                {
+                    PopulateChartData();
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateAllDataImportedSubscription), e.Message);
+                }
             });
     }
 
@@ -57,14 +76,14 @@ public partial class SolarSystemSizingViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this,
             (r, m) =>
             {
-                    try
-                    {
-                        PopulateChartData();
-                    }
-                    catch (Exception e)
-                    {
-                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
-                    }
+                try
+                {
+                    PopulateChartData();
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateLoggedInSubscription), e.Message);
+                }
             });
     }
 
@@ -73,14 +92,14 @@ public partial class SolarSystemSizingViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
             (r, m) =>
             {
-                    try
-                    {
-                        PopulateChartData();
-                    }
-                    catch (Exception e)
-                    {
-                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
-                    }
+                try
+                {
+                    PopulateChartData();
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateNewDaySubscription), e.Message);
+                }
             });
     }
 
@@ -135,12 +154,14 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                 DailyUsageAveragePeekKw = dailyConsumptionAveragePeekKw;
                 BatterySizeNeeded = (dailyConsumptionAveragePeekKw - averageUsedBetween08To17Monthly)
                     .RoundUpToNearestFive();
+            });
 
-                var solarArraySize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
-                meterDataManager.CalculateSolarProduction(solarArraySize, BatterySizeNeeded, 180, 3);
+            var solarArraySize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
+            meterDataManager.CalculateSolarProduction(solarArraySize, BatterySizeNeeded, 180, 3);
 
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
                 SolarSizeNeeded = solarArraySize;
-
                 EnergyProducedMonthlySummary = last12FullOrderedMonths.ToObservableCollection();
             });
         }

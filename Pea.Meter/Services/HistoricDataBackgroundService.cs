@@ -66,7 +66,7 @@ public class HistoricDataBackgroundService
         {
             CancelImport();
         }
-        
+
         TriggerImportTask();
     }
 
@@ -91,7 +91,7 @@ public class HistoricDataBackgroundService
         var startDate = DateTime.Now.Date.AddDays(-1);
         var startDateOldest = await GetOldestPeriodStartAsync(cancellationToken, repository);
         var oldestDateToImport = storageService.ConfigurationDataImportModel.EarliestImportedDate;
-        
+
         logger.LogInformation(
             "Starting historic data import from {Date} for user {UserId}, will stop when ShowDailyReadings returns 0 items",
             startDate, "N/A");
@@ -99,6 +99,9 @@ public class HistoricDataBackgroundService
         var totalReadings = 0;
         var targetDate = startDate;
 
+        const int startTimeDelay = 5;
+        await Task.Delay(TimeSpan.FromSeconds(startTimeDelay), cancellationToken);
+        
         do
         {
             if (cancellationToken.IsCancellationRequested)
@@ -118,11 +121,21 @@ public class HistoricDataBackgroundService
 
                     logger.LogInformation("Skipping over to date {Date}", startDateOldest.ToString("yyyy-MM-dd"));
                     targetDate = startDateOldest;
+                    await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken);
                     continue;
                 }
 
                 logger.LogInformation("Fetching data for {Date}...", targetDate.ToString("yyyy-MM-dd"));
                 var readings = await peaAdapter.ShowDailyReadings(targetDate);
+
+                if (readings == null)
+                {
+                    logger.LogWarning("Failed to fetch data for {Date}. Sleeping for a few seconds ant then try again.",
+                        targetDate.ToString("yyyy-MM-dd"));
+
+                    await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+                    continue;
+                }
 
                 if (readings.Count > 0 && readings.Sum(s => s.Total) > 0)
                 {
@@ -132,10 +145,7 @@ public class HistoricDataBackgroundService
                     logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count,
                         targetDate.ToString("yyyy-MM-dd"));
 
-                    await MainThread.InvokeOnMainThreadAsync(() =>
-                    {
-                        WeakReferenceMessenger.Default.Send(new DataImportedMessage(readings, targetDate));
-                    });
+                    WeakReferenceMessenger.Default.Send(new DataImportedMessage(readings, targetDate));
 
                     if (targetDate < startDateOldest)
                     {
@@ -156,10 +166,13 @@ public class HistoricDataBackgroundService
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error importing data for {Date}", targetDate.ToString("yyyy-MM-dd"));
+                await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
             }
 
             targetDate = targetDate.AddDays(-1);
         } while (targetDate > oldestDateToImport);
+
+        WeakReferenceMessenger.Default.Send(new AllImportedDataCompletedMessage());
 
         logger.LogInformation("Import completed. Total readings imported and saved: {Total}", totalReadings);
     }
