@@ -83,4 +83,14 @@ public partial class MeterReadingsDailyChart : ContentView
             }
         }
     }
+
+    private void OnMoveToFirstTapped(object? sender, EventArgs e)
+    {
+        viewModel.MoveTo(MeterReadingsDailyViewModel.ChartVisualPositionType.Start);
+    }
+
+    private void OnMoveToLastTapped(object? sender, EventArgs e)
+    {
+        viewModel.MoveTo(MeterReadingsDailyViewModel.ChartVisualPositionType.End);
+    }
 }

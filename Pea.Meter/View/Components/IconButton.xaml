@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Pea.Meter.View.Components.IconButton"
+             x:Name="IconButtonControl">
+
+    <Label
+        FontFamily="FontSolid"
+        FontSize="{Binding Source={x:Reference IconButtonControl}, Path=IconSize}"
+        TextColor="{Binding Source={x:Reference IconButtonControl}, Path=IconColor}"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        Text="{Binding Source={x:Reference IconButtonControl}, Path=Icon}"
+        IsEnabled="{Binding Source={x:Reference IconButtonControl}, Path=IsEnabled}">
+        <Label.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnTapped" />
+        </Label.GestureRecognizers>
+        <Label.Triggers>
+            <DataTrigger TargetType="Label"
+                         Binding="{Binding IsEnabled, Source={RelativeSource Self}}"
+                         Value="False">
+                <Setter Property="Opacity" Value="0.5" />
+            </DataTrigger>
+        </Label.Triggers>
+        <Label.Shadow>
+            <Shadow Radius="5" Opacity="0.6" Brush="Black" Offset="10,10" />
+        </Label.Shadow>
+    </Label>
+
+</ContentView>

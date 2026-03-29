@@ -126,4 +126,26 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
         Daily,
         Monthly
     };
+    
+    public enum ChartVisualPositionType
+    {
+        Start,
+        End
+    };
+
+    public void MoveTo(ChartVisualPositionType position)  
+    {
+        if (position == ChartVisualPositionType.Start)
+        {
+            ZoomPosition = 0.0m;
+        }
+        else if (position == ChartVisualPositionType.End)
+        {
+            ZoomPosition = 1.0m;
+        }
+        else
+        {
+            throw new Exception("Unknown position");
+        }
+    }
 }

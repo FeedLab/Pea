@@ -50,7 +50,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
                 {
                     try
                     {
-                        await PopulateChartData();
+                        await PopulateChartData(DateTime.Today);
                     }
                     catch (Exception e)
                     {
@@ -73,7 +73,6 @@ public partial class MeterReadingsHourViewModel : ObservableObject
                     try
                     {
                         SelectedDate = m.NewDate;
-                        await PopulateChartData();
                     }
                     catch (Exception e)
                     {
@@ -119,8 +118,6 @@ public partial class MeterReadingsHourViewModel : ObservableObject
             try
             {
                 SelectedDate = DateTime.Today;
-
-                //await PopulateChartData();
             }
             catch (Exception e)
             {
@@ -130,9 +127,9 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         });
     }
 
-    private async Task PopulateChartData()
+    private async Task PopulateChartData(DateTime date)
     {
-        var today = SelectedDate;
+        var today = date;
         var timeStart1 = today.AddDays(-1);
         var timeStart7 = today.AddDays(-7);
         var timeStart30 = today.AddDays(-30);
@@ -152,7 +149,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
             MeterDataAverage7.Clear();
             MeterDataAverage30.Clear();
 
-            if (SelectedDate == DateTime.Today)
+            if (date == DateTime.Today)
             {
                 TodayData.AddRange(meterDataAverageDays0);
             }
@@ -198,7 +195,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
             CurrentTimePickerMinimumDate = firstRecord.PeriodStart.Date;
             CurrentTimePickerMaximumDate = lastRecord.PeriodStart.Date;
 
-            await PopulateChartData();
+            await PopulateChartData(value);
         }
         catch (Exception e)
         {

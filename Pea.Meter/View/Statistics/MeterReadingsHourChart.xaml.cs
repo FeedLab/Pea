@@ -88,12 +88,13 @@ public partial class MeterReadingsHourChart : ContentView
         ChartTitle = selectedDate.ToLongDateString();
     }
     
-    private void OnNextDayTapped(object? sender, TappedEventArgs e)
+    private void OnNextDayTapped(object? sender, EventArgs eventArgs)
     {
         viewModel.SelectedDate = viewModel.SelectedDate.AddDays(1);
     }
 
-    private void OnPreviousDayTapped(object? sender, TappedEventArgs e)
+
+    private void OnPreviousDayTapped(object? sender, EventArgs eventArgs)
     {
         viewModel.SelectedDate = viewModel.SelectedDate.AddDays(-1);
     }

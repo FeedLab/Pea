@@ -6,6 +6,7 @@
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              xmlns:components="clr-namespace:Pea.Meter.Components"
+             xmlns:ctrl="clr-namespace:Pea.Meter.View.Components"
              xmlns:local="clr-namespace:Pea.Meter"
              x:Class="Pea.Meter.View.Statistics.MeterReadingsHourChart"
              x:Name="MeterComparisonChartControl">
@@ -30,31 +31,11 @@
                     Margin="0,0,0,12"
                     HorizontalOptions="Center">
 
-                    <Label
+                    <ctrl:IconButton
                         Margin="0,0,18,0"
-                        FontFamily="FontSolid"
-                        FontSize="28"
-                        TextColor="Black"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        Text="&#xf100;"
-                        IsEnabled="{Binding IsPreviousDayButtonEnabled}">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnPreviousDayTapped" />
-                        </Label.GestureRecognizers>
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label" Binding="{Binding IsEnabled, Source={RelativeSource Self}}"
-                                         Value="False">
-                                <Setter Property="Opacity" Value="0.5" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                        <Label.Shadow>
-                            <Shadow Radius="5"
-                                    Opacity="0.6"
-                                    Brush="Black"
-                                    Offset="10,10" />
-                        </Label.Shadow>
-                    </Label>
+                        Icon="&#xf100;"
+                        IsEnabled="{Binding IsPreviousDayButtonEnabled}"
+                        Tapped="OnPreviousDayTapped" />
                     
                     <components:DatePickerComponent
                         x:Name="SelectedTimePicker"
@@ -64,38 +45,17 @@
                         HeaderText="{x:Static properties:AppResources.StartDate}"
                         VerticalOptions="Center"
                         SelectedDate="{Binding SelectedDate}"
-                        MinimumDate="{Binding CurrentTimePickerMaximumDate}"
-                        MaximumDate="{Binding CurrentTimePickerMinimumDate}"
+                        MinimumDate="{Binding CurrentTimePickerMinimumDate}"
+                        MaximumDate="{Binding CurrentTimePickerMaximumDate}"
                         DateSelected="OnSelectedDatePickerOkButtonClicked"
                         Margin="0,0,0,0" />
 
 
-                    <Label
+                    <ctrl:IconButton
                         Margin="18,0,0,0"
-                        FontFamily="FontSolid"
-                        FontSize="28"
-                        TextColor="Black"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        Text="&#xf101;"
-                        IsEnabled="{Binding IsNextDayButtonEnabled}">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnNextDayTapped" />
-                        </Label.GestureRecognizers>
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label" Binding="{Binding IsEnabled, Source={RelativeSource Self}}"
-                                         Value="False">
-                                <Setter Property="Opacity" Value="0.5" />
-                            </DataTrigger>
-                        </Label.Triggers>
-
-                        <Label.Shadow>
-                            <Shadow Radius="15"
-                                    Opacity="0.6"
-                                    Brush="Black"
-                                    Offset="10,10" />
-                        </Label.Shadow>
-                    </Label>
+                        Icon="&#xf101;"
+                        IsEnabled="{Binding IsNextDayButtonEnabled}"
+                        Tapped="OnNextDayTapped" />
                 </HorizontalStackLayout>
 
             </chart:SfCartesianChart.Title>
