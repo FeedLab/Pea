@@ -11,29 +11,37 @@
 
     <ContentView.Resources>
         <DataTemplate x:Key="StackedTooltipTemplateMonthly">
-            <VerticalStackLayout Padding="8,6" Spacing="2">
-                <Label Text="{Binding Item.PeriodStart, StringFormat='{0:MMM yyyy}'}"
-                       FontAttributes="Bold" TextColor="White" FontSize="12" />
-                <Label Text="{Binding Item.PeekFormatted, StringFormat='Peak: {0}'}"
-                       TextColor="#FF9999" FontSize="11" />
-                <Label Text="{Binding Item.OffPeekFormatted, StringFormat='Off-peak: {0}'}"
-                       TextColor="#96CE96" FontSize="11" />
-                <Label Text="{Binding Item.TotalFormatted, StringFormat='Total: {0}'}"
-                       TextColor="White" FontSize="11" FontAttributes="Bold" />
-            </VerticalStackLayout>
+            <Border Background="#333333"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 4">
+                <VerticalStackLayout Padding="8,6" Spacing="2">
+                    <Label Text="{Binding Item.PeriodStart, StringFormat='{0:MMM yyyy}'}"
+                           FontAttributes="Bold" TextColor="White" FontSize="12" />
+                    <Label Text="{Binding Item.PeekFormatted, StringFormat='Peak: {0}'}"
+                           TextColor="#FF9999" FontSize="11" />
+                    <Label Text="{Binding Item.OffPeekFormatted, StringFormat='Off-peak: {0}'}"
+                           TextColor="#96CE96" FontSize="11" />
+                    <Label Text="{Binding Item.TotalFormatted, StringFormat='Total: {0}'}"
+                           TextColor="White" FontSize="11" FontAttributes="Bold" />
+                </VerticalStackLayout>
+            </Border>
         </DataTemplate>
 
         <DataTemplate x:Key="StackedTooltipTemplateDaily">
-            <VerticalStackLayout Padding="8,6" Spacing="2">
-                <Label Text="{Binding Item.PeriodStart, StringFormat='{0:D}'}"
-                       FontAttributes="Bold" TextColor="White" FontSize="12" />
-                <Label Text="{Binding Item.PeekFormatted, StringFormat='Peak: {0}'}"
-                       TextColor="#FF9999" FontSize="11" />
-                <Label Text="{Binding Item.OffPeekFormatted, StringFormat='Off-peak: {0}'}"
-                       TextColor="#96CE96" FontSize="11" />
-                <Label Text="{Binding Item.TotalFormatted, StringFormat='Total: {0}'}"
-                       TextColor="White" FontSize="11" FontAttributes="Bold" />
-            </VerticalStackLayout>
+            <Border Background="#333333"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 4">
+                <VerticalStackLayout Padding="8,6" Spacing="2">
+                    <Label Text="{Binding Item.PeriodStart, StringFormat='{0:D}'}"
+                           FontAttributes="Bold" TextColor="White" FontSize="12" />
+                    <Label Text="{Binding Item.PeekFormatted, StringFormat='Peak: {0}'}"
+                           TextColor="#FF9999" FontSize="11" />
+                    <Label Text="{Binding Item.OffPeekFormatted, StringFormat='Off-peak: {0}'}"
+                           TextColor="#96CE96" FontSize="11" />
+                    <Label Text="{Binding Item.TotalFormatted, StringFormat='Total: {0}'}"
+                           TextColor="White" FontSize="11" FontAttributes="Bold" />
+                </VerticalStackLayout>
+            </Border>
         </DataTemplate>
     </ContentView.Resources>
 

@@ -2,7 +2,6 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              xmlns:components="clr-namespace:Pea.Meter.Components"
@@ -13,15 +12,20 @@
 
     <ContentView.Resources>
         <DataTemplate x:Key="HourTrackballTemplate">
-            <VerticalStackLayout Padding="6,4" Spacing="1">
-                <Label Text="{Binding Series.Label}"
-                       FontAttributes="Bold" TextColor="White" FontSize="11" />
-                <Label Text="{Binding DataItem.TotalFormatted}"
-                       TextColor="White" FontSize="11" />
-            </VerticalStackLayout>
+                <VerticalStackLayout Padding="6,4" Spacing="1" Background="Black">
+                    <Label
+                        Text="{Binding Series.Label}"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        FontSize="11" />
+                    <Label
+                        Text="{Binding DataItem.TotalFormatted}"
+                        TextColor="White"
+                        FontSize="11" />
+                </VerticalStackLayout>
         </DataTemplate>
     </ContentView.Resources>
-    
+
     <Grid BackgroundColor="White">
         <chart:SfCartesianChart
             Margin="16"
@@ -30,7 +34,7 @@
             BackgroundColor="Transparent">
 
             <chart:SfCartesianChart.TrackballBehavior>
-                <chart:ChartTrackballBehavior ShowLabel="True" ShowLine="True" />
+                <chart:ChartTrackballBehavior ShowLabel="True" ShowLine="True"  />
             </chart:SfCartesianChart.TrackballBehavior>
 
             <chart:SfCartesianChart.Legend>
@@ -51,7 +55,7 @@
                         Icon="&#xf100;"
                         IsEnabled="{Binding IsPreviousDayButtonEnabled}"
                         Tapped="OnPreviousDayTapped" />
-                    
+
                     <components:DatePickerComponent
                         x:Name="SelectedTimePicker"
                         Glyph="{x:Static local:Glyphs.Calendar}"

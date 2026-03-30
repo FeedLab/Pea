@@ -40,13 +40,17 @@
 
                 <chart:SfCartesianChart.Resources>
                     <DataTemplate x:Key="tooltipTemplate">
-                        <StackLayout Orientation="Horizontal" Padding="8">
-                            <Label Text="{Binding Item.YValue, StringFormat='{}{0:0}'}"
-                                   TextColor="White"
-                                   FontSize="14"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </StackLayout>
+                        <Border Background="#333333"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 4">
+                            <StackLayout Orientation="Horizontal" Padding="8">
+                                <Label Text="{Binding Item.YValue, StringFormat='{}{0:0}'}"
+                                       TextColor="White"
+                                       FontSize="14"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                        </Border>
                     </DataTemplate>
                 </chart:SfCartesianChart.Resources>
                 
@@ -218,13 +222,17 @@
                 HorizontalOptions="Fill">
                 <chart:SfCartesianChart.Resources>
                     <DataTemplate x:Key="tooltipTemplate">
-                        <StackLayout Orientation="Horizontal" Padding="8">
-                            <Label Text="{Binding Item.Value, StringFormat='{}{0:0}'}"
-                                   TextColor="White"
-                                   FontSize="14"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </StackLayout>
+                        <Border Background="#333333"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 4">
+                            <StackLayout Orientation="Horizontal" Padding="8">
+                                <Label Text="{Binding Item.Value, StringFormat='{}{0:0}'}"
+                                       TextColor="White"
+                                       FontSize="14"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                        </Border>
                     </DataTemplate>
                 </chart:SfCartesianChart.Resources>
 
