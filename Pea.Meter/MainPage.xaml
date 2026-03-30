@@ -45,6 +45,7 @@
 
     <Grid
         Background="White">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -57,16 +58,17 @@
 
         <Grid
             Grid.Row="0"
-            Margin="0, 6, 0, 18"
+            BackgroundColor="White"
+            Margin="0, 0, 0, 0"
+            Padding="0,4,0,10"
             HorizontalOptions="Fill"
             VerticalOptions="Start">
-            <!--<Image
-                Margin="12"
-                Source="pea_amp.png"
-                Aspect="AspectFit"
-                HeightRequest="70"
-                HorizontalOptions="Start"
-                VerticalOptions="Start" />-->
+            <Grid.Shadow>
+                <Shadow Brush="Black"
+                Radius="4"
+                Opacity="0.5"
+                Offset="0,5"/>
+            </Grid.Shadow>
 
             <view:CustomerInfoView
                 Margin="20,0,0,0"
@@ -99,9 +101,9 @@
             </Border>
 
             <components:ToolbarComponent
-                Margin="0,-15,20,0"
+                Margin="0,0,20,0"
                 HorizontalOptions="End"
-                VerticalOptions="Center" />
+                VerticalOptions="Start" />
         </Grid>
 
         <tabView:SfTabView
