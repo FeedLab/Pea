@@ -88,16 +88,16 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
                 {
                     case TimeResolutionType.Daily:
                         MeterDataAggregated = storageService.DailyAggregated;
-                        MaximumZoomLevel = ( storageService.DailyAggregated.Count / 40.0m);
-                        ZoomFactor = 1.0m / MaximumZoomLevel;                    
+                        MaximumZoomLevel = storageService.DailyAggregated.Count / 40.0m;
+                        ZoomFactor = MaximumZoomLevel > 0 ? 1.0m / MaximumZoomLevel : 1.0m;
                         ZoomPosition = 1.0m;
                         break;
                     case TimeResolutionType.Monthly:
                         MeterDataAggregated = storageService.MonthlyAggregated;
-                        MaximumZoomLevel = ( storageService.MonthlyAggregated.Count / 18.0m);
-                        ZoomFactor = 1.0m / MaximumZoomLevel;
+                        MaximumZoomLevel = storageService.MonthlyAggregated.Count / 18.0m;
+                        ZoomFactor = MaximumZoomLevel > 0 ? 1.0m / MaximumZoomLevel : 1.0m;
                         ZoomPosition = 1.0m;
-                    break;
+                        break;
                     default:
                         throw new Exception("Unknown time resolution");
                 }

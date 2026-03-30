@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Pea.Meter.Helper;
+namespace Pea.Meter.Helpers;
 
 public interface IEncryptionHelper
 {

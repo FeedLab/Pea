@@ -1,7 +1,9 @@
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using Pea.Meter.Helper;
+using Pea.Meter.Helpers;
+using Pea.Meter.Helpers;
+using AuthData = Pea.Meter.Helpers.AuthData;
 
 namespace Pea.Meter.Services;
 

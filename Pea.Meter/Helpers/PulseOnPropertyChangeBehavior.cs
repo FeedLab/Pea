@@ -1,4 +1,4 @@
-namespace Pea.Meter.Helper;
+namespace Pea.Meter.Helpers;
 
 public class PulseOnPropertyChangeBehavior : Behavior<Label>
 {

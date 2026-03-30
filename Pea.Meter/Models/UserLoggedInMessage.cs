@@ -1,4 +1,4 @@
-﻿using Pea.Meter.Helper;
+﻿using Pea.Meter.Helpers;
 
 namespace Pea.Meter.Models;
 

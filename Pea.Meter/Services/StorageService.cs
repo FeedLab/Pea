@@ -102,6 +102,9 @@ public partial class StorageService : ObservableObject
         {
             try
             {
+                logger.LogInformation("Stopping background task for checking for new day");
+                StopBackgroundTask();
+
                 logger.LogInformation("Checking for new day");
 
                 var peaMeterReadingsInOrder = await RetrieveAndProcessMeterReadingsFromDb(meterReadingRepository);
@@ -126,7 +129,6 @@ public partial class StorageService : ObservableObject
 
                     logger.LogInformation("StopBackgroundTask: Old date: {OldDate}, New date: {NewDate}", oldDate,
                         newDate);
-                    StopBackgroundTask();
 
                     try
                     {
@@ -154,13 +156,16 @@ public partial class StorageService : ObservableObject
 
                     logger.LogInformation("StartBackgroundTask: Old date: {OldDate}, New date: {NewDate}", oldDate,
                         newDate);
-                    StartBackgroundTask();
                 }
             }
             catch (Exception e)
             {
                 logger.LogError(e, "Error in background task ({backgroundTaskName}): {Message}",
                     nameof(CheckForNewDayBackgroundTask), e.Message);
+            }
+            finally
+            {
+                StartBackgroundTask();
             }
         }, null, TimeSpan.FromSeconds(startTimeDelay), TimeSpan.FromMinutes(10));
 

@@ -11,12 +11,27 @@
              x:Class="Pea.Meter.View.Statistics.MeterReadingsHourChart"
              x:Name="MeterComparisonChartControl">
 
+    <ContentView.Resources>
+        <DataTemplate x:Key="HourTrackballTemplate">
+            <VerticalStackLayout Padding="6,4" Spacing="1">
+                <Label Text="{Binding Series.Label}"
+                       FontAttributes="Bold" TextColor="White" FontSize="11" />
+                <Label Text="{Binding DataItem.TotalFormatted}"
+                       TextColor="White" FontSize="11" />
+            </VerticalStackLayout>
+        </DataTemplate>
+    </ContentView.Resources>
+    
     <Grid BackgroundColor="White">
         <chart:SfCartesianChart
             Margin="16"
             HorizontalOptions="Fill"
             VerticalOptions="Fill"
             BackgroundColor="Transparent">
+
+            <chart:SfCartesianChart.TrackballBehavior>
+                <chart:ChartTrackballBehavior ShowLabel="True" ShowLine="True" />
+            </chart:SfCartesianChart.TrackballBehavior>
 
             <chart:SfCartesianChart.Legend>
                 <chart:ChartLegend>
@@ -84,7 +99,7 @@
                 Fill="Red"
                 StrokeWidth="2"
                 IsVisibleOnLegend="True"
-                EnableTooltip="True" />
+                TrackballLabelTemplate="{StaticResource HourTrackballTemplate}" />
 
             <chart:SplineSeries
                 ItemsSource="{Binding Source={x:Reference MeterComparisonChartControl}, Path=Average1DayData}"
@@ -94,7 +109,7 @@
                 Fill="Orange"
                 StrokeWidth="2"
                 IsVisibleOnLegend="True"
-                EnableTooltip="True" />
+                TrackballLabelTemplate="{StaticResource HourTrackballTemplate}" />
 
             <chart:SplineSeries
                 ItemsSource="{Binding Source={x:Reference MeterComparisonChartControl}, Path=Average7DaysData}"
@@ -104,7 +119,7 @@
                 Fill="Blue"
                 StrokeWidth="2"
                 IsVisibleOnLegend="True"
-                EnableTooltip="True" />
+                TrackballLabelTemplate="{StaticResource HourTrackballTemplate}" />
 
             <chart:SplineSeries
                 ItemsSource="{Binding Source={x:Reference MeterComparisonChartControl}, Path=Average30DaysData}"
@@ -114,7 +129,7 @@
                 Fill="Green"
                 StrokeWidth="2"
                 IsVisibleOnLegend="True"
-                EnableTooltip="True" />
+                TrackballLabelTemplate="{StaticResource HourTrackballTemplate}" />
         </chart:SfCartesianChart>
     </Grid>
 </ContentView>

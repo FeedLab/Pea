@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Pea.Meter.Services;
 
-namespace Pea.Meter.Helper;
+namespace Pea.Meter.Helpers;
 
 [SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class AuthData(string userName, string password) : ObservableObject, IAuthData

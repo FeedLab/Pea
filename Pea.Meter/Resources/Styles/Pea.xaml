@@ -13,6 +13,6 @@
                                  TextColor="#002800"
                                  Margin="5"
                                  FontSize="16"
-                                 FontFamily="Segoe UI Semibold" />
+                                 FontFamily="OpenSansSemibold" />
 
 </ResourceDictionary>

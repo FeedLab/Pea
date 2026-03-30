@@ -3,8 +3,8 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:Pea.Meter.Resources.Strings"
-             xmlns:helper="clr-namespace:Pea.Meter.Helper"
              xmlns:converters="clr-namespace:Pea.Meter.Converters"
+             xmlns:helpers="clr-namespace:Pea.Meter.Helpers"
              x:Class="Pea.Meter.View.CustomerInfoView">
 
     <ContentView.Resources>
@@ -49,7 +49,7 @@
             <Label Grid.Row="2" Grid.Column="1" Text="{Binding PeriodStart, StringFormat='{}{0:dd MMMM yyyy}'}" FontSize="12" TextColor="Black"
                    VerticalOptions="Center" HorizontalOptions="End" >
                 <Label.Behaviors>
-                    <helper:PulseOnPropertyChangeBehavior PropertyToWatch="{Binding PeriodStart}" Length="150" />
+                    <helpers:PulseOnPropertyChangeBehavior PropertyToWatch="{Binding PeriodStart}" Length="150" />
                 </Label.Behaviors>
             </Label>
 

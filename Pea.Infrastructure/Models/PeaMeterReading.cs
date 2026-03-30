@@ -1,3 +1,5 @@
+using Pea.Infrastructure.Helpers;
+
 namespace Pea.Infrastructure.Models;
 
 /// <summary>
@@ -29,6 +31,11 @@ public class PeaMeterReading
     public decimal Total => RateA + RateB + RateC;
     public decimal Peek => RateA;
     public decimal OffPeek => RateB + RateC;
+
+    public string PeekFormatted => WattFormatter.Format(Peek * 1000);
+    public string OffPeekFormatted => WattFormatter.Format(OffPeek * 1000);
+    public string TotalFormatted => WattFormatter.Format(Total * 1000);
+
 
     public override string ToString()
     {

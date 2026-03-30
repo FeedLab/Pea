@@ -164,24 +164,29 @@ public partial class MeterReadingsHourViewModel : ObservableObject
     {
         try
         {
+            if(storageService.HourlyAggregated.Count == 0)
+            {
+                logger.LogWarning("HourlyAggregated is empty");
+                return;
+            }
+
             var orderedPeaMeterReadingList = storageService.HourlyAggregated
                 .OrderBy(o => o.PeriodStart)
                 .ToList();
 
-            var firstRecord = orderedPeaMeterReadingList.FirstOrDefault();
-            var lastRecord = orderedPeaMeterReadingList.LastOrDefault();
+            var firstRecord = orderedPeaMeterReadingList.First();
+            var lastRecord = orderedPeaMeterReadingList.Last();
 
-            if (firstRecord == null || lastRecord == null )
-            {
-                return;
-            }
+            var firstDate = firstRecord.PeriodStart.Date;
+            var lastDate = DateTime.Today.Date;
+            // var lastDate = lastRecord.PeriodStart.Date;
 
-            if (value >= lastRecord.PeriodStart.Date)
+            if (value >= lastDate.Date)
             {
                 IsNextDayButtonEnabled = false;
                 IsPreviousDayButtonEnabled = true;
             }
-            else if (value <= firstRecord.PeriodStart.Date)
+            else if (value <= firstDate.Date)
             {
                 IsNextDayButtonEnabled = true;
                 IsPreviousDayButtonEnabled = false;
@@ -193,7 +198,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
             }
 
             CurrentTimePickerMinimumDate = firstRecord.PeriodStart.Date;
-            CurrentTimePickerMaximumDate = lastRecord.PeriodStart.Date;
+            CurrentTimePickerMaximumDate = lastDate;
 
             await PopulateChartData(value);
         }
