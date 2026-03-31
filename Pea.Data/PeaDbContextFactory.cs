@@ -8,6 +8,7 @@ namespace Pea.Data;
 public class PeaDbContextFactory
 {
     private readonly string serverConnectionString;
+    private bool _migrated = false;
 
     /// <summary>
     /// Creates a factory with a base SQL Server connection string
@@ -19,22 +20,23 @@ public class PeaDbContextFactory
     }
 
     /// <summary>
-    /// Creates a DbContext
-    /// Database will be created as Pea on the SQL Server
+    /// Applies any pending migrations. Call once at startup before using CreateDbContext.
+    /// </summary>
+    public async Task MigrateAsync()
+    {
+        var connectionString = BuildConnectionString("Pea");
+        await using var context = new PeaDbContext(connectionString);
+        await context.Database.MigrateAsync();
+        _migrated = true;
+    }
+
+    /// <summary>
+    /// Creates a DbContext. Call MigrateAsync() at startup before using this.
     /// </summary>
     public PeaDbContext CreateDbContext()
     {
-        var databaseName = "Pea";
-
-        // Build connection string with database
-        var connectionString = BuildConnectionString(databaseName);
-
-        var context = new PeaDbContext(connectionString);
-
-        // Apply any pending migrations
-        context.Database.Migrate();
-
-        return context;
+        var connectionString = BuildConnectionString("Pea");
+        return new PeaDbContext(connectionString);
     }
 
     /// <summary>

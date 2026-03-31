@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Extension;
 using Pea.Meter.Helpers;
-using Pea.Meter.Helpers;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
+using static Microsoft.Maui.ApplicationModel.MainThread;
 using Debug = System.Diagnostics.Debug;
 
 namespace Pea.Meter.ViewModel;
@@ -63,7 +63,7 @@ public partial class InfoViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this,
             (_, _) =>
             {
-                MainThread.InvokeOnMainThreadAsync(async () =>
+                InvokeOnMainThreadAsync(async () =>
                 {
                     try
                     {
@@ -84,10 +84,12 @@ public partial class InfoViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
             (_, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(async () =>
+                InvokeOnMainThreadAsync(async () =>
                 {
                     try
                     {
+                        logger.LogInformation("DateChangedMessage received: {NewDate}", m.NewDate);
+                        
                         DateMeterData = m.NewDate;
                         await PopulateChartData();
                     }
@@ -105,13 +107,11 @@ public partial class InfoViewModel : ObservableObject
     {
         WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this, (_, _) =>
         {
-            MainThread.InvokeOnMainThreadAsync(() =>
+            InvokeOnMainThreadAsync(() =>
             {
                 IsAddMeterVisible = true;
                 IsMeterDataVisible = false;
                 IsCustomerProfileViewVisible = true;
-
-                storageService.DailyPeriodReadings.CollectionChanged -= DailyPeriodPeaMeterDataCollectionChanged;
                 
                 MeterData = [];
                 MeterDataAverage1 = [];
@@ -129,8 +129,6 @@ public partial class InfoViewModel : ObservableObject
             IsAddMeterVisible = false;
             IsMeterDataVisible = true;
             IsCustomerProfileViewVisible = false;
-
-            storageService.DailyPeriodReadings.CollectionChanged += DailyPeriodPeaMeterDataCollectionChanged;
         });
     }
 
@@ -165,7 +163,7 @@ public partial class InfoViewModel : ObservableObject
         var meterDataAverageDays30 = storageService.AllMeterReadingsAsync.FilterByPeriod(timeStart30, today)
             .AverageBy15MinutesPeriod();
 
-        await MainThread.InvokeOnMainThreadAsync(() =>
+        await InvokeOnMainThreadAsync(() =>
         {
             MeterData.Clear();
             MeterDataAverage1.Clear();
@@ -177,41 +175,5 @@ public partial class InfoViewModel : ObservableObject
             MeterDataAverage7.AddRange(meterDataAverageDays7);
             MeterDataAverage30.AddRange(meterDataAverageDays30);
         });
-    }
-
-    private void DailyPeriodPeaMeterDataCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        switch (e.Action)
-        {
-            case NotifyCollectionChangedAction.Add:
-                MeterData = storageService.DailyPeriodReadings.AverageBy15MinutesPeriod();
-                break;
-            case NotifyCollectionChangedAction.Remove:
-                foreach (var item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
-                {
-                    MeterData.Remove(item);
-                }
-
-                break;
-                // case NotifyCollectionChangedAction.Replace:
-                //     for (var i = 0; i < e.OldItems.Count; i++)
-                //     {
-                //         var index = MeterData.IndexOf(e.OldItems[i]);
-                //         if (index >= 0)
-                //         {
-                //             MeterData[index] = e.NewItems[i];
-                //         }
-                //     }
-                //break;
-            case NotifyCollectionChangedAction.Move:
-                // For ObservableCollection, typically no action needed as order may not matter
-                // or rebuild collection if order is important
-                break;
-            case NotifyCollectionChangedAction.Reset:
-                MeterData.Clear();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
     }
 }

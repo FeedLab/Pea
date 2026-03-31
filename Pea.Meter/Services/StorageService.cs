@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text.Json;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
@@ -36,7 +37,7 @@ public partial class StorageService : ObservableObject
     private readonly PeaAdapter peaAdapter;
     private CancellationTokenSource? cancellationTokenSource;
     private Timer? backgroundTimer;
-    private DateTime currentDay = DateTime.MinValue; // MinValue - Will trigger a new day on the first run
+    private DateTime yesterday = DateTime.MinValue; // MinValue - Will trigger a new day on the first run
     private Timer? backgroundTimerNewDay;
     private CancellationTokenSource newDayCancellationTokenSource;
     public bool IsAuthenticated { get; set; }
@@ -100,48 +101,46 @@ public partial class StorageService : ObservableObject
 
         backgroundTimerNewDay = new Timer(async void (_) =>
         {
+            var today = DateTime.Now.Date;
+
             try
             {
                 logger.LogInformation("Stopping background task for checking for new day");
                 StopBackgroundTask();
 
-                logger.LogInformation("Checking for new day");
+                logger.LogInformation("Checking for new day at {CurrentDate}", today);
 
-                var peaMeterReadingsInOrder = await RetrieveAndProcessMeterReadingsFromDb(meterReadingRepository);
-
-                await InitializeEmptyAllMeterReadings(peaMeterReadingsInOrder);
-
-                if (DateTime.Now.Date > currentDay)
+                if (today > yesterday)
                 {
-                    if (peaMeterReadingsInOrder.Last().PeriodStart.Date != DateTime.Now.Date)
+                    var peaMeterReadingsInOrder = await RetrieveAndProcessMeterReadingsFromDb(meterReadingRepository);
+
+                    peaMeterReadingsInOrder =
+                        await StoreYesterdaysMeterReadings(meterReadingRepository, peaMeterReadingsInOrder);
+
+                    var readingsFromPea = await peaAdapter.ShowDailyReadings(today);
+
+                    if (readingsFromPea is null ||
+                        readingsFromPea.Count == 0 ||
+                        readingsFromPea.Last().PeriodStart.Date != today)
                     {
-                        logger.LogWarning("No new meter readings for today");
+                        logger.LogWarning(
+                            "We have a new day but no new readings for today, technically, we are not in a new day until the lagging data has catch up. So, we don't need to do anything");
                         return;
                     }
 
-                    logger.LogInformation("Found new day");
-                    logger.LogInformation("Current day: {CurrentDay}, Now: {Now}", currentDay, DateTime.Now.Date);
+                    logger.LogInformation("Found new day, with readings");
+                    logger.LogInformation("Current day: {CurrentDay}, Now: {Now}", yesterday, today);
                     logger.LogInformation("Last reading: {LastReading}", peaMeterReadingsInOrder.Last());
-
-                    var oldDate = currentDay;
-                    var newDate = DateTime.Now.Date;
-                    currentDay = newDate;
-
-                    logger.LogInformation("StopBackgroundTask: Old date: {OldDate}, New date: {NewDate}", oldDate,
-                        newDate);
 
                     try
                     {
                         await MainThread.InvokeOnMainThreadAsync(() =>
                         {
-                            AllMeterReadingsAsync = peaMeterReadingsInOrder.ToObservableCollection();
+                            logger.LogInformation("Process new date: Old date: {OldDate}, New date: {NewDate}", yesterday,
+                                today);
+
+                            AllMeterReadingsAsync.AddRange(peaMeterReadingsInOrder.ToObservableCollection());
                         });
-
-                        logger.LogInformation("ProcessAggregations: Old date: {OldDate}, New date: {NewDate}", oldDate,
-                            newDate);
-                        await MainThread.InvokeOnMainThreadAsync(ProcessAggregations);
-
-                        // WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
                     }
                     catch (Exception e)
                     {
@@ -151,11 +150,10 @@ public partial class StorageService : ObservableObject
                         return;
                     }
 
-                    logger.LogInformation("InitNewDay: Old date: {OldDate}, New date: {NewDate}", oldDate, newDate);
-                    await InitNewDay(oldDate, newDate);
+                    logger.LogInformation("InitNewDay: Old date: {OldDate}, New date: {NewDate}", yesterday, today);
+                    await InitNewDay(yesterday, today, readingsFromPea);
 
-                    logger.LogInformation("StartBackgroundTask: Old date: {OldDate}, New date: {NewDate}", oldDate,
-                        newDate);
+                    // await ExportAllMeterReadingsToJsonAsync();
                 }
             }
             catch (Exception e)
@@ -165,11 +163,44 @@ public partial class StorageService : ObservableObject
             }
             finally
             {
+                yesterday = today;
+
+                logger.LogInformation("StartBackgroundTask again");
                 StartBackgroundTask();
             }
-        }, null, TimeSpan.FromSeconds(startTimeDelay), TimeSpan.FromMinutes(10));
+        }, null, TimeSpan.FromSeconds(startTimeDelay), TimeSpan.FromMinutes(12));
 
         return Task.CompletedTask;
+    }
+
+    private async Task<List<PeaMeterReading>> StoreYesterdaysMeterReadings(
+        MeterReadingRepository meterReadingRepository,
+        List<PeaMeterReading>? peaMeterReadingsInOrder)
+    {
+        var previousDay = DateTime.Today.AddDays(-1);
+        var peaMeterReadings = peaMeterReadingsInOrder ?? [];
+
+        var yesterdaysReadings = peaMeterReadings
+            .Where(w => w.PeriodStart.Date == previousDay)
+            .ToList();
+
+        if (yesterdaysReadings.Count == 0)
+        {
+            logger.LogWarning("No readings found in database for yesterday. Lets store new data");
+            var readingsFromPea = await peaAdapter.ShowDailyReadings(previousDay);
+
+            if (readingsFromPea != null)
+            {
+                await meterReadingRepository.AddRangeUpsertAsync(readingsFromPea.ToList());
+                peaMeterReadingsInOrder = await RetrieveAndProcessMeterReadingsFromDb(meterReadingRepository);
+            }
+            else
+            {
+                logger.LogWarning("Failed to fetch daily readings from Pea Adapter");
+            }
+        }
+
+        return peaMeterReadingsInOrder ?? [];
     }
 
     private async Task InitializeEmptyAllMeterReadings(List<PeaMeterReading> peaMeterReadingsInOrder)
@@ -180,7 +211,7 @@ public partial class StorageService : ObservableObject
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                AllMeterReadingsAsync = peaMeterReadingsInOrder.ToObservableCollection();
+                AllMeterReadingsAsync.AddRange(peaMeterReadingsInOrder);
                 ProcessAggregations();
                 logger.LogInformation("ProcessAggregations completed");
                 WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
@@ -189,7 +220,7 @@ public partial class StorageService : ObservableObject
         }
     }
 
-    private async Task<List<PeaMeterReading>> RetrieveAndProcessMeterReadingsFromDb(
+    private async Task<List<PeaMeterReading>?> RetrieveAndProcessMeterReadingsFromDb(
         MeterReadingRepository meterReadingRepository)
     {
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
@@ -203,10 +234,11 @@ public partial class StorageService : ObservableObject
         var peaMeterReadingsInOrder = readingsFromDb
             .OrderBy(r => r.PeriodStart)
             .ToList();
+
         return peaMeterReadingsInOrder;
     }
 
-    private async Task InitNewDay(DateTime oldDate, DateTime newDate)
+    private async Task InitNewDay(DateTime oldDate, DateTime newDate, IList<PeaMeterReading> todayPeaMeterReadings)
     {
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
@@ -214,24 +246,13 @@ public partial class StorageService : ObservableObject
             {
                 logger.LogInformation("InitNewDay: {OldDate}, {NewDate}", oldDate, newDate);
 
-
-                var context = dbContextFactory.CreateDbContext();
-                var meterReadingRepository = new MeterReadingRepository(context);
-
-                var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
-
-                AllMeterReadingsAsync.Clear();
-                AllMeterReadingsAsync.AddRange(readingsFromDb);
-
-                var readingsFromPea = await peaAdapter.ShowDailyReadings(newDate);
-
-                if (readingsFromPea == null)
+                if (todayPeaMeterReadings == null)
                 {
                     logger.LogWarning("Failed to fetch daily readings from Pea Adapter");
                     return;
                 }
 
-                var newReadings = GetDiffBetweenDailyAndAllReadings(readingsFromPea.ToList());
+                var newReadings = GetDiffBetweenDailyAndAllReadings(todayPeaMeterReadings.ToList());
                 var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
 
                 DailyPeriodReadings.Clear();
@@ -240,6 +261,7 @@ public partial class StorageService : ObservableObject
 
                 ProcessAggregations();
 
+                WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
                 WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
             }
             catch (Exception e)
@@ -542,6 +564,32 @@ public partial class StorageService : ObservableObject
             })
             .ToList();
         return costCompareMonthList;
+    }
+
+    public async Task<string> ExportAllMeterReadingsToJsonAsync()
+    {
+        try
+        {
+            var jsonOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            var json = JsonSerializer.Serialize(AllMeterReadingsAsync, jsonOptions);
+            var fileName = $"AllMeterReadings_{DateTime.Now:yyyyMMdd_HHmmss}.json";
+            var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
+
+            await File.WriteAllTextAsync(filePath, json);
+
+            logger.LogInformation("Exported AllMeterReadingsAsync to {FilePath}", filePath);
+
+            return filePath;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error exporting AllMeterReadingsAsync to JSON: {Message}", e.Message);
+            throw;
+        }
     }
 }
 

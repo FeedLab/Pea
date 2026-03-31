@@ -18,7 +18,7 @@
         <!-- Item 1 -->
         <components:ServiceBoxComponent 
             Grid.Column="0"
-            Margin="22,0,22,0"
+            Margin="12,0,12,0"
             VerticalOptions="Fill"
             ImageSource="pay_your_bill.png"
             Title="{x:Static properties:AppResources.ElectronicBilling}"
@@ -28,7 +28,7 @@
         <!-- Item 2 -->
         <components:ServiceBoxComponent 
             Grid.Column="1"
-            Margin="22,0,22,0"
+            Margin="12,0,12,0"
             VerticalOptions="Fill"
             ImageSource="e_service_everywhere.png"
             Title="{x:Static properties:AppResources.SmartServices}"
@@ -38,7 +38,7 @@
         <!-- Item 3 -->
         <components:ServiceBoxComponent 
             Grid.Column="2"
-            Margin="22,0,22,0"
+            Margin="12,0,12,0"
             VerticalOptions="Fill"
             ImageSource="green_energy_with_solar.png"
             Title="{x:Static properties:AppResources.PEASOLAR}"
@@ -48,7 +48,7 @@
         <!-- Item 4 -->
         <components:ServiceBoxComponent 
             Grid.Column="3"
-            Margin="22,0,22,0"
+            Margin="12,0,12,0"
             VerticalOptions="Fill"
             ImageSource="transformer_lifecycle_management.png"
             Title="{OnIdiom Desktop={x:Static properties:AppResources.TransformerLifecycleManagement}, Default={x:Static properties:AppResources.TransformerManagement}}"

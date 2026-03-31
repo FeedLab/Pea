@@ -44,8 +44,8 @@
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="{OnIdiom Desktop='*', Default='12*'}" />
-                <RowDefinition Height="{OnIdiom Desktop='auto', Default='13*'}" />
+                <RowDefinition Height="{OnIdiom Desktop='*', Default='*'}" />
+            <RowDefinition Height="{OnIdiom Desktop='auto', Default='auto'}" />
             </Grid.RowDefinitions>
 
             <Border
@@ -146,7 +146,7 @@
 
             <components:PeaServicesView
                 Grid.Row="1"
-                Margin="16,16,16,8" 
+                Margin="24,16,24,8" 
                 HorizontalOptions="Fill"
                 VerticalOptions="Center" />
         </Grid>

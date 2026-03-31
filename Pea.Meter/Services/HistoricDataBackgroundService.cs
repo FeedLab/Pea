@@ -99,7 +99,7 @@ public class HistoricDataBackgroundService
         var totalReadings = 0;
         var targetDate = startDate;
 
-        const int startTimeDelay = 5;
+        const int startTimeDelay = 1;
         await Task.Delay(TimeSpan.FromSeconds(startTimeDelay), cancellationToken);
         
         do
@@ -140,7 +140,7 @@ public class HistoricDataBackgroundService
                 if (readings.Count > 0 && readings.Sum(s => s.Total) > 0)
                 {
                     // Save to database
-                    await repository.AddRangeAsync(readings, cancellationToken);
+                    await repository.AddRangeUpsertAsync(readings, cancellationToken);
                     totalReadings += readings.Count;
                     logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count,
                         targetDate.ToString("yyyy-MM-dd"));
@@ -162,6 +162,10 @@ public class HistoricDataBackgroundService
 
                 // Add a small delay between requests to avoid overwhelming the server
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+            }
+            catch (TaskCanceledException _)
+            {
+                logger.LogInformation("Import operation was canceled.");
             }
             catch (Exception ex)
             {

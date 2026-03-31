@@ -141,7 +141,7 @@
             <HorizontalStackLayout
                 Grid.Row="0"
                 Grid.Column="0"
-                Margin="0,0,32,6"
+                Margin="0,0,32,10"
                 HeightRequest="34"
                 VerticalOptions="End"
                 HorizontalOptions="End">
