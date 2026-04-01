@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:meter="clr-namespace:Pea.Meter"
+    xmlns:controls="clr-namespace:Pea.Meter.Controls"
     mc:Ignorable="d">
 
     <Grid
@@ -22,7 +23,7 @@
         <Image
             Grid.Row="0"
             Grid.RowSpan="3"
-            Opacity="0.1"
+            Opacity="0.3"
             Source="not_supported_2.png"
             Aspect="Fill" />
 
@@ -36,24 +37,31 @@
 
         <VerticalStackLayout
             Grid.Row="1"
-            Grid.Column="0">
-            <Label
-                Margin="0,24,0,0"
-                Text="We're Not on Mobile"
-                TextColor="Black"
-                FontFamily="OpenSansSemibold"
-                FontSize="32"
-                HorizontalOptions="Center"
-                VerticalOptions="Center" />
-
-            <Label
-                Margin="0,24,0,0"
-                Text="Just not Yet!"
-                TextColor="Black"
-                FontFamily="OpenSansSemibold"
-                FontSize="32"
-                HorizontalOptions="Center"
-                VerticalOptions="Center" />
+            Grid.Column="0"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center">
+            
+            <controls:StrokedLabel 
+                Margin="4,0"
+                Text="We're Not on Mobile" 
+                FillColor="#E2BF7C" 
+                StrokeColor="#685839" 
+                FontSize="34" 
+                StrokeWidth="2"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start"
+                HeightRequest="55"/>
+            
+            <controls:StrokedLabel 
+                Margin="4,0"
+                Text="Just not Yet!" 
+                FillColor="#E2BF7C" 
+                StrokeColor="#685839" 
+                FontSize="34" 
+                StrokeWidth="2"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start"
+                HeightRequest="55" />
         </VerticalStackLayout>
 
         <Border
@@ -69,7 +77,7 @@
             <Label
                 Grid.Row="2"
                 TextColor="Black"
-                FontSize="18"
+                FontSize="16"
                 HorizontalOptions="Start"
                 VerticalOptions="Center">
                 <Label.FormattedText>
