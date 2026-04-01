@@ -30,10 +30,12 @@ public class MeterDataManagerYear : MeterDataManagerBase<MeterDataManagerMonth>
     
     public void CalculateSolarProduction(int year, decimal solarArraySize, decimal batterySizeNeeded, decimal panelAzimuth, decimal panelTilt)
     {
-        foreach (var meterData in DataBucket)
+        var months = DataBucket.Values.ToList();
+
+        Parallel.ForEach(months, monthManager =>
         {
-            meterData.Value.CalculateSolarProduction(year, meterData.Key, solarArraySize, batterySizeNeeded, panelAzimuth, panelTilt);
-        }
+            monthManager.CalculateSolarProduction(year, monthManager.Date.Month, solarArraySize, batterySizeNeeded, panelAzimuth, panelTilt);
+        });
         
         calculatedSolarProduction = DataBucket.Sum(s => s.Value.GetSolarProduction());
         calculatedBatteryProduction = DataBucket.Sum(s => s.Value.SolarProduction.CalculatedBatteryNeeded);

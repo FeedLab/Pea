@@ -5,10 +5,11 @@ using Pea.Infrastructure.Models;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
 using System.Collections.ObjectModel;
+using Pea.Meter.ViewModel.Interface;
 
 namespace Pea.Meter.ViewModel.Statistics;
 
-public partial class MeterReadingsDailyViewModel : ObservableObject
+public partial class MeterReadingsDailyViewModel : ObservableObject, ICanExecuteViewModel
 {
     private readonly ILogger<MeterReadingsDailyViewModel> logger;
     private readonly StorageService storageService;
@@ -19,7 +20,8 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
     [ObservableProperty] private decimal zoomFactor = 1.0m;
     [ObservableProperty] private decimal zoomPosition = 1.0m;
     [ObservableProperty] private string dateFormat = "";
-    
+    private bool canExecute;
+
 
     public MeterReadingsDailyViewModel(ILogger<MeterReadingsDailyViewModel> logger, StorageService storageService)
     {
@@ -30,10 +32,7 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) =>
         {
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                DisplayChart();
-            });
+            await MainThread.InvokeOnMainThreadAsync(DisplayChart);
         });
         
         WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this, (r, m) =>
@@ -84,7 +83,12 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
     {
         try
         {
-                switch (timeResolution)
+            if(!canExecute)
+            {
+                return;
+            }
+            
+            switch (timeResolution)
                 {
                     case TimeResolutionType.Daily:
                         MeterDataAggregated = storageService.DailyAggregated;
@@ -146,6 +150,16 @@ public partial class MeterReadingsDailyViewModel : ObservableObject
         else
         {
             throw new Exception("Unknown position");
+        }
+    }
+
+    public void CanExecute(bool isVisible)
+    {
+        canExecute = isVisible;
+        
+        if (canExecute)
+        {
+            DisplayChart();
         }
     }
 }

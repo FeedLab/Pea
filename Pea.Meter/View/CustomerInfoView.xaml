@@ -49,7 +49,7 @@
             <Label Grid.Row="2" Grid.Column="1" Text="{Binding PeriodStart, StringFormat='{}{0:dd MMMM yyyy}'}" FontSize="12" TextColor="Black"
                    VerticalOptions="Center" HorizontalOptions="End" >
                 <Label.Behaviors>
-                    <helpers:PulseOnPropertyChangeBehavior PropertyToWatch="{Binding PeriodStart}" Length="150" />
+                    <helpers:PulseOnPropertyChangeBehavior PropertyToWatch="{Binding PeriodStart}" Length="350" />
                 </Label.Behaviors>
             </Label>
 

@@ -94,10 +94,6 @@ namespace Pea.Meter
 
             var app = builder.Build();
 
-            // Run migrations once at startup, off the UI thread
-            var factory = app.Services.GetRequiredService<PeaDbContextFactory>();
-            Task.Run(async () => await factory.MigrateAsync()).GetAwaiter().GetResult();
-
             return app;
         }
     }

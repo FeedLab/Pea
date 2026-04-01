@@ -8,10 +8,11 @@ using Pea.Infrastructure.Models.MeterData;
 using Pea.Meter.Extension;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
+using Pea.Meter.ViewModel.Interface;
 
 namespace Pea.Meter.ViewModel;
 
-public partial class SolarSystemSizingViewModel : ObservableObject
+public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteViewModel
 {
     private readonly ILogger<SolarSystemSizingViewModel> logger;
     private readonly StorageService storageService;
@@ -27,6 +28,7 @@ public partial class SolarSystemSizingViewModel : ObservableObject
     [ObservableProperty] private decimal consumption6HighestMonth;
     [ObservableProperty] private decimal solarSizeNeeded;
     [ObservableProperty] private decimal batterySizeNeeded;
+    private bool canExecute;
 
     public SolarSystemSizingViewModel(ILogger<SolarSystemSizingViewModel> logger, StorageService storageService)
     {
@@ -50,11 +52,12 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                 }
                 catch (Exception e)
                 {
-                    logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateAllAggregationsCompletedSubscription), e.Message);
+                    logger.LogError(e, "Error in {Method}: {Message}",
+                        nameof(CreateAllAggregationsCompletedSubscription), e.Message);
                 }
             });
     }
-    
+
     private void CreateAllDataImportedSubscription()
     {
         WeakReferenceMessenger.Default.Register<AllImportedDataCompletedMessage>(this,
@@ -66,7 +69,8 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                 }
                 catch (Exception e)
                 {
-                    logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateAllDataImportedSubscription), e.Message);
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateAllDataImportedSubscription),
+                        e.Message);
                 }
             });
     }
@@ -104,6 +108,23 @@ public partial class SolarSystemSizingViewModel : ObservableObject
     }
 
     private void PopulateChartData()
+    {
+        if (!canExecute)
+        {
+            return;
+        }
+
+        if (DateTime.Now - lastPopulateChartData < TimeSpan.FromSeconds(5))
+        {
+            return;
+        }
+
+        lastPopulateChartData = DateTime.Now;
+
+        _ = Task.Run(PopulateChartDataInternal);
+    }
+
+    private void PopulateChartDataInternal()
     {
         try
         {
@@ -146,6 +167,9 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                 last12FullOrderedMonths.Average(s => s.AverageKwUsedBetween08To17Monthly);
             var dailyConsumptionAveragePeekKw = yearlyConsumptionPeekKw / numberOfDaysInPeriod;
 
+            var solarArraySize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
+            meterDataManager.CalculateSolarProduction(solarArraySize, BatterySizeNeeded, 180, 3);
+            
             MainThread.InvokeOnMainThreadAsync(() =>
             {
                 AverageKwUsedBetween08To17Monthly = averageUsedBetween08To17Monthly;
@@ -154,13 +178,7 @@ public partial class SolarSystemSizingViewModel : ObservableObject
                 DailyUsageAveragePeekKw = dailyConsumptionAveragePeekKw;
                 BatterySizeNeeded = (dailyConsumptionAveragePeekKw - averageUsedBetween08To17Monthly)
                     .RoundUpToNearestFive();
-            });
-
-            var solarArraySize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
-            meterDataManager.CalculateSolarProduction(solarArraySize, BatterySizeNeeded, 180, 3);
-
-            MainThread.InvokeOnMainThreadAsync(() =>
-            {
+                
                 SolarSizeNeeded = solarArraySize;
                 EnergyProducedMonthlySummary = last12FullOrderedMonths.ToObservableCollection();
             });
@@ -176,85 +194,14 @@ public partial class SolarSystemSizingViewModel : ObservableObject
         return 10;
     }
 
-    // private void PopulateChartDatax()
-    // {
-    //     try
-    //     {
-    //         List<decimal> listSolarArraySizes =
-    //             [2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500, 1000];
-    //
-    //         if (storageService.AllMeterReadingsAsync.Count == 0)
-    //         {
-    //             return;
-    //         }
-    //
-    //         var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-    //         var startDate = endDate.AddMonths(-12).Date;
-    //
-    //         var peaMonthlyMeterReadings = storageService.MonthlyAggregated
-    //             .Where(period => period.PeriodStart >= startDate && period.PeriodStart < endDate)
-    //             .OrderBy(o => o.PeriodStart.Month);
-    //
-    //         MeterDataMonthSummary = new ObservableCollection<PeaMeterReading>(peaMonthlyMeterReadings);
-    //
-    //         var allPeriods = storageService.AllMeterReadingsAsync
-    //             .Where(period => period.PeriodStart >= startDate && period.PeriodStart < endDate)
-    //             .ToList();
-    //
-    //         var listOfAllCostCompares = allPeriods
-    //             .Select(s => new CostCompare(s, 3.9086m, 5.1135m, 2.6037m))
-    //             .ToList();
-    //
-    //         var yearlyConsumptionPeekKw = listOfAllCostCompares.Where(w => w.IsPeekPeriod).Sum(s => s.KwUsed);
-    //         var yearlyConsumptionOffPeekKw = listOfAllCostCompares.Where(w => !w.IsPeekPeriod).Sum(s => s.KwUsed);
-    //         var yearlyConsumptionTotalKw = yearlyConsumptionPeekKw + yearlyConsumptionOffPeekKw;
-    //         var dailyConsumptionAverageTotalKw = yearlyConsumptionTotalKw / 365;
-    //         var dailyConsumptionAveragePeekKw = yearlyConsumptionPeekKw / 365;
-    //         var dailyConsumptionAverageOffPeekKw = yearlyConsumptionOffPeekKw / 365;
-    //         var monthlyMeterReadingsList = GetMonthlyMeterReadingsList(allPeriods);
-    //
-    //         YearlyConsumption = yearlyConsumptionTotalKw;
-    //
-    //         var solarArraySize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
-    //         var batterySize = (solarArraySize / 2.0m).RoundUpToNearestFive();
-    //
-    //         var meterReadingMonthlySummaries = storageService
-    //             .GetMeterReadingMonthlySummaries(allPeriods, solarArraySize, batterySize)
-    //             .Where(period => period.Date >= startDate && period.Date < endDate)
-    //             .OrderBy(o => o.Date.Month)
-    //             .ToList();
-    //
-    //         DailyUsageAveragePeekKw = dailyConsumptionAveragePeekKw;
-    //         AverageKwUsedBetween08To17Monthly = dailyConsumptionAveragePeekKw -
-    //                                             meterReadingMonthlySummaries.Average(s =>
-    //                                                 s.AverageKwUsedBetween08To17Monthly);
-    //         SolarSizeNeeded = solarArraySize;
-    //         BatterySizeNeeded = AverageKwUsedBetween08To17Monthly.RoundUpToNearestFive();
-    //
-    //         EnergyProducedMonthlySummary = meterReadingMonthlySummaries.ToObservableCollection();
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         logger.LogError(e, "Error in {Method}: {Message}", nameof(PopulateChartData), e.Message);
-    //     }
-    // }
-
-    private static List<PeaMeterReading> GetMonthlyMeterReadingsList(List<PeaMeterReading> allPeriods)
+    public void CanExecute(bool isVisible)
     {
-        var monthlyMeterReadingList = allPeriods
-            .GroupBy(r => new { Year = r.PeriodStart.Year, Month = r.PeriodStart.Month })
-            .Select(g => new PeaMeterReading(
-                // Use the first day of the month as the PeriodStart
-                new DateTime(g.Key.Year, g.Key.Month, 1),
-                g.Sum(r => r.RateA),
-                g.Sum(r => r.RateB),
-                g.Sum(r => r.RateC),
-                // Minutes in the month (approximate: 60 * 24 * days)
-                60 * 24 * DateTime.DaysInMonth(g.Key.Year, g.Key.Month)
-            ))
-            .OrderBy(o => o.PeriodStart.Month)
-            .ToList();
+        canExecute = isVisible;
 
-        return monthlyMeterReadingList;
+        if (canExecute)
+        {
+            lastPopulateChartData = DateTime.MinValue;
+            PopulateChartData();
+        }
     }
 }

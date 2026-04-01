@@ -27,11 +27,13 @@ public class MeterDataManagerMonth : MeterDataManagerBase<MeterDataManagerDay>
     
     public void CalculateSolarProduction(int year, int month, decimal solarArraySize, decimal batterySizeNeeded, decimal panelAzimuth, decimal panelTilt)
     {
-        foreach (var meterData in DataBucket)
+        var days = DataBucket.ToList();
+
+        Parallel.ForEach(days, meterData =>
         {
             var solarDate = new DateOnly(year, month, meterData.Key);
             meterData.Value.CalculateSolarProduction(solarDate, solarArraySize, batterySizeNeeded, panelAzimuth, panelTilt);
-        }
+        });
         
         calculatedSolarProduction = DataBucket.Sum(s => s.Value.GetSolarProduction(FilterLevel.Day));
         calculatedBatteryProduction = DataBucket.Sum(s => s.Value.SolarProduction.CalculatedBatteryNeeded);

@@ -8,7 +8,6 @@ namespace Pea.Data;
 public class PeaDbContextFactory
 {
     private readonly string serverConnectionString;
-    private bool _migrated = false;
 
     /// <summary>
     /// Creates a factory with a base SQL Server connection string
@@ -27,7 +26,6 @@ public class PeaDbContextFactory
         var connectionString = BuildConnectionString("Pea");
         await using var context = new PeaDbContext(connectionString);
         await context.Database.MigrateAsync();
-        _migrated = true;
     }
 
     /// <summary>

@@ -93,7 +93,7 @@ public partial class StorageService : ObservableObject
 
     private Task CheckForNewDayBackgroundTask()
     {
-        const int startTimeDelay = 5;
+        const int startTimeDelay = 0;
         var context = dbContextFactory.CreateDbContext();
         var meterReadingRepository = new MeterReadingRepository(context);
 

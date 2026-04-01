@@ -1,9 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
+using Syncfusion.Maui.TabView;
 using Pea.Meter.Helpers;
 using Pea.Meter.Helpers;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
+using Pea.Meter.View.Solar;
+using Pea.Meter.View.Statistics;
 using Pea.Meter.ViewModel;
+using Pea.Meter.ViewModel.Interface;
+using Pea.Meter.ViewModel.Statistics;
 
 namespace Pea.Meter
 {
@@ -14,24 +20,22 @@ namespace Pea.Meter
         private readonly CustomerProfileViewModel customerProfile;
         private readonly StorageService storageService;
         private bool hasAppeared;
+        private readonly ILogger<MainPage> logger;
+        private ICanExecuteViewModel? oldViewModel;
 
         public MainPage()
         {
             InitializeComponent();
 
-            if (AppService.Current != null)
-                BindingContext = AppService.Current.GetRequiredService<MainPageViewModel>();
-            else
-                throw new InvalidOperationException("AppService is not initialized");
-
-            storageService  = AppService.Current.GetRequiredService<StorageService>();
-            
-            authDataOptions = AppService.Current.GetRequiredService<AuthDataOptions>();
-            customerProfile = AppService.Current.GetRequiredService<CustomerProfileViewModel>();
+            BindingContext = AppService.GetRequiredService<MainPageViewModel>();
+            storageService = AppService.GetRequiredService<StorageService>();
+            authDataOptions = AppService.GetRequiredService<AuthDataOptions>();
+            customerProfile = AppService.GetRequiredService<CustomerProfileViewModel>();
+            logger = AppService.GetRequiredService<ILogger<MainPage>>();
 
             authData = authDataOptions.AuthData;
 
-            TabData.IsVisible = false;
+            StatisticsView.IsVisible = false;
             TabCustomerProfile.IsVisible = false;
             Pea.IsVisible = true;
             TouVsFlatRate.IsVisible = false;
@@ -44,7 +48,7 @@ namespace Pea.Meter
             {
                 MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    TabData.IsVisible = true;
+                    StatisticsView.IsVisible = true;
                     TabCustomerProfile.IsVisible = true;
                     Pea.IsVisible = false;
                     Info.IsVisible = true;
@@ -52,7 +56,7 @@ namespace Pea.Meter
                     SolarSystemSizing.IsVisible = true;
 
                     TabView.SelectedIndex = 0;
-                    
+
                     return Task.CompletedTask;
                 });
             });
@@ -61,7 +65,7 @@ namespace Pea.Meter
             {
                 MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    TabData.IsVisible = false;
+                    StatisticsView.IsVisible = false;
                     TabCustomerProfile.IsVisible = false;
                     Pea.IsVisible = true;
                     TouVsFlatRate.IsVisible = false;
@@ -69,31 +73,82 @@ namespace Pea.Meter
                     SolarSystemSizing.IsVisible = false;
 
                     TabView.SelectedIndex = 0;
-                    
+
                     return Task.CompletedTask;
                 });
             });
         }
 
+        private void TabView_OnSelectionChanged(object? sender, TabSelectionChangedEventArgs e)
+        {
+            oldViewModel = null;
+
+            var selectedIndex = (int)e.NewIndex;
+            
+            if (selectedIndex == TabView.Items.IndexOf(SolarSystemSizing))
+            {
+                if (SolarSystemSizing.Content is SolarSystemSizingView view)
+                {
+                    var viewModel = AppService.GetRequiredService<SolarSystemSizingViewModel>();
+                    viewModel.CanExecute(true);
+                    oldViewModel = viewModel;
+                }
+            }
+            else if (selectedIndex == TabView.Items.IndexOf(StatisticsView))
+            {
+                if (StatisticsView.Content is StatisticsView view)
+                {
+                    var viewModel = AppService.GetRequiredService<MeterReadingsDailyViewModel>();
+                    viewModel.CanExecute(true);
+                    oldViewModel = viewModel;
+                }
+            }
+            
+            if (oldViewModel != null)
+            {
+                oldViewModel.CanExecute(false);
+            }
+        }
+
         protected override async void OnAppearing()
         {
-            base.OnAppearing();
-
-            if (hasAppeared)
-                return;
-
-            hasAppeared = true;
-
-            if (storageService.IsAuthenticated)
+            try
             {
-                WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
+                base.OnAppearing();
+
+                if (hasAppeared)
+                    return;
+
+                hasAppeared = true;
+
+                if (storageService.IsAuthenticated)
+                {
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            try
+                            {
+                                WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
+                            }
+                            catch (Exception e)
+                            {
+                                logger.LogError(e, "Error in {Method}: {Message}", nameof(OnAppearing), e.Message);
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                        catch (Exception exception)
+                        {
+                            return Task.FromException(exception);
+                        }
+                    });
+                }
             }
-            // if (authData is not null && authData.Username != "" && authData.Password != "")
-            // {
-            //     await customerProfile.RefreshProfile(authData.Username, authData.Password);
-            //     await storageService.Init();
-            //     WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
-            // }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in {Method}: {Message}", nameof(OnAppearing), e.Message);
+            }
         }
     }
 }

@@ -10,13 +10,14 @@ namespace Pea.Meter.View.Solar;
 
 public partial class SolarSystemSizingView : ContentView
 {
+    private readonly SolarSystemSizingViewModel viewModel;
+
     public SolarSystemSizingView()
     {
         InitializeComponent();
-        
-        if (AppService.Current != null)
-            BindingContext = AppService.Current.GetRequiredService<SolarSystemSizingViewModel>();
-        else
-            throw new InvalidOperationException("AppService is not initialized");
+        viewModel = AppService.GetRequiredService<SolarSystemSizingViewModel>();
+
+        BindingContext = viewModel;
     }
+
 }

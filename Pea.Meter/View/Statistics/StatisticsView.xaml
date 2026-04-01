@@ -26,7 +26,7 @@
         <tabView:SfTabView x:Name="TabViewStatistics"
                            Margin="12"
                            FontAutoScalingEnabled="True"
-                           ContentTransitionDuration ="500"
+                           ContentTransitionDuration ="200"
                            EnableRippleAnimation="True"
                            HeaderHorizontalTextAlignment="Center"                          
                            IndicatorCornerRadius ="5"

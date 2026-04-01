@@ -114,7 +114,8 @@
             TabBarPlacement="Bottom"
             TabWidthMode="SizeToContent"
             TabBarBackground="#CC000000"
-            IndicatorBackground="#4CAF50">
+            IndicatorBackground="#4CAF50"
+            SelectionChanged="TabView_OnSelectionChanged">
             <tabView:SfTabView.Items>
                 <tabView:SfTabItem Header="{x:Static properties:AppResources.PEA}" x:Name="Pea" TextColor="White"
                                    FontSize="14">
@@ -134,12 +135,10 @@
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 
-                <tabView:SfTabItem Header="{x:Static properties:AppResources.Statistics}" x:Name="TabData"
+                <tabView:SfTabItem Header="{x:Static properties:AppResources.Statistics}" x:Name="StatisticsView"
                                    TextColor="White" FontSize="14">
                     <tabView:SfTabItem.Content>
-                        <Grid BackgroundColor="Transparent">
                             <statistics:StatisticsView />
-                        </Grid>
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 

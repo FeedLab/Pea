@@ -1,20 +1,90 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <ContentPage
     x:Class="Pea.Meter.MainPageNotSupported"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:meter="clr-namespace:Pea.Meter"
     mc:Ignorable="d">
-    
-    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-        <Label Text="This device is not supported." 
-               FontSize="24" 
-               HorizontalOptions="Center" 
-               VerticalOptions="Center" />
-        <Label Text="Phons currently not supported" 
-               FontSize="18" 
-               HorizontalOptions="Center" 
-               VerticalOptions="Center" />
-        </StackLayout>
+
+    <Grid
+        VerticalOptions="Fill"
+        HorizontalOptions="Fill">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Image
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Opacity="0.1"
+            Source="not_supported_2.png"
+            Aspect="Fill" />
+
+        <Image
+            Grid.Row="0"
+            Margin="16"
+            Source="logo_bolted"
+            Aspect="AspectFit"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            Grid.Column="0">
+            <Label
+                Margin="0,24,0,0"
+                Text="We're Not on Mobile"
+                TextColor="Black"
+                FontFamily="OpenSansSemibold"
+                FontSize="32"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <Label
+                Margin="0,24,0,0"
+                Text="Just not Yet!"
+                TextColor="Black"
+                FontFamily="OpenSansSemibold"
+                FontSize="32"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+        </VerticalStackLayout>
+
+        <Border
+            Grid.Row="2"
+            Padding="8"
+            Margin="16"
+            StrokeThickness="1"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Background="AliceBlue"
+            StrokeShape="RoundRectangle 4">
+
+            <Label
+                Grid.Row="2"
+                TextColor="Black"
+                FontSize="18"
+                HorizontalOptions="Start"
+                VerticalOptions="Center">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="This app is currently optimized for " />
+                        <Span Text="Tablet" TextColor="DarkGreen" FontAttributes="Bold" />
+                        <Span Text=" and " />
+                        <Span Text="desktop" TextColor="DarkGreen" FontAttributes="Bold" />
+                        <Span Text=" use and isn't available for " />
+                        <Span Text="smartphones" TextColor="DarkRed" FontAttributes="Bold" />
+                        <Span
+                            Text=" quite yet. Don't worry, though—a mobile version is in the works and will be arriving soon!" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </Border>
+    </Grid>
 </ContentPage>

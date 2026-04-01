@@ -1,4 +1,5 @@
-﻿namespace Pea.Infrastructure;
+﻿using System.Collections.Concurrent;
+namespace Pea.Infrastructure;
 
 public class PvCalculatorService
 {
@@ -15,6 +16,67 @@ public class PvCalculatorService
     // - Mismatch/shading (~3%)
     // Combined: 0.96 × 0.98 × 0.85 × 0.95 × 0.97 ≈ 0.58
     const double SystemEfficiency = 0.58;
+
+    private static readonly ConcurrentDictionary<(double lat, double lon, double tilt, double az, int tz), double[]> DailyBaseProductionCache = new();
+
+    private static double[] GetDailyBaseProduction(double latitude, double longitude, double tilt, double panelAzimuth, int timezone)
+    {
+        var key = (latitude, longitude, tilt, panelAzimuth, timezone);
+        return DailyBaseProductionCache.GetOrAdd(key, _ => PrecalculateYear(latitude, longitude, tilt, panelAzimuth, timezone));
+    }
+
+    private static double[] PrecalculateYear(double latitude, double longitude, double tilt, double azimuth, int timezone)
+    {
+        var values = new double[367];
+        var latRad = DegToRad(latitude);
+        var tiltRad = DegToRad(tilt);
+        var panelAzRad = DegToRad(azimuth);
+        double lstm = 15 * timezone;
+
+        for (int day = 1; day <= 366; day++)
+        {
+            // Solar declination (depends only on day)
+            var decl = DegToRad(23.45 * Math.Sin(DegToRad(360.0 * (284 + day) / 365)));
+            
+            // Equation of time (depends only on day)
+            var b = DegToRad((360.0 / 365.0) * (day - 81));
+            var eoT = 9.87 * Math.Sin(2 * b) - 7.53 * Math.Cos(b) - 1.5 * Math.Sin(b);
+            
+            var tc = 4 * (longitude - lstm) + eoT;
+            
+            // Pre-calculate components for SinAlt
+            var sinLatSinDecl = Math.Sin(latRad) * Math.Sin(decl);
+            var cosLatCosDecl = Math.Cos(latRad) * Math.Cos(decl);
+
+            double dailyKwh = 0;
+            for (int hour = 0; hour < 24; hour++)
+            {
+                var solarTime = hour + tc / 60.0;
+                var hra = DegToRad(15 * (solarTime - 12));
+                
+                var sinAlt = sinLatSinDecl + cosLatCosDecl * Math.Cos(hra);
+                if (sinAlt <= 0) continue;
+
+                var altitude = Math.Asin(sinAlt);
+                var cosAz = (Math.Sin(decl) - Math.Sin(altitude) * Math.Sin(latRad)) / (Math.Cos(altitude) * Math.Cos(latRad));
+                var solarAzimuth = Math.Acos(Math.Clamp(cosAz, -1.0, 1.0));
+                if (hra > 0) solarAzimuth = 2 * Math.PI - solarAzimuth;
+
+                var airMass = 1 / Math.Sin(altitude);
+                var transmittance = Math.Pow(0.7, Math.Pow(airMass, 0.678));
+                var dni = SolarConstant * transmittance;
+                var dhi = 0.1 * dni;
+
+                var cosIncidence = Math.Sin(altitude) * Math.Cos(tiltRad) +
+                                   Math.Cos(altitude) * Math.Sin(tiltRad) * Math.Cos(solarAzimuth - panelAzRad);
+                
+                var poa = dni * Math.Max(0, cosIncidence) + dhi * (1 + Math.Cos(tiltRad)) / 2;
+                dailyKwh += (poa / 1000.0) * SystemEfficiency;
+            }
+            values[day] = dailyKwh;
+        }
+        return values;
+    }
 
     public static decimal CalculateKwDaily(
         DateOnly date,
@@ -45,17 +107,8 @@ public class PvCalculatorService
         double panelAzimuth,
         int timezone = 7)
     {
-        double totalKwh = 0;
-        var dayStart = time.Date;
-
-        for (var hour = 0; hour < 24; hour++)
-        {
-            var currentTime = dayStart.AddHours(hour);
-            var powerKw = CalculateKw(latitude, longitude, currentTime, systemKWp, tilt, panelAzimuth, timezone);
-            totalKwh += powerKw;
-        }
-
-        return totalKwh;
+        var dailyValues = GetDailyBaseProduction(latitude, longitude, tilt, panelAzimuth, timezone);
+        return dailyValues[time.DayOfYear] * systemKWp;
     }
 
     public static double CalculateKwMonthly(
