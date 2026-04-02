@@ -1,6 +1,7 @@
 ﻿<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         xmlns:sliders="clr-namespace:Syncfusion.Maui.Sliders;assembly=Syncfusion.Maui.Sliders"
+        xmlns:components="clr-namespace:Pea.Meter.Components"
         x:Class="Pea.Meter.Components.SliderComponent"
         x:Name="Root"
         HorizontalOptions="Start"
@@ -57,9 +58,17 @@
                 <VerticalStackLayout>
                     <HorizontalStackLayout>
                         <Label Margin="18"
-                               Text="{Binding Value, Source={x:Reference Slider}}"
-                               TextColor="Black"
-                               x:DataType="sliders:SfSlider" />
+                               TextColor="Black">
+                            <Label.Text>
+                                <MultiBinding>
+                                    <MultiBinding.Converter>
+                                        <components:StringFormatConverter />
+                                    </MultiBinding.Converter>
+                                    <Binding Path="Value" Source="{x:Reference Slider}" />
+                                    <Binding Path="ThumbNumberFormat" Source="{x:Reference Root}" />
+                                </MultiBinding>
+                            </Label.Text>
+                        </Label>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
             </sliders:SfSlider.ThumbIcon>

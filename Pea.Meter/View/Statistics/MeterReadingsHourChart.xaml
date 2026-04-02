@@ -51,7 +51,7 @@
                     HorizontalOptions="Center">
 
                     <ctrl:IconButton
-                        Margin="0,0,18,0"
+                        Margin="18,0,18,0"
                         Icon="&#xf100;"
                         IsEnabled="{Binding IsPreviousDayButtonEnabled}"
                         Tapped="OnPreviousDayTapped" />
@@ -71,7 +71,7 @@
 
 
                     <ctrl:IconButton
-                        Margin="18,0,0,0"
+                        Margin="18,0,18,0"
                         Icon="&#xf101;"
                         IsEnabled="{Binding IsNextDayButtonEnabled}"
                         Tapped="OnNextDayTapped" />

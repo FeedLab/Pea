@@ -1,4 +1,5 @@
-﻿using Syncfusion.Maui.Sliders;
+﻿using System.Globalization;
+using Syncfusion.Maui.Sliders;
 
 namespace Pea.Meter.Components;
 
@@ -26,7 +27,7 @@ public partial class SliderComponent : Border
         BindableProperty.Create(nameof(NumberFormat), typeof(string), typeof(SliderComponent), "0.00");
 
     public static readonly BindableProperty ThumbNumberFormatProperty =
-        BindableProperty.Create(nameof(ThumbNumberFormat), typeof(string), typeof(SliderComponent), "{}{0:N0}");
+        BindableProperty.Create(nameof(ThumbNumberFormat), typeof(string), typeof(SliderComponent), "{0:N0}");
     
     public static readonly BindableProperty ThumbColorProperty =
         BindableProperty.Create(nameof(ThumbColor), typeof(Color), typeof(SliderComponent), Colors.Red);
@@ -93,4 +94,17 @@ public partial class SliderComponent : Border
     private void Slider_OnValueChanged(object? sender, SliderValueChangedEventArgs e)
     {
     }
+}
+
+public class StringFormatConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values[0] is double value && values[1] is string format)
+            return string.Format(format, value);
+        return values[0]?.ToString();
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
 }

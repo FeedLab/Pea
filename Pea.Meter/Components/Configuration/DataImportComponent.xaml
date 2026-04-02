@@ -12,7 +12,7 @@
 
     <VerticalStackLayout
         Spacing="12"
-        Margin="32">
+        Margin="8,32">
 
         <Label
             FontAttributes="Bold"

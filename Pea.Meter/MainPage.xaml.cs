@@ -84,7 +84,12 @@ namespace Pea.Meter
             oldViewModel = null;
 
             var selectedIndex = (int)e.NewIndex;
-            
+
+            if (oldViewModel != null)
+            {
+                oldViewModel.CanExecute(false);
+            }
+
             if (selectedIndex == TabView.Items.IndexOf(SolarSystemSizing))
             {
                 if (SolarSystemSizing.Content is SolarSystemSizingView view)
@@ -102,11 +107,6 @@ namespace Pea.Meter
                     viewModel.CanExecute(true);
                     oldViewModel = viewModel;
                 }
-            }
-            
-            if (oldViewModel != null)
-            {
-                oldViewModel.CanExecute(false);
             }
         }
 

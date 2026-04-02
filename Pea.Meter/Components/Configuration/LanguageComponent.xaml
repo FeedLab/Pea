@@ -7,7 +7,9 @@
              x:Class="Pea.Meter.Components.Configuration.LanguageComponent">
 
     <ScrollView Margin="4,0,0,0">
-        <VerticalStackLayout Margin="16,10,24,0" x:Name="LanguageSelector">
+        <VerticalStackLayout
+            Margin="0,8"
+            x:Name="LanguageSelector">
 
             <local:LanguageItemComponent FlagSource="gb.png" CultureCode="gb" LanguageName="English" LanguageValue="English"
                                           IsEnabled="True" StateChanged="OnLanguageTapped" />

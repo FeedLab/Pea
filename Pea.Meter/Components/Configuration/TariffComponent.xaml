@@ -7,8 +7,9 @@
              x:Class="Pea.Meter.Components.Configuration.TariffComponent"
              x:Name="This">
 
-    <ScrollView Padding="0,0,16,0">
+    <ScrollView Padding="0,0,0,0">
         <VerticalStackLayout
+            Padding="16,0"
             HorizontalOptions="Fill"
             VerticalOptions="Start">
 
