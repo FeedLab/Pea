@@ -35,7 +35,7 @@ namespace Pea.Meter
                             try
                             {
                                 await Task.Delay(1000);
-                                await storageService.Init();
+                                //await storageService.Init();
                             }
                             catch (Exception e)
                             {

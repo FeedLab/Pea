@@ -58,7 +58,7 @@ public partial class CustomerProfileViewModel : ObservableObject
 
         await repository.DeleteAllAsync();
         await loginHelper.ClearAuthDataAsync();
-        historicDataBackgroundService.CancelImport();
+        historicDataBackgroundService.Stop();
         WeakReferenceMessenger.Default.Send(new UserLoggedOutMessage());
     }
 

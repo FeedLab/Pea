@@ -11,36 +11,19 @@ namespace Pea.Meter.Services;
 /// Background service that imports historic meter reading data from PEA AMR system
 /// Triggered manually after user login
 /// </summary>
-public class HistoricDataBackgroundService
+public class HistoricDataBackgroundService(
+    PeaAdapter peaAdapter,
+    ILogger<HistoricDataBackgroundService> logger,
+    PeaDbContextFactory dbContextFactory,
+    StorageService storageService)
 {
-    private readonly PeaAdapter peaAdapter;
-    private readonly ILogger<HistoricDataBackgroundService> logger;
-    private readonly PeaDbContextFactory dbContextFactory;
-    private readonly StorageService storageService;
-    private CancellationTokenSource? cancellationTokenSource;
+    private CancellationTokenSource? cancellationTokenSource = new();
     private Task? runningTask;
 
-    public HistoricDataBackgroundService(PeaAdapter peaAdapter, ILogger<HistoricDataBackgroundService> logger,
-        PeaDbContextFactory dbContextFactory,
-        StorageService storageService)
-    {
-        this.peaAdapter = peaAdapter;
-        this.logger = logger;
-        this.dbContextFactory = dbContextFactory;
-        this.storageService = storageService;
-
-        cancellationTokenSource = new CancellationTokenSource();
-
-        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this,
-            async void (r, m) => { TriggerImportTask(); });
-    }
-
-    private void TriggerImportTask()
+    private void TriggerImportTask(int delaySeconds)
     {
         try
         {
-            cancellationTokenSource = new CancellationTokenSource();
-
             if (runningTask != null && !runningTask.IsCompleted)
             {
                 logger.LogWarning("Import is already running, ignoring trigger request.");
@@ -49,7 +32,13 @@ public class HistoricDataBackgroundService
 
             logger.LogInformation("Import triggered by user login for user: {UserId}", "N/A");
 
-            runningTask = Task.Run(async () => await ImportHistoricDataAsync(cancellationTokenSource.Token));
+            cancellationTokenSource = new CancellationTokenSource();
+
+            runningTask = Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(delaySeconds), cancellationTokenSource.Token);
+                await ImportHistoricDataAsync(cancellationTokenSource.Token);
+            });
         }
         catch (Exception e)
         {
@@ -60,20 +49,17 @@ public class HistoricDataBackgroundService
     /// <summary>
     /// Triggers the background import to start
     /// </summary>
-    public void TriggerImport(bool cancelPreviousImport = true)
+    public void Start(int delaySeconds = 60)
     {
-        if (cancelPreviousImport)
-        {
-            CancelImport();
-        }
+        Stop();
 
-        TriggerImportTask();
+        TriggerImportTask(delaySeconds);
     }
 
     /// <summary>
     /// Cancels the running import if any
     /// </summary>
-    public void CancelImport()
+    public void Stop()
     {
         if (cancellationTokenSource != null && !cancellationTokenSource.IsCancellationRequested)
         {
@@ -99,9 +85,6 @@ public class HistoricDataBackgroundService
         var totalReadings = 0;
         var targetDate = startDate;
 
-        const int startTimeDelay = 1;
-        await Task.Delay(TimeSpan.FromSeconds(startTimeDelay), cancellationToken);
-        
         do
         {
             if (cancellationToken.IsCancellationRequested)
@@ -144,6 +127,8 @@ public class HistoricDataBackgroundService
                     totalReadings += readings.Count;
                     logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count,
                         targetDate.ToString("yyyy-MM-dd"));
+
+                    await storageService.AddNewDayReadings(readings, targetDate);
 
                     WeakReferenceMessenger.Default.Send(new DataImportedMessage(readings, targetDate));
 

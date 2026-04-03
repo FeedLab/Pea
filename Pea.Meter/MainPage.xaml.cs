@@ -22,11 +22,15 @@ namespace Pea.Meter
         private bool hasAppeared;
         private readonly ILogger<MainPage> logger;
         private ICanExecuteViewModel? oldViewModel;
+        private readonly NewDayBackgroundTimer newDayBackgroundTimer;
+        private readonly HistoricDataBackgroundService historicDataBackgroundService;
 
         public MainPage()
         {
             InitializeComponent();
 
+            historicDataBackgroundService = AppService.GetRequiredService<HistoricDataBackgroundService>();
+            newDayBackgroundTimer = AppService.GetRequiredService<NewDayBackgroundTimer>();
             BindingContext = AppService.GetRequiredService<MainPageViewModel>();
             storageService = AppService.GetRequiredService<StorageService>();
             authDataOptions = AppService.GetRequiredService<AuthDataOptions>();
@@ -34,7 +38,6 @@ namespace Pea.Meter
             logger = AppService.GetRequiredService<ILogger<MainPage>>();
 
             authData = authDataOptions.AuthData;
-
             StatisticsView.IsVisible = false;
             TabCustomerProfile.IsVisible = false;
             Pea.IsVisible = true;
@@ -76,7 +79,27 @@ namespace Pea.Meter
 
                     return Task.CompletedTask;
                 });
+                
+                historicDataBackgroundService.Stop();
+                newDayBackgroundTimer.Stop();
             });
+            
+            WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
+                (r, m) =>
+                {
+                    MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        try
+                        {
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogError(e, "Error in {Method}: {Message}", nameof(DateChangedMessage), e.Message);
+                        }
+
+                        return Task.CompletedTask;
+                    });
+                });
         }
 
         private void TabView_OnSelectionChanged(object? sender, TabSelectionChangedEventArgs e)
@@ -123,13 +146,22 @@ namespace Pea.Meter
 
                 if (storageService.IsAuthenticated)
                 {
-                    await Task.Run(() =>
+                    await Task.Run(async () =>
                     {
                         try
                         {
                             try
                             {
+
                                 WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
+                               
+                                await storageService.ResetHistoricalData();
+                                
+                                WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+                                
+                                await newDayBackgroundTimer.Start();
+                                
+                                historicDataBackgroundService.Start(10);
                             }
                             catch (Exception e)
                             {

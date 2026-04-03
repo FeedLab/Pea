@@ -46,7 +46,7 @@ public partial class DataImportComponent : ContentView
     {
         try
         {
-            historicDataBackgroundService.CancelImport();
+            historicDataBackgroundService.Stop();
             logger.LogInformation("Data import has been cancelled");
 
             using var dbContext = dbContextFactory.CreateDbContext();
@@ -61,7 +61,7 @@ public partial class DataImportComponent : ContentView
             WeakReferenceMessenger.Default.Send(new DataImportedEarlierMessage(new List<PeaMeterReading>(), StartDate));
             logger.LogInformation("DataImportedEarlierMessage has been sent");
 
-            historicDataBackgroundService.TriggerImport(false);
+            historicDataBackgroundService.Start(1);
             logger.LogInformation("Data import has been triggered");
         }
         catch (Exception exception)

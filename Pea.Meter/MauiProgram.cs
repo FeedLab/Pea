@@ -75,8 +75,9 @@ namespace Pea.Meter
             builder.Services.AddSingleton<SolarSystemSizingViewModel>();
             
             builder.Services.AddSingletonPopup<LoginPopup, LoginPopupViewModel>();
+            builder.Services.AddSingleton<NewDayBackgroundTimer>();
             
-        
+            
             // Configure Options - load synchronously from SettingsService
             builder.Services.AddSingleton<AuthDataOptions>(sp =>
             {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
@@ -38,9 +37,32 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         CreateLoggedOutSubscription();
         CreateAllAggregationsCompletedSubscription();
         CreateNewDaySubscription();
+        CreateAllImportedDataCompletedMessageSubscription();
         CreateDataImportedSubscription();
     }
 
+    private void CreateAllImportedDataCompletedMessageSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<AllImportedDataCompletedMessage>(this,
+            (r, m) =>
+            {
+                MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    try
+                    {
+                        await PopulateChartData(DateTime.Today);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateAllImportedDataCompletedMessageSubscription),
+                            e.Message);
+                    }
+
+                    return Task.CompletedTask;
+                });
+            });
+        
+    }
     private void CreateDataImportedSubscription()
     {
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this,
@@ -90,14 +112,19 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         {
             MainThread.InvokeOnMainThreadAsync(() =>
             {
-                storageService.DailyPeriodReadings.CollectionChanged -= DailyPeriodPeaMeterDataCollectionChanged;
-
-                TodayData = [];
-                MeterDataAverage1 = [];
-                MeterDataAverage7 = [];
-                MeterDataAverage30 = [];
-
-                return Task.CompletedTask;
+                try
+                {
+                    TodayData = [];
+                    MeterDataAverage1 = [];
+                    MeterDataAverage7 = [];
+                    MeterDataAverage30 = [];
+                
+                    return Task.FromResult(Task.CompletedTask);
+                }
+                catch (Exception exception)
+                {
+                    return Task.FromException<Task>(exception);
+                }
             });
         });
     }
@@ -105,9 +132,15 @@ public partial class MeterReadingsHourViewModel : ObservableObject
     private void CreateLoggedInSubscription()
     {
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this,
-            async (r, m) =>
+            async void (r, m) =>
             {
-                storageService.DailyPeriodReadings.CollectionChanged += DailyPeriodPeaMeterDataCollectionChanged;
+                try
+                {
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateLoggedInSubscription), e.Message);
+                }
             });
     }
 
@@ -205,42 +238,6 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         catch (Exception e)
         {
             logger.LogError(e, "Error in {Method}: {Message}", nameof(OnSelectedDateChanged), e.Message);
-        }
-    }
-
-    private void DailyPeriodPeaMeterDataCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        switch (e.Action)
-        {
-            case NotifyCollectionChangedAction.Add:
-                TodayData = storageService.DailyPeriodReadings.SummaryByHour();
-                break;
-            case NotifyCollectionChangedAction.Remove:
-                foreach (var item in e.OldItems?.Cast<PeaMeterReading>().ToList() ?? [])
-                {
-                    TodayData.Remove(item);
-                }
-
-                break;
-                // case NotifyCollectionChangedAction.Replace:
-                //     for (var i = 0; i < e.OldItems.Count; i++)
-                //     {
-                //         var index = MeterData.IndexOf(e.OldItems[i]);
-                //         if (index >= 0)
-                //         {
-                //             MeterData[index] = e.NewItems[i];
-                //         }
-                //     }
-                break;
-            case NotifyCollectionChangedAction.Move:
-                // For ObservableCollection, typically no action needed as order may not matter
-                // or rebuild collection if order is important
-                break;
-            case NotifyCollectionChangedAction.Reset:
-                TodayData.Clear();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
         }
     }
 }

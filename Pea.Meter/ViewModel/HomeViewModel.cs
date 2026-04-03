@@ -52,9 +52,9 @@ public partial class HomeViewModel : ObservableObject
         if (storageService.IsAuthenticated)
         {
             AuthData = await loginHelper.SaveAuthDataAsync(authDataLogin.Username, authDataLogin.Password);
-            await storageService.Init();
+    //        await storageService.Init();
             WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(AuthData));
-            historicDataBackgroundService.TriggerImport();
+            historicDataBackgroundService.Start();
         }
         
     }
