@@ -1,24 +1,47 @@
 ﻿using Microsoft.Extensions.Logging;
+using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
-using Pea.Meter.Extension;
 
 namespace Pea.Meter.Services;
 
 public class DailyPeaReadingsTimer
 {
+    private Timer? dailyTimer;
+    private IList<PeaMeterReading>? readingsFromPea;
     private readonly ILogger<DailyPeaReadingsTimer> logger;
     private readonly PeaAdapter peaAdapter;
     private readonly StorageService storageService;
-    private readonly MeterReadingRepository meterReadingRepository;
-    private Timer? dailyTimer;
+    private readonly PeaDbContextFactory dbContextFactory;
 
-    public DailyPeaReadingsTimer(ILogger<DailyPeaReadingsTimer> logger, PeaAdapter peaAdapter, StorageService storageService, MeterReadingRepository meterReadingRepository)
+    public DailyPeaReadingsTimer(ILogger<DailyPeaReadingsTimer> logger,
+        PeaAdapter peaAdapter,
+        StorageService storageService,
+        PeaDbContextFactory dbContextFactory)
     {
         this.logger = logger;
         this.peaAdapter = peaAdapter;
         this.storageService = storageService;
-        this.meterReadingRepository = meterReadingRepository;
+        this.dbContextFactory = dbContextFactory;
+    }
+
+    public IList<PeaMeterReading> LatestReadingsFromPea => readingsFromPea ??= new List<PeaMeterReading>();
+
+    public void Stop()
+    {
+        dailyTimer?.Dispose();
+        dailyTimer = null;
+    }
+
+    public void Start()
+    {
+        if (dailyTimer != null)
+        {
+            logger.LogWarning("DailyPeaReadingsTimer is already running");
+            return;
+        }
+
+        ReadingsTimer();
     }
 
     private void ReadingsTimer()
@@ -28,45 +51,31 @@ public class DailyPeaReadingsTimer
         {
             try
             {
-                    await Task.Run(async () =>
-                    {
-                        try
-                        {
-                            await FetchAndFilterDailyReadings();
-                        }
-                        catch (Exception e)
-                        {
-                            logger.LogError(e, "Error in background task: {Message}", e.Message);
-                        }
-                    });
+                var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
+                
+                await FetchAndFilterDailyReadings(meterReadingRepository);
             }
             catch (Exception e)
             {
                 logger.LogError(e, "Error in background task: {Message}", e.Message);
             }
-        }, null, TimeSpan.FromMinutes(0), TimeSpan.FromMinutes(15));
+        }, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(15));
     }
-    
-    private async Task FetchAndFilterDailyReadings()
+
+    private async Task FetchAndFilterDailyReadings(MeterReadingRepository meterReadingRepository)
     {
         logger.LogInformation("Fetching daily readings from Pea Adapter");
 
-        await MainThread.InvokeOnMainThreadAsync(async () => { await ProcessNewPeriodReadings(); });
-    }
-    
-    private async Task ProcessNewPeriodReadings()
-    {
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
-        var readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
+        readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
 
-        
         if (readingsFromPea == null)
         {
             logger.LogWarning("Failed to fetch daily readings from Pea Adapter");
             return;
         }
 
-        var newReadingsFiltered = readingsFromPea
+        var newReadingsFiltered = LatestReadingsFromPea
             .Where(r => r.Total > 0)
             .ToList();
 
@@ -74,13 +83,8 @@ public class DailyPeaReadingsTimer
 
         if (newReadingsFiltered.Count > 0)
         {
-            await storageService.UpdatePeriodDataAndProcessAggregations(newReadingsFiltered.ToList(), readingsFromDb.ToList());
+            await storageService.UpdatePeriodDataAndProcessAggregations(newReadingsFiltered.ToList(),
+                readingsFromDb.ToList());
         }
-    }
-    
-    private void Stop()
-    {
-        dailyTimer?.Dispose();
-        dailyTimer = null;
     }
 }

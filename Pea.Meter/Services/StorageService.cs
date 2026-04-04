@@ -63,131 +63,18 @@ public partial class StorageService : ObservableObject
         }
 
         newDayCancellationTokenSource = new CancellationTokenSource();
-
-        // WeakReferenceMessenger.Default.Register<DataImportedMessage>(this, async void (r, m) =>
-        // {
-        //     try
-        //     {
-        //         var context = dbContextFactory.CreateDbContext();
-        //         var meterReadingRepository = new MeterReadingRepository(context);
-        //
-        //         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
-        //
-        //         AllMeterReadingsAsync.Clear();
-        //         AllMeterReadingsAsync.AddRange(readingsFromDb);
-        //
-        //         await MainThread.InvokeOnMainThreadAsync(ProcessAggregations);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         logger.LogError(e, "Error in {Method}: {Message}", nameof(StorageService), e.Message);
-        //     }
-        // });
-    }
-
-    public async Task InitNewDay(DateTime oldDate, DateTime newDate, IList<PeaMeterReading> todayPeaMeterReadings,
-        IList<PeaMeterReading> allReadingsFromDb)
-    {
-        await MainThread.InvokeOnMainThreadAsync(async () =>
-        {
-            try
-            {
-                logger.LogInformation("InitNewDay: {OldDate}, {NewDate}", oldDate, newDate);
-
-                var newReadingsFiltered = todayPeaMeterReadings.Where(r => r.Total > 0).ToList();
-
-                await UpdatePeriodDataAndProcessAggregations(newReadingsFiltered, allReadingsFromDb.ToList());
-
-                WeakReferenceMessenger.Default.Send(new DateChangedMessage(oldDate, newDate));
-
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                logger.LogError(exception, "Error in {Method}: {Message}", nameof(InitNewDay),
-                    exception.Message);
-                return Task.FromException(exception);
-            }
-        });
-    }
-
-    private async Task FetchAndFilterDailyReadings()
-    {
-        logger.LogInformation("Fetching daily readings from Pea Adapter");
-
-        await MainThread.InvokeOnMainThreadAsync(async () => { await ProcessNewPeriodReadings(); });
-    }
-
-    private async Task ProcessNewPeriodReadings()
-    {
-        var readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
-
-        if (readingsFromPea == null)
-        {
-            logger.LogWarning("Failed to fetch daily readings from Pea Adapter");
-            return;
-        }
-
-        var newReadings = GetDiffBetweenDailyAndAllReadings(readingsFromPea.ToList());
-        var newReadingsFiltered = newReadings.Where(r => r.Total > 0).ToList();
-
-        logger.LogInformation($"Found {newReadingsFiltered.Count} new readings");
-
-        if (newReadingsFiltered.Count > 0)
-        {
-            DailyPeriodReadings.AddRange(newReadingsFiltered);
-            AllMeterReadingsAsync.AddRange(newReadingsFiltered);
-            ProcessAggregations();
-        }
-    }
-
-    private void DailyPeaReadingsTimer()
-    {
-        cancellationTokenSource = new CancellationTokenSource();
-
-        // Run aggregations every 15 minutes
-        backgroundTimer = new Timer(async void (_) =>
-        {
-            try
-            {
-                if (!cancellationTokenSource.Token.IsCancellationRequested)
-                {
-                    await Task.Run(async () =>
-                    {
-                        try
-                        {
-                            await FetchAndFilterDailyReadings();
-                        }
-                        catch (Exception e)
-                        {
-                            logger.LogError(e, "Error in background task: {Message}", e.Message);
-                        }
-                    }, cancellationTokenSource.Token);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Error in background task: {Message}", e.Message);
-            }
-        }, null, TimeSpan.FromMinutes(0), TimeSpan.FromMinutes(15));
-    }
-
-    private void StopBackgroundTask()
-    {
-        cancellationTokenSource?.Cancel();
-        backgroundTimer?.Dispose();
-        cancellationTokenSource?.Dispose();
     }
 
     public async Task ResetHistoricalData()
     {
         var context = dbContextFactory.CreateDbContext();
-        var meterReadingRepository = new MeterReadingRepository(context);
+        var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
 
-        var todayPeaMeterReadings = await peaAdapter.ShowDailyReadings(DateTime.Today.Date);
+        var todayPeaMeterReadings =
+            await peaAdapter.ShowDailyReadings(DateTime.Today.Date) ?? new List<PeaMeterReading>();
 
-        if (todayPeaMeterReadings != null)
+        if (todayPeaMeterReadings.Any())
         {
             var newReadings = todayPeaMeterReadings.Where(r => r.Total > 0).ToList();
             var newReadingsFiltered = GetDiffBetweenDailyAndAllReadings(newReadings);
@@ -196,7 +83,7 @@ public partial class StorageService : ObservableObject
         }
     }
 
-    public void ProcessAggregations()
+    private void ProcessAggregations()
     {
         HourlyAggregated.Clear();
         DailyAggregated.Clear();
@@ -204,78 +91,23 @@ public partial class StorageService : ObservableObject
         MonthlyAggregated.Clear();
 
         // Aggregate by hour
-        var hourlyList = AllMeterReadingsAsync
-            .GroupBy(r =>
-                new DateTime(r.PeriodStart.Year, r.PeriodStart.Month, r.PeriodStart.Day, r.PeriodStart.Hour, 0, 0))
-            .Select(g => new PeaMeterReading(
-                g.Key,
-                g.Sum(r => r.RateA),
-                g.Sum(r => r.RateB),
-                g.Sum(r => r.RateC),
-                60
-            ))
-            .OrderBy(r => r.PeriodStart);
-
+        var hourlyList = AllMeterReadingsAsync.SummaryByHour();
         HourlyAggregated.AddRange(hourlyList);
-
         WeakReferenceMessenger.Default.Send(new HourlyAggregationCompletedMessage(HourlyAggregated));
 
-
         // Aggregate by day
-        var dailyList = AllMeterReadingsAsync
-            .GroupBy(r => r.PeriodStart.Date)
-            .Select(g => new PeaMeterReading(
-                g.Key,
-                g.Sum(r => r.RateA),
-                g.Sum(r => r.RateB),
-                g.Sum(r => r.RateC),
-                60 * 24
-            ))
-            .OrderBy(r => r.PeriodStart);
-
+        var dailyList = AllMeterReadingsAsync.SummaryByDay();
         DailyAggregated.AddRange(dailyList);
-
         WeakReferenceMessenger.Default.Send(new DailyAggregationCompletedMessage(DailyAggregated));
 
-
         // Aggregate by week
-        var weeklyList = AllMeterReadingsAsync
-            .GroupBy(r =>
-            {
-                var weekStart = r.PeriodStart.Date.AddDays(-(int)r.PeriodStart.DayOfWeek);
-                return weekStart;
-            })
-            .Select(g => new PeaMeterReading(
-                g.Key,
-                g.Sum(r => r.RateA),
-                g.Sum(r => r.RateB),
-                g.Sum(r => r.RateC),
-                60 * 24 * 7
-            ))
-            .OrderBy(r => r.PeriodStart)
-            .ToObservableCollection();
-
+        var weeklyList = AllMeterReadingsAsync.SummaryByWeek();
         WeeklyAggregated.AddRange(weeklyList);
-
         WeakReferenceMessenger.Default.Send(new WeeklyAggregationCompletedMessage(WeeklyAggregated));
 
         // Aggregate by month
-        var monthlyList = AllMeterReadingsAsync
-            .GroupBy(r => new { Year = r.PeriodStart.Year, Month = r.PeriodStart.Month })
-            .Select(g => new PeaMeterReading(
-                // Use the first day of the month as the PeriodStart
-                new DateTime(g.Key.Year, g.Key.Month, 1),
-                g.Sum(r => r.RateA),
-                g.Sum(r => r.RateB),
-                g.Sum(r => r.RateC),
-                // Minutes in the month (approximate: 60 * 24 * days)
-                60 * 24 * DateTime.DaysInMonth(g.Key.Year, g.Key.Month)
-            ))
-            .OrderBy(r => r.PeriodStart)
-            .ToObservableCollection();
-
+        var monthlyList = AllMeterReadingsAsync.SummaryByMonth();
         MonthlyAggregated.AddRange(monthlyList);
-
         WeakReferenceMessenger.Default.Send(new MonthlyAggregationCompletedMessage(MonthlyAggregated));
     }
 
@@ -294,120 +126,6 @@ public partial class StorageService : ObservableObject
             .ToList();
 
         return newReadings;
-    }
-
-    public List<MeterReadingMonthlySummary> GetMeterReadingMonthlySummaries(List<PeaMeterReading> allPeriods,
-        decimal solarArraySize = 1, decimal batterySize = 0)
-    {
-        var listOfAllCostCompares = allPeriods.Select(s => new CostCompare(s, 3.9086m, 5.1135m, 2.6037m)).ToList();
-
-        var costCompareMonthList = listOfAllCostCompares
-            .GroupBy(costCompare => new
-                { costCompare.MeterReading.PeriodStart.Year, costCompare.MeterReading.PeriodStart.Month })
-            .Select(costCompares =>
-            {
-                var daysInMonthList = costCompares.Select(s => s.MeterReading.PeriodStart.Date).Distinct().ToList();
-
-                var peekRecords = costCompares.Where(w => w.IsPeekPeriod).ToList();
-                var offPeekRecords = costCompares.Where(w => !w.IsPeekPeriod).ToList();
-                var totalKw = peekRecords.Sum(s => s.KwUsed) + offPeekRecords.Sum(s => s.KwUsed);
-
-                var peekSum = peekRecords.Sum(s => s.KwUsed);
-                var offPeekSum = offPeekRecords.Sum(s => s.KwUsed);
-
-                var costSummaryFlatRate = costCompares.Sum(s => s.FlatRateCost);
-                var costSummaryTouPeek = costCompares.Sum(s => s.KwCostAtPeek);
-                var costSummaryTouOffPeek = costCompares.Sum(s => s.KwCostAtOffPeek);
-                var costTouTotal = costSummaryTouPeek + costSummaryTouOffPeek;
-
-
-                var sumKwUsedBetween08To17 = costCompares
-                    .Where(w => w is { IsPeekPeriod: true, MeterReading.PeriodStart.Hour: >= 8 and < 17 })
-                    .Sum(s => s.KwUsed);
-
-                // distinct days in this month for normalization
-                var daysInMonth = DateTime.DaysInMonth(costCompares.Key.Year, costCompares.Key.Month);
-                //var peekDays = peekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
-                //var offPeekDays = offPeekRecords.Select(s => s.MeterReading.PeriodStart.Date).Distinct().Count();
-
-                var dateTime = new DateTime(costCompares.Key.Year, costCompares.Key.Month, 1);
-
-                var calculateKwGeneratedMonthly = (decimal)PvCalculatorService
-                    .CalculateKwMonthly(dateTime, (double)solarArraySize, 3, 180);
-
-                var calculateKwGeneratedDaily = calculateKwGeneratedMonthly / daysInMonth;
-
-                var firstCostCompare = costCompares.First();
-
-                var offPeekPrice = firstCostCompare.OffPeekPrice;
-                var peekPrice = firstCostCompare.PeekPrice;
-                var flatRatePrice = firstCostCompare.FlatRatePrice;
-
-                var peekTouSaving = 0m;
-                var offPeekTouSaving = 0m;
-                var flatRateSaving = 0m;
-                foreach (var day in daysInMonthList)
-                {
-                    if (day.DayOfWeek == DayOfWeek.Saturday |
-                        day.DayOfWeek == DayOfWeek.Sunday)
-                    {
-                        offPeekTouSaving += calculateKwGeneratedDaily * offPeekPrice;
-                    }
-                    else
-                    {
-                        peekTouSaving += calculateKwGeneratedDaily * peekPrice;
-                    }
-
-                    flatRateSaving += calculateKwGeneratedDaily * flatRatePrice;
-                }
-
-                if (peekTouSaving > costSummaryTouPeek)
-                {
-                    var rest = peekTouSaving - costSummaryTouPeek;
-
-                    peekTouSaving = costSummaryTouPeek;
-                    offPeekTouSaving += rest;
-                }
-
-                return new MeterReadingMonthlySummary
-                {
-                    Date = dateTime,
-                    KwUsedAtPeek = peekSum,
-                    KwUsedAtOffPeek = offPeekSum,
-                    KwUsedTotal = totalKw,
-
-                    CostSummaryFlatRate = costSummaryFlatRate,
-                    CostSummaryTouPeek = costSummaryTouPeek,
-                    CostSummaryTouOffPeek = costSummaryTouOffPeek,
-                    CostSummaryTouTotal = costTouTotal,
-
-                    PeekTouDiscounted = costSummaryTouPeek - peekTouSaving,
-                    OffPeekTouDiscounted = costSummaryTouOffPeek - offPeekTouSaving,
-                    FlatRateDiscounted = costSummaryFlatRate - flatRateSaving,
-
-                    PeekTouSaving = peekTouSaving,
-                    OffPeekTouSaving = offPeekTouSaving,
-                    FlatRateSaving = flatRateSaving,
-
-                    // average per record
-                    AverageKwUsedAtPeekPerRecord = peekRecords.Any() ? peekRecords.Average(s => s.KwUsed) : 0,
-                    AverageKwUsedAtOffPeekPerRecord = offPeekRecords.Any() ? offPeekRecords.Average(s => s.KwUsed) : 0,
-                    AverageKwUsedBetween08To17Monthly = sumKwUsedBetween08To17 / daysInMonth,
-
-                    // average per day
-                    AverageKwUsedAtPeekPerDay = daysInMonth > 0 ? peekSum / daysInMonth : 0,
-                    AverageKwUsedAtOffPeekPerDay = daysInMonth > 0 ? offPeekSum / daysInMonth : 0,
-
-                    CalculateProducedSolarKwMonthly = calculateKwGeneratedMonthly,
-                    CalculateProducedSolarKwDaily = calculateKwGeneratedMonthly / daysInMonth,
-                    BatteryKwProducedMonthly = batterySize * daysInMonth,
-
-                    SolarArraySize = solarArraySize,
-                    BatterySize = batterySize
-                };
-            })
-            .ToList();
-        return costCompareMonthList;
     }
 
     public async Task<string> ExportAllMeterReadingsToJsonAsync()
@@ -469,15 +187,29 @@ public partial class StorageService : ObservableObject
         });
     }
 
-    public async Task AddNewDayReadings(IList<PeaMeterReading> readings, DateTime targetDate)
+    public async Task ReloadHistoricalDayReadingsFromDb()
     {
         var context = dbContextFactory.CreateDbContext();
-        var meterReadingRepository = new MeterReadingRepository(context);
+        var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
 
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
 
         AllMeterReadingsAsync.Clear();
         AllMeterReadingsAsync.AddRange(readingsFromDb);
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            try
+            {
+                ProcessAggregations();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error updating period data and processing aggregations: {Message}", e.Message);
+            }
+
+            return Task.CompletedTask;
+        });
     }
 }
 

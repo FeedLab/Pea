@@ -15,25 +15,10 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Column="0" Margin="0,0,8,0"
-               Text="&#xf013;"
-               FontFamily="FontSolid"
-               ToolTipProperties.Text="{x:Static properties:AppResources.Configuration}"
-               Style="{StaticResource IconLabel}">
-            <Label.Shadow>
-                <Shadow Radius="15"
-                        Opacity="0.6"
-                        Brush="Black"
-                        Offset="10,10" />
-            </Label.Shadow>
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnConfigurationTapped" />
-            </Label.GestureRecognizers>
-        </Label>
-
+        
         <Image
-            Grid.Column="1"
-            Margin="8,10,8,8"
+            Grid.Column="0"
+            Margin="0,0,8,0"
             Source="{Binding FlagSource, Source={x:Reference Root}}"
             HeightRequest="28"
             Aspect="AspectFit"
@@ -48,7 +33,23 @@
                 <TapGestureRecognizer Tapped="OnConfigurationFlagTapped" />
             </Image.GestureRecognizers>
         </Image>
-
+        
+        <Label Grid.Column="1" 
+               Margin="8,10,8,8"
+               Text="&#xf013;"
+               FontFamily="FontSolid"
+               ToolTipProperties.Text="{x:Static properties:AppResources.Configuration}"
+               Style="{StaticResource IconLabel}">
+            <Label.Shadow>
+                <Shadow Radius="15"
+                        Opacity="0.6"
+                        Brush="Black"
+                        Offset="10,10" />
+            </Label.Shadow>
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnConfigurationTapped" />
+            </Label.GestureRecognizers>
+        </Label>
 
         <Label Grid.Column="2" Margin="40,0,0,0" Text="&#xf2f5;"
                FontFamily="FontSolid"

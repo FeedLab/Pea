@@ -53,8 +53,7 @@ public partial class CustomerProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task RemoveAccount()
     {
-        using var dbContext = dbContextFactory.CreateDbContext();
-        var repository = new MeterReadingRepository(dbContext);
+        var repository = new MeterReadingRepository(dbContextFactory);
 
         await repository.DeleteAllAsync();
         await loginHelper.ClearAuthDataAsync();

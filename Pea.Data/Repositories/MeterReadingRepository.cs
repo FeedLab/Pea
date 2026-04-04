@@ -8,11 +8,12 @@ namespace Pea.Data.Repositories;
 /// <summary>
 /// Repository implementation for meter readings
 /// </summary>
-public class MeterReadingRepository(PeaDbContext context) : IMeterReadingRepository
+public class MeterReadingRepository(PeaDbContextFactory contextFactory) : IMeterReadingRepository
 {
     public async Task AddRangeUpsertAsync(IEnumerable<PeaMeterReading> readings,
         CancellationToken cancellationToken = default)
     {
+        await using var context = contextFactory.CreateDbContext();
         var utcNow = DateTime.UtcNow;
         var readingsList = readings.ToList();
 
@@ -59,9 +60,10 @@ public class MeterReadingRepository(PeaDbContext context) : IMeterReadingReposit
 
     public async Task AddRangeAsync(IEnumerable<PeaMeterReading> readings, CancellationToken cancellationToken = default)
     {
+        await using var context = contextFactory.CreateDbContext();
+        var utcNow = DateTime.UtcNow;
         var entities = readings.Select(r =>
         {
-            var utcNow = DateTime.UtcNow;
             return new MeterReadingEntity
             {
                 PeriodStart = r.PeriodStart,
@@ -79,8 +81,9 @@ public class MeterReadingRepository(PeaDbContext context) : IMeterReadingReposit
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IList<PeaMeterReading>> GetAllMeterReadingsAsync( CancellationToken cancellationToken = default)
+    public async Task<IList<PeaMeterReading>> GetAllMeterReadingsAsync(CancellationToken cancellationToken = default)
     {
+        await using var context = contextFactory.CreateDbContext();
         var entities = await context.MeterReadings.ToListAsync(cancellationToken);
 
         return entities
@@ -88,32 +91,34 @@ public class MeterReadingRepository(PeaDbContext context) : IMeterReadingReposit
             .Select(e => new PeaMeterReading(e.PeriodStart, e.RateA, e.RateB, e.RateC))
             .ToList();
     }
-    
+
     public async Task DeleteAllAsync(CancellationToken cancellationToken = default)
     {
+        await using var context = contextFactory.CreateDbContext();
         await context.MeterReadings.ExecuteDeleteAsync(cancellationToken);
     }
 
     public async Task<bool> HasReadingsForDateAsync(DateTime date, CancellationToken cancellationToken = default)
     {
+        await using var context = contextFactory.CreateDbContext();
         return await context.MeterReadings
             .AnyAsync(m => m.PeriodStart.Date == date.Date, cancellationToken);
     }
-    
+
     public async Task<DateTime> GetOldestPeriodStartAsync(CancellationToken cancellationToken = default)
     {
+        await using var context = contextFactory.CreateDbContext();
         if (!await context.MeterReadings.AnyAsync(cancellationToken))
-        {
             return DateTime.Now.Date;
-        }
+
         return await context.MeterReadings.MinAsync(m => m.PeriodStart, cancellationToken);
     }
-    
+
     public async Task DeleteBeforeDateAsync(DateTime date, CancellationToken cancellationToken = default)
     {
+        await using var context = contextFactory.CreateDbContext();
         await context.MeterReadings
             .Where(m => m.PeriodStart < date)
             .ExecuteDeleteAsync(cancellationToken);
     }
-    
 }

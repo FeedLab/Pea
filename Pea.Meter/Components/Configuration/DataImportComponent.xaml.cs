@@ -49,8 +49,7 @@ public partial class DataImportComponent : ContentView
             historicDataBackgroundService.Stop();
             logger.LogInformation("Data import has been cancelled");
 
-            using var dbContext = dbContextFactory.CreateDbContext();
-            var repository = new MeterReadingRepository(dbContext);
+            var repository = new MeterReadingRepository(dbContextFactory);
             
             await repository.DeleteBeforeDateAsync(StartDate);
             logger.LogInformation("Data before {StartDate} has been deleted", StartDate);

@@ -24,12 +24,14 @@ namespace Pea.Meter
         private ICanExecuteViewModel? oldViewModel;
         private readonly NewDayBackgroundTimer newDayBackgroundTimer;
         private readonly HistoricDataBackgroundService historicDataBackgroundService;
+        private readonly DailyPeaReadingsTimer dailyPeaReadingsTimer;
 
         public MainPage()
         {
             InitializeComponent();
 
             historicDataBackgroundService = AppService.GetRequiredService<HistoricDataBackgroundService>();
+            dailyPeaReadingsTimer = AppService.GetRequiredService<DailyPeaReadingsTimer>();
             newDayBackgroundTimer = AppService.GetRequiredService<NewDayBackgroundTimer>();
             BindingContext = AppService.GetRequiredService<MainPageViewModel>();
             storageService = AppService.GetRequiredService<StorageService>();
@@ -79,11 +81,12 @@ namespace Pea.Meter
 
                     return Task.CompletedTask;
                 });
-                
+
                 historicDataBackgroundService.Stop();
                 newDayBackgroundTimer.Stop();
+                dailyPeaReadingsTimer.Stop();
             });
-            
+
             WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
                 (r, m) =>
                 {
@@ -146,34 +149,26 @@ namespace Pea.Meter
 
                 if (storageService.IsAuthenticated)
                 {
+                    logger.LogInformation("User is authenticated. Starting initialization task");
                     await Task.Run(async () =>
                     {
                         try
                         {
-                            try
-                            {
+                            WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
 
-                                WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
-                               
-                                await storageService.ResetHistoricalData();
-                                
-                                WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
-                                
-                                await newDayBackgroundTimer.Start();
-                                
-                                historicDataBackgroundService.Start(10);
-                            }
-                            catch (Exception e)
-                            {
-                                logger.LogError(e, "Error in {Method}: {Message}", nameof(OnAppearing), e.Message);
-                            }
+                            await storageService.ResetHistoricalData();
+                            WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
 
-                            return Task.CompletedTask;
+                            newDayBackgroundTimer.Start();
+                            dailyPeaReadingsTimer.Start();
+                            historicDataBackgroundService.Start(1);
                         }
-                        catch (Exception exception)
+                        catch (Exception e)
                         {
-                            return Task.FromException(exception);
+                            logger.LogError(e, "Error in {Method}: {Message}", nameof(OnAppearing), e.Message);
                         }
+
+                        return Task.CompletedTask;
                     });
                 }
             }

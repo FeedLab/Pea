@@ -76,6 +76,7 @@ namespace Pea.Meter
             
             builder.Services.AddSingletonPopup<LoginPopup, LoginPopupViewModel>();
             builder.Services.AddSingleton<NewDayBackgroundTimer>();
+            builder.Services.AddSingleton<DailyPeaReadingsTimer>();
             
             
             // Configure Options - load synchronously from SettingsService

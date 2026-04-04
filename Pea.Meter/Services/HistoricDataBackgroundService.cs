@@ -71,8 +71,7 @@ public class HistoricDataBackgroundService(
     private async Task ImportHistoricDataAsync(CancellationToken cancellationToken)
     {
         // Create database context and repository
-        using var dbContext = dbContextFactory.CreateDbContext();
-        var repository = new MeterReadingRepository(dbContext);
+        var repository = new MeterReadingRepository(dbContextFactory);
 
         var startDate = DateTime.Now.Date.AddDays(-1);
         var startDateOldest = await GetOldestPeriodStartAsync(cancellationToken, repository);
@@ -128,7 +127,7 @@ public class HistoricDataBackgroundService(
                     logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count,
                         targetDate.ToString("yyyy-MM-dd"));
 
-                    await storageService.AddNewDayReadings(readings, targetDate);
+                    await storageService.ReloadHistoricalDayReadingsFromDb();
 
                     WeakReferenceMessenger.Default.Send(new DataImportedMessage(readings, targetDate));
 

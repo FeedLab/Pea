@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              xmlns:controls="clr-namespace:Pea.Meter.Controls"
+             xmlns:core="http://schemas.syncfusion.com/maui"
              x:Class="Pea.Meter.LoadingPage"
              Shell.NavBarIsVisible="False"
              BackgroundColor="Black">
@@ -14,31 +15,44 @@
 
         <!-- <Image Source="pea_load_splash.png" Aspect="AspectFit" /> -->
         <Image Source="pea_amr_intro.png" Aspect="Fill" />
-        
-        <ActivityIndicator
-            IsRunning="True"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
-        
-        <!-- <Label -->
-        <!--     Margin="0,0,0,0"  -->
-        <!--     Text="{x:Static properties:AppResources.Loading}"  -->
-        <!--     HorizontalOptions="Center" -->
-        <!--     VerticalOptions="Start" -->
-        <!--     FontSize="18" -->
-        <!--     TextColor="White"/> -->
-        
-        <controls:StrokedLabel 
-            Margin="32"
-            Text="{x:Static properties:AppResources.Loading}" 
-            FillColor="White" 
-            StrokeColor="Black" 
-            FontSize="32" 
-            StrokeWidth="2"
-            HorizontalOptions="Center"
-            VerticalOptions="Start"
-            HeightRequest="100" 
-            WidthRequest="200"/>
 
+        <VerticalStackLayout
+            Margin="32"
+            >
+            <core:SfBusyIndicator 
+                IsRunning="True"
+                AnimationType="CircularMaterial"
+                WidthRequest="80"
+                HeightRequest="80"
+                HorizontalOptions="Center"
+                OverlayFill="Transparent"
+                IndicatorColor="White" />
+            
+            <controls:StrokedLabel
+                Text="{x:Static properties:AppResources.Loading}"
+                FillColor="White"
+                StrokeColor="Black"
+                FontSize="32"
+                StrokeWidth="2"
+                HorizontalOptions="Center"
+                VerticalOptions="Start"
+                HeightRequest="100"
+                WidthRequest="200" />
+            
+            <!-- <ActivityIndicator -->
+            <!--     IsRunning="True" -->
+            <!--     HorizontalOptions="Center" -->
+            <!--     VerticalOptions="Center" /> -->
+
+            <!-- <Label -->
+            <!--     Margin="0,0,0,0"  -->
+            <!--     Text="{x:Static properties:AppResources.Loading}"  -->
+            <!--     HorizontalOptions="Center" -->
+            <!--     VerticalOptions="Start" -->
+            <!--     FontSize="18" -->
+            <!--     TextColor="White"/> -->
+
+
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

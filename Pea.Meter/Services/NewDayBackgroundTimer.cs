@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
@@ -10,20 +11,21 @@ public class NewDayBackgroundTimer(
     ILogger<NewDayBackgroundTimer> logger,
     PeaDbContextFactory dbContextFactory,
     PeaAdapter peaAdapter,
-    StorageService storageService)
+    StorageService storageService,
+    DailyPeaReadingsTimer dailyPeaReadingsTimer)
 {
     private DateTime yesterday = DateTime.MinValue; // MinValue - Will trigger a new day on the first run
     private Timer? newDayTimer;
 
-    public async Task Start()
+    public void  Start()
     {
         if (newDayTimer != null)
         {
             logger.LogWarning("newDayTimer is already running");
-            return; 
+            return;
         }
 
-        await CheckForNewDayTimer();
+        CheckForNewDayTimer();
     }
 
     public void Stop()
@@ -36,11 +38,10 @@ public class NewDayBackgroundTimer(
         }
     }
 
-    private Task CheckForNewDayTimer()
+    private void CheckForNewDayTimer()
     {
-        const int startTimeDelay = 0;
-        var context = dbContextFactory.CreateDbContext();
-        var meterReadingRepository = new MeterReadingRepository(context);
+        const int startTimeDelay = 2;
+        var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
 
         newDayTimer = new Timer(async void (_) =>
             {
@@ -48,23 +49,18 @@ public class NewDayBackgroundTimer(
 
                 try
                 {
-                    logger.LogInformation("Stopping background task for checking for new day");
-                    //StopBackgroundTask();
-
-                    logger.LogInformation("Checking for new day at {CurrentDate}",
-                        today);
+                    logger.LogInformation("Checking for new day at {CurrentDate}", today);
 
                     if (today > yesterday)
                     {
-                        var readingsFromPeaToday = await peaAdapter.ShowDailyReadings(today);
+                        var readingsFromPeaToday = dailyPeaReadingsTimer.LatestReadingsFromPea;
 
                         var readingsFromPeaYesterday =
                             yesterday != DateTime.MinValue
                                 ? await peaAdapter.ShowDailyReadings(yesterday)
                                 : null;
 
-                        if (readingsFromPeaToday is null ||
-                            readingsFromPeaToday.Count == 0 ||
+                        if (readingsFromPeaToday.Count == 0 ||
                             readingsFromPeaToday.Last()
                                 .PeriodStart.Date !=
                             today)
@@ -83,13 +79,10 @@ public class NewDayBackgroundTimer(
                             await meterReadingRepository.AddRangeUpsertAsync(readingsFromPeaYesterday.ToList());
                         }
 
-                        var peaMeterReadingsInOrder =
+                        var allReadingsFromDb =
                             await RetrieveAndProcessAllMeterReadingsFromDb(meterReadingRepository);
-                        
-                        await storageService.InitNewDay(yesterday,
-                            today,
-                            readingsFromPeaToday,
-                            peaMeterReadingsInOrder);
+
+                        await ProcessPeaReadingsAndNotify(readingsFromPeaToday, allReadingsFromDb, today);
 
                         logger.LogInformation("InitNewDay: Old date: {OldDate}, New date: {NewDate}",
                             yesterday,
@@ -112,9 +105,28 @@ public class NewDayBackgroundTimer(
             },
             null,
             TimeSpan.FromSeconds(startTimeDelay),
-            TimeSpan.FromMinutes(12));
+            TimeSpan.FromMinutes(15));
+    }
 
-        return Task.CompletedTask;
+    private async Task ProcessPeaReadingsAndNotify(IList<PeaMeterReading> readingsFromPeaToday,
+        List<PeaMeterReading> allReadingsFromDb, DateTime today)
+    {
+            try
+            {
+                var peaReadingsFiltered = readingsFromPeaToday
+                    .Where(r => r.Total > 0)
+                    .ToList();
+
+                await storageService.UpdatePeriodDataAndProcessAggregations(peaReadingsFiltered,
+                    allReadingsFromDb);
+
+                WeakReferenceMessenger.Default.Send(new DateChangedMessage(yesterday, today));
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "Error in {Method}: {Message}", nameof(CheckForNewDayTimer),
+                    exception.Message);
+            }
     }
 
     private async Task<List<PeaMeterReading>> RetrieveAndProcessAllMeterReadingsFromDb(
