@@ -41,6 +41,7 @@ public class NewDayBackgroundTimer(
     private void CheckForNewDayTimer()
     {
         const int startTimeDelay = 2;
+        yesterday = DateTime.Today.Date.AddDays(-1);
         var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
 
         newDayTimer = new Timer(async void (_) =>
@@ -53,7 +54,8 @@ public class NewDayBackgroundTimer(
 
                     if (today > yesterday)
                     {
-                        var readingsFromPeaToday = dailyPeaReadingsTimer.LatestReadingsFromPea;
+                        var dailyReadings = await peaAdapter.ShowDailyReadings(today);
+                        var readingsFromPeaToday = dailyReadings ??= new List<PeaMeterReading>();
 
                         var readingsFromPeaYesterday =
                             yesterday != DateTime.MinValue
@@ -84,9 +86,7 @@ public class NewDayBackgroundTimer(
 
                         await ProcessPeaReadingsAndNotify(readingsFromPeaToday, allReadingsFromDb, today);
 
-                        logger.LogInformation("InitNewDay: Old date: {OldDate}, New date: {NewDate}",
-                            yesterday,
-                            today);
+                        yesterday = today;
 
                         // await ExportAllMeterReadingsToJsonAsync();
                     }
@@ -98,14 +98,10 @@ public class NewDayBackgroundTimer(
                         nameof(CheckForNewDayTimer),
                         e.Message);
                 }
-                finally
-                {
-                    yesterday = today;
-                }
             },
             null,
             TimeSpan.FromSeconds(startTimeDelay),
-            TimeSpan.FromMinutes(15));
+            TimeSpan.FromMinutes(1));
     }
 
     private async Task ProcessPeaReadingsAndNotify(IList<PeaMeterReading> readingsFromPeaToday,

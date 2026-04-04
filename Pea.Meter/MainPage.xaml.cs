@@ -160,7 +160,7 @@ namespace Pea.Meter
                             WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
 
                             newDayBackgroundTimer.Start();
-                            dailyPeaReadingsTimer.Start();
+                            await dailyPeaReadingsTimer.Start();
                             historicDataBackgroundService.Start(1);
                         }
                         catch (Exception e)

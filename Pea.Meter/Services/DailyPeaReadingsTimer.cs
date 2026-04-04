@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
@@ -9,10 +10,12 @@ public class DailyPeaReadingsTimer
 {
     private Timer? dailyTimer;
     private IList<PeaMeterReading>? readingsFromPea;
+    private DateTime selectedDate = DateTime.MinValue;
     private readonly ILogger<DailyPeaReadingsTimer> logger;
     private readonly PeaAdapter peaAdapter;
     private readonly StorageService storageService;
     private readonly PeaDbContextFactory dbContextFactory;
+    private bool isTimerRunning;
 
     public DailyPeaReadingsTimer(ILogger<DailyPeaReadingsTimer> logger,
         PeaAdapter peaAdapter,
@@ -23,9 +26,34 @@ public class DailyPeaReadingsTimer
         this.peaAdapter = peaAdapter;
         this.storageService = storageService;
         this.dbContextFactory = dbContextFactory;
+        
+        WeakReferenceMessenger.Default.Register<DateChangedMessage>(this, async void (r, m) =>
+        {
+            try
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    try
+                    {
+                        Stop();
+                        await Start(m.NewDate);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, "Error in {Method}: {Message}", nameof(DateChangedMessage), e.Message);
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in {Method}: {Message}", nameof(DateChangedMessage), e.Message);
+            }
+        });
     }
 
     public IList<PeaMeterReading> LatestReadingsFromPea => readingsFromPea ??= new List<PeaMeterReading>();
+
+    public DateTime SelectedDate => selectedDate;
 
     public void Stop()
     {
@@ -33,33 +61,53 @@ public class DailyPeaReadingsTimer
         dailyTimer = null;
     }
 
-    public void Start()
+    private async Task Start(DateTime date)
     {
         if (dailyTimer != null)
         {
             logger.LogWarning("DailyPeaReadingsTimer is already running");
             return;
         }
+        
+        selectedDate = date;
+        await ReadingsTimer(); }
 
-        ReadingsTimer();
+    public async Task Start()
+    {
+        if (dailyTimer != null)
+        {
+            logger.LogWarning("DailyPeaReadingsTimer is already running");
+            return;
+        }
+        
+        selectedDate = DateTime.Today;
+        await ReadingsTimer();
     }
 
-    private void ReadingsTimer()
+    private async Task ReadingsTimer()
     {
+        await Task.Delay(1000);
+        
         // Run aggregations every 15 minutes
         dailyTimer = new Timer(async void (_) =>
         {
             try
             {
+                isTimerRunning = true;
+
                 var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
-                
+
                 await FetchAndFilterDailyReadings(meterReadingRepository);
             }
             catch (Exception e)
             {
                 logger.LogError(e, "Error in background task: {Message}", e.Message);
             }
-        }, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(15));
+            finally
+            {
+                isTimerRunning = false;
+            }
+        }, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
     }
 
     private async Task FetchAndFilterDailyReadings(MeterReadingRepository meterReadingRepository)
@@ -67,7 +115,7 @@ public class DailyPeaReadingsTimer
         logger.LogInformation("Fetching daily readings from Pea Adapter");
 
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
-        readingsFromPea = await peaAdapter.ShowDailyReadings(DateTime.Today);
+        readingsFromPea = await peaAdapter.ShowDailyReadings(selectedDate);
 
         if (readingsFromPea == null)
         {
