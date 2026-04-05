@@ -1,12 +1,18 @@
-﻿using CommunityToolkit.Maui;
+﻿using Akavache;
+using Akavache.Sqlite3;
+using Akavache.SystemTextJson;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Meter.Helpers;
+using Pea.Meter.Models;
 using Pea.Meter.Services;
 using Pea.Meter.View;
 using Pea.Meter.ViewModel;
 using Pea.Meter.ViewModel.Statistics;
 using Serilog;
+using Splat;
+using Splat.Builder;
 using Syncfusion.Maui.Core.Hosting;
 using MeterReadingsHourViewModel = Pea.Meter.ViewModel.Statistics.MeterReadingsHourViewModel;
 
@@ -48,6 +54,12 @@ namespace Pea.Meter
             // Add Serilog to the logging pipeline
             builder.Logging.AddSerilog(dispose: true);
 
+            AppBuilder.CreateSplatBuilder()
+                .WithAkavacheCacheDatabase<SystemJsonSerializer>(b =>
+                    b.WithApplicationName("PeaSmartMeter")
+                        .WithSqliteProvider()
+                        .WithSqliteDefaults());
+            
             // Register services
             builder.Services.AddSingleton<IEncryptionHelper, EncryptionHelper>();
             builder.Services.AddSingleton<ISettingsService, SettingsService>();
@@ -89,6 +101,24 @@ namespace Pea.Meter
 
             builder.Services.AddSingleton<ILoginHelper, LoginHelper>();
             builder.Services.AddSingleton<InfoViewModel>();
+            builder.Services.AddSingleton<ConfigurationTariffModel>(sp =>
+            {
+                var model = new ConfigurationTariffModel();
+                Task.Run(() => model.Load()).GetAwaiter().GetResult();
+                return model;
+            });
+            builder.Services.AddSingleton<ConfigurationLanguageModel>(sp =>
+            {
+                var model = new ConfigurationLanguageModel();
+                Task.Run(() => model.Load()).GetAwaiter().GetResult();
+                return model;
+            });
+            builder.Services.AddSingleton<ConfigurationDataImportModel>(sp =>
+            {
+                var model = new ConfigurationDataImportModel();
+                Task.Run(() => model.Load()).GetAwaiter().GetResult();
+                return model;
+            });
             
 #if DEBUG
     		builder.Logging.AddDebug();

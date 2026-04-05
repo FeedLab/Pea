@@ -8,31 +8,6 @@
              x:Class="Pea.Meter.View.CustomerProfileView">
 
     <ContentView.Resources>
-        <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
-            <Setter Property="Margin" Value="2" />
-            <Setter Property="FontSize" Value="18" />
-            <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="EnableRippleEffect" Value="True" />
-            <Setter Property="ShowIcon" Value="True" />
-            <Setter Property="ImageSize" Value="22" />
-            <Setter Property="ImageAlignment" Value="Default" />
-            <Setter Property="TextColor" Value="#0F172A" />
-            <Setter Property="Stroke" Value="#2B3C56" />
-            <Setter Property="StrokeThickness" Value="0" />
-            <Setter Property="Background" Value="#EEF2F7" />
-            <Setter Property="VerticalOptions" Value="Center" />
-            <Setter Property="HorizontalOptions" Value="Center" />
-        </Style>
-
-        <Style x:Key="IconButtonWithOpacityStyle" TargetType="button:SfButton"
-               BasedOn="{StaticResource IconButtonStyle}">
-            <Style.Triggers>
-                <Trigger TargetType="button:SfButton" Property="IsEnabled" Value="False">
-                    <Setter Property="Opacity" Value="0.25" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
         <!-- Icon resources -->
         <FontImageSource x:Key="RemoveMeterIcon" FontFamily="FontSolid" Glyph="&#xe540;" Color="DarkRed" Size="28" />
     </ContentView.Resources>
@@ -445,7 +420,7 @@
                     Margin="16"
                     HorizontalOptions="Fill">
                     <button:SfButton
-                        Style="{StaticResource IconButtonWithOpacityStyle}"
+                        Style="{StaticResource IconButtonStyle}"
                         Command="{Binding RemoveAccountCommand}"
                         IsVisible="True"
                         ImageSource="{StaticResource RemoveMeterIcon}"

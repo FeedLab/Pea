@@ -101,7 +101,7 @@ public class NewDayBackgroundTimer(
             },
             null,
             TimeSpan.FromSeconds(startTimeDelay),
-            TimeSpan.FromMinutes(1));
+            TimeSpan.FromMinutes(15));
     }
 
     private async Task ProcessPeaReadingsAndNotify(IList<PeaMeterReading> readingsFromPeaToday,

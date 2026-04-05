@@ -1,25 +1,42 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Linq;
+using Akavache;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Pea.Meter.Services;
 
 namespace Pea.Meter.Models;
 
+[SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator",
+    "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class ConfigurationTariffModel : ObservableObject
 {
-    private static readonly string SettingsFilePath;
-
-    static ConfigurationTariffModel()
+    public bool HasChange(ConfigurationTariffModel oldModel)
     {
-        var roamingAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        SettingsFilePath = Path.Combine(roamingAppDataPath, "Pea.Meter", "TariffConfiguration.json");
+        return !(oldModel.IsTariffTypeTimeOfUse == IsTariffTypeTimeOfUse &&
+               oldModel.FlatRatePrice == FlatRatePrice &&
+               oldModel.PeekPrice == PeekPrice &&
+               oldModel.OffPeekPrice == OffPeekPrice &&
+               oldModel.InvoiceDayInMonth == InvoiceDayInMonth);
+    }
 
-        // Ensure directory exists
-        var directory = Path.GetDirectoryName(SettingsFilePath);
-        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+    public ConfigurationTariffModel Copy()
+    {
+        var copy = new ConfigurationTariffModel();
+        copy.isLoadingConfiguration = true;
+        try
         {
-            Directory.CreateDirectory(directory);
+            copy.IsTariffTypeTimeOfUse = IsTariffTypeTimeOfUse;
+            copy.FlatRatePrice = FlatRatePrice;
+            copy.PeekPrice = PeekPrice;
+            copy.OffPeekPrice = OffPeekPrice;
+            copy.InvoiceDayInMonth = InvoiceDayInMonth;
         }
+        finally
+        {
+            copy.isLoadingConfiguration = false;
+        }
+        return copy;
     }
 
     [ObservableProperty] private bool isTariffTypeTimeOfUse;
@@ -28,106 +45,83 @@ public partial class ConfigurationTariffModel : ObservableObject
     [ObservableProperty] private decimal offPeekPrice;
     [ObservableProperty] private int invoiceDayInMonth;
 
-    private readonly ILogger<ConfigurationTariffModel> logger;
-    private static bool isLoadingConfiguration;
+    private readonly ILogger<ConfigurationTariffModel>? logger;
+    private bool isLoadingConfiguration;
+
+    private sealed record TariffDto(
+        bool IsTariffTypeTimeOfUse,
+        decimal FlatRatePrice,
+        decimal PeekPrice,
+        decimal OffPeekPrice,
+        int InvoiceDayInMonth);
 
     public ConfigurationTariffModel()
     {
         logger = AppService.GetRequiredService<ILogger<ConfigurationTariffModel>>();
-
-        InvoiceDayInMonth = 26;
-        IsTariffTypeTimeOfUse = false;
-        FlatRatePrice = 3.89m;
-        OffPeekPrice = 2.64m;
-        PeekPrice = 5.13m;
+        isLoadingConfiguration = true;
+        try
+        {
+            InvoiceDayInMonth = 26;
+            IsTariffTypeTimeOfUse = false;
+            FlatRatePrice = 3.89m;
+            OffPeekPrice = 2.64m;
+            PeekPrice = 5.13m;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error initializing tariff configuration: {Message}", e.Message);
+        }
+        finally
+        {
+            isLoadingConfiguration = false;
+        }
     }
 
-    partial void OnIsTariffTypeTimeOfUseChanged(bool value)
-    {
-        Save(this);
-    }
+    partial void OnIsTariffTypeTimeOfUseChanged(bool value) => Save();
+    partial void OnFlatRatePriceChanged(decimal value) => Save();
+    partial void OnPeekPriceChanged(decimal value) => Save();
+    partial void OnOffPeekPriceChanged(decimal value) => Save();
+    partial void OnInvoiceDayInMonthChanged(int value) => Save();
 
-    partial void OnFlatRatePriceChanged(decimal value)
-    {
-        Save(this);
-    }
-
-    partial void OnPeekPriceChanged(decimal value)
-    {
-        Save(this);
-    }
-
-    partial void OnOffPeekPriceChanged(decimal value)
-    {
-        Save(this);
-    }
-
-    partial void OnInvoiceDayInMonthChanged(int value)
-    {
-        Save(this);
-    }
-    
-    private void Save(ConfigurationTariffModel configurationTariffModel)
+    private async void Save()
     {
         try
         {
-            if (isLoadingConfiguration)
-            {
-                return;
-            }
-
-            var data = new
-            {
-                IsTariffTypeTimeOfUse = configurationTariffModel.IsTariffTypeTimeOfUse,
-                FlatRatePrice = configurationTariffModel.FlatRatePrice,
-                PeekPrice = configurationTariffModel.PeekPrice,
-                OffPeekPrice = configurationTariffModel.OffPeekPrice,
-                InvoiceDayInMonth = configurationTariffModel.InvoiceDayInMonth
-            };
-            var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(SettingsFilePath, json);
+            if (isLoadingConfiguration) return;
+            
+            await CacheDatabase.UserAccount.InsertObject("TariffData", new TariffDto(
+                IsTariffTypeTimeOfUse, FlatRatePrice, PeekPrice, OffPeekPrice, InvoiceDayInMonth));
         }
         catch (Exception ex)
         {
-            // Log or handle exception as needed
-            logger.LogError(ex, $"Failed to save tariff configuration: {ex.Message}");
+            logger?.LogError(ex, "Failed to save tariff configuration: {Message}", ex.Message);
         }
     }
 
-    public static ConfigurationTariffModel Load()
+    public async Task Load()
     {
         try
         {
-            if (File.Exists(SettingsFilePath))
-            {
-                isLoadingConfiguration = true;
-                var json = File.ReadAllText(SettingsFilePath);
-                var data = JsonSerializer.Deserialize<JsonElement>(json);
-
-                var model = new ConfigurationTariffModel();
-                if (data.TryGetProperty("IsTariffTypeTimeOfUse", out var isTariffTypeTimeOfUse))
-                    model.IsTariffTypeTimeOfUse = isTariffTypeTimeOfUse.GetBoolean();
-                if (data.TryGetProperty("FlatRatePrice", out var flatRatePrice))
-                    model.FlatRatePrice = flatRatePrice.GetDecimal();
-                if (data.TryGetProperty("PeekPrice", out var peekPrice))
-                    model.PeekPrice = peekPrice.GetDecimal();
-                if (data.TryGetProperty("OffPeekPrice", out var offPeekPrice))
-                    model.OffPeekPrice = offPeekPrice.GetDecimal();
-                if (data.TryGetProperty("InvoiceDayInMonth", out var invoiceDayInMonth))
-                    model.InvoiceDayInMonth = invoiceDayInMonth.GetInt32();
-                return model;
-            }
+            isLoadingConfiguration = true;
+            var dto = await CacheDatabase.UserAccount.GetObject<TariffDto>("TariffData");
+            IsTariffTypeTimeOfUse = dto.IsTariffTypeTimeOfUse;
+            FlatRatePrice = dto.FlatRatePrice;
+            PeekPrice = dto.PeekPrice;
+            OffPeekPrice = dto.OffPeekPrice;
+            InvoiceDayInMonth = dto.InvoiceDayInMonth;
+        }
+        catch (KeyNotFoundException)
+        {
+            await CacheDatabase.UserAccount.InsertObject("TariffData", new TariffDto(
+                IsTariffTypeTimeOfUse, FlatRatePrice, PeekPrice, OffPeekPrice, InvoiceDayInMonth));
         }
         catch (Exception ex)
         {
-            // Log or handle exception as needed
             System.Diagnostics.Debug.WriteLine($"Failed to load tariff configuration: {ex.Message}");
         }
         finally
         {
             isLoadingConfiguration = false;
         }
-
-        return new ConfigurationTariffModel();
     }
 }

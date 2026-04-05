@@ -19,19 +19,10 @@
         <Border
             Grid.Column="0"
             Grid.Row="0"
+            Style="{StaticResource MainPanelBorder}"
             Margin="24, 12"
-            BackgroundColor="White"
-            Stroke="Black"
-            StrokeThickness="0"
             Padding="8">
-            <Border.Shadow>
-                <StaticResource Key="PanelShadow" />
-            </Border.Shadow>
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="5" />
-            </Border.StrokeShape>
 
-            
             <chart:SfCartesianChart
                 HorizontalOptions="Fill">
                 <chart:SfCartesianChart.Shadow>
@@ -48,16 +39,16 @@
                                        TextColor="White"
                                        FontSize="14"
                                        HorizontalOptions="Center"
-                                       VerticalOptions="Center"/>
+                                       VerticalOptions="Center" />
                             </StackLayout>
                         </Border>
                     </DataTemplate>
                 </chart:SfCartesianChart.Resources>
-                
+
                 <chart:SfCartesianChart.TooltipBehavior>
                     <chart:ChartTooltipBehavior />
                 </chart:SfCartesianChart.TooltipBehavior>
-                
+
                 <chart:SfCartesianChart.Legend>
                     <chart:ChartLegend>
                         <chart:ChartLegend.LabelStyle>
@@ -81,7 +72,7 @@
                     <chart:CategoryAxis
                         Interval="1">
                         <chart:CategoryAxis.LabelStyle>
-                            <chart:ChartAxisLabelStyle  LabelFormat="MMM"/>
+                            <chart:ChartAxisLabelStyle LabelFormat="MMM" />
                         </chart:CategoryAxis.LabelStyle>
                     </chart:CategoryAxis>
                 </chart:SfCartesianChart.XAxes>
@@ -199,7 +190,7 @@
                                             CornerRadius="2,2,0,0"
                                             ShowDataLabels="False">
                 </chart:StackingColumnSeries>
-                
+
             </chart:SfCartesianChart>
         </Border>
 
@@ -207,16 +198,8 @@
             Grid.Row="0"
             Grid.Column="1"
             Margin="24,12"
-            BackgroundColor="White"
-            Stroke="Black"
-            StrokeThickness="0"
+            Style="{StaticResource MainPanelBorder}"
             Padding="8">
-            <Border.Shadow>
-                <StaticResource Key="PanelShadow" />
-            </Border.Shadow>
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="5" />
-            </Border.StrokeShape>
 
             <chart:SfCartesianChart
                 HorizontalOptions="Fill">
@@ -230,7 +213,7 @@
                                        TextColor="White"
                                        FontSize="14"
                                        HorizontalOptions="Center"
-                                       VerticalOptions="Center"/>
+                                       VerticalOptions="Center" />
                             </StackLayout>
                         </Border>
                     </DataTemplate>
@@ -267,7 +250,7 @@
                     <chart:CategoryAxis
                         Interval="1">
                         <chart:CategoryAxis.LabelStyle>
-                            <chart:ChartAxisLabelStyle  LabelFormat="MMM"/>
+                            <chart:ChartAxisLabelStyle LabelFormat="MMM" />
                         </chart:CategoryAxis.LabelStyle>
                     </chart:CategoryAxis>
                 </chart:SfCartesianChart.XAxes>
@@ -353,57 +336,66 @@
             </chart:SfCartesianChart>
         </Border>
 
-        <Grid
+        <Border
             Grid.Column="0"
             Grid.Row="1"
             Grid.ColumnSpan="2"
-            Margin="32,16"
+            Margin="24,16"
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            Background="AliceBlue">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*" />
-                <ColumnDefinition Width="5*" />
-            </Grid.ColumnDefinitions>
+            Background="AliceBlue"
+            Stroke="#B2FFFF"
+            StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="3" />
+            </Border.StrokeShape>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
 
-            <Label
-                Grid.Column="0"
-                Grid.Row="1"
-                Grid.ColumnSpan="2"
-                TextColor="Black"
-                Margin="24"
-                LineBreakMode="WordWrap"
-                FontSize="15">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="With an annual consumption of " />
-                        <Span Text="{Binding YearlyConsumption, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
-                        <Span Text=" kWh" FontAttributes="None" />
-                        <Span Text=", your facility averages roughly " />
-                        <Span Text="{Binding DailyUsageAveragePeekKw, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
-                        <Span Text=" kWh per day based on peak demand profile (Highest consumption)"
-                              FontAttributes="None" />
-                        <Span Text=". Currently, your average peak demand during the TOU window (09:00–22:00) sits at " />
-                        <Span Text="{Binding AverageKwUsedBetween08To17Monthly, StringFormat='{}{0:N0}'}"
-                              FontAttributes="Bold" />
-                        <Span Text=" kWh" FontAttributes="None" />
-                        <Span Text=". By integrating a " />
-                        <Span Text="{Binding SolarSizeNeeded, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
-                        <Span Text=" kW solar array" FontAttributes="None" />
-                        <Span Text=" paired with a " />
-                        <Span Text="{Binding BatterySizeNeeded, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
-                        <Span Text=" kWh battery storage system" FontAttributes="None" />
-                        <Span
-                            Text=", you can effectively offset the most expensive billing periods with renewable energy, significantly reducing your reliance on the grid during high-tariff hours." />
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-        </Grid>
+                <Label
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    TextColor="Black"
+                    Margin="24"
+                    LineBreakMode="WordWrap"
+                    FontSize="15">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="With an annual consumption of " />
+                            <Span Text="{Binding YearlyConsumption, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
+                            <Span Text=" kWh" FontAttributes="None" />
+                            <Span Text=", your facility averages roughly " />
+                            <Span Text="{Binding DailyUsageAveragePeekKw, StringFormat='{}{0:N0}'}"
+                                  FontAttributes="Bold" />
+                            <Span Text=" kWh per day based on peak demand profile (Highest consumption)"
+                                  FontAttributes="None" />
+                            <Span
+                                Text=". Currently, your average peak demand during the TOU window (09:00–22:00) sits at " />
+                            <Span Text="{Binding AverageKwUsedBetween08To17Monthly, StringFormat='{}{0:N0}'}"
+                                  FontAttributes="Bold" />
+                            <Span Text=" kWh" FontAttributes="None" />
+                            <Span Text=". By integrating a " />
+                            <Span Text="{Binding SolarSizeNeeded, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
+                            <Span Text=" kW solar array" FontAttributes="None" />
+                            <Span Text=" paired with a " />
+                            <Span Text="{Binding BatterySizeNeeded, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
+                            <Span Text=" kWh battery storage system" FontAttributes="None" />
+                            <Span
+                                Text=", you can effectively offset the most expensive billing periods with renewable energy, significantly reducing your reliance on the grid during high-tariff hours." />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </Grid>
+        </Border>
     </Grid>
 
 </ContentView>

@@ -11,17 +11,9 @@
              x:Class="Pea.Meter.View.Statistics.StatisticsView">
 
     <Border 
-        Stroke="Black"
-        Background="White"
-        StrokeThickness="0"
+        Style="{StaticResource MainPanelBorder}"
         Padding="5"
         Margin="32,32">
-        <Border.StrokeShape>
-            <RoundRectangle CornerRadius="20" />
-        </Border.StrokeShape>
-        <Border.Shadow>
-            <StaticResource Key="PanelShadow" />
-        </Border.Shadow>
 
         <tabView:SfTabView x:Name="TabViewStatistics"
                            Margin="12"

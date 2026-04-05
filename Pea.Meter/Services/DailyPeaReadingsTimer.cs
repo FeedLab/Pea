@@ -107,7 +107,7 @@ public class DailyPeaReadingsTimer
             {
                 isTimerRunning = false;
             }
-        }, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+        }, null, TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(15));
     }
 
     private async Task FetchAndFilterDailyReadings(MeterReadingRepository meterReadingRepository)

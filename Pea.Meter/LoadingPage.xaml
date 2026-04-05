@@ -19,14 +19,20 @@
         <VerticalStackLayout
             Margin="32"
             >
-            <core:SfBusyIndicator 
+            <!-- <core:SfBusyIndicator -->
+            <!--     IsRunning="True" -->
+            <!--     AnimationType="CircularMaterial" -->
+            <!--     WidthRequest="80" -->
+            <!--     HeightRequest="80" -->
+            <!--     HorizontalOptions="Center" -->
+            <!--     OverlayFill="Transparent" -->
+            <!--     IndicatorColor="White" /> -->
+            
+            <ActivityIndicator
                 IsRunning="True"
-                AnimationType="CircularMaterial"
-                WidthRequest="80"
-                HeightRequest="80"
+                Color="White"
                 HorizontalOptions="Center"
-                OverlayFill="Transparent"
-                IndicatorColor="White" />
+                VerticalOptions="Center" />
             
             <controls:StrokedLabel
                 Text="{x:Static properties:AppResources.Loading}"
@@ -39,10 +45,7 @@
                 HeightRequest="100"
                 WidthRequest="200" />
             
-            <!-- <ActivityIndicator -->
-            <!--     IsRunning="True" -->
-            <!--     HorizontalOptions="Center" -->
-            <!--     VerticalOptions="Center" /> -->
+
 
             <!-- <Label -->
             <!--     Margin="0,0,0,0"  -->

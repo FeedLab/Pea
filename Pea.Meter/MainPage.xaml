@@ -76,20 +76,13 @@
                 VerticalOptions="Center" />
 
             <Border
+                Style="{StaticResource MainPanelBorder}"
                 IsVisible="{Binding IsCustomerProfileVisible}"
-                Margin="0"
-                BackgroundColor="White"
                 Stroke="#00A5A5"
                 StrokeThickness="1"
                 HorizontalOptions="Center"
-                VerticalOptions="Center" 
-                Padding="0">
-                <Border.Shadow>
-                    <StaticResource Key="PanelShadow" />
-                </Border.Shadow>
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="3" />
-                </Border.StrokeShape>
+                VerticalOptions="Center" >
+
                 <Image
                     Margin="0,0,0,0"
                     Source="pea_amr_banner_light_small.png"

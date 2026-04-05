@@ -39,6 +39,23 @@ public partial class TouVsFlatRateViewModel : ObservableObject
         DateChangedSubscription();
         DataImportedSubscription();
         AllAggregationCompletedSubscription();
+        ConfigurationTariffSubscription();
+    }
+
+    private void ConfigurationTariffSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<ConfigurationTariffMessage>(this,
+            async void (r, m) =>
+            {
+                try
+                {
+                    await CalculateCostComparisons();
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(ConfigurationTariffMessage), e.Message);
+                }
+            });
     }
 
     private void AllAggregationCompletedSubscription()
@@ -94,8 +111,8 @@ public partial class TouVsFlatRateViewModel : ObservableObject
             }
         });
     }
-    
-    
+
+
     private void DateChangedSubscription()
     {
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this, async void (r, m) =>
@@ -124,7 +141,7 @@ public partial class TouVsFlatRateViewModel : ObservableObject
             }
         });
     }
-    
+
     private void UserLoggedInSubscription()
     {
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async void (r, m) =>
@@ -153,7 +170,7 @@ public partial class TouVsFlatRateViewModel : ObservableObject
             }
         });
     }
-    
+
     private void UserLoggedOutSubscription()
     {
         WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this, async void (r, m) =>
@@ -208,23 +225,38 @@ public partial class TouVsFlatRateViewModel : ObservableObject
 
         CostCompares = meterReading
             .Where(w => w.Total > 0)
-            .Select(s => new Models.CostCompare(s, 3.9086m, 5.1135m, 2.6037m))
+            .Select(s =>
+            {
+                var flatRatePrice = storageService.ConfigurationTariffModel.FlatRatePrice;
+                var peekPrice = storageService.ConfigurationTariffModel.PeekPrice;
+                var offPeekPrice = storageService.ConfigurationTariffModel.OffPeekPrice;
+
+                return new Models.CostCompare(s, flatRatePrice, peekPrice, offPeekPrice);
+            })
             .ToList();
 
+        logger.LogInformation("Calculating cost comparisons with {Count} records", CostCompares.Count);
         TouTotalCost = CostCompares.Sum(c => c.TouCost);
         FlatRateTotalCost = CostCompares.Sum(c => c.FlatRateCost);
         DiffInCurrency = FlatRateTotalCost - TouTotalCost;
+        logger.LogInformation("TOU Total: {TouTotal}, Flat Rate Total: {FlatRateTotal}, Difference: {Diff}",
+            TouTotalCost, FlatRateTotalCost, DiffInCurrency);
         var touAverageCostPerDay = TouTotalCost / CostCompares.Count;
         var flatRateAverageCostPerDay = FlatRateTotalCost / CostCompares.Count;
         DiffInPercent = (flatRateAverageCostPerDay - touAverageCostPerDay) / flatRateAverageCostPerDay * 100;
+        logger.LogInformation(
+            "TOU Average/Day: {TouAvg}, Flat Rate Average/Day: {FlatRateAvg}, Difference: {DiffPercent}%",
+            touAverageCostPerDay, flatRateAverageCostPerDay, DiffInPercent);
 
         if (DiffInCurrency < 0)
         {
+            logger.LogInformation("Flat rate is cheaper than Tou");
             IsFlatRateVisible = true;
             IsTouVisible = false;
         }
         else
         {
+            logger.LogInformation("Tou is cheaper than Flat rate");
             IsFlatRateVisible = false;
             IsTouVisible = true;
         }

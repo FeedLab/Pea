@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Pea.Meter.Services;
 using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.Messaging;
+using Pea.Meter.Models;
 using Syncfusion.Maui.TabView;
 
 namespace Pea.Meter.Popup;
@@ -20,12 +22,17 @@ public enum SelectedTab
 public partial class ConfigurationPopup : Popup<bool>
 {
     private readonly ILogger<QuitPopup> logger;
+    private readonly StorageService storageService;
+    private readonly ConfigurationTariffModel savedConfigurationTariffModel;
 
     public ConfigurationPopup(SelectedTab selectedTab)
     {
         InitializeComponent();
 
         logger = AppService.GetRequiredService<ILogger<QuitPopup>>();
+        storageService = AppService.GetRequiredService<StorageService>();
+
+        savedConfigurationTariffModel = storageService.ConfigurationTariffModel.Copy();
 
         if (selectedTab == SelectedTab.Tariff)
         {
@@ -54,6 +61,13 @@ public partial class ConfigurationPopup : Popup<bool>
     {
         try
         {
+            if (storageService.ConfigurationTariffModel.HasChange(savedConfigurationTariffModel))
+            {
+                WeakReferenceMessenger.Default.Send(
+                    new ConfigurationTariffMessage(storageService.ConfigurationTariffModel,
+                        savedConfigurationTariffModel));
+            }
+
             CloseAsync(true);
         }
         catch (Exception exception)
@@ -74,7 +88,7 @@ public partial class ConfigurationPopup : Popup<bool>
                 {
                     return;
                 }
-                
+
                 var newIndex = (int)e.NewIndex;
                 var oldIndex = (int)e.OldIndex;
                 var selectedTabItem = tabView.Items[newIndex];
@@ -97,7 +111,6 @@ public partial class ConfigurationPopup : Popup<bool>
                 animation.Commit(this, "CrossFade", 16, 250);
 
                 await Task.Delay(250);
-
             }
         }
         catch (Exception exception)

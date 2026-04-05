@@ -48,21 +48,26 @@
             <RowDefinition Height="{OnIdiom Desktop='auto', Default='auto'}" />
             </Grid.RowDefinitions>
 
-            <Border
-                Grid.Row="0"
-                Margin="32,16,32,0"
-                IsVisible="{Binding IsMeterDataVisible}"
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill"
-                BackgroundColor="White"
-                StrokeThickness="0"
-                Padding="0">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20" />
-                </Border.StrokeShape>
-                <Border.Shadow>
-                    <StaticResource Key="PanelShadow" />
-                </Border.Shadow>
+            <Border Grid.Row="0"
+                    Style="{StaticResource MainPanelBorder}"
+                    Margin="32,16,32,0"
+                    IsVisible="{Binding IsMeterDataVisible}"
+                    >    
+            <!-- <Border -->
+            <!--     Grid.Row="0" -->
+            <!--     Margin="32,16,32,0" -->
+            <!--     IsVisible="{Binding IsMeterDataVisible}" -->
+            <!--     HorizontalOptions="Fill" -->
+            <!--     VerticalOptions="Fill" -->
+            <!--     BackgroundColor="White" -->
+            <!--     StrokeThickness="0" -->
+            <!--     Padding="0"> -->
+            <!--     <Border.StrokeShape> -->
+            <!--         <RoundRectangle CornerRadius="20" /> -->
+            <!--     </Border.StrokeShape> -->
+            <!--     <Border.Shadow> -->
+            <!--         <StaticResource Key="PanelShadow" /> -->
+            <!--     </Border.Shadow> -->
 
                 <chart:SfCartesianChart
                     Grid.Row="0"

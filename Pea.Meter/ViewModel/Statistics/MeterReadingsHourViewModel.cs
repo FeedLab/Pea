@@ -160,6 +160,11 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         });
     }
 
+    private async Task PopulateChartData()
+    {
+        await PopulateChartData(DateTime.Today);
+    }
+
     private async Task PopulateChartData(DateTime date)
     {
         var today = date;

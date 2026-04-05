@@ -13,17 +13,8 @@
 
     <Border
         IsVisible="{Binding IsCustomerProfileVisible}"
-        Margin="0"
-        BackgroundColor="White"
-        Stroke="Black"
-        StrokeThickness="0"
+        Style="{StaticResource MainPanelBorder}"
         Padding="8">
-        <Border.Shadow>
-            <StaticResource Key="PanelShadow" />
-        </Border.Shadow>
-        <Border.StrokeShape>
-            <RoundRectangle CornerRadius="5" />
-        </Border.StrokeShape>
 
         <Grid
             ColumnDefinitions="Auto,*"

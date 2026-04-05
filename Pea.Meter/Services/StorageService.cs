@@ -1,12 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Reactive.Linq;
 using System.Text.Json;
+using Akavache;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml.XamlTypeInfo;
 using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure;
@@ -35,22 +38,22 @@ public partial class StorageService : ObservableObject
     private readonly ILogger logger;
     private readonly PeaDbContextFactory dbContextFactory;
     private readonly PeaAdapter peaAdapter;
-    private CancellationTokenSource? cancellationTokenSource;
-    private Timer? backgroundTimer;
-    private DateTime yesterday = DateTime.MinValue; // MinValue - Will trigger a new day on the first run
-    private Timer? backgroundTimerNewDay;
     private CancellationTokenSource newDayCancellationTokenSource;
     public bool IsAuthenticated { get; set; }
 
-    public StorageService(ILogger<StorageService> logger, PeaDbContextFactory dbContextFactory, PeaAdapter peaAdapter)
+    public StorageService(ILogger<StorageService> logger,
+        PeaDbContextFactory dbContextFactory,
+        PeaAdapter peaAdapter,
+        ConfigurationTariffModel configurationTariffModel,
+        ConfigurationLanguageModel configurationLanguageModel,
+        ConfigurationDataImportModel configurationDataImportModel)
     {
         this.logger = logger;
         this.dbContextFactory = dbContextFactory;
         this.peaAdapter = peaAdapter;
-
-        ConfigurationTariffModel = ConfigurationTariffModel.Load();
-        ConfigurationLanguageModel = ConfigurationLanguageModel.Load();
-        ConfigurationDataImportModel = ConfigurationDataImportModel.Load();
+        ConfigurationTariffModel = configurationTariffModel;
+        ConfigurationLanguageModel = configurationLanguageModel;
+        ConfigurationDataImportModel = configurationDataImportModel;
 
         try
         {
@@ -172,10 +175,16 @@ public partial class StorageService : ObservableObject
                     AllMeterReadingsAsync.AddRange(newReadingsFiltered);
                 }
 
+                var isDailyCollectionChanged = DailyPeriodReadings.Count != newReadingsFiltered.Count;
                 DailyPeriodReadings.Clear();
                 DailyPeriodReadings.AddRange(newReadingsFiltered);
 
                 ProcessAggregations();
+                
+                if(isDailyCollectionChanged)
+                {
+                    WeakReferenceMessenger.Default.Send(new DailyPeriodsChangedMessage(DailyPeriodReadings));
+                }
             }
             catch (Exception e)
             {
@@ -213,6 +222,8 @@ public partial class StorageService : ObservableObject
     }
 }
 
+public record ConfigurationTariffMessage(ConfigurationTariffModel newModel, ConfigurationTariffModel oldModel);
+public record DailyPeriodsChangedMessage(ObservableCollection<PeaMeterReading> Data);
 public record HourlyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);
 
 public record DailyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);

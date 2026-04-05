@@ -1,7 +1,9 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                    xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts">
+                    xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
+                    xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons">
 
     <Shadow x:Key="PanelShadow"
             Brush="Black"
@@ -9,10 +11,43 @@
             Radius="8"
             Opacity="0.5" />
 
+    <Style x:Key="MainPanelBorder" TargetType="Border">
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="VerticalOptions" Value="Fill" />
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Shadow" Value="{StaticResource PanelShadow}" />
+        <Setter Property="StrokeShape">
+            <RoundRectangle CornerRadius="5" />
+        </Setter>
+    </Style>
+
     <chart:ChartLegendLabelStyle x:Key="DefaultChartLegendLabelStyle"
                                  TextColor="#002800"
                                  Margin="5"
                                  FontSize="16"
                                  FontFamily="OpenSansSemibold" />
 
+    <Style TargetType="buttons:SfButton" x:Key="IconButtonStyle">
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="EnableRippleEffect" Value="True" />
+        <Setter Property="ShowIcon" Value="True" />
+        <Setter Property="ImageSize" Value="22" />
+        <Setter Property="ImageAlignment" Value="Default" />
+        <Setter Property="TextColor" Value="#0F172A" />
+        <Setter Property="Stroke" Value="DarkGray" />
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="Background" Value="#EEF2F7" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Style.Triggers>
+            <Trigger TargetType="buttons:SfButton" Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.25" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

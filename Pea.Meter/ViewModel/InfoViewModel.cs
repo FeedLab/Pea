@@ -56,6 +56,7 @@ public partial class InfoViewModel : ObservableObject
         CreateAllAggregationsCompletedSubscription();
         CreateNewDaySubscription();
         CreateDataImportedSubscription();
+        CreateDailyPeriodsChangedSubscription();
     }
 
     private void CreateDataImportedSubscription()
@@ -71,14 +72,15 @@ public partial class InfoViewModel : ObservableObject
                     }
                     catch (Exception e)
                     {
-                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateDataImportedSubscription), e.Message);
+                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateDataImportedSubscription),
+                            e.Message);
                     }
 
                     return Task.CompletedTask;
                 });
             });
     }
-    
+
     private void CreateNewDaySubscription()
     {
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this,
@@ -89,7 +91,7 @@ public partial class InfoViewModel : ObservableObject
                     try
                     {
                         logger.LogInformation("DateChangedMessage received: {NewDate}", m.NewDate);
-                        
+
                         DateMeterData = m.NewDate;
                         await PopulateChartData();
                     }
@@ -112,7 +114,7 @@ public partial class InfoViewModel : ObservableObject
                 IsAddMeterVisible = true;
                 IsMeterDataVisible = false;
                 IsCustomerProfileViewVisible = true;
-                
+
                 MeterData = [];
                 MeterDataAverage1 = [];
                 MeterDataAverage7 = [];
@@ -130,6 +132,22 @@ public partial class InfoViewModel : ObservableObject
             IsMeterDataVisible = true;
             IsCustomerProfileViewVisible = false;
         });
+    }
+
+    private void CreateDailyPeriodsChangedSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<DailyPeriodsChangedMessage>(this,
+            async void (_, _) =>
+            {
+                try
+                {
+                    await PopulateChartData();
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateLoggedInSubscription), e.Message);
+                }
+            });
     }
 
     private void CreateAllAggregationsCompletedSubscription()

@@ -6,21 +6,7 @@
              xmlns:view="using:Pea.Meter.View"
              x:Class="Pea.Meter.View.HomeView">
     <ContentView.Resources>
-        <Style TargetType="button:SfButton" x:Key="IconButtonStyle">
-            <Setter Property="Margin" Value="2" />
-            <Setter Property="FontSize" Value="18" />
-            <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="EnableRippleEffect" Value="True" />
-            <Setter Property="ShowIcon" Value="True" />
-            <Setter Property="ImageSize" Value="22" />
-            <Setter Property="ImageAlignment" Value="Default" />
-            <Setter Property="TextColor" Value="#0F172A" />
-            <Setter Property="Stroke" Value="#2B3C56" />
-            <Setter Property="StrokeThickness" Value="0" />
-            <Setter Property="Background" Value="#EEF2F7" />
-            <Setter Property="VerticalOptions" Value="Center" />
-            <Setter Property="HorizontalOptions" Value="Center" />
-        </Style>
+
 
         <Style x:Key="IconButtonWithOpacityStyle" TargetType="button:SfButton"
                BasedOn="{StaticResource IconButtonStyle}">
@@ -50,15 +36,10 @@
                 Grid.Column="0"
                 Margin="20"
                 Padding="16"
+                Style="{StaticResource MainPanelBorder}"
                 WidthRequest="400"
-                BackgroundColor="White"
-                StrokeThickness="0"
-                Shadow="{StaticResource BorderShadow}"
                 VerticalOptions="Center"
                 HorizontalOptions="Center">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="12" />
-                </Border.StrokeShape>
 
                 <Grid
                     RowDefinitions="Auto,*,Auto" RowSpacing="8">
@@ -113,7 +94,7 @@
                         Margin="0,16,0,0"
                         HorizontalOptions="Center">
                         <button:SfButton
-                            Style="{StaticResource IconButtonWithOpacityStyle}"
+                            Style="{StaticResource IconButtonStyle}"
                             Command="{Binding AddAccountCommand}"
                             ImageSource="{StaticResource AddMeterIcon}"
                             ToolTipProperties.Text="Register Meter" />
