@@ -11,9 +11,11 @@ namespace Pea.Meter.Models;
     "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class ConfigurationDataImportModel : ObservableObject
 {
+    const string StoreKey = "DataImportData";
+
     [ObservableProperty] private DateTime earliestImportedDate;
 
-    private readonly ILogger<ConfigurationDataImportModel>? logger;
+    private readonly ILogger<ConfigurationDataImportModel> logger;
     private bool isLoadingConfiguration;
 
     private sealed record DataImportDto(DateTime EarliestImportedDate);
@@ -40,12 +42,12 @@ public partial class ConfigurationDataImportModel : ObservableObject
         {
             if (isLoadingConfiguration) return;
 
-            await CacheDatabase.UserAccount.InsertObject("DataImportData",
+            await CacheDatabase.UserAccount.InsertObject(StoreKey,
                 new DataImportDto(EarliestImportedDate));
         }
         catch (Exception ex)
         {
-            logger?.LogError(ex, "Failed to save data import configuration: {Message}", ex.Message);
+            logger.LogError(ex, "Failed to save data import configuration: {Message}", ex.Message);
         }
     }
 
@@ -54,12 +56,19 @@ public partial class ConfigurationDataImportModel : ObservableObject
         try
         {
             isLoadingConfiguration = true;
-            var dto = await CacheDatabase.UserAccount.GetObject<DataImportDto>("DataImportData");
+            var dto = await CacheDatabase.UserAccount.GetObject<DataImportDto>(StoreKey);
+            
+            if(dto is null)
+            {
+                logger.LogError("Failed to load DataImport configuration: DTO is null. This can not happen.");
+                return;
+            }
+            
             EarliestImportedDate = dto.EarliestImportedDate;
         }
         catch (KeyNotFoundException)
         {
-            await CacheDatabase.UserAccount.InsertObject("DataImportData",
+            await CacheDatabase.UserAccount.InsertObject(StoreKey,
                 new DataImportDto(EarliestImportedDate));
         }
         catch (Exception ex)

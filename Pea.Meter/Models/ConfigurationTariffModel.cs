@@ -11,6 +11,8 @@ namespace Pea.Meter.Models;
     "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class ConfigurationTariffModel : ObservableObject
 {
+    private const string StoreKey = "TariffData";
+    
     public bool HasChange(ConfigurationTariffModel oldModel)
     {
         return !(oldModel.IsTariffTypeTimeOfUse == IsTariffTypeTimeOfUse &&
@@ -89,7 +91,7 @@ public partial class ConfigurationTariffModel : ObservableObject
         {
             if (isLoadingConfiguration) return;
             
-            await CacheDatabase.UserAccount.InsertObject("TariffData", new TariffDto(
+            await CacheDatabase.UserAccount.InsertObject(StoreKey, new TariffDto(
                 IsTariffTypeTimeOfUse, FlatRatePrice, PeekPrice, OffPeekPrice, InvoiceDayInMonth));
         }
         catch (Exception ex)
@@ -103,7 +105,7 @@ public partial class ConfigurationTariffModel : ObservableObject
         try
         {
             isLoadingConfiguration = true;
-            var dto = await CacheDatabase.UserAccount.GetObject<TariffDto>("TariffData");
+            var dto = await CacheDatabase.UserAccount.GetObject<TariffDto>(StoreKey);
             IsTariffTypeTimeOfUse = dto.IsTariffTypeTimeOfUse;
             FlatRatePrice = dto.FlatRatePrice;
             PeekPrice = dto.PeekPrice;
@@ -112,7 +114,7 @@ public partial class ConfigurationTariffModel : ObservableObject
         }
         catch (KeyNotFoundException)
         {
-            await CacheDatabase.UserAccount.InsertObject("TariffData", new TariffDto(
+            await CacheDatabase.UserAccount.InsertObject(StoreKey, new TariffDto(
                 IsTariffTypeTimeOfUse, FlatRatePrice, PeekPrice, OffPeekPrice, InvoiceDayInMonth));
         }
         catch (Exception ex)

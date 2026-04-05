@@ -11,7 +11,9 @@ namespace Pea.Meter.Models;
     "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
 public partial class ConfigurationLanguageModel : ObservableObject
 {
-    public const string DefaultLanguage = "English";
+    private const string StoreKey = "LanguageData";
+  
+    private const string DefaultLanguage = "English";
     public const string DefaultLanguagePng = "gb.png";
     public const string DefaultCultureCode = "gb";
 
@@ -19,7 +21,7 @@ public partial class ConfigurationLanguageModel : ObservableObject
     [ObservableProperty] private string flagSource = DefaultLanguagePng;
     [ObservableProperty] private string cultureCode = DefaultCultureCode;
 
-    private readonly ILogger<ConfigurationLanguageModel>? logger;
+    private readonly ILogger<ConfigurationLanguageModel> logger;
     private bool isLoadingConfiguration;
 
     private sealed record LanguageDto(string SelectedLanguage, string FlagSource, string CultureCode);
@@ -31,24 +33,26 @@ public partial class ConfigurationLanguageModel : ObservableObject
 
     partial void OnSelectedLanguageChanged(string? value) => Save();
 
-    public void Save(string languageSelected, string codeOfCulture, string sourceFlag)
+    public async void Save(string languageSelected, string codeOfCulture, string sourceFlag)
     {
-        isLoadingConfiguration = true;
         try
         {
+            isLoadingConfiguration = true;
+
             SelectedLanguage = languageSelected;
             CultureCode = codeOfCulture;
             FlagSource = sourceFlag;
+            
+            Save();
         }
         catch (Exception ex)
         {
-            logger?.LogError(ex, "Failed to save language configuration: {Message}", ex.Message);
+            logger.LogError(ex, "Failed to save language configuration: {Message}", ex.Message);
         }
         finally
         {
             isLoadingConfiguration = false;
         }
-        Save();
     }
 
     private async void Save()
@@ -57,12 +61,12 @@ public partial class ConfigurationLanguageModel : ObservableObject
         {
             if (isLoadingConfiguration) return;
 
-            await CacheDatabase.UserAccount.InsertObject("LanguageData",
+            await CacheDatabase.UserAccount.InsertObject(StoreKey,
                 new LanguageDto(SelectedLanguage, FlagSource, CultureCode));
         }
         catch (Exception ex)
         {
-            logger?.LogError(ex, "Failed to save language configuration: {Message}", ex.Message);
+            logger.LogError(ex, "Failed to save language configuration: {Message}", ex.Message);
         }
     }
 
@@ -71,14 +75,21 @@ public partial class ConfigurationLanguageModel : ObservableObject
         try
         {
             isLoadingConfiguration = true;
-            var dto = await CacheDatabase.UserAccount.GetObject<LanguageDto>("LanguageData");
+            var dto = await CacheDatabase.UserAccount.GetObject<LanguageDto>(StoreKey);
+
+            if(dto is null)
+            {
+                logger.LogError("Failed to load language configuration: DTO is null. This can not happen.");
+                return;
+            }
+            
             SelectedLanguage = dto.SelectedLanguage;
             FlagSource = dto.FlagSource;
             CultureCode = dto.CultureCode;
         }
         catch (KeyNotFoundException)
         {
-            await CacheDatabase.UserAccount.InsertObject("LanguageData",
+            await CacheDatabase.UserAccount.InsertObject(StoreKey,
                 new LanguageDto(SelectedLanguage, FlagSource, CultureCode));
         }
         catch (Exception ex)
