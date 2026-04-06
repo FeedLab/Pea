@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
+using Pea.Meter.Models;
 
 namespace Pea.Meter.Services;
 
@@ -11,14 +12,33 @@ namespace Pea.Meter.Services;
 /// Background service that imports historic meter reading data from PEA AMR system
 /// Triggered manually after user login
 /// </summary>
-public class HistoricDataBackgroundService(
-    PeaAdapter peaAdapter,
-    ILogger<HistoricDataBackgroundService> logger,
-    PeaDbContextFactory dbContextFactory,
-    StorageService storageService)
+public class HistoricDataBackgroundService
 {
     private CancellationTokenSource? cancellationTokenSource = new();
     private Task? runningTask;
+    private readonly PeaAdapter peaAdapter;
+    private readonly ILogger<HistoricDataBackgroundService> logger;
+    private readonly PeaDbContextFactory dbContextFactory;
+    private readonly StorageService storageService;
+
+    /// <summary>
+    /// Background service that imports historic meter reading data from PEA AMR system
+    /// Triggered manually after user login
+    /// </summary>
+    public HistoricDataBackgroundService(PeaAdapter peaAdapter,
+        ILogger<HistoricDataBackgroundService> logger,
+        PeaDbContextFactory dbContextFactory,
+        StorageService storageService)
+    {
+        this.peaAdapter = peaAdapter;
+        this.logger = logger;
+        this.dbContextFactory = dbContextFactory;
+        this.storageService = storageService;
+        
+        WeakReferenceMessenger.Default.Register<UserAccountRemovedMessage>(this,
+            (r, m) => { MainThread.InvokeOnMainThreadAsync(async () => { Stop(); }); });
+
+    }
 
     private void TriggerImportTask(int delaySeconds)
     {

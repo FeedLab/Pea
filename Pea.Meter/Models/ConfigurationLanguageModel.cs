@@ -33,6 +33,10 @@ public partial class ConfigurationLanguageModel : ObservableObject
 
     partial void OnSelectedLanguageChanged(string? value) => Save();
 
+    public void Reset()
+    {
+    }
+    
     public async void Save(string languageSelected, string codeOfCulture, string sourceFlag)
     {
         try

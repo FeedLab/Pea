@@ -183,7 +183,12 @@ public partial class ToolbarComponent : ContentView
             CanBeDismissedByTappingOutsideOfPopup = false
         };
 
-        _ = await Window?.Page?.ShowPopupAsync<bool>(popup, popupOptions, CancellationToken.None)!;
+        var windows = Application.Current?.Windows[0].Page;
+        
+        if(windows == null)
+            return false;
+        
+        _ = await windows.ShowPopupAsync<bool>(popup, popupOptions, CancellationToken.None)!;
         return false;
     }
 

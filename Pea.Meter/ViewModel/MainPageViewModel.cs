@@ -34,7 +34,7 @@ public partial class MainPageViewModel : ObservableObject
 
         CreateAllAggregationsCompletedSubscription();
         CreateUserLoggedInSubscription();
-        CreateUserLoggedOutSubscription();
+        CreateUserLoggedOutSubscription(); 
     }
 
     private void CreateUserLoggedInSubscription()
@@ -82,12 +82,12 @@ public partial class MainPageViewModel : ObservableObject
             }
         });
     }
-
-    [RelayCommand]
-    private async Task RemoveAccount()
-    {
-        await loginHelper.ClearAuthDataAsync();
-    }
+    //
+    // [RelayCommand]
+    // private async Task RemoveAccount()
+    // {
+    //     await loginHelper.ClearAuthDataAsync();
+    // }
 
     // partial void OnAuthDataChanged(IAuthData? value)
     // {

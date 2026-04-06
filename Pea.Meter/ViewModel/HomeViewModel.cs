@@ -21,10 +21,14 @@ public partial class HomeViewModel : ObservableObject
     private readonly IPopupService popupService;
     private readonly StorageService storageService;
     private readonly HistoricDataBackgroundService historicDataBackgroundService;
+    private readonly DailyPeaReadingsTimer dailyPeaReadingsTimer;
+    private readonly NewDayBackgroundTimer newDayBackgroundTimer;
     private AuthData? authDataLogin;
     
     public HomeViewModel(CustomerProfileViewModel customerProfile, AuthDataOptions authDataOptions,
-        ILoginHelper loginHelper, IPopupService popupService, StorageService storageService, HistoricDataBackgroundService historicDataBackgroundService)
+        ILoginHelper loginHelper, IPopupService popupService, 
+        StorageService storageService, HistoricDataBackgroundService historicDataBackgroundService,
+        DailyPeaReadingsTimer dailyPeaReadingsTimer, NewDayBackgroundTimer newDayBackgroundTimer)
     {
         this.customerProfile = customerProfile;
         this.authDataOptions = authDataOptions;
@@ -32,6 +36,8 @@ public partial class HomeViewModel : ObservableObject
         this.popupService = popupService;
         this.storageService = storageService;
         this.historicDataBackgroundService = historicDataBackgroundService;
+        this.dailyPeaReadingsTimer = dailyPeaReadingsTimer;
+        this.newDayBackgroundTimer = newDayBackgroundTimer;
 
         AuthData = authDataOptions.AuthData;
     }
@@ -52,11 +58,16 @@ public partial class HomeViewModel : ObservableObject
         if (storageService.IsAuthenticated)
         {
             AuthData = await loginHelper.SaveAuthDataAsync(authDataLogin.Username, authDataLogin.Password);
-    //        await storageService.Init();
-            WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(AuthData));
-            historicDataBackgroundService.Start();
+
+            WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
+
+            await storageService.ResetHistoricalData();
+            WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+
+            newDayBackgroundTimer.Start();
+            await dailyPeaReadingsTimer.Start();
+            historicDataBackgroundService.Start(1);
         }
-        
     }
     
     private async Task DisplayLoginPopup()

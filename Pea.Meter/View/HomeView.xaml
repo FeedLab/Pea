@@ -97,7 +97,8 @@
                             Style="{StaticResource IconButtonStyle}"
                             Command="{Binding AddAccountCommand}"
                             ImageSource="{StaticResource AddMeterIcon}"
-                            ToolTipProperties.Text="Register Meter" />
+                            ToolTipProperties.Text="Register Meter Account" 
+                            Text="Yes, I want to register a Meter"/>
                         <!-- -->
                         <!-- <button:SfButton -->
                         <!--     Style="{StaticResource IconButtonWithOpacityStyle}" -->

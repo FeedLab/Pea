@@ -12,14 +12,14 @@ namespace Pea.Meter.Models;
 public partial class ConfigurationTariffModel : ObservableObject
 {
     private const string StoreKey = "TariffData";
-    
+
     public bool HasChange(ConfigurationTariffModel oldModel)
     {
         return !(oldModel.IsTariffTypeTimeOfUse == IsTariffTypeTimeOfUse &&
-               oldModel.FlatRatePrice == FlatRatePrice &&
-               oldModel.PeekPrice == PeekPrice &&
-               oldModel.OffPeekPrice == OffPeekPrice &&
-               oldModel.InvoiceDayInMonth == InvoiceDayInMonth);
+                 oldModel.FlatRatePrice == FlatRatePrice &&
+                 oldModel.PeekPrice == PeekPrice &&
+                 oldModel.OffPeekPrice == OffPeekPrice &&
+                 oldModel.InvoiceDayInMonth == InvoiceDayInMonth);
     }
 
     public ConfigurationTariffModel Copy()
@@ -38,6 +38,7 @@ public partial class ConfigurationTariffModel : ObservableObject
         {
             copy.isLoadingConfiguration = false;
         }
+
         return copy;
     }
 
@@ -60,9 +61,22 @@ public partial class ConfigurationTariffModel : ObservableObject
     public ConfigurationTariffModel()
     {
         logger = AppService.GetRequiredService<ILogger<ConfigurationTariffModel>>();
-        isLoadingConfiguration = true;
+
+        Reset();
+    }
+
+    partial void OnIsTariffTypeTimeOfUseChanged(bool value) => Save();
+    partial void OnFlatRatePriceChanged(decimal value) => Save();
+    partial void OnPeekPriceChanged(decimal value) => Save();
+    partial void OnOffPeekPriceChanged(decimal value) => Save();
+    partial void OnInvoiceDayInMonthChanged(int value) => Save();
+
+    public void Reset()
+    {
         try
         {
+            isLoadingConfiguration = true;
+
             InvoiceDayInMonth = 26;
             IsTariffTypeTimeOfUse = false;
             FlatRatePrice = 3.89m;
@@ -79,18 +93,12 @@ public partial class ConfigurationTariffModel : ObservableObject
         }
     }
 
-    partial void OnIsTariffTypeTimeOfUseChanged(bool value) => Save();
-    partial void OnFlatRatePriceChanged(decimal value) => Save();
-    partial void OnPeekPriceChanged(decimal value) => Save();
-    partial void OnOffPeekPriceChanged(decimal value) => Save();
-    partial void OnInvoiceDayInMonthChanged(int value) => Save();
-
     private async void Save()
     {
         try
         {
             if (isLoadingConfiguration) return;
-            
+
             await CacheDatabase.UserAccount.InsertObject(StoreKey, new TariffDto(
                 IsTariffTypeTimeOfUse, FlatRatePrice, PeekPrice, OffPeekPrice, InvoiceDayInMonth));
         }
@@ -106,13 +114,13 @@ public partial class ConfigurationTariffModel : ObservableObject
         {
             isLoadingConfiguration = true;
             var dto = await CacheDatabase.UserAccount.GetObject<TariffDto>(StoreKey);
-            
-            if(dto is null)
+
+            if (dto is null)
             {
                 logger.LogError("Failed to load tariff configuration: DTO is null. This can not happen.");
                 return;
             }
-            
+
             IsTariffTypeTimeOfUse = dto.IsTariffTypeTimeOfUse;
             FlatRatePrice = dto.FlatRatePrice;
             PeekPrice = dto.PeekPrice;

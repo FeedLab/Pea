@@ -5,7 +5,7 @@
              xmlns:strings="clr-namespace:Pea.Meter.Resources.Strings"
              xmlns:converters="clr-namespace:Pea.Meter.Converters"
              xmlns:helpers="clr-namespace:Pea.Meter.Helpers"
-             x:Class="Pea.Meter.View.CustomerInfoView">
+             x:Class="Pea.Meter.View.Components.CustomerInfoView">
 
     <ContentView.Resources>
         <converters:IsNullConverter x:Key="IsNullConverter" />
@@ -15,7 +15,10 @@
         IsVisible="{Binding IsCustomerProfileVisible}"
         Style="{StaticResource MainPanelBorder}"
         Padding="8">
-
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="OnDoubleTapped" />
+        </Border.GestureRecognizers>
+        
         <Grid
             ColumnDefinitions="Auto,*"
             RowDefinitions="Auto,Auto,Auto"

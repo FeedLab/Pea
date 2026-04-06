@@ -9,12 +9,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Xaml.XamlTypeInfo;
 using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Extension;
+using Pea.Meter.Helpers;
 using Pea.Meter.Models;
 
 namespace Pea.Meter.Services;
@@ -36,12 +36,14 @@ public partial class StorageService : ObservableObject
     [ObservableProperty] private ConfigurationDataImportModel configurationDataImportModel;
 
     private readonly ILogger logger;
+    private readonly ILoginHelper loginHelper;
     private readonly PeaDbContextFactory dbContextFactory;
     private readonly PeaAdapter peaAdapter;
     private CancellationTokenSource newDayCancellationTokenSource;
     public bool IsAuthenticated { get; set; }
 
     public StorageService(ILogger<StorageService> logger,
+        ILoginHelper loginHelper,
         PeaDbContextFactory dbContextFactory,
         PeaAdapter peaAdapter,
         ConfigurationTariffModel configurationTariffModel,
@@ -49,6 +51,7 @@ public partial class StorageService : ObservableObject
         ConfigurationDataImportModel configurationDataImportModel)
     {
         this.logger = logger;
+        this.loginHelper = loginHelper;
         this.dbContextFactory = dbContextFactory;
         this.peaAdapter = peaAdapter;
         ConfigurationTariffModel = configurationTariffModel;
@@ -66,6 +69,44 @@ public partial class StorageService : ObservableObject
         }
 
         newDayCancellationTokenSource = new CancellationTokenSource();
+        
+        WeakReferenceMessenger.Default.Register<UserAccountRemovedMessage>(this, (r, m) =>
+        {
+            MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                try
+                {
+                    var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
+
+                    logger.LogInformation("ConfigurationTariffModel.Reset from UserAccountRemovedMessage event message");
+                    ConfigurationTariffModel.Reset();
+                
+                    logger.LogInformation("ConfigurationLanguageModel.Reset from UserAccountRemovedMessage event message");
+                    ConfigurationLanguageModel.Reset();
+                
+                    logger.LogInformation("ConfigurationDataImportModel.Reset from UserAccountRemovedMessage event message");
+                    ConfigurationDataImportModel.Reset();
+                
+                    logger.LogInformation("Clearing all ObservableCollection, from UserAccountRemovedMessage event message");
+                    DailyPeriodReadings.Clear();
+                    AllMeterReadingsAsync.Clear();
+                    HourlyAggregated.Clear();
+                    DailyAggregated.Clear();
+                    WeeklyAggregated.Clear();
+                    MonthlyAggregated.Clear();
+                
+                    logger.LogInformation("Deleting all meter readings from database, from UserAccountRemovedMessage event message");
+                    await meterReadingRepository.DeleteAllAsync();
+                
+                    logger.LogInformation("Clearing auth data, from UserAccountRemovedMessage event message");
+                    await loginHelper.ClearAuthDataAsync();
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error executing reset after receive a UserAccountRemovedMessage event: {Message}", e.Message);
+                }
+            });
+        });
     }
 
     public async Task ResetHistoricalData()

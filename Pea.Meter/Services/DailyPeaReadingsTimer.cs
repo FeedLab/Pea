@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
+using Pea.Meter.Models;
 
 namespace Pea.Meter.Services;
 
@@ -26,7 +27,10 @@ public class DailyPeaReadingsTimer
         this.peaAdapter = peaAdapter;
         this.storageService = storageService;
         this.dbContextFactory = dbContextFactory;
-        
+
+        WeakReferenceMessenger.Default.Register<UserAccountRemovedMessage>(this,
+            (r, m) => { MainThread.InvokeOnMainThreadAsync(async () => { Stop(); }); });
+
         WeakReferenceMessenger.Default.Register<DateChangedMessage>(this, async void (r, m) =>
         {
             try
@@ -68,9 +72,10 @@ public class DailyPeaReadingsTimer
             logger.LogWarning("DailyPeaReadingsTimer is already running");
             return;
         }
-        
+
         selectedDate = date;
-        await ReadingsTimer(); }
+        await ReadingsTimer();
+    }
 
     public async Task Start()
     {
@@ -79,7 +84,7 @@ public class DailyPeaReadingsTimer
             logger.LogWarning("DailyPeaReadingsTimer is already running");
             return;
         }
-        
+
         selectedDate = DateTime.Today;
         await ReadingsTimer();
     }
@@ -87,7 +92,7 @@ public class DailyPeaReadingsTimer
     private async Task ReadingsTimer()
     {
         await Task.Delay(1000);
-        
+
         // Run aggregations every 15 minutes
         dailyTimer = new Timer(async void (_) =>
         {

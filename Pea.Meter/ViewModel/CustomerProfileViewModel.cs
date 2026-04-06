@@ -53,12 +53,12 @@ public partial class CustomerProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task RemoveAccount()
     {
-        var repository = new MeterReadingRepository(dbContextFactory);
-
-        await repository.DeleteAllAsync();
-        await loginHelper.ClearAuthDataAsync();
-        historicDataBackgroundService.Stop();
-        WeakReferenceMessenger.Default.Send(new UserLoggedOutMessage());
+        // var repository = new MeterReadingRepository(dbContextFactory);
+        //
+        // await repository.DeleteAllAsync();
+        // await loginHelper.ClearAuthDataAsync();
+        // historicDataBackgroundService.Stop();
+        // WeakReferenceMessenger.Default.Send(new UserLoggedOutMessage());
     }
 
     private async Task<bool> LoadCustomerProfile(string user, string pwd)

@@ -9,6 +9,7 @@
              xmlns:solar="clr-namespace:Pea.Meter.View.Solar"
              xmlns:components="clr-namespace:Pea.Meter.Components"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
+             xmlns:components1="clr-namespace:Pea.Meter.View.Components"
              x:Class="Pea.Meter.MainPage"
              Shell.NavBarIsVisible="False">
     <ContentPage.Resources>
@@ -70,7 +71,7 @@
                 Offset="0,5"/>
             </Grid.Shadow>
 
-            <view:CustomerInfoView
+            <components1:CustomerInfoView
                 Margin="20,0,0,0"
                 HorizontalOptions="Start"
                 VerticalOptions="Center" />

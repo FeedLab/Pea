@@ -23,6 +23,12 @@ public partial class ConfigurationDataImportModel : ObservableObject
     public ConfigurationDataImportModel()
     {
         logger = AppService.GetRequiredService<ILogger<ConfigurationDataImportModel>>();
+
+        Reset();
+    }
+    
+    public void Reset()
+    {
         isLoadingConfiguration = true;
         try
         {
@@ -33,6 +39,7 @@ public partial class ConfigurationDataImportModel : ObservableObject
             isLoadingConfiguration = false;
         }
     }
+    
 
     partial void OnEarliestImportedDateChanged(DateTime value) => Save();
 

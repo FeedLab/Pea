@@ -4,18 +4,34 @@ using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
 using Pea.Infrastructure.Models;
+using Pea.Meter.Models;
 
 namespace Pea.Meter.Services;
 
-public class NewDayBackgroundTimer(
-    ILogger<NewDayBackgroundTimer> logger,
-    PeaDbContextFactory dbContextFactory,
-    PeaAdapter peaAdapter,
-    StorageService storageService,
-    DailyPeaReadingsTimer dailyPeaReadingsTimer)
+public class NewDayBackgroundTimer
 {
     private DateTime yesterday = DateTime.MinValue; // MinValue - Will trigger a new day on the first run
     private Timer? newDayTimer;
+    private readonly ILogger<NewDayBackgroundTimer> logger;
+    private readonly PeaDbContextFactory dbContextFactory;
+    private readonly PeaAdapter peaAdapter;
+    private readonly StorageService storageService;
+
+    public NewDayBackgroundTimer(ILogger<NewDayBackgroundTimer> logger,
+        PeaDbContextFactory dbContextFactory,
+        PeaAdapter peaAdapter,
+        StorageService storageService,
+        DailyPeaReadingsTimer dailyPeaReadingsTimer)
+    {
+        this.logger = logger;
+        this.dbContextFactory = dbContextFactory;
+        this.peaAdapter = peaAdapter;
+        this.storageService = storageService;
+        
+        WeakReferenceMessenger.Default.Register<UserAccountRemovedMessage>(this,
+            (r, m) => { MainThread.InvokeOnMainThreadAsync(async () => { Stop(); }); });
+
+    }
 
     public void  Start()
     {
