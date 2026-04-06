@@ -41,6 +41,20 @@
                     <FontImageSource FontFamily="FontSolid" Glyph="&#xf021;" Color="#0F172A" Size="18" />
                 </button:SfButton.ImageSource>
             </button:SfButton>
+
+            <button:SfButton
+                Text="Refresh from File"
+                CornerRadius="8"
+                FontSize="14"
+                ShowIcon="True"
+                ImageSize="18"
+                ImageAlignment="Left"
+                VerticalOptions="Center"
+                Command="{Binding RefreshFromFileCommand}">
+                <button:SfButton.ImageSource>
+                    <FontImageSource FontFamily="FontSolid" Glyph="&#xf15b;" Color="#0F172A" Size="18" />
+                </button:SfButton.ImageSource>
+            </button:SfButton>
         </HorizontalStackLayout>
 
         <ScrollView Grid.Row="1" Margin="8,0,8,8">
