@@ -10,13 +10,9 @@ public partial class TouVsFlatRateView : ContentView
     public TouVsFlatRateView()
     {
         InitializeComponent();
-        if (AppService.Current != null)
-        {
-            viewModel = AppService.Current.GetRequiredService<TouVsFlatRateViewModel>();
-            BindingContext = viewModel;
-        }
-        else
-            throw new InvalidOperationException("AppService is not initialized");
+
+        viewModel = AppService.GetRequiredService<TouVsFlatRateViewModel>();
+        BindingContext = viewModel;
     }
 
     private async void OnStartDateSelected(object? sender, DateTime selectedDate)

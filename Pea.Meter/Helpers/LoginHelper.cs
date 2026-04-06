@@ -18,17 +18,9 @@ public interface ILoginHelper
     Task ClearAuthDataAsync();
 }
 
-public class LoginHelper : ILoginHelper
+public class LoginHelper(ISettingsService settingsService, AuthDataOptions authDataOptions)
+    : ILoginHelper
 {
-    private readonly ISettingsService settingsService;
-    private readonly AuthDataOptions authDataOptions;
-
-    public LoginHelper(ISettingsService settingsService, AuthDataOptions authDataOptions)
-    {
-        this.settingsService = settingsService;
-        this.authDataOptions = authDataOptions;
-    }
-
     public IAuthData? GetAuthData()
     {
         return authDataOptions.AuthData;

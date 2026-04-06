@@ -89,34 +89,34 @@ namespace Pea.Meter
             builder.Services.AddSingletonPopup<LoginPopup, LoginPopupViewModel>();
             builder.Services.AddSingleton<NewDayBackgroundTimer>();
             builder.Services.AddSingleton<DailyPeaReadingsTimer>();
-            
+
+            builder.Services.AddSingleton<ILoginHelper, LoginHelper>();
+            builder.Services.AddSingleton<InfoViewModel>();
             
             // Configure Options - load synchronously from SettingsService
             builder.Services.AddSingleton<AuthDataOptions>(sp =>
             {
                 var settingsService = sp.GetRequiredService<ISettingsService>();
-                var authData = settingsService.LoadAuthDataAsync().GetAwaiter().GetResult();
+                var authData = Task.Run(settingsService.LoadAuthDataAsync).GetAwaiter().GetResult();
                 return new AuthDataOptions { AuthData = authData };
             });
-
-            builder.Services.AddSingleton<ILoginHelper, LoginHelper>();
-            builder.Services.AddSingleton<InfoViewModel>();
+            
             builder.Services.AddSingleton<ConfigurationTariffModel>(sp =>
             {
                 var model = new ConfigurationTariffModel();
-                Task.Run(() => model.Load()).GetAwaiter().GetResult();
+                Task.Run(model.Load).GetAwaiter().GetResult();
                 return model;
             });
             builder.Services.AddSingleton<ConfigurationLanguageModel>(sp =>
             {
                 var model = new ConfigurationLanguageModel();
-                Task.Run(() => model.Load()).GetAwaiter().GetResult();
+                Task.Run(model.Load).GetAwaiter().GetResult();
                 return model;
             });
             builder.Services.AddSingleton<ConfigurationDataImportModel>(sp =>
             {
                 var model = new ConfigurationDataImportModel();
-                Task.Run(() => model.Load()).GetAwaiter().GetResult();
+                Task.Run(model.Load).GetAwaiter().GetResult();
                 return model;
             });
             

@@ -70,7 +70,6 @@ public partial class StorageService : ObservableObject
 
     public async Task ResetHistoricalData()
     {
-        var context = dbContextFactory.CreateDbContext();
         var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
 
@@ -118,7 +117,7 @@ public partial class StorageService : ObservableObject
     /// Creates a diff list between all database readings and current day's live readings.
     /// Returns readings that exist in dailyReadings but not yet in the database (allMeterReadingsAsync).
     /// </summary>
-    public List<PeaMeterReading> GetDiffBetweenDailyAndAllReadings(List<PeaMeterReading> readings)
+    private List<PeaMeterReading> GetDiffBetweenDailyAndAllReadings(List<PeaMeterReading> readings)
     {
         // Get readings from dailyReadings that don't exist in allMeterReadingsAsync
         // Compare by PeriodStart as unique identifier
@@ -189,7 +188,6 @@ public partial class StorageService : ObservableObject
             catch (Exception e)
             {
                 logger.LogError(e, "Error updating period data and processing aggregations: {Message}", e.Message);
-                throw;
             }
 
             return Task.CompletedTask;
@@ -198,7 +196,6 @@ public partial class StorageService : ObservableObject
 
     public async Task ReloadHistoricalDayReadingsFromDb()
     {
-        var context = dbContextFactory.CreateDbContext();
         var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
 
         var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();

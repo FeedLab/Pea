@@ -47,7 +47,7 @@ public partial class ConfigurationTariffModel : ObservableObject
     [ObservableProperty] private decimal offPeekPrice;
     [ObservableProperty] private int invoiceDayInMonth;
 
-    private readonly ILogger<ConfigurationTariffModel>? logger;
+    private readonly ILogger<ConfigurationTariffModel> logger;
     private bool isLoadingConfiguration;
 
     private sealed record TariffDto(
@@ -96,7 +96,7 @@ public partial class ConfigurationTariffModel : ObservableObject
         }
         catch (Exception ex)
         {
-            logger?.LogError(ex, "Failed to save tariff configuration: {Message}", ex.Message);
+            logger.LogError(ex, "Failed to save tariff configuration: {Message}", ex.Message);
         }
     }
 
@@ -106,6 +106,13 @@ public partial class ConfigurationTariffModel : ObservableObject
         {
             isLoadingConfiguration = true;
             var dto = await CacheDatabase.UserAccount.GetObject<TariffDto>(StoreKey);
+            
+            if(dto is null)
+            {
+                logger.LogError("Failed to load tariff configuration: DTO is null. This can not happen.");
+                return;
+            }
+            
             IsTariffTypeTimeOfUse = dto.IsTariffTypeTimeOfUse;
             FlatRatePrice = dto.FlatRatePrice;
             PeekPrice = dto.PeekPrice;
