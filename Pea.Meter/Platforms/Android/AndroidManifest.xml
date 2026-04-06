@@ -9,7 +9,8 @@
             android:anyDensity="true" />
 
     <compatible-screens>
-        <!-- Restrict to xlarge (8"+) and 420+ dpi -->
+        <!-- Restrict to xlarge (8"+) tablets -->
+        <screen android:screenSize="xlarge" android:screenDensity="320" />
         <screen android:screenSize="xlarge" android:screenDensity="420" />
         <screen android:screenSize="xlarge" android:screenDensity="480" />
         <screen android:screenSize="xlarge" android:screenDensity="560" />
