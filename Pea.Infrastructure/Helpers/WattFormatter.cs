@@ -6,6 +6,7 @@ public static class WattFormatter
     {
         return Math.Abs(watts) switch
         {
+            >= 1_000_000_000m => $"{watts / 1_000_000_000m:G3} GW",
             >= 1_000_000m => $"{watts / 1_000_000m:G3} MW",
             >= 1_000m => $"{watts / 1_000m:G3} kW",
             _ => $"{watts:G3} W"

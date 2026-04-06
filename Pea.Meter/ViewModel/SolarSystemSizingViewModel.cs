@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
+using Pea.Infrastructure.Helpers;
 using Pea.Infrastructure.Models;
 using Pea.Infrastructure.Models.MeterData;
 using Pea.Meter.Extension;
@@ -22,6 +23,7 @@ public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteV
     [ObservableProperty] private ObservableCollection<MeterDataManagerMonth> costCompareMonthList = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataMonthSummary = [];
     [ObservableProperty] private ObservableCollection<MeterDataManagerMonth> energyProducedMonthlySummary = [];
+    [ObservableProperty] private string yearlyConsumptionText;
     [ObservableProperty] private decimal yearlyConsumption;
     [ObservableProperty] private decimal dailyUsageAveragePeekKw;
     [ObservableProperty] private decimal averageKwUsedBetween08To17Monthly;
@@ -35,6 +37,8 @@ public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteV
         this.logger = logger;
         this.storageService = storageService;
 
+        YearlyConsumptionText = "0 W";
+        
         CreateLoggedInSubscription();
         CreateNewDaySubscription();
         CreateAllDataImportedSubscription();
@@ -173,7 +177,8 @@ public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteV
             MainThread.InvokeOnMainThreadAsync(() =>
             {
                 AverageKwUsedBetween08To17Monthly = averageUsedBetween08To17Monthly;
-
+                
+                YearlyConsumptionText = WattFormatter.Format(yearlyConsumptionTotalKw);
                 YearlyConsumption = yearlyConsumptionTotalKw;
                 DailyUsageAveragePeekKw = dailyConsumptionAveragePeekKw;
                 BatterySizeNeeded = (dailyConsumptionAveragePeekKw - averageUsedBetween08To17Monthly)
@@ -188,6 +193,7 @@ public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteV
             logger.LogError(e, "Error in {Method}: {Message}", nameof(PopulateChartData), e.Message);
         }
     }
+
 
     private decimal GetBatterySize()
     {

@@ -371,8 +371,7 @@
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="With an annual consumption of " />
-                            <Span Text="{Binding YearlyConsumption, StringFormat='{}{0:N0}'}" FontAttributes="Bold" />
-                            <Span Text=" kWh" FontAttributes="None" />
+                            <Span Text="{Binding YearlyConsumptionText}" FontAttributes="Bold" />
                             <Span Text=", your facility averages roughly " />
                             <Span Text="{Binding DailyUsageAveragePeekKw, StringFormat='{}{0:N0}'}"
                                   FontAttributes="Bold" />

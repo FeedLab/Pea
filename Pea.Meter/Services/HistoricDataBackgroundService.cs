@@ -165,7 +165,7 @@ public class HistoricDataBackgroundService
                 }
 
                 // Add a small delay between requests to avoid overwhelming the server
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken);
             }
             catch (TaskCanceledException _)
             {
@@ -175,6 +175,8 @@ public class HistoricDataBackgroundService
             {
                 logger.LogError(ex, "Error importing data for {Date}", targetDate.ToString("yyyy-MM-dd"));
                 await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+                
+                continue;
             }
 
             targetDate = targetDate.AddDays(-1);
