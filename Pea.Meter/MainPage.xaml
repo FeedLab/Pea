@@ -72,7 +72,7 @@
             </Grid.Shadow>
 
             <components1:CustomerInfoView
-                Margin="20,0,0,0"
+                Margin="12,0,0,0"
                 HorizontalOptions="Start"
                 VerticalOptions="Center" />
 
@@ -88,7 +88,7 @@
                     Margin="0,0,0,0"
                     Source="pea_amr_banner_light_small.png"
                     Aspect="AspectFit"
-                    HeightRequest="70"
+                    HeightRequest="55"
                     HorizontalOptions="Center"
                     VerticalOptions="Center">
                 </Image>
@@ -157,6 +157,14 @@
                                    FontSize="14">
                     <tabView:SfTabItem.Content>
                         <view:CustomerProfileView />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+                
+                <tabView:SfTabItem Header="Logging"
+                                   x:Name="TabLogData" TextColor="White"
+                                   FontSize="14">
+                    <tabView:SfTabItem.Content>
+                        <view:LogView />
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
 

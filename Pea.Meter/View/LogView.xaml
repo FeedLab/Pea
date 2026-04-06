@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Pea.Meter.View.LogView">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="End" Spacing="8" Margin="8">
+            <button:SfButton
+                Text="Clear"
+                CornerRadius="8"
+                FontSize="14"
+                ShowIcon="True"
+                ImageSize="18"
+                ImageAlignment="Left"
+                VerticalOptions="Center"
+                Background="#FDECEA"
+                TextColor="#B71C1C"
+                Command="{Binding ClearCommand}">
+                <button:SfButton.ImageSource>
+                    <FontImageSource FontFamily="FontSolid" Glyph="&#xf1f8;" Color="#B71C1C" Size="18" />
+                </button:SfButton.ImageSource>
+            </button:SfButton>
+
+            <button:SfButton
+                Text="Refresh"
+                CornerRadius="8"
+                FontSize="14"
+                ShowIcon="True"
+                ImageSize="18"
+                ImageAlignment="Left"
+                VerticalOptions="Center"
+                Command="{Binding RefreshCommand}">
+                <button:SfButton.ImageSource>
+                    <FontImageSource FontFamily="FontSolid" Glyph="&#xf021;" Color="#0F172A" Size="18" />
+                </button:SfButton.ImageSource>
+            </button:SfButton>
+        </HorizontalStackLayout>
+
+        <ScrollView Grid.Row="1" Margin="8,0,8,8">
+            <Editor
+                Text="{Binding LogContent}"
+                IsReadOnly="True"
+                FontFamily="RobotoRegular"
+                FontSize="11"
+                BackgroundColor="#1E1E1E"
+                TextColor="#D4D4D4"
+                AutoSize="TextChanges" />
+        </ScrollView>
+    </Grid>
+
+</ContentView>

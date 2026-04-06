@@ -27,12 +27,14 @@ namespace Pea.Meter
             Console.WriteLine($@"Idiom: {DeviceInfo.Idiom}");
             
             // Configure Serilog
+            var memorySink = new MemoryLogSink();
             var logPath = Path.Combine(FileSystem.AppDataDirectory, "logs", "pea.log");
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+                .WriteTo.Sink(memorySink)
                 .CreateLogger();
 
             var builder = MauiApp.CreateBuilder();
@@ -92,6 +94,8 @@ namespace Pea.Meter
 
             builder.Services.AddSingleton<ILoginHelper, LoginHelper>();
             builder.Services.AddSingleton<InfoViewModel>();
+            builder.Services.AddSingleton(memorySink);
+            builder.Services.AddSingleton<LogViewModel>();
             
             // Configure Options - load synchronously from SettingsService
             builder.Services.AddSingleton<AuthDataOptions>(sp =>
