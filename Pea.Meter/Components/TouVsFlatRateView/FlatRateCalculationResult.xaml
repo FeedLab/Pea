@@ -28,7 +28,7 @@
 
             <!-- Intro -->
             <Label
-                Text="{x:Static properties:AppResources.FlatRateAComparisonBetweenTheTimeOfUse}"
+                Text="{x:Static properties:AppResources.AComparisonBetweenTheTimeOfUseTOUTariffAndTheFlatRateTariffShowsTheFinancialImpactUnderTheCurrentConsumptionPattern}"
                 FontSize="16"
                 TextColor="Black"
                 LineBreakMode="WordWrap" />
@@ -37,11 +37,18 @@
             <Label>
                 <Label.FormattedText>
                     <FormattedString>
-                        <Span Text="{x:Static properties:AppResources.TOUTotalCost}" FontSize="14" TextColor="Black" />
+                        <Span Text="{x:Static properties:AppResources.TariffCalculation_TOUTotalCost}" FontSize="14"
+                              TextColor="Black" />
+                        <Span Text=" " />
                         <Span Text="{Binding TouTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
                               FontAttributes="Bold" TextColor="Crimson" />
-                        <Span Text="{x:Static properties:AppResources._10FlatRateTotalCost}" FontSize="14"
+                        
+                        <!-- New line -->
+                        <Span Text="&#10;" />
+
+                        <Span Text="{x:Static properties:AppResources.TariffCalculation_FlatRateTotalCost}"
                               TextColor="Black" />
+                        <Span Text=" " />
                         <Span Text="{Binding FlatRateTotalCost, StringFormat='{}{0:N0} THB'}" FontSize="14"
                               FontAttributes="Bold" TextColor="ForestGreen" />
                     </FormattedString>
@@ -56,12 +63,16 @@
                     <FormattedString>
                         <Span Text="{x:Static properties:AppResources.ThisMeansTheTOUTariffIs}"
                               TextColor="Black" />
+                        <Span Text=" " />
                         <Span Text="{Binding DiffInCurrency, StringFormat='{}{0:N0}'}"
                               TextColor="ForestGreen" />
+                        <Span Text=" " />
                         <Span Text="{x:Static properties:AppResources.THBMoreExpensiveRepresentingA}"
                               TextColor="Black" />
+                        <Span Text=" " />
                         <Span Text="{Binding DiffInPercent, StringFormat='{}{0:n1}'}"
                               TextColor="ForestGreen" />
+                        <Span Text=" " />
                         <Span Text="{x:Static properties:AppResources.HigherCostComparedToTheFlatRateOption}"
                               TextColor="Black" />
                     </FormattedString>

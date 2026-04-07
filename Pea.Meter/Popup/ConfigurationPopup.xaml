@@ -130,7 +130,7 @@
 
                     <tabView:SfTabItem
                         x:Name="DataImport"
-                        Header="Import Data"
+                        Header="{x:Static properties:AppResources.ImportData}"
                         AutomationId="DataImport"
                         TextColor="White"
                         FontSize="14">

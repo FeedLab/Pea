@@ -36,6 +36,15 @@
   <data name="Battery" xml:space="preserve">
     <value>Battery</value>
   </data>
+  <data name="BindingItemOffPeekFormattedStringFormatOffPeak0" xml:space="preserve">
+    <value>{Binding Item.OffPeekFormatted, StringFormat='Off-peak: {0}'}</value>
+  </data>
+  <data name="BindingItemPeekFormattedStringFormatPeak0" xml:space="preserve">
+    <value>{Binding Item.PeekFormatted, StringFormat='Peak: {0}'}</value>
+  </data>
+  <data name="BindingItemTotalFormattedStringFormatTotal0" xml:space="preserve">
+    <value>{Binding Item.TotalFormatted, StringFormat='Total: {0}'}</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -90,6 +99,9 @@
   <data name="FlatRateInConclusionBased" xml:space="preserve">
     <value>The result indicates significant electricity usage during peak-rate hours, where TOU pricing is higher. Unless consumption shifts to off-peak periods, the Flat Rate tariff remains the more cost-efficient choice.</value>
   </data>
+  <data name="FlatRatePrice" xml:space="preserve">
+    <value>FlatRate Price</value>
+  </data>
   <data name="FlatRateSolar" xml:space="preserve">
     <value>FlatRate Solar</value>
   </data>
@@ -102,8 +114,17 @@
   <data name="Id" xml:space="preserve">
     <value>Id</value>
   </data>
+  <data name="ImportantNote" xml:space="preserve">
+    <value>Important Note: </value>
+  </data>
+  <data name="ImportData" xml:space="preserve">
+    <value>Import Data</value>
+  </data>
   <data name="Info" xml:space="preserve">
     <value>Info</value>
+  </data>
+  <data name="InvoiceDayDayInMonth" xml:space="preserve">
+    <value>Invoice Day (Day in month)</value>
   </data>
   <data name="KWhPer15Minute" xml:space="preserve">
     <value>KWh per 15 minute</value>
@@ -117,14 +138,23 @@
   <data name="Loading" xml:space="preserve">
     <value>Loading...</value>
   </data>
+  <data name="LowerCostComparedToTheFlatRateOption" xml:space="preserve">
+    <value>% lower cost compared to the flat rate option.</value>
+  </data>
   <data name="MainTitle" xml:space="preserve">
-    <value>PEA Electric Meter</value>
+    <value>PEA Smart Meter</value>
   </data>
   <data name="MeterNumber" xml:space="preserve">
     <value>Meter</value>
   </data>
   <data name="Minimum6Characters" xml:space="preserve">
     <value>Minimum 6 characters</value>
+  </data>
+  <data name="Monthly" xml:space="preserve">
+    <value>Monthly</value>
+  </data>
+  <data name="OffPeakPrice" xml:space="preserve">
+    <value>OffPeak Price</value>
   </data>
   <data name="OffPeek" xml:space="preserve">
     <value>OffPeek</value>
@@ -147,6 +177,9 @@
   <data name="PEA" xml:space="preserve">
     <value>PEA</value>
   </data>
+  <data name="PeakPrice" xml:space="preserve">
+    <value>Peak Price</value>
+  </data>
   <data name="PEASOLAR" xml:space="preserve">
     <value>PEA SOLAR</value>
   </data>
@@ -156,14 +189,26 @@
   <data name="PeekSolar" xml:space="preserve">
     <value>Peek Solar</value>
   </data>
+  <data name="PeriodStart" xml:space="preserve">
+    <value>Period Start</value>
+  </data>
   <data name="Personal" xml:space="preserve">
     <value>Personal</value>
+  </data>
+  <data name="PleaseBeAware" xml:space="preserve">
+    <value>Please be aware </value>
   </data>
   <data name="PleaseLogin" xml:space="preserve">
     <value>Please login</value>
   </data>
   <data name="Quit" xml:space="preserve">
     <value>Quit</value>
+  </data>
+  <data name="ReadyToBringInYourHistory" xml:space="preserve">
+    <value>Ready to bring in your history?</value>
+  </data>
+  <data name="SelectingADateWillImmediatelyStartTheProcessOfBringingInYourInformation" xml:space="preserve">
+    <value>Selecting a date will immediately start the process of bringing in your information. </value>
   </data>
   <data name="SmartServices" xml:space="preserve">
     <value>Smart Services</value>
@@ -180,6 +225,9 @@
   <data name="StartDate_dash" xml:space="preserve">
     <value>Start Date - </value>
   </data>
+  <data name="StartImportingHistoricalData" xml:space="preserve">
+    <value>Start Importing Historical Data...</value>
+  </data>
   <data name="Statistics" xml:space="preserve">
     <value>Statistics</value>
   </data>
@@ -195,11 +243,32 @@
   <data name="TariffCalculation" xml:space="preserve">
     <value>Tariff Calculation</value>
   </data>
+  <data name="TariffCalculation_FlatRateTotalCost" xml:space="preserve">
+    <value>• Flat rate total cost:</value>
+  </data>
+  <data name="TariffCalculation_TOUTotalCost" xml:space="preserve">
+    <value>• TOU total cost:</value>
+  </data>
+  <data name="ThatAnyDataYouHaveAlreadyAddedWillBePermanentlyRemovedToMakeRoomForTheNewHistory" xml:space="preserve">
+    <value>that any data you have already added will be permanently removed to make room for the new history. </value>
+  </data>
+  <data name="THBEquivalentToApproximately" xml:space="preserve">
+    <value> THB, equivalent to approximately </value>
+  </data>
   <data name="THBMoreExpensiveRepresentingA" xml:space="preserve">
     <value> THB, more expensive, representing a </value>
   </data>
+  <data name="ThisEnsuresYourRecordsStayOrganizedAndUpToDate" xml:space="preserve">
+    <value>This ensures your records stay organized and up to date.</value>
+  </data>
   <data name="ThisMeansTheTOUTariffIs" xml:space="preserve">
     <value>This means the TOU tariff is </value>
+  </data>
+  <data name="ThisMeansTheTOUTariffResultsInASavingsOf" xml:space="preserve">
+    <value>This means the TOU tariff results in a savings of </value>
+  </data>
+  <data name="TimeOfUse" xml:space="preserve">
+    <value>Time Of Use</value>
   </data>
   <data name="Today" xml:space="preserve">
     <value>Today</value>
@@ -210,8 +279,8 @@
   <data name="ToUInConclusionBased" xml:space="preserve">
     <value>In conclusion, based on current data, the TOU tariff is the more economical choice, delivering meaningful cost savings without requiring changes in overall consumption.</value>
   </data>
-  <data name="TOUTotalCost" xml:space="preserve">
-    <value>• TOU total cost: </value>
+  <data name="TOUTotalCost_" xml:space="preserve">
+    <value>TOU total cost: </value>
   </data>
   <data name="TransformerLifecycleManagement" xml:space="preserve">
     <value>Transformer Lifecycle Management</value>
@@ -219,8 +288,14 @@
   <data name="TransformerManagement" xml:space="preserve">
     <value>Transformer Management</value>
   </data>
+  <data name="TypeOfTariff" xml:space="preserve">
+    <value>Type Of Tariff</value>
+  </data>
   <data name="Username" xml:space="preserve">
     <value>Username</value>
+  </data>
+  <data name="UseTheCalendarBelowToPickTheDayYouWantYourRecordsToStart" xml:space="preserve">
+    <value>Use the calendar below to pick the day you want your records to start.</value>
   </data>
   <data name="_10FlatRateTotalCost" xml:space="preserve">
     <value>&amp;#10;• Flat rate total cost: </value>

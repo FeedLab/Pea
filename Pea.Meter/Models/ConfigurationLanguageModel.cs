@@ -47,6 +47,8 @@ public partial class ConfigurationLanguageModel : ObservableObject
             CultureCode = codeOfCulture;
             FlagSource = sourceFlag;
             
+            isLoadingConfiguration = false;
+            
             Save();
         }
         catch (Exception ex)

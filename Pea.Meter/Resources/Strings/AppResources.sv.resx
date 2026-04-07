@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -34,6 +35,15 @@
   </data>
   <data name="Battery">
     <value>Batteri</value>
+  </data>
+  <data name="BindingItemOffPeekFormattedStringFormatOffPeak0" xml:space="preserve">
+    <value>{Binding Item.OffPeekFormatted, StringFormat='Off-peak: {0}'}</value>
+  </data>
+  <data name="BindingItemPeekFormattedStringFormatPeak0" xml:space="preserve">
+    <value>{Binding Item.PeekFormatted, StringFormat='Peak: {0}'}</value>
+  </data>
+  <data name="BindingItemTotalFormattedStringFormatTotal0" xml:space="preserve">
+    <value>{Binding Item.TotalFormatted, StringFormat='Totalt: {0}'}</value>
   </data>
   <data name="Cancel">
     <value>Avbryt</value>
@@ -89,11 +99,17 @@
   <data name="FlatRateInConclusionBased">
     <value>Resultatet indikerar betydande elförbrukning under högprismodulen, där TOU-prissättningen är högre. Om inte förbrukningen förflyttas till lågtider, förblir fast pristariffen det mer kostnadseffektiva valet.</value>
   </data>
+  <data name="FlatRatePrice" xml:space="preserve">
+    <value>Fast pris</value>
+  </data>
   <data name="FlatRateSolar">
     <value>Fast pris PV</value>
   </data>
+  <data name="TariffCalculation_FlatRateTotalCost" xml:space="preserve">
+    <value>• Totalkostnad för fast pris:</value>
+  </data>
   <data name="GoPaperlessInThailand">
-    <value>Gå papperslös i Thailand! Spara tid och träd genom att få säkra månadsfakturor skickade till din inkorg.</value>
+    <value>Gå papperslös i Thailand! Spara tid och träd genom att få månadsfakturor skickade till din inkorg.</value>
   </data>
   <data name="HigherCostComparedToTheFlatRateOption">
     <value>% högre kostnad jämfört med fast prisalternativet.</value>
@@ -101,8 +117,17 @@
   <data name="Id">
     <value>ID</value>
   </data>
+  <data name="ImportantNote" xml:space="preserve">
+    <value>Viktig anmärkning:</value>
+  </data>
+  <data name="ImportData" xml:space="preserve">
+    <value>Importera data</value>
+  </data>
   <data name="Info">
     <value>Info</value>
+  </data>
+  <data name="InvoiceDayDayInMonth" xml:space="preserve">
+    <value>Fakturadag (dag i månad)</value>
   </data>
   <data name="KWhPer15Minute">
     <value>KWh per 15 minut</value>
@@ -116,14 +141,23 @@
   <data name="Loading">
     <value>Laddar...</value>
   </data>
+  <data name="LowerCostComparedToTheFlatRateOption" xml:space="preserve">
+    <value>% lägre kostnad jämfört med fast pris.</value>
+  </data>
   <data name="MainTitle">
-    <value>PEA elmätare</value>
+    <value>PEA Smart Mätare</value>
   </data>
   <data name="MeterNumber">
     <value>Mätare</value>
   </data>
   <data name="Minimum6Characters">
     <value>Minst 6 tecken</value>
+  </data>
+  <data name="Monthly" xml:space="preserve">
+    <value>Månatlig</value>
+  </data>
+  <data name="OffPeakPrice" xml:space="preserve">
+    <value>Lägsta pris</value>
   </data>
   <data name="OffPeek">
     <value>Lågtid</value>
@@ -146,6 +180,9 @@
   <data name="PEA">
     <value>PEA</value>
   </data>
+  <data name="PeakPrice" xml:space="preserve">
+    <value>Högsta pris</value>
+  </data>
   <data name="PEASOLAR">
     <value>PEA SOLAR</value>
   </data>
@@ -155,14 +192,26 @@
   <data name="PeekSolar">
     <value>Högpris PV</value>
   </data>
+  <data name="PeriodStart" xml:space="preserve">
+    <value>Periodstart</value>
+  </data>
   <data name="Personal">
     <value>Personlig</value>
+  </data>
+  <data name="PleaseBeAware" xml:space="preserve">
+    <value>Var uppmärksam</value>
   </data>
   <data name="PleaseLogin">
     <value>Vänligen logga in</value>
   </data>
   <data name="Quit">
     <value>Avsluta</value>
+  </data>
+  <data name="ReadyToBringInYourHistory" xml:space="preserve">
+    <value>Är du redo att hämta din historiska data?</value>
+  </data>
+  <data name="SelectingADateWillImmediatelyStartTheProcessOfBringingInYourInformation" xml:space="preserve">
+    <value>Genom att välja ett datum kommer omedelbart att starta processen med att ta in din information.</value>
   </data>
   <data name="SmartServices">
     <value>Smarta tjänster</value>
@@ -179,6 +228,9 @@
   <data name="StartDate_dash">
     <value>Startdatum - </value>
   </data>
+  <data name="StartImportingHistoricalData" xml:space="preserve">
+    <value>Börja importera historisk data...</value>
+  </data>
   <data name="Statistics">
     <value>Statistik</value>
   </data>
@@ -194,11 +246,26 @@
   <data name="TariffCalculation">
     <value>Tariffberäkning</value>
   </data>
+  <data name="ThatAnyDataYouHaveAlreadyAddedWillBePermanentlyRemovedToMakeRoomForTheNewHistory" xml:space="preserve">
+    <value>att all data som du redan har lagt till kommer att tas bort permanent för att ge plats åt den nya historiken.</value>
+  </data>
+  <data name="THBEquivalentToApproximately" xml:space="preserve">
+    <value>THB, motsvarande ungefär</value>
+  </data>
   <data name="THBMoreExpensiveRepresentingA">
     <value> THB, dyrare, vilket representerar en </value>
   </data>
+  <data name="ThisEnsuresYourRecordsStayOrganizedAndUpToDate" xml:space="preserve">
+    <value>Detta säkerställer att dina inläsningar håller sig organiserade och uppdaterade.</value>
+  </data>
   <data name="ThisMeansTheTOUTariffIs">
     <value>Detta betyder att TOU-tariffen är </value>
+  </data>
+  <data name="ThisMeansTheTOUTariffResultsInASavingsOf" xml:space="preserve">
+    <value>Detta innebär att TOU-tariffen resulterar i en besparing på</value>
+  </data>
+  <data name="TimeOfUse" xml:space="preserve">
+    <value>Användningstid (ToU)</value>
   </data>
   <data name="Today">
     <value>Idag</value>
@@ -209,8 +276,11 @@
   <data name="ToUInConclusionBased">
     <value>Sammanfattningsvis, baserat på nuvarande data, är TOU-tariffen det mer ekonomiska valet, vilket ger betydande kostnadsbesparingar utan att kräva förändringar i den totala förbrukningen.</value>
   </data>
-  <data name="TOUTotalCost">
-    <value>• TOU totalkostnad: </value>
+  <data name="TariffCalculation_TOUTotalCost">
+    <value>• TOU totalkostnad:</value>
+  </data>
+  <data name="TOUTotalCost_" xml:space="preserve">
+    <value>Totalkostnad för TOU:</value>
   </data>
   <data name="TransformerLifecycleManagement">
     <value>Transformator Livscykelhantering</value>
@@ -218,8 +288,14 @@
   <data name="TransformerManagement">
     <value>Transformatorhantering</value>
   </data>
+  <data name="TypeOfTariff" xml:space="preserve">
+    <value>Typ av taxa</value>
+  </data>
   <data name="Username">
     <value>Användarnamn</value>
+  </data>
+  <data name="UseTheCalendarBelowToPickTheDayYouWantYourRecordsToStart" xml:space="preserve">
+    <value>Använd kalendern nedan för att välja vilken dag du vill att dina inläsning ska börja.</value>
   </data>
   <data name="_10FlatRateTotalCost">
     <value>&amp;#10;• Fast pris totalkostnad: </value>

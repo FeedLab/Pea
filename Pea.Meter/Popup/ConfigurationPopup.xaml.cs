@@ -51,7 +51,7 @@ public partial class ConfigurationPopup : Popup<bool>
             throw new Exception("Unknown tab");
         }
 
-        Header = "Configuration";
+        Header = Pea.Meter.Resources.Strings.AppResources.Configuration;
         BindingContext = this;
     }
 

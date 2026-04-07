@@ -35,7 +35,7 @@
             x:Name="Slider"
             Grid.Row="1"
             Margin="8,-8,8,8"
-            HorizontalOptions="Fill"
+            HorizontalOptions="Start"
             VerticalOptions="Start"
             NumberFormat="{Binding NumberFormat, Source={x:Reference Root}}"
             EdgeLabelsPlacement="Default"

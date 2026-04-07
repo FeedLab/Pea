@@ -59,7 +59,7 @@ public partial class HomeViewModel : ObservableObject
         {
             AuthData = await loginHelper.SaveAuthDataAsync(authDataLogin.Username, authDataLogin.Password);
 
-            WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(authData));
+            WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(AuthData));
 
             await storageService.ResetHistoricalData();
             WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());

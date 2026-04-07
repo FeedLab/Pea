@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -34,6 +35,15 @@
   </data>
   <data name="Battery">
     <value>แบตเตอรี่</value>
+  </data>
+  <data name="BindingItemOffPeekFormattedStringFormatOffPeak0" xml:space="preserve">
+    <value>{Binding Item.OffPeekFormatted, StringFormat='Off-peak: {0}'}</value>
+  </data>
+  <data name="BindingItemPeekFormattedStringFormatPeak0" xml:space="preserve">
+    <value>{การผูกรายการ PeekFormatted, StringFormat='Peak: {0}'}</value>
+  </data>
+  <data name="BindingItemTotalFormattedStringFormatTotal0" xml:space="preserve">
+    <value>{Binding Item.TotalFormatted, StringFormat='Total: {0}'}</value>
   </data>
   <data name="Cancel">
     <value>ยกเลิก</value>
@@ -89,8 +99,14 @@
   <data name="FlatRateInConclusionBased">
     <value>ผลลัพธ์ระบุว่าใช้ไฟฟ้าสูงในช่วงเวลาของอัตราสูงสุด ซึ่งราคาของ TOU สูงกว่า หากการใช้งานไม่เปลี่ยนไปในช่วงที่ไม่แพง อัตราคงที่จะยังคงเป็นทางเลือกที่คุ้มค่ากว่า</value>
   </data>
+  <data name="FlatRatePrice" xml:space="preserve">
+    <value>ราคาเหมาจ่าย</value>
+  </data>
   <data name="FlatRateSolar">
     <value>อัตราคงที่พลังงานแสงอาทิตย์</value>
+  </data>
+  <data name="TariffCalculation_FlatRateTotalCost" xml:space="preserve">
+    <value>• ต้นทุนรวมแบบเหมาจ่าย:</value>
   </data>
   <data name="GoPaperlessInThailand">
     <value>ไม่ใช่กระดาษในไทย! ประหยัดเวลาและต้นไม้ด้วยการรับใบแจ้งหนี้รายเดือนที่ปลอดภัยส่งไปยังกล่องอีเมลของคุณ</value>
@@ -101,8 +117,17 @@
   <data name="Id">
     <value>รหัส</value>
   </data>
+  <data name="ImportantNote" xml:space="preserve">
+    <value>หมายเหตุสำคัญ:</value>
+  </data>
+  <data name="ImportData" xml:space="preserve">
+    <value>นำเข้าข้อมูล</value>
+  </data>
   <data name="Info">
     <value>ข้อมูล</value>
+  </data>
+  <data name="InvoiceDayDayInMonth" xml:space="preserve">
+    <value>วันใบแจ้งหนี้ (วันในเดือน)</value>
   </data>
   <data name="KWhPer15Minute">
     <value>กิโลวัตต์ชั่วโมงต่อ 15 นาที</value>
@@ -116,6 +141,9 @@
   <data name="Loading">
     <value>กำลังโหลด...</value>
   </data>
+  <data name="LowerCostComparedToTheFlatRateOption" xml:space="preserve">
+    <value>% ต้นทุนที่ต่ำกว่าเมื่อเทียบกับตัวเลือกอัตราคงที่</value>
+  </data>
   <data name="MainTitle">
     <value>มิเตอร์ไฟฟ้าของ กฟภ.</value>
   </data>
@@ -124,6 +152,12 @@
   </data>
   <data name="Minimum6Characters">
     <value>ขั้นต่ำ 6 ตัวอักษร</value>
+  </data>
+  <data name="Monthly" xml:space="preserve">
+    <value>รายเดือน</value>
+  </data>
+  <data name="OffPeakPrice" xml:space="preserve">
+    <value>ราคา OffPeak</value>
   </data>
   <data name="OffPeek">
     <value>นอกช่วงพีค</value>
@@ -146,6 +180,9 @@
   <data name="PEA">
     <value>กฟภ.</value>
   </data>
+  <data name="PeakPrice" xml:space="preserve">
+    <value>ราคาสูงสุด</value>
+  </data>
   <data name="PEASOLAR">
     <value>พลังงานแสงอาทิตย์ กฟภ.</value>
   </data>
@@ -155,14 +192,26 @@
   <data name="PeekSolar">
     <value>ช่วงพีคพลังงานแสงอาทิตย์</value>
   </data>
+  <data name="PeriodStart" xml:space="preserve">
+    <value>ระยะเวลาเริ่มต้น</value>
+  </data>
   <data name="Personal">
     <value>ส่วนบุคคล</value>
+  </data>
+  <data name="PleaseBeAware" xml:space="preserve">
+    <value>โปรดทราบ</value>
   </data>
   <data name="PleaseLogin">
     <value>กรุณาเข้าสู่ระบบ</value>
   </data>
   <data name="Quit">
     <value>ออก</value>
+  </data>
+  <data name="ReadyToBringInYourHistory" xml:space="preserve">
+    <value>พร้อมที่จะนำประวัติศาสตร์ของคุณมาหรือยัง?</value>
+  </data>
+  <data name="SelectingADateWillImmediatelyStartTheProcessOfBringingInYourInformation" xml:space="preserve">
+    <value>การเลือกวันที่จะเริ่มกระบวนการนำเข้าข้อมูลของคุณทันที</value>
   </data>
   <data name="SmartServices">
     <value>บริการอัจฉริยะ</value>
@@ -179,6 +228,9 @@
   <data name="StartDate_dash">
     <value>วันเริ่มต้น - </value>
   </data>
+  <data name="StartImportingHistoricalData" xml:space="preserve">
+    <value>เริ่มการนำเข้าข้อมูลประวัติ...</value>
+  </data>
   <data name="Statistics">
     <value>สถิติ</value>
   </data>
@@ -194,11 +246,26 @@
   <data name="TariffCalculation">
     <value>การคำนวณอัตราค่าไฟฟ้า</value>
   </data>
+  <data name="ThatAnyDataYouHaveAlreadyAddedWillBePermanentlyRemovedToMakeRoomForTheNewHistory" xml:space="preserve">
+    <value>ข้อมูลใด ๆ ที่คุณเพิ่มไว้จะถูกลบออกอย่างถาวรเพื่อให้มีที่ว่างสำหรับประวัติใหม่</value>
+  </data>
+  <data name="THBEquivalentToApproximately" xml:space="preserve">
+    <value>บาท เท่ากับประมาณ</value>
+  </data>
   <data name="THBMoreExpensiveRepresentingA">
     <value> บาท แพงกว่า เป็นที่ </value>
   </data>
+  <data name="ThisEnsuresYourRecordsStayOrganizedAndUpToDate" xml:space="preserve">
+    <value>สิ่งนี้ทำให้มั่นใจได้ว่าบันทึกของคุณจะถูกจัดระเบียบและเป็นข้อมูลล่าสุด</value>
+  </data>
   <data name="ThisMeansTheTOUTariffIs">
     <value>นี่หมายความว่าอัตราค่าไฟฟ้า TOU คือ </value>
+  </data>
+  <data name="ThisMeansTheTOUTariffResultsInASavingsOf" xml:space="preserve">
+    <value>ซึ่งหมายความว่าอัตราภาษี TOU ส่งผลให้ประหยัดได้</value>
+  </data>
+  <data name="TimeOfUse" xml:space="preserve">
+    <value>เวลาใช้งาน  (ToU)</value>
   </data>
   <data name="Today">
     <value>วันนี้</value>
@@ -209,8 +276,11 @@
   <data name="ToUInConclusionBased">
     <value>โดยสรุปจากข้อมูลปัจจุบัน อัตราค่าไฟฟ้า TOU เป็นตัวเลือกที่ประหยัดกว่า มอบการประหยัดค่าใช้จ่ายที่มีความหมายโดยไม่ต้องเปลี่ยนแปลงการใช้ทั้งหมด</value>
   </data>
-  <data name="TOUTotalCost">
+  <data name="TariffCalculation_TOUTotalCost">
     <value>• ค่าใช้จ่ายรวมของ TOU: </value>
+  </data>
+  <data name="TOUTotalCost_" xml:space="preserve">
+    <value>ต้นทุนรวมของ TOU:</value>
   </data>
   <data name="TransformerLifecycleManagement">
     <value>การจัดการอายุการใช้งานหม้อแปลง</value>
@@ -218,8 +288,14 @@
   <data name="TransformerManagement">
     <value>การจัดการหม้อแปลง</value>
   </data>
+  <data name="TypeOfTariff" xml:space="preserve">
+    <value>ประเภทของภาษี</value>
+  </data>
   <data name="Username">
     <value>ชื่อผู้ใช้</value>
+  </data>
+  <data name="UseTheCalendarBelowToPickTheDayYouWantYourRecordsToStart" xml:space="preserve">
+    <value>ใช้ปฏิทินด้านล่างเพื่อเลือกวันที่คุณต้องการให้บันทึกของคุณเริ่มต้น</value>
   </data>
   <data name="_10FlatRateTotalCost">
     <value>&amp;#10;• ค่าใช้จ่ายรวมของอัตราคงที่: </value>

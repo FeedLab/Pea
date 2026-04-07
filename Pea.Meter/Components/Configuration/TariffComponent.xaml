@@ -2,8 +2,8 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:sliders="http://schemas.syncfusion.com/maui"
              xmlns:components="clr-namespace:Pea.Meter.Components"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.Components.Configuration.TariffComponent"
              x:Name="This">
 
@@ -14,14 +14,14 @@
             VerticalOptions="Start">
 
             <components:SwitchComponent
-                LabelText="Type Of Tariff"
+                LabelText="{x:Static properties:AppResources.TypeOfTariff}"
                 IsOn="{Binding Source={x:Reference This}, Path=TariffConfiguration.IsTariffTypeTimeOfUse}"
-                TextWhenOn="Time Of Use"
-                TextWhenOff="FlatRate" />
+                TextWhenOn="{x:Static properties:AppResources.TimeOfUse}"
+                TextWhenOff="{x:Static properties:AppResources.FlatRate}" />
 
 
             <components:SliderComponent
-                LabelText="FlatRate Price"
+                LabelText="{x:Static properties:AppResources.FlatRatePrice}"
                 Minimum="3.5"
                 Maximum="4.5"
                 Value="{Binding Source={x:Reference This}, Path=TariffConfiguration.FlatRatePrice}"
@@ -32,7 +32,7 @@
                 ThumbColor="#C2FFFF" />
 
             <components:SliderComponent
-                LabelText="Peak Price"
+                LabelText="{x:Static properties:AppResources.PeakPrice}"
                 Minimum="4.75"
                 Maximum="6.0"
                 Value="{Binding Source={x:Reference This}, Path=TariffConfiguration.PeekPrice}"
@@ -43,7 +43,7 @@
                 ThumbColor="Red" />
 
             <components:SliderComponent
-                LabelText="OffPeak Price"
+                LabelText="{x:Static properties:AppResources.OffPeakPrice}"
                 Minimum="2.0"
                 Maximum="3.0"
                 Value="{Binding Source={x:Reference This}, Path=TariffConfiguration.OffPeekPrice}"
@@ -55,7 +55,7 @@
 
 
             <components:SliderComponent
-                LabelText="Invoice Day (Day in month)"
+                LabelText="{x:Static properties:AppResources.InvoiceDayDayInMonth}"
                 Minimum="1"
                 Maximum="31"
                 Value="{Binding Source={x:Reference This}, Path=TariffConfiguration.InvoiceDayInMonth}"

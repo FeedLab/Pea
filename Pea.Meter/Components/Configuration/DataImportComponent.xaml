@@ -19,7 +19,7 @@
             FontFamily="OpenSansRegular"
             TextColor="Black"
             FontSize="14"
-            Text="Ready to bring in your history?" />
+            Text="{x:Static properties:AppResources.ReadyToBringInYourHistory}" />
 
         <Label
             LineBreakMode="WordWrap"
@@ -27,7 +27,7 @@
             TextColor="Black"
             HorizontalOptions="Start"
             VerticalOptions="Start"
-            Text="Use the calendar below to pick the day you want your records to start." />
+            Text="{x:Static properties:AppResources.UseTheCalendarBelowToPickTheDayYouWantYourRecordsToStart}" />
 
         <VerticalStackLayout Spacing="0">
             <components:DatePickerComponent
@@ -65,29 +65,23 @@
                     VerticalOptions="Start">
                     <Label.FormattedText>
                         <FormattedString>
-                            <Span Text="Important Note: " FontAttributes="Bold" />
+                            <Span Text="{x:Static properties:AppResources.ImportantNote}" FontAttributes="Bold" />
                             <Span
-                                Text="Selecting a date will immediately start the process of bringing in your information. " />
-                            <Span Text="Please be aware " FontAttributes="Bold" />
+                                Text="{x:Static properties:AppResources.SelectingADateWillImmediatelyStartTheProcessOfBringingInYourInformation}" />
+                            <Span Text="{x:Static properties:AppResources.PleaseBeAware}" FontAttributes="Bold" />
                             <Span
-                                Text="that any data you have already added will be permanently removed to make room for the new history. " />
-                            <Span Text="This ensures your records stay organized and up to date." />
+                                Text="{x:Static properties:AppResources.ThatAnyDataYouHaveAlreadyAddedWillBePermanentlyRemovedToMakeRoomForTheNewHistory}" />
+                            <Span Text="{x:Static properties:AppResources.ThisEnsuresYourRecordsStayOrganizedAndUpToDate}" />
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
             </Grid>
         </VerticalStackLayout>
 
-        <!-- <Label -->
-        <!--     LineBreakMode="WordWrap" -->
-        <!--     HorizontalOptions="Start" -->
-        <!--     VerticalOptions="Start" -->
-        <!--     Text="Important Note: Selecting a date will immediately start the process of bringing in your information. Please be aware that any data you have already added will be permanently removed to make room for the new history. This ensures your records stay organized and up to date." /> -->
-
 
         <buttons:SfButton
             Margin="0,8,0,8"
-            Text="Start Importing Historical Data..."
+            Text="{x:Static properties:AppResources.StartImportingHistoricalData}"
             Background="#DDEBFF"
             TextColor="#002684"
             Stroke="#6BA6FF"

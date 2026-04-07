@@ -15,5 +15,6 @@ public partial class StatisticsView : ContentView
             throw new InvalidOperationException("AppService is not initialized");
 
         AllHistoricReadings.Header = $"\U0001F4C8 {Pea.Meter.Resources.Strings.AppResources.AllHistoricReadings}";
+        Summary30Days.Header = $"\U0001F4C6 {Pea.Meter.Resources.Strings.AppResources._30DaysSummary}";
     }
 }

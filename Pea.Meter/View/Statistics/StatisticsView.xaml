@@ -42,11 +42,11 @@
                     </tabView:SfTabItem.Content>
                 </tabView:SfTabItem>
                 
-                <tabView:SfTabItem Header="&#x1F4C6; 30 Days Summary"
-                                   x:Name="Summary30Days"
-                                   Background="White"
-                                   TextColor="Black"
-                                   FontSize="14">
+                <tabView:SfTabItem 
+                    x:Name="Summary30Days"
+                    Background="White"
+                    TextColor="Black"
+                    FontSize="14">
 
                     <tabView:SfTabItem.Content>
                         <statistics:MeterReadingsHourView />
