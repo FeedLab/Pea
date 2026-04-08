@@ -665,6 +665,96 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1. Obtain credential:&amp;#x0a;.
+        /// </summary>
+        public static string Register_1ObtainCredentialX0a {
+            get {
+                return ResourceManager.GetString("Register_1ObtainCredentialX0a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Credential sent from PEA:&amp;#x0a;.
+        /// </summary>
+        public static string Register_2CredentialSentFromPEA {
+            get {
+                return ResourceManager.GetString("Register_2CredentialSentFromPEA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Start registration:&amp;#x0a;.
+        /// </summary>
+        public static string Register_3StartRegistration {
+            get {
+                return ResourceManager.GetString("Register_3StartRegistration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How to Register Your Electric Meter.
+        /// </summary>
+        public static string Register_HowToRegisterYourElectricMeter {
+            get {
+                return ResourceManager.GetString("Register_HowToRegisterYourElectricMeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Look in your inbox for a mail from .
+        /// </summary>
+        public static string Register_LookInYourInboxForAMailFrom {
+            get {
+                return ResourceManager.GetString("Register_LookInYourInboxForAMailFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read instruction in the .
+        /// </summary>
+        public static string Register_ReadInstructionInThe {
+            get {
+                return ResourceManager.GetString("Register_ReadInstructionInThe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Register Meter Account.
+        /// </summary>
+        public static string Register_RegisterMeterAccount {
+            get {
+                return ResourceManager.GetString("Register_RegisterMeterAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to support.amr..
+        /// </summary>
+        public static string Register_SupportAmr {
+            get {
+                return ResourceManager.GetString("Register_SupportAmr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap the green button below to get started..
+        /// </summary>
+        public static string Register_TapTheGreenButtonBelowToGetStarted {
+            get {
+                return ResourceManager.GetString("Register_TapTheGreenButtonBelowToGetStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes, I want to register a Meter.
+        /// </summary>
+        public static string Register_YesIWantToRegisterAMeter {
+            get {
+                return ResourceManager.GetString("Register_YesIWantToRegisterAMeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Selecting a date will immediately start the process of bringing in your information. .
         /// </summary>
         public static string SelectingADateWillImmediatelyStartTheProcessOfBringingInYourInformation {

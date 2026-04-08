@@ -11,6 +11,7 @@ namespace Pea.Meter
         {
             InitializeComponent();
 
+            var peaAdapterRouter = (PeaAdapterRouter)AppService.GetRequiredService<IPeaAdapter>();
             var storageService = AppService.GetRequiredService<StorageService>();
             var authDataOptions = AppService.GetRequiredService<AuthDataOptions>();
             var customerProfile = AppService.GetRequiredService<CustomerProfileViewModel>();
@@ -21,6 +22,15 @@ namespace Pea.Meter
 
             var authData = authDataOptions.AuthData;
 
+            if (authData is not null && authData.Username == "demo" && authData.Password == "demo")
+            {
+                peaAdapterRouter.UseDemo(true);
+            }
+            else
+            {
+                peaAdapterRouter.UseDemo(false);
+            }
+            
             // Ensure LoadingPage is displayed before starting initialization
             Dispatcher.Dispatch(async void () =>
             {
@@ -35,7 +45,6 @@ namespace Pea.Meter
                             try
                             {
                                 await Task.Delay(1000);
-                                //await storageService.Init();
                             }
                             catch (Exception e)
                             {
@@ -46,7 +55,7 @@ namespace Pea.Meter
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(InitializeAsync), e.Message);
                 }
             });
         }

@@ -14,14 +14,14 @@ public partial class MainPageViewModel : ObservableObject
 {
     private readonly CustomerProfileViewModel customerProfile;
     private readonly AuthDataOptions authDataOptions;
-    private readonly PeaAdapter peaAdapter;
+    private readonly IPeaAdapter peaAdapter;
     private readonly ILoginHelper loginHelper;
     private readonly IPopupService popupService;
     private readonly StorageService storageService;
     private readonly ILogger<MainPageViewModel> logger;
 
     public MainPageViewModel(ILogger<MainPageViewModel> logger, CustomerProfileViewModel customerProfile,
-        AuthDataOptions authDataOptions, PeaAdapter peaAdapter, ILoginHelper loginHelper, IPopupService popupService,
+        AuthDataOptions authDataOptions, IPeaAdapter peaAdapter, ILoginHelper loginHelper, IPopupService popupService,
         StorageService storageService)
     {
         this.customerProfile = customerProfile;

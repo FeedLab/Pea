@@ -22,7 +22,7 @@ public partial class CustomerProfileViewModel : ObservableObject
 
     [ObservableProperty] private string? errorMessage;
 
-    private readonly PeaAdapter peaAdapter;
+    private readonly IPeaAdapter peaAdapter;
     private readonly ILoginHelper loginHelper;
     private readonly PeaDbContextFactory dbContextFactory;
     private readonly HistoricDataBackgroundService historicDataBackgroundService;
@@ -31,7 +31,7 @@ public partial class CustomerProfileViewModel : ObservableObject
     /// <summary>
     /// ViewModel that wraps CustomerProfile model and provides UI logic
     /// </summary>
-    public CustomerProfileViewModel(PeaAdapter peaAdapter, ILoginHelper loginHelper,
+    public CustomerProfileViewModel(IPeaAdapter peaAdapter, ILoginHelper loginHelper,
         PeaDbContextFactory dbContextFactory, HistoricDataBackgroundService historicDataBackgroundService)
     {
         this.peaAdapter = peaAdapter;

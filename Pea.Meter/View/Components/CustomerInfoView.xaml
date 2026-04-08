@@ -29,8 +29,7 @@
                    VerticalOptions="Center" />
             <Label Grid.Row="0" Grid.Column="1" Text="{Binding CustomerName}" FontSize="10" TextColor="Black"
                    VerticalOptions="Center" HorizontalOptions="End" />
-
-
+            
             <!-- Row 1 -->
             <Label Grid.Row="1" Grid.Column="0" Text="{x:Static strings:AppResources.MeterNumber}" FontAttributes="Bold" FontSize="10" TextColor="Black"
                    VerticalOptions="Center" />
@@ -46,13 +45,6 @@
                     <helpers:PulseOnPropertyChangeBehavior PropertyToWatch="{Binding PeriodStart}" Length="350" />
                 </Label.Behaviors>
             </Label>
-
-            <!-- ~1~ Row 1 @1@ -->
-            <!-- <Label Grid.Row="2" Grid.Column="0" Text="{x:Static strings:AppResources.Id}" FontAttributes="Bold" FontSize="12" TextColor="Black" -->
-            <!--        VerticalOptions="Center" /> -->
-            <!-- <Label Grid.Row="2" Grid.Column="1" Text="{Binding CustomerId}" FontSize="12" TextColor="Black" -->
-            <!--        VerticalOptions="Center" HorizontalOptions="End" /> -->
-
 
         </Grid>
     </Border>

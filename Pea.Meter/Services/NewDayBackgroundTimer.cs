@@ -14,12 +14,12 @@ public class NewDayBackgroundTimer
     private Timer? newDayTimer;
     private readonly ILogger<NewDayBackgroundTimer> logger;
     private readonly PeaDbContextFactory dbContextFactory;
-    private readonly PeaAdapter peaAdapter;
+    private readonly IPeaAdapter peaAdapter;
     private readonly StorageService storageService;
 
     public NewDayBackgroundTimer(ILogger<NewDayBackgroundTimer> logger,
         PeaDbContextFactory dbContextFactory,
-        PeaAdapter peaAdapter,
+        IPeaAdapter peaAdapter,
         StorageService storageService,
         DailyPeaReadingsTimer dailyPeaReadingsTimer)
     {
@@ -27,13 +27,12 @@ public class NewDayBackgroundTimer
         this.dbContextFactory = dbContextFactory;
         this.peaAdapter = peaAdapter;
         this.storageService = storageService;
-        
+
         WeakReferenceMessenger.Default.Register<UserAccountRemovedMessage>(this,
             (r, m) => { MainThread.InvokeOnMainThreadAsync(async () => { Stop(); }); });
-
     }
 
-    public void  Start()
+    public void Start()
     {
         if (newDayTimer != null)
         {
@@ -58,7 +57,8 @@ public class NewDayBackgroundTimer
     {
         const int startTimeDelay = 2;
         yesterday = DateTime.Today.Date.AddDays(-1);
-        var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
+        var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
+        var meterReadingRepository = new MeterReadingRepository(loggerRepository, dbContextFactory);
 
         newDayTimer = new Timer(async void (_) =>
             {
@@ -94,7 +94,10 @@ public class NewDayBackgroundTimer
 
                         if (readingsFromPeaYesterday is not null)
                         {
-                            await meterReadingRepository.AddRangeUpsertAsync(readingsFromPeaYesterday.ToList());
+                            var peaAdapterMeterNumber = peaAdapter.MeterNumber ?? "N/A";
+
+                            await meterReadingRepository.AddRangeUpsertAsync(readingsFromPeaYesterday.ToList(),
+                                peaAdapterMeterNumber);
                         }
 
                         var allReadingsFromDb =
@@ -104,7 +107,6 @@ public class NewDayBackgroundTimer
 
                         yesterday = today;
 
-                        // await ExportAllMeterReadingsToJsonAsync();
                     }
                 }
                 catch (Exception e)
@@ -123,28 +125,29 @@ public class NewDayBackgroundTimer
     private async Task ProcessPeaReadingsAndNotify(IList<PeaMeterReading> readingsFromPeaToday,
         List<PeaMeterReading> allReadingsFromDb, DateTime today)
     {
-            try
-            {
-                var peaReadingsFiltered = readingsFromPeaToday
-                    .Where(r => r.Total > 0)
-                    .ToList();
+        try
+        {
+            var peaReadingsFiltered = readingsFromPeaToday
+                .Where(r => r.Total > 0)
+                .ToList();
 
-                await storageService.UpdatePeriodDataAndProcessAggregations(peaReadingsFiltered,
-                    allReadingsFromDb);
+            await storageService.UpdatePeriodDataAndProcessAggregations(peaReadingsFiltered,
+                allReadingsFromDb);
 
-                WeakReferenceMessenger.Default.Send(new DateChangedMessage(yesterday, today));
-            }
-            catch (Exception exception)
-            {
-                logger.LogError(exception, "Error in {Method}: {Message}", nameof(CheckForNewDayTimer),
-                    exception.Message);
-            }
+            WeakReferenceMessenger.Default.Send(new DateChangedMessage(yesterday, today));
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error in {Method}: {Message}", nameof(CheckForNewDayTimer),
+                exception.Message);
+        }
     }
 
     private async Task<List<PeaMeterReading>> RetrieveAndProcessAllMeterReadingsFromDb(
         MeterReadingRepository meterReadingRepository)
     {
-        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
+        var meterNumber = peaAdapter.MeterNumber ?? "N/A";
+        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync(meterNumber);
 
         if (readingsFromDb.Count == 0)
         {

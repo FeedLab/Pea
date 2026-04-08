@@ -13,13 +13,13 @@ public class DailyPeaReadingsTimer
     private IList<PeaMeterReading>? readingsFromPea;
     private DateTime selectedDate = DateTime.MinValue;
     private readonly ILogger<DailyPeaReadingsTimer> logger;
-    private readonly PeaAdapter peaAdapter;
+    private readonly IPeaAdapter peaAdapter;
     private readonly StorageService storageService;
     private readonly PeaDbContextFactory dbContextFactory;
     private bool isTimerRunning;
 
     public DailyPeaReadingsTimer(ILogger<DailyPeaReadingsTimer> logger,
-        PeaAdapter peaAdapter,
+        IPeaAdapter peaAdapter,
         StorageService storageService,
         PeaDbContextFactory dbContextFactory)
     {
@@ -100,7 +100,8 @@ public class DailyPeaReadingsTimer
             {
                 isTimerRunning = true;
 
-                var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
+                var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
+                var meterReadingRepository = new MeterReadingRepository(loggerRepository, dbContextFactory);
 
                 await FetchAndFilterDailyReadings(meterReadingRepository);
             }
@@ -118,8 +119,9 @@ public class DailyPeaReadingsTimer
     private async Task FetchAndFilterDailyReadings(MeterReadingRepository meterReadingRepository)
     {
         logger.LogInformation("Fetching daily readings from Pea Adapter");
+        var meterNumber = peaAdapter.MeterNumber ?? "N/A";
 
-        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
+        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync(meterNumber);
         readingsFromPea = await peaAdapter.ShowDailyReadings(selectedDate);
 
         if (readingsFromPea == null)

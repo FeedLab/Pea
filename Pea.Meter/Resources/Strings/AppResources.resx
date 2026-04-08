@@ -207,6 +207,36 @@
   <data name="ReadyToBringInYourHistory" xml:space="preserve">
     <value>Ready to bring in your history?</value>
   </data>
+  <data name="Register_1ObtainCredentialX0a" xml:space="preserve">
+    <value>1. Obtain credential:&amp;#x0a;</value>
+  </data>
+  <data name="Register_2CredentialSentFromPEA" xml:space="preserve">
+    <value>2. Credential sent from PEA:&amp;#x0a;</value>
+  </data>
+  <data name="Register_3StartRegistration" xml:space="preserve">
+    <value>3. Start registration:&amp;#x0a;</value>
+  </data>
+  <data name="Register_HowToRegisterYourElectricMeter" xml:space="preserve">
+    <value>How to Register Your Electric Meter</value>
+  </data>
+  <data name="Register_LookInYourInboxForAMailFrom" xml:space="preserve">
+    <value>Look in your inbox for a mail from </value>
+  </data>
+  <data name="Register_ReadInstructionInThe" xml:space="preserve">
+    <value>Read instruction in the </value>
+  </data>
+  <data name="Register_RegisterMeterAccount" xml:space="preserve">
+    <value>Register Meter Account</value>
+  </data>
+  <data name="Register_SupportAmr" xml:space="preserve">
+    <value>support.amr.</value>
+  </data>
+  <data name="Register_TapTheGreenButtonBelowToGetStarted" xml:space="preserve">
+    <value>Tap the green button below to get started.</value>
+  </data>
+  <data name="Register_YesIWantToRegisterAMeter" xml:space="preserve">
+    <value>Yes, I want to register a Meter</value>
+  </data>
   <data name="SelectingADateWillImmediatelyStartTheProcessOfBringingInYourInformation" xml:space="preserve">
     <value>Selecting a date will immediately start the process of bringing in your information. </value>
   </data>

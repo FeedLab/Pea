@@ -121,6 +121,9 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Splash\pea_splash.png" />
+	  <None Update="AllMeterReadings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 	<ItemGroup>

@@ -15,7 +15,7 @@ namespace Pea.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.5");
 
             modelBuilder.Entity("Pea.Data.Entities.MeterReadingEntity", b =>
                 {
@@ -24,6 +24,11 @@ namespace Pea.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MeterNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("PeriodEnd")
@@ -49,7 +54,7 @@ namespace Pea.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PeriodStart")
+                    b.HasIndex("MeterNumber", "PeriodStart")
                         .IsUnique();
 
                     b.ToTable("MeterReadings");

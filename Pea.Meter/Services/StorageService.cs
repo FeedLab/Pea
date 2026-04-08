@@ -38,14 +38,23 @@ public partial class StorageService : ObservableObject
     private readonly ILogger logger;
     private readonly ILoginHelper loginHelper;
     private readonly PeaDbContextFactory dbContextFactory;
-    private readonly PeaAdapter peaAdapter;
+    private readonly IPeaAdapter peaAdapter;
     private CancellationTokenSource newDayCancellationTokenSource;
     public bool IsAuthenticated { get; set; }
+
+    public bool IsInDemoMode
+    {
+        get
+        {
+            var peaAdapterRouter = (PeaAdapterRouter)peaAdapter;
+            return peaAdapterRouter.IsInDemoMode;
+        }
+    }
 
     public StorageService(ILogger<StorageService> logger,
         ILoginHelper loginHelper,
         PeaDbContextFactory dbContextFactory,
-        PeaAdapter peaAdapter,
+        IPeaAdapter peaAdapter,
         ConfigurationTariffModel configurationTariffModel,
         ConfigurationLanguageModel configurationLanguageModel,
         ConfigurationDataImportModel configurationDataImportModel)
@@ -58,6 +67,9 @@ public partial class StorageService : ObservableObject
         ConfigurationLanguageModel = configurationLanguageModel;
         ConfigurationDataImportModel = configurationDataImportModel;
 
+        // var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
+        // meterReadingRepository.DeleteAllAsync().Wait();
+
         try
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(ConfigurationLanguageModel.CultureCode);
@@ -69,6 +81,19 @@ public partial class StorageService : ObservableObject
         }
 
         newDayCancellationTokenSource = new CancellationTokenSource();
+
+        WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (_, _) =>
+        {
+            try
+            {
+                //    await storageService.ExportAllMeterReadingsToJsonAsync();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in {Method}: {Message}", nameof(AllAggregationsCompletedMessage),
+                    e.Message);
+            }
+        });
         
         WeakReferenceMessenger.Default.Register<UserAccountRemovedMessage>(this, (r, m) =>
         {
@@ -76,34 +101,42 @@ public partial class StorageService : ObservableObject
             {
                 try
                 {
-                    var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
+                    var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
+                    var meterReadingRepository = new MeterReadingRepository(loggerRepository, dbContextFactory);
 
-                    logger.LogInformation("ConfigurationTariffModel.Reset from UserAccountRemovedMessage event message");
+                    logger.LogInformation(
+                        "ConfigurationTariffModel.Reset from UserAccountRemovedMessage event message");
                     ConfigurationTariffModel.Reset();
-                
-                    logger.LogInformation("ConfigurationLanguageModel.Reset from UserAccountRemovedMessage event message");
+
+                    logger.LogInformation(
+                        "ConfigurationLanguageModel.Reset from UserAccountRemovedMessage event message");
                     ConfigurationLanguageModel.Reset();
-                
-                    logger.LogInformation("ConfigurationDataImportModel.Reset from UserAccountRemovedMessage event message");
+
+                    logger.LogInformation(
+                        "ConfigurationDataImportModel.Reset from UserAccountRemovedMessage event message");
                     ConfigurationDataImportModel.Reset();
-                
-                    logger.LogInformation("Clearing all ObservableCollection, from UserAccountRemovedMessage event message");
+
+                    logger.LogInformation(
+                        "Clearing all ObservableCollection, from UserAccountRemovedMessage event message");
                     DailyPeriodReadings.Clear();
                     AllMeterReadingsAsync.Clear();
                     HourlyAggregated.Clear();
                     DailyAggregated.Clear();
                     WeeklyAggregated.Clear();
                     MonthlyAggregated.Clear();
-                
-                    logger.LogInformation("Deleting all meter readings from database, from UserAccountRemovedMessage event message");
-                    await meterReadingRepository.DeleteAllAsync();
-                
+
+                    logger.LogInformation(
+                        "Deleting all meter readings from database, from UserAccountRemovedMessage event message");
+                    var meterNumber = peaAdapter.MeterNumber ?? "N/A";
+                    await meterReadingRepository.DeleteAllAsync(meterNumber);
+
                     logger.LogInformation("Clearing auth data, from UserAccountRemovedMessage event message");
                     await loginHelper.ClearAuthDataAsync();
                 }
                 catch (Exception e)
                 {
-                    logger.LogError(e, "Error executing reset after receive a UserAccountRemovedMessage event: {Message}", e.Message);
+                    logger.LogError(e,
+                        "Error executing reset after receive a UserAccountRemovedMessage event: {Message}", e.Message);
                 }
             });
         });
@@ -111,8 +144,10 @@ public partial class StorageService : ObservableObject
 
     public async Task ResetHistoricalData()
     {
-        var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
-        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
+        var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
+        var meterReadingRepository = new MeterReadingRepository(loggerRepository, dbContextFactory);
+        var meterNumber = peaAdapter.MeterNumber ?? "N/A";
+        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync(meterNumber);
 
         var todayPeaMeterReadings =
             await peaAdapter.ShowDailyReadings(DateTime.Today.Date) ?? new List<PeaMeterReading>();
@@ -180,7 +215,11 @@ public partial class StorageService : ObservableObject
                 WriteIndented = true
             };
 
-            var json = JsonSerializer.Serialize(AllMeterReadingsAsync, jsonOptions);
+            var readingsByDate = AllMeterReadingsAsync
+                .GroupBy(r => r.PeriodStart.Date)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var json = JsonSerializer.Serialize(readingsByDate, jsonOptions);
             var fileName = $"AllMeterReadings_{DateTime.Now:yyyyMMdd_HHmmss}.json";
             var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
 
@@ -220,8 +259,8 @@ public partial class StorageService : ObservableObject
                 DailyPeriodReadings.AddRange(newReadingsFiltered);
 
                 ProcessAggregations();
-                
-                if(isDailyCollectionChanged)
+
+                if (isDailyCollectionChanged)
                 {
                     WeakReferenceMessenger.Default.Send(new DailyPeriodsChangedMessage(DailyPeriodReadings));
                 }
@@ -237,9 +276,11 @@ public partial class StorageService : ObservableObject
 
     public async Task ReloadHistoricalDayReadingsFromDb()
     {
-        var meterReadingRepository = new MeterReadingRepository(dbContextFactory);
+        var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
+        var meterReadingRepository = new MeterReadingRepository(loggerRepository, dbContextFactory);
+        var meterNumber = peaAdapter.MeterNumber ?? "N/A";
 
-        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync();
+        var readingsFromDb = await meterReadingRepository.GetAllMeterReadingsAsync(meterNumber);
 
         AllMeterReadingsAsync.Clear();
         AllMeterReadingsAsync.AddRange(readingsFromDb);
@@ -261,7 +302,9 @@ public partial class StorageService : ObservableObject
 }
 
 public record ConfigurationTariffMessage(ConfigurationTariffModel newModel, ConfigurationTariffModel oldModel);
+
 public record DailyPeriodsChangedMessage(ObservableCollection<PeaMeterReading> Data);
+
 public record HourlyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);
 
 public record DailyAggregationCompletedMessage(ObservableCollection<PeaMeterReading> Data);

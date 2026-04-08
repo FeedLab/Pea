@@ -12,7 +12,7 @@ namespace Pea.Meter.ViewModel;
 public partial class CustomerInfoViewModel : ObservableObject
 {
     private readonly ILogger<CustomerInfoViewModel> logger;
-    private readonly PeaAdapter peaAdapter;
+    private readonly IPeaAdapter peaAdapter;
     private readonly StorageService storageService;
 
     [ObservableProperty] private bool isCustomerProfileVisible = false;
@@ -21,7 +21,7 @@ public partial class CustomerInfoViewModel : ObservableObject
     [ObservableProperty] private string meterNumber = "";
     [ObservableProperty] private DateTime? periodStart = null;
 
-    public CustomerInfoViewModel(ILogger<CustomerInfoViewModel> logger, PeaAdapter peaAdapter, StorageService storageService)
+    public CustomerInfoViewModel(ILogger<CustomerInfoViewModel> logger, IPeaAdapter peaAdapter, StorageService storageService)
     {
         this.logger = logger;
         this.peaAdapter = peaAdapter;
@@ -29,27 +29,42 @@ public partial class CustomerInfoViewModel : ObservableObject
 
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, (r, m) =>
         {
-            MainThread.InvokeOnMainThreadAsync(async () =>
+            MainThread.InvokeOnMainThreadAsync(() =>
             {
-                IsCustomerProfileVisible = true;
-
-                if (string.IsNullOrEmpty(peaAdapter.CustomerName) ||
-                    string.IsNullOrEmpty(peaAdapter.CustomerId) ||
-                    string.IsNullOrEmpty(peaAdapter.MeterNumber))
+                try
                 {
-                    logger.LogError("Customer profile not loaded yet");
-                    return;
+                    IsCustomerProfileVisible = true;
+                    return Task.CompletedTask;
                 }
-
-                CustomerName = peaAdapter.CustomerName;
-                CustomerId = peaAdapter.CustomerId;
-                MeterNumber = peaAdapter.MeterNumber;
+                catch (Exception exception)
+                {
+                    return Task.FromException(exception);
+                }
             });
         });
 
         WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this, (r, m) =>
             {
-                MainThread.InvokeOnMainThreadAsync(async () => { IsCustomerProfileVisible = false; });
+                MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    try
+                    {
+                        try
+                        {
+                            IsCustomerProfileVisible = false;
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogError("Error setting data visibility: {0}", e.Message);
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                    catch (Exception exception)
+                    {
+                        return Task.FromException(exception);
+                    }
+                });
             });
 
         WeakReferenceMessenger.Default.Register<AllAggregationsCompletedMessage>(this, async void (r, m) =>
@@ -58,10 +73,23 @@ public partial class CustomerInfoViewModel : ObservableObject
             {
                 try
                 {
-                    if (storageService.DailyAggregated.Any())
+                    if (!string.IsNullOrEmpty(peaAdapter.CustomerName) &&
+                        !string.IsNullOrEmpty(peaAdapter.CustomerId) &&
+                        !string.IsNullOrEmpty(peaAdapter.MeterNumber))
                     {
-                        var meterReading = storageService.DailyAggregated.First();
-                        PeriodStart = meterReading.PeriodStart;
+                        CustomerName = peaAdapter.CustomerName;
+                        CustomerId = peaAdapter.CustomerId;
+                        MeterNumber = peaAdapter.MeterNumber;
+
+                        if (storageService.DailyAggregated.Any())
+                        {
+                            var meterReading = storageService.DailyAggregated.First();
+                            PeriodStart = meterReading.PeriodStart;
+                        }
+                    }
+                    else
+                    {
+                        logger.LogError("Customer data not loaded yet");
                     }
                 }
                 catch (Exception e)

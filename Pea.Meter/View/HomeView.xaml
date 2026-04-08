@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:view="using:Pea.Meter.View"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.HomeView">
     <ContentView.Resources>
 
@@ -46,7 +47,7 @@
 
                     <Label Grid.Row="0"
                            Margin="0,0,0,16"
-                           Text="How to Register Your Electric Meter"
+                           Text="{x:Static properties:AppResources.Register_HowToRegisterYourElectricMeter}"
                            TextColor="Black"
                            FontSize="18"
                            FontAttributes="Bold"
@@ -56,8 +57,8 @@
                         <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="1. Obtain credential:&#x0a;" FontAttributes="Bold" />
-                                    <Span Text="Read instruction in the " />
+                                    <Span Text="{x:Static properties:AppResources.Register_1ObtainCredentialX0a}" FontAttributes="Bold" />
+                                    <Span Text="{x:Static properties:AppResources.Register_ReadInstructionInThe}" />
                                     <Span Text="link" TextColor="Blue" TextDecorations="Underline">
                                         <Span.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped"  />
@@ -71,9 +72,9 @@
                         <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="2. Credential sent from PEA:&#x0a;" FontAttributes="Bold" />
-                                    <Span Text="Look in your inbox for a mail from " />
-                                    <Span Text="support.amr." FontAttributes="Bold" TextColor="Gray" />
+                                    <Span Text="{x:Static properties:AppResources.Register_2CredentialSentFromPEA}" FontAttributes="Bold" />
+                                    <Span Text="{x:Static properties:AppResources.Register_LookInYourInboxForAMailFrom}" />
+                                    <Span Text="{x:Static properties:AppResources.Register_SupportAmr}" FontAttributes="Bold" TextColor="Gray" />
                                     <Span Text="." />
                                 </FormattedString>
                             </Label.FormattedText>
@@ -82,40 +83,34 @@
                         <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="3. Start registration:&#x0a;" FontAttributes="Bold" />
-                                    <Span Text="Tap the green button below to get started." />
+                                    <Span Text="{x:Static properties:AppResources.Register_3StartRegistration}" FontAttributes="Bold" />
+                                    <Span Text="{x:Static properties:AppResources.Register_TapTheGreenButtonBelowToGetStarted}" />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
                     </VerticalStackLayout>
 
-                    <HorizontalStackLayout
+                    <VerticalStackLayout
                         Grid.Row="2"
                         Margin="0,16,0,0"
                         HorizontalOptions="Center">
+                        
                         <button:SfButton
                             Style="{StaticResource IconButtonStyle}"
                             Command="{Binding AddAccountCommand}"
                             ImageSource="{StaticResource AddMeterIcon}"
-                            ToolTipProperties.Text="Register Meter Account" 
-                            Text="Yes, I want to register a Meter"/>
-                        <!-- -->
-                        <!-- <button:SfButton -->
-                        <!--     Style="{StaticResource IconButtonWithOpacityStyle}" -->
-                        <!--     Command="{Binding RemoveAccountCommand}" -->
-                        <!--     IsVisible="{Binding IsRemoveMeterVisible}" -->
-                        <!--     ImageSource="{StaticResource RemoveMeterIcon}" -->
-                        <!--     ToolTipProperties.Text="Remove meter" /> -->
+                            ToolTipProperties.Text="{x:Static properties:AppResources.Register_RegisterMeterAccount}" 
+                            Text="{x:Static properties:AppResources.Register_YesIWantToRegisterAMeter}"/>
+                         
+                         <button:SfButton 
+                             Style="{StaticResource IconButtonStyle}" 
+                             Command="{Binding AddDemoAccountCommand}" 
+                             ImageSource="{StaticResource RemoveMeterIcon}" 
+                             ToolTipProperties.Text="Demo account" /> 
 
-                    </HorizontalStackLayout>
+                    </VerticalStackLayout>
                 </Grid>
 
             </Border>
-
-        <!-- <view:PeaServicesView  -->
-        <!--     Grid.Row="0" -->
-        <!--     Grid.RowSpan="2" -->
-        <!--         HorizontalOptions="Fill" -->
-        <!--         VerticalOptions="Center"/> -->
     </Grid>
 </ContentView>

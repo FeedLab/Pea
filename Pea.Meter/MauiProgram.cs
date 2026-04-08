@@ -65,9 +65,14 @@ namespace Pea.Meter
             // Register services
             builder.Services.AddSingleton<IEncryptionHelper, EncryptionHelper>();
             builder.Services.AddSingleton<ISettingsService, SettingsService>();
-            builder.Services.AddSingleton<PeaAdapter>();
+            // builder.Services.AddSingleton<PeaAdapter>();
             builder.Services.AddSingleton<HistoricDataBackgroundService>();
             builder.Services.AddSingleton<StorageService>();
+
+            // Register router logic
+            builder.Services.AddSingleton<PeaAdapterLive>();
+            builder.Services.AddSingleton<PeaAdapterDemo>();
+            builder.Services.AddSingleton<IPeaAdapter, PeaAdapterRouter>();
 
             // Register database services
             builder.Services.AddSingleton<PeaDbContextFactory>(_ =>

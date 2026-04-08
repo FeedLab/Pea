@@ -10,7 +10,7 @@ namespace Pea.Meter.ViewModel;
 
 [SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0034:Direct field reference to [ObservableProperty] backing field")]
 [SuppressMessage("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "MVVMTK0045:Using [ObservableProperty] on fields is not AOT compatible for WinRT")]
-public partial class LoginPopupViewModel(IPopupService popupService, PeaAdapter peaAdapter)
+public partial class LoginPopupViewModel(IPopupService popupService, IPeaAdapter peaAdapter)
     : ObservableObject, IQueryAttributable
 {
     [ObservableProperty] private AuthData? loginData;

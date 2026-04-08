@@ -16,16 +16,17 @@ public class HistoricDataBackgroundService
 {
     private CancellationTokenSource? cancellationTokenSource = new();
     private Task? runningTask;
-    private readonly PeaAdapter peaAdapter;
+    private readonly IPeaAdapter peaAdapter;
     private readonly ILogger<HistoricDataBackgroundService> logger;
     private readonly PeaDbContextFactory dbContextFactory;
     private readonly StorageService storageService;
+    private readonly PeaAdapterRouter peaAdapterRouter;
 
     /// <summary>
     /// Background service that imports historic meter reading data from PEA AMR system
     /// Triggered manually after user login
     /// </summary>
-    public HistoricDataBackgroundService(PeaAdapter peaAdapter,
+    public HistoricDataBackgroundService(IPeaAdapter peaAdapter,
         ILogger<HistoricDataBackgroundService> logger,
         PeaDbContextFactory dbContextFactory,
         StorageService storageService)
@@ -34,16 +35,21 @@ public class HistoricDataBackgroundService
         this.logger = logger;
         this.dbContextFactory = dbContextFactory;
         this.storageService = storageService;
-        
+        this.peaAdapterRouter = (PeaAdapterRouter)peaAdapter;
         WeakReferenceMessenger.Default.Register<UserAccountRemovedMessage>(this,
             (r, m) => { MainThread.InvokeOnMainThreadAsync(async () => { Stop(); }); });
-
     }
 
     private void TriggerImportTask(int delaySeconds)
     {
         try
         {
+            if (peaAdapterRouter.IsInDemoMode)
+            {
+                logger.LogInformation("Import is disabled in demo mode.");
+                return; 
+            }
+            
             if (runningTask != null && !runningTask.IsCompleted)
             {
                 logger.LogWarning("Import is already running, ignoring trigger request.");
@@ -91,10 +97,12 @@ public class HistoricDataBackgroundService
     private async Task ImportHistoricDataAsync(CancellationToken cancellationToken)
     {
         // Create database context and repository
-        var repository = new MeterReadingRepository(dbContextFactory);
+        var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
+        var repository = new MeterReadingRepository(loggerRepository, dbContextFactory);
 
         var startDate = DateTime.Now.Date.AddDays(-1);
-        var startDateOldest = await GetOldestPeriodStartAsync(cancellationToken, repository);
+        var startDateOldest = await GetOldestPeriodStartAsync(cancellationToken, repository) ??
+                              DateTime.Today.Date.AddDays(-1);
         var oldestDateToImport = storageService.ConfigurationDataImportModel.EarliestImportedDate;
 
         logger.LogInformation(
@@ -103,6 +111,7 @@ public class HistoricDataBackgroundService
 
         var totalReadings = 0;
         var targetDate = startDate;
+        var peaAdapterMeterNumber = peaAdapter.MeterNumber ?? "N/A";
 
         do
         {
@@ -115,7 +124,8 @@ public class HistoricDataBackgroundService
             try
             {
                 // Check if data already exists for this date in the database
-                var hasExistingData = await repository.HasReadingsForDateAsync(targetDate, cancellationToken);
+                var hasExistingData =
+                    await repository.HasReadingsForDateAsync(peaAdapterMeterNumber, targetDate, cancellationToken);
                 if (hasExistingData)
                 {
                     logger.LogInformation("Data already exists for {Date}, skipping",
@@ -142,7 +152,7 @@ public class HistoricDataBackgroundService
                 if (readings.Count > 0 && readings.Sum(s => s.Total) > 0)
                 {
                     // Save to database
-                    await repository.AddRangeUpsertAsync(readings, cancellationToken);
+                    await repository.AddRangeUpsertAsync(readings, peaAdapterMeterNumber, cancellationToken);
                     totalReadings += readings.Count;
                     logger.LogInformation("Successfully imported and saved {Count} readings for {Date}", readings.Count,
                         targetDate.ToString("yyyy-MM-dd"));
@@ -165,7 +175,7 @@ public class HistoricDataBackgroundService
                 }
 
                 // Add a small delay between requests to avoid overwhelming the server
-                await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken);
             }
             catch (TaskCanceledException _)
             {
@@ -175,7 +185,7 @@ public class HistoricDataBackgroundService
             {
                 logger.LogError(ex, "Error importing data for {Date}", targetDate.ToString("yyyy-MM-dd"));
                 await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
-                
+
                 continue;
             }
 
@@ -187,12 +197,13 @@ public class HistoricDataBackgroundService
         logger.LogInformation("Import completed. Total readings imported and saved: {Total}", totalReadings);
     }
 
-    private static async Task<DateTime> GetOldestPeriodStartAsync(CancellationToken cancellationToken,
+    private async Task<DateTime?> GetOldestPeriodStartAsync(CancellationToken cancellationToken,
         MeterReadingRepository repository)
     {
-        var date = await repository.GetOldestPeriodStartAsync(cancellationToken);
+        var meterNumber = peaAdapter.MeterNumber ?? "N/A";
+        var date = await repository.GetOldestPeriodStartAsync(meterNumber, cancellationToken);
 
-        return date.AddDays(-1);
+        return date?.AddDays(-1);
     }
 }
 

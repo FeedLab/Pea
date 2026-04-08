@@ -27,7 +27,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage7 = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataAverage30 = [];
 
-    public MeterReadingsHourViewModel(ILogger<MeterReadingsHourViewModel> logger, PeaAdapter peaAdapter,
+    public MeterReadingsHourViewModel(ILogger<MeterReadingsHourViewModel> logger, IPeaAdapter peaAdapter,
         StorageService storageService)
     {
         this.logger = logger;
@@ -54,15 +54,16 @@ public partial class MeterReadingsHourViewModel : ObservableObject
                     }
                     catch (Exception e)
                     {
-                        logger.LogError(e, "Error in {Method}: {Message}", nameof(CreateAllImportedDataCompletedMessageSubscription),
+                        logger.LogError(e, "Error in {Method}: {Message}",
+                            nameof(CreateAllImportedDataCompletedMessageSubscription),
                             e.Message);
                     }
 
                     return Task.CompletedTask;
                 });
             });
-        
     }
+
     private void CreateDataImportedSubscription()
     {
         WeakReferenceMessenger.Default.Register<DataImportedMessage>(this,
@@ -94,7 +95,14 @@ public partial class MeterReadingsHourViewModel : ObservableObject
                 {
                     try
                     {
-                        SelectedDate = m.NewDate;
+                        if (SelectedDate == DateTime.Today)
+                        {
+                            await PopulateChartData(DateTime.Today);
+                        }
+                        else
+                        {
+                            SelectedDate = m.NewDate;
+                        }
                     }
                     catch (Exception e)
                     {
@@ -118,7 +126,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
                     MeterDataAverage1 = [];
                     MeterDataAverage7 = [];
                     MeterDataAverage30 = [];
-                
+
                     return Task.FromResult(Task.CompletedTask);
                 }
                 catch (Exception exception)
@@ -150,7 +158,14 @@ public partial class MeterReadingsHourViewModel : ObservableObject
         {
             try
             {
-                SelectedDate = DateTime.Today;
+                if (SelectedDate == DateTime.Today)
+                {
+                    await PopulateChartData(DateTime.Today);
+                }
+                else
+                {
+                    SelectedDate = DateTime.Today;
+                }
             }
             catch (Exception e)
             {
@@ -202,7 +217,7 @@ public partial class MeterReadingsHourViewModel : ObservableObject
     {
         try
         {
-            if(storageService.HourlyAggregated.Count == 0)
+            if (storageService.HourlyAggregated.Count == 0)
             {
                 logger.LogWarning("HourlyAggregated is empty");
                 return;

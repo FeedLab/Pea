@@ -18,6 +18,7 @@ public partial class DataImportComponent : ContentView
     private readonly ILogger<DataImportComponent> logger;
     private readonly PeaDbContextFactory dbContextFactory;
     private readonly HistoricDataBackgroundService historicDataBackgroundService;
+    private readonly IPeaAdapter peaAdapter;
 
     public DateTime StartDate { get; set; }
     public DateTime StartTimePickerMinimumDate { get; set; }
@@ -29,6 +30,7 @@ public partial class DataImportComponent : ContentView
         storageService = AppService.GetRequiredService<StorageService>();
         historicDataBackgroundService = AppService.GetRequiredService<HistoricDataBackgroundService>();
         dbContextFactory = AppService.GetRequiredService<PeaDbContextFactory>();
+        peaAdapter = AppService.GetRequiredService<IPeaAdapter>();
 
         StartDate = storageService.ConfigurationDataImportModel.EarliestImportedDate;
         StartTimePickerMinimumDate = DateTime.Today.Date.AddYears(-10);
@@ -49,9 +51,11 @@ public partial class DataImportComponent : ContentView
             historicDataBackgroundService.Stop();
             logger.LogInformation("Data import has been cancelled");
 
-            var repository = new MeterReadingRepository(dbContextFactory);
+            var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
+            var repository = new MeterReadingRepository(loggerRepository, dbContextFactory);
             
-            await repository.DeleteBeforeDateAsync(StartDate);
+            var meterNumber = peaAdapter.MeterNumber ?? "N/A";
+            await repository.DeleteBeforeDateAsync(meterNumber, StartDate);
             logger.LogInformation("Data before {StartDate} has been deleted", StartDate);
             
             await storageService.ResetHistoricalData();

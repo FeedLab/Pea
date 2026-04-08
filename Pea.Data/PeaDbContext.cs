@@ -37,7 +37,7 @@ public class PeaDbContext : DbContext
         // Configure MeterReadingEntity
         modelBuilder.Entity<MeterReadingEntity>(entity =>
         {
-            entity.HasIndex(e => e.PeriodStart).IsUnique();
+            entity.HasIndex(e => new { e.MeterNumber, e.PeriodStart }).IsUnique();
         });
     }
 }

@@ -10,9 +10,9 @@ namespace Pea.Meter.Services;
 /// <summary>
 /// Service for interacting with PEA AMR web system
 /// </summary>
-public class PeaAdapter
+public class PeaAdapterOld 
 {
-    private readonly ILogger<PeaAdapter> logger;
+    private readonly ILogger<PeaAdapterOld> logger;
 
     private readonly HttpClientHandler handler = new()
     {
@@ -47,7 +47,7 @@ public class PeaAdapter
     public string? BillingCycle { get; private set; }
     public string? MeterPointId { get; private set; }
 
-    public PeaAdapter(ILogger<PeaAdapter> logger)
+    public PeaAdapterOld(ILogger<PeaAdapterOld> logger)
     {
         this.logger = logger;
         client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(20) };
