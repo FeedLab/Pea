@@ -41,35 +41,37 @@ public partial class DataImportComponent : ContentView
 
     private void OnStartDateSelected(object? sender, DateTime e)
     {
-        storageService.ConfigurationDataImportModel?.EarliestImportedDate = e;
+        storageService.ConfigurationDataImportModel.EarliestImportedDate = e;
     }
 
     private async void OnStartImportClicked(object? sender, EventArgs e)
     {
         try
         {
+            var earliestImportedDate = storageService.ConfigurationDataImportModel.EarliestImportedDate;
+
             historicDataBackgroundService.Stop();
             logger.LogInformation("Data import has been cancelled");
 
             var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
             var repository = new MeterReadingRepository(loggerRepository, dbContextFactory);
-            
+
             var meterNumber = peaAdapter.MeterNumber ?? "N/A";
-            await repository.DeleteBeforeDateAsync(meterNumber, StartDate);
-            logger.LogInformation("Data before {StartDate} has been deleted", StartDate);
-            
+            await repository.DeleteBeforeDateAsync(meterNumber, earliestImportedDate);
+            logger.LogInformation("Data before {StartDate} has been deleted", earliestImportedDate);
+
             await storageService.ResetHistoricalData();
             logger.LogInformation("Historical data has been reset");
 
-            WeakReferenceMessenger.Default.Send(new DataImportedEarlierMessage(new List<PeaMeterReading>(), StartDate));
+            WeakReferenceMessenger.Default.Send(new DataImportedEarlierMessage(new List<PeaMeterReading>(), earliestImportedDate));
             logger.LogInformation("DataImportedEarlierMessage has been sent");
 
             historicDataBackgroundService.Start(1);
-            logger.LogInformation("Data import has been triggered");
+            logger.LogInformation("Data import has been triggered from a new {StartDate}", earliestImportedDate);
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Error occurred while deleting data before {StartDate}", StartDate);
+            logger.LogError(exception, "Error occurred while deleting data before {StartDate}", StartDatePicker.SelectedDate);
         }
     }
 }

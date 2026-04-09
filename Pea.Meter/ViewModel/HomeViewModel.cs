@@ -54,30 +54,34 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private async Task AddDemoAccount()
     {
-        var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
-        var meterReadingRepository = new MeterReadingRepository(loggerRepository, dbContextFactory);
-        
-        peaAdapterRouter.UseDemo(true);
-        await peaAdapterRouter.LoginUser("demo", "demo");
-        authDataLogin = new AuthData("demo", "demo");
-        var meterNumber = peaAdapterRouter.MeterNumber ?? throw new InvalidOperationException();
+        await Task.Run(async () =>
+        {
+            Debug.WriteLine("AddDemoAccount: Running in background");
+            var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
+            var meterReadingRepository = new MeterReadingRepository(loggerRepository, dbContextFactory);
 
-        await meterReadingRepository.DeleteAllAsync();
-        await meterReadingRepository.DeleteAllAsync(meterNumber);
-        var readings = await peaAdapterRouter.GetAllReadings(DateTime.Today);
-        await meterReadingRepository.AddRangeAsync(readings, meterNumber);
-        
-        storageService.IsAuthenticated = true;
-        AuthData = await loginHelper.SaveAuthDataAsync(authDataLogin.Username, authDataLogin.Password);
+            peaAdapterRouter.UseDemo(true);
+            await peaAdapterRouter.LoginUser("demo", "demo");
+            authDataLogin = new AuthData("demo", "demo");
+            var meterNumber = peaAdapterRouter.MeterNumber ?? throw new InvalidOperationException();
 
-        WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(AuthData));
+            await meterReadingRepository.DeleteAllAsync();
+            await meterReadingRepository.DeleteAllAsync(meterNumber);
+            var readings = await peaAdapterRouter.GetAllReadings(DateTime.Today);
+            await meterReadingRepository.AddRangeAsync(readings, meterNumber);
 
-        await storageService.ResetHistoricalData();
-        WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+            storageService.IsAuthenticated = true;
+            AuthData = await loginHelper.SaveAuthDataAsync(authDataLogin.Username, authDataLogin.Password);
 
-        newDayBackgroundTimer.Start();
-        await dailyPeaReadingsTimer.Start();
-        historicDataBackgroundService.Start(1);
+            WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(AuthData));
+
+            await storageService.ResetHistoricalData();
+            WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+
+            newDayBackgroundTimer.Start();
+            await dailyPeaReadingsTimer.Start();
+            historicDataBackgroundService.Start(1);
+        });
     }
 
     [RelayCommand]

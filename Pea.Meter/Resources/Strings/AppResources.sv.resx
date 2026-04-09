@@ -69,6 +69,9 @@
   <data name="Daily">
     <value>Daglig</value>
   </data>
+  <data name="DemoAccount" xml:space="preserve">
+    <value>Demokonto</value>
+  </data>
   <data name="ElectricityTariffComparisonSummary">
     <value>Sammanställning av jämförelse av eltariffer</value>
   </data>
@@ -104,9 +107,6 @@
   </data>
   <data name="FlatRateSolar">
     <value>Fast pris PV</value>
-  </data>
-  <data name="TariffCalculation_FlatRateTotalCost" xml:space="preserve">
-    <value>• Totalkostnad för fast pris:</value>
   </data>
   <data name="GoPaperlessInThailand">
     <value>Gå papperslös i Thailand! Spara tid och träd genom att få månadsfakturor skickade till din inkorg.</value>
@@ -156,6 +156,9 @@
   <data name="Monthly" xml:space="preserve">
     <value>Månatlig</value>
   </data>
+  <data name="NoADemoAccountWillBeEnough" xml:space="preserve">
+    <value>Nej, det räcker med ett demokonto</value>
+  </data>
   <data name="OffPeakPrice" xml:space="preserve">
     <value>Lägsta pris</value>
   </data>
@@ -170,6 +173,9 @@
   </data>
   <data name="OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement">
     <value>{På svenska skrivbordet='Transformator Livscykelhantering', Standard='Transformatorhantering'}</value>
+  </data>
+  <data name="OR" xml:space="preserve">
+    <value>ELLER</value>
   </data>
   <data name="OverviewPerDay">
     <value>Översikt per dag</value>
@@ -210,6 +216,36 @@
   <data name="ReadyToBringInYourHistory" xml:space="preserve">
     <value>Är du redo att hämta din historiska data?</value>
   </data>
+  <data name="Register_1ObtainCredentialX0a" xml:space="preserve">
+    <value>1. Skaffa inloggningsuppgifter</value>
+  </data>
+  <data name="Register_2CredentialSentFromPEA" xml:space="preserve">
+    <value>2. Inloggningsuppgifter skickade från PEA</value>
+  </data>
+  <data name="Register_3StartRegistration" xml:space="preserve">
+    <value>3. Starta registreringen</value>
+  </data>
+  <data name="Register_HowToRegisterYourElectricMeter" xml:space="preserve">
+    <value>Så här registrerar du din elmätare</value>
+  </data>
+  <data name="Register_LookInYourInboxForAMailFrom" xml:space="preserve">
+    <value>Titta i din inkorg efter ett mail från </value>
+  </data>
+  <data name="Register_ReadInstructionInThe" xml:space="preserve">
+    <value>Läs instruktionerna i </value>
+  </data>
+  <data name="Register_RegisterMeterAccount" xml:space="preserve">
+    <value>Registrera mätarkonto</value>
+  </data>
+  <data name="Register_SupportAmr" xml:space="preserve">
+    <value>support.amr.</value>
+  </data>
+  <data name="Register_TapTheGreenButtonBelowToGetStarted" xml:space="preserve">
+    <value>Tryck på den gröna knappen nedan för att komma igång.</value>
+  </data>
+  <data name="Register_YesIWantToRegisterAMeter" xml:space="preserve">
+    <value>Ja, jag vill registrera en mätare</value>
+  </data>
   <data name="SelectingADateWillImmediatelyStartTheProcessOfBringingInYourInformation" xml:space="preserve">
     <value>Genom att välja ett datum kommer omedelbart att starta processen med att ta in din information.</value>
   </data>
@@ -246,6 +282,12 @@
   <data name="TariffCalculation">
     <value>Tariffberäkning</value>
   </data>
+  <data name="TariffCalculation_FlatRateTotalCost" xml:space="preserve">
+    <value>• Totalkostnad för fast pris:</value>
+  </data>
+  <data name="TariffCalculation_TOUTotalCost">
+    <value>• TOU totalkostnad:</value>
+  </data>
   <data name="ThatAnyDataYouHaveAlreadyAddedWillBePermanentlyRemovedToMakeRoomForTheNewHistory" xml:space="preserve">
     <value>att all data som du redan har lagt till kommer att tas bort permanent för att ge plats åt den nya historiken.</value>
   </data>
@@ -275,9 +317,6 @@
   </data>
   <data name="ToUInConclusionBased">
     <value>Sammanfattningsvis, baserat på nuvarande data, är TOU-tariffen det mer ekonomiska valet, vilket ger betydande kostnadsbesparingar utan att kräva förändringar i den totala förbrukningen.</value>
-  </data>
-  <data name="TariffCalculation_TOUTotalCost">
-    <value>• TOU totalkostnad:</value>
   </data>
   <data name="TOUTotalCost_" xml:space="preserve">
     <value>Totalkostnad för TOU:</value>

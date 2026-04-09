@@ -74,7 +74,6 @@ public partial class CustomerInfoViewModel : ObservableObject
                 try
                 {
                     if (!string.IsNullOrEmpty(peaAdapter.CustomerName) &&
-                        !string.IsNullOrEmpty(peaAdapter.CustomerId) &&
                         !string.IsNullOrEmpty(peaAdapter.MeterNumber))
                     {
                         CustomerName = peaAdapter.CustomerName;

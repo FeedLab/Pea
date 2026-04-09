@@ -69,6 +69,9 @@
   <data name="Daily" xml:space="preserve">
     <value>Daily</value>
   </data>
+  <data name="DemoAccount" xml:space="preserve">
+    <value>Demo account</value>
+  </data>
   <data name="ElectricityTariffComparisonSummary" xml:space="preserve">
     <value>Electricity Tariff Comparison Summary</value>
   </data>
@@ -153,6 +156,9 @@
   <data name="Monthly" xml:space="preserve">
     <value>Monthly</value>
   </data>
+  <data name="NoADemoAccountWillBeEnough" xml:space="preserve">
+    <value>No, a demo account will be enough</value>
+  </data>
   <data name="OffPeakPrice" xml:space="preserve">
     <value>OffPeak Price</value>
   </data>
@@ -167,6 +173,9 @@
   </data>
   <data name="OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement" xml:space="preserve">
     <value>{OnIdiom Desktop='Transformer Lifecycle Management', Default='Transformer Management'}</value>
+  </data>
+  <data name="OR" xml:space="preserve">
+    <value>OR</value>
   </data>
   <data name="OverviewPerDay" xml:space="preserve">
     <value>Overview Per Day</value>
@@ -208,13 +217,13 @@
     <value>Ready to bring in your history?</value>
   </data>
   <data name="Register_1ObtainCredentialX0a" xml:space="preserve">
-    <value>1. Obtain credential:&amp;#x0a;</value>
+    <value>1. Obtain credential</value>
   </data>
   <data name="Register_2CredentialSentFromPEA" xml:space="preserve">
-    <value>2. Credential sent from PEA:&amp;#x0a;</value>
+    <value>2. Credential sent from PEA</value>
   </data>
   <data name="Register_3StartRegistration" xml:space="preserve">
-    <value>3. Start registration:&amp;#x0a;</value>
+    <value>3. Start registration</value>
   </data>
   <data name="Register_HowToRegisterYourElectricMeter" xml:space="preserve">
     <value>How to Register Your Electric Meter</value>

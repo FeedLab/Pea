@@ -69,6 +69,9 @@
   <data name="Daily">
     <value>รายวัน</value>
   </data>
+  <data name="DemoAccount" xml:space="preserve">
+    <value>บัญชีทดลอง</value>
+  </data>
   <data name="ElectricityTariffComparisonSummary">
     <value>สรุปการเปรียบเทียบอัตราค่าไฟฟ้า</value>
   </data>
@@ -104,9 +107,6 @@
   </data>
   <data name="FlatRateSolar">
     <value>อัตราคงที่พลังงานแสงอาทิตย์</value>
-  </data>
-  <data name="TariffCalculation_FlatRateTotalCost" xml:space="preserve">
-    <value>• ต้นทุนรวมแบบเหมาจ่าย:</value>
   </data>
   <data name="GoPaperlessInThailand">
     <value>ไม่ใช่กระดาษในไทย! ประหยัดเวลาและต้นไม้ด้วยการรับใบแจ้งหนี้รายเดือนที่ปลอดภัยส่งไปยังกล่องอีเมลของคุณ</value>
@@ -156,6 +156,9 @@
   <data name="Monthly" xml:space="preserve">
     <value>รายเดือน</value>
   </data>
+  <data name="NoADemoAccountWillBeEnough" xml:space="preserve">
+    <value>ไม่ บัญชีทดลองก็เพียงพอแล้ว</value>
+  </data>
   <data name="OffPeakPrice" xml:space="preserve">
     <value>ราคา OffPeak</value>
   </data>
@@ -170,6 +173,9 @@
   </data>
   <data name="OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement">
     <value>{OnIdiom Desktop='การจัดการอายุการใช้งานหม้อแปลง', Default='การจัดการหม้อแปลง'}</value>
+  </data>
+  <data name="OR" xml:space="preserve">
+    <value>หรือ</value>
   </data>
   <data name="OverviewPerDay">
     <value>ภาพรวมต่อวัน</value>
@@ -210,6 +216,36 @@
   <data name="ReadyToBringInYourHistory" xml:space="preserve">
     <value>พร้อมที่จะนำประวัติศาสตร์ของคุณมาหรือยัง?</value>
   </data>
+  <data name="Register_1ObtainCredentialX0a" xml:space="preserve">
+    <value>1. รับหนังสือรับรอง</value>
+  </data>
+  <data name="Register_2CredentialSentFromPEA" xml:space="preserve">
+    <value>2. หนังสือรับรองที่ส่งมาจาก กฟภ</value>
+  </data>
+  <data name="Register_3StartRegistration" xml:space="preserve">
+    <value>3. เริ่มการลงทะเบียน</value>
+  </data>
+  <data name="Register_HowToRegisterYourElectricMeter" xml:space="preserve">
+    <value>วิธีลงทะเบียนมิเตอร์ไฟฟ้าของคุณ</value>
+  </data>
+  <data name="Register_LookInYourInboxForAMailFrom" xml:space="preserve">
+    <value>ค้นหาอีเมลจากในกล่องจดหมายของคุณ </value>
+  </data>
+  <data name="Register_ReadInstructionInThe" xml:space="preserve">
+    <value>อ่านคำแนะนำใน </value>
+  </data>
+  <data name="Register_RegisterMeterAccount" xml:space="preserve">
+    <value>ลงทะเบียนบัญชีมิเตอร์</value>
+  </data>
+  <data name="Register_SupportAmr" xml:space="preserve">
+    <value>support.amr.</value>
+  </data>
+  <data name="Register_TapTheGreenButtonBelowToGetStarted" xml:space="preserve">
+    <value>แตะปุ่มสีเขียวด้านล่างเพื่อเริ่มต้น</value>
+  </data>
+  <data name="Register_YesIWantToRegisterAMeter" xml:space="preserve">
+    <value>ใช่ ฉันต้องการลงทะเบียนมิเตอร์</value>
+  </data>
   <data name="SelectingADateWillImmediatelyStartTheProcessOfBringingInYourInformation" xml:space="preserve">
     <value>การเลือกวันที่จะเริ่มกระบวนการนำเข้าข้อมูลของคุณทันที</value>
   </data>
@@ -246,6 +282,12 @@
   <data name="TariffCalculation">
     <value>การคำนวณอัตราค่าไฟฟ้า</value>
   </data>
+  <data name="TariffCalculation_FlatRateTotalCost" xml:space="preserve">
+    <value>• ต้นทุนรวมแบบเหมาจ่าย:</value>
+  </data>
+  <data name="TariffCalculation_TOUTotalCost">
+    <value>• ค่าใช้จ่ายรวมของ TOU: </value>
+  </data>
   <data name="ThatAnyDataYouHaveAlreadyAddedWillBePermanentlyRemovedToMakeRoomForTheNewHistory" xml:space="preserve">
     <value>ข้อมูลใด ๆ ที่คุณเพิ่มไว้จะถูกลบออกอย่างถาวรเพื่อให้มีที่ว่างสำหรับประวัติใหม่</value>
   </data>
@@ -275,9 +317,6 @@
   </data>
   <data name="ToUInConclusionBased">
     <value>โดยสรุปจากข้อมูลปัจจุบัน อัตราค่าไฟฟ้า TOU เป็นตัวเลือกที่ประหยัดกว่า มอบการประหยัดค่าใช้จ่ายที่มีความหมายโดยไม่ต้องเปลี่ยนแปลงการใช้ทั้งหมด</value>
-  </data>
-  <data name="TariffCalculation_TOUTotalCost">
-    <value>• ค่าใช้จ่ายรวมของ TOU: </value>
   </data>
   <data name="TOUTotalCost_" xml:space="preserve">
     <value>ต้นทุนรวมของ TOU:</value>

@@ -8,6 +8,8 @@
     <FontImageSource x:Key="RemoveMeterIcon" FontFamily="FontSolid" Glyph="&#xe560;" Color="DarkRed" Size="28" />
     <FontImageSource x:Key="CloseIcon" FontFamily="FontSolid" Glyph="&#xf057;" Color="DarkGreen" Size="28" />
     <FontImageSource x:Key="CancelIcon" FontFamily="FontSolid" Glyph="&#xf057;" Color="DarkRed" Size="28" />
+    <FontImageSource x:Key="ImportIcon" FontFamily="FontSolid" Glyph="&#xf0ed;" Color="DarkOrange" Size="28" />
+    <FontImageSource x:Key="AddMeterIcon" FontFamily="FontSolid" Glyph="&#xe541;" Color="DarkGreen" Size="28" />
 
     <Shadow x:Key="PanelShadow"
             Brush="Black"

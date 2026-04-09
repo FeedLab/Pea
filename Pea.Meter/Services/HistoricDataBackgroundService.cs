@@ -44,12 +44,6 @@ public class HistoricDataBackgroundService
     {
         try
         {
-            if (peaAdapterRouter.IsInDemoMode)
-            {
-                logger.LogInformation("Import is disabled in demo mode.");
-                return; 
-            }
-            
             if (runningTask != null && !runningTask.IsCompleted)
             {
                 logger.LogWarning("Import is already running, ignoring trigger request.");
@@ -171,15 +165,16 @@ public class HistoricDataBackgroundService
                     logger.LogInformation(
                         "No readings found for {Date}. Stopping import as there is no more data to read.",
                         targetDate.ToString("yyyy-MM-dd"));
-                    break; // Stop when ShowDailyReadings returns 0 items or the total is 0
+                    break;
                 }
 
                 // Add a small delay between requests to avoid overwhelming the server
-                await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(1000), cancellationToken);
             }
-            catch (TaskCanceledException _)
+            catch (TaskCanceledException)
             {
-                logger.LogInformation("Import operation was canceled.");
+                logger.LogInformation("Import operation was canceled. Closing down import logic");
+                return;
             }
             catch (Exception ex)
             {

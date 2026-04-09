@@ -251,6 +251,15 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Demo account.
+        /// </summary>
+        public static string DemoAccount {
+            get {
+                return ResourceManager.GetString("DemoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Electricity Tariff Comparison Summary.
         /// </summary>
         public static string ElectricityTariffComparisonSummary {
@@ -503,6 +512,15 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No, a demo account will be enough.
+        /// </summary>
+        public static string NoADemoAccountWillBeEnough {
+            get {
+                return ResourceManager.GetString("NoADemoAccountWillBeEnough", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OffPeak Price.
         /// </summary>
         public static string OffPeakPrice {
@@ -544,6 +562,15 @@ namespace Pea.Meter.Resources.Strings {
         public static string OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement {
             get {
                 return ResourceManager.GetString("OnIdiomDesktopTransformerLifecycleManagementDefaultTransformerManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OR.
+        /// </summary>
+        public static string OR {
+            get {
+                return ResourceManager.GetString("OR", resourceCulture);
             }
         }
         
@@ -665,7 +692,7 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1. Obtain credential:&amp;#x0a;.
+        ///   Looks up a localized string similar to 1. Obtain credential.
         /// </summary>
         public static string Register_1ObtainCredentialX0a {
             get {
@@ -674,7 +701,7 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 2. Credential sent from PEA:&amp;#x0a;.
+        ///   Looks up a localized string similar to 2. Credential sent from PEA.
         /// </summary>
         public static string Register_2CredentialSentFromPEA {
             get {
@@ -683,7 +710,7 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 3. Start registration:&amp;#x0a;.
+        ///   Looks up a localized string similar to 3. Start registration.
         /// </summary>
         public static string Register_3StartRegistration {
             get {
