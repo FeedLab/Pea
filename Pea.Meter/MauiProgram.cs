@@ -78,7 +78,7 @@ namespace Pea.Meter
             builder.Services.AddSingleton<PeaDbContextFactory>(_ =>
             {
                 // SQLite connection string - uses app data directory
-                var dbPath = Path.Combine(FileSystem.AppDataDirectory, "pea.db");
+                var dbPath = Path.Combine(FileSystem.AppDataDirectory, "peadata.db");
                 var connectionString = $"Data Source={dbPath}";
                 return new PeaDbContextFactory(connectionString);
             });
