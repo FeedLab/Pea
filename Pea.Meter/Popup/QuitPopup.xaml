@@ -7,6 +7,7 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:core="http://schemas.syncfusion.com/maui"
+    xmlns:controls="clr-namespace:Pea.Meter.Controls"
     x:TypeArguments="system:Boolean"
     x:Class="Pea.Meter.Popup.QuitPopup">
 
@@ -35,6 +36,18 @@
             FontFamily="OpenSansSemibold"
             VerticalOptions="Start"
             HorizontalOptions="Center" />
+        
+        <!-- <controls:StrokedLabel -->
+        <!--     Grid.Row="0" -->
+        <!--     Text="{Binding Message}" -->
+        <!--     FillColor="Black" -->
+        <!--     StrokeColor="#002684" -->
+        <!--     FontSize="34" -->
+        <!--     StrokeWidth="2" -->
+        <!--     HorizontalOptions="Center" -->
+        <!--     VerticalOptions="Start" -->
+        <!--     HeightRequest="100" -->
+        <!--     WidthRequest="200" /> -->
 
         <HorizontalStackLayout
             Grid.Row="1"

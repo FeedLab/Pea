@@ -36,22 +36,17 @@ namespace Pea.Meter
             {
                 try
                 {
+                    var startTime = DateTime.UtcNow;
+
                     await InitializeAsync(authData, customerProfile, storageService);
-                    
-                    if (storageService.IsAuthenticated)
-                    {
-                        await Task.Run(async () =>
-                        {
-                            try
-                            {
-                                await Task.Delay(1000);
-                            }
-                            catch (Exception e)
-                            {
-                                logger.LogError(e, "Error in {Method}: {Message}", nameof(OnAppearing), e.Message);
-                            }
-                        });
-                    }
+
+                    // Ensure LoadingPage is visible for at least 5 seconds
+                    var elapsed = DateTime.UtcNow - startTime;
+                    var remaining = TimeSpan.FromSeconds(5) - elapsed;
+                    if (remaining > TimeSpan.Zero)
+                        await Task.Delay(remaining);
+
+                    await GoToAsync("//MainPage");
                 }
                 catch (Exception e)
                 {
@@ -68,9 +63,6 @@ namespace Pea.Meter
                 storageService.IsAuthenticated =
                     await customerProfile.RefreshProfile(authData.Username, authData.Password);
             }
-            
-            // Navigate to MainPage after initialization completes
-            await GoToAsync("//MainPage");
         }
     }
 }

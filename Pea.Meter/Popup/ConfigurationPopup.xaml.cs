@@ -52,7 +52,56 @@ public partial class ConfigurationPopup : Popup<bool>
         }
 
         Header = Pea.Meter.Resources.Strings.AppResources.Configuration;
+
+        RegisterLoginSubscription();
+        RegisterLogoutSubscription();
+
+        ActivateTabs(storageService.IsAuthenticated);
+
         BindingContext = this;
+    }
+
+    private void RegisterLoginSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, (_, _) => { ActivateTabs(true); });
+    }
+
+    private void RegisterLogoutSubscription()
+    {
+        WeakReferenceMessenger.Default.Register<UserLoggedOutMessage>(this, (_, _) => { ActivateTabs(false); });
+    }
+
+    private async void ActivateTabs(bool isLoggedIn)
+    {
+        try
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                try
+                {
+                    if (isLoggedIn)
+                    {
+                        Tariff.IsVisible = true;
+                        Language.IsVisible = true;
+                        DataImport.IsVisible = true;
+                    }
+                    else
+                    {
+                        Tariff.IsVisible = false;
+                        Language.IsVisible = true;
+                        DataImport.IsVisible = false;
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error in {Method}: {Message}", nameof(ActivateTabs), e.Message);
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in {Method}: {Message}", nameof(ActivateTabs), e.Message);
+        }
     }
 
     public string Header { get; }

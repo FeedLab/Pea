@@ -3,6 +3,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:buttons="http://schemas.syncfusion.com/maui"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.Components.CustomerInfoPopupView">
     <ContentView.Resources>
         <!-- Icon resources -->
@@ -25,7 +26,7 @@
             FontSize="16"
             LineBreakMode="WordWrap"
             HorizontalTextAlignment="Start"
-            Text="Please be advised that your account and all associated data will be removed from the app" />
+            Text="{x:Static properties:AppResources.PleaseBeAdvisedThatYourAccountAndAllAssociatedDataWillBeRemovedFromTheApp}" />
 
         <buttons:SfCheckBox
             Grid.Row="1"
@@ -36,7 +37,7 @@
             TextColor="DarkRed"
             FontAttributes="Bold"
             StateChanged="ToggleButton_OnStateChanged"
-            Text="I have a full understanding of the situation. Please continue." />
+            Text="{x:Static properties:AppResources.IHaveAFullUnderstandingOfTheSituationPleaseContinue}" />
 
         <BoxView
             Grid.Row="2"
@@ -55,8 +56,8 @@
             IsVisible="False"
             Opacity="0"
             ImageSource="{StaticResource RemoveMeterIcon}"
-            ToolTipProperties.Text="Close and remove account"
-            Text="Start removal procedure" />
+            ToolTipProperties.Text="{x:Static properties:AppResources.CloseAndRemoveAccount}"
+            Text="{x:Static properties:AppResources.StartRemovalProcedure}" />
 
         <buttons:SfButton
             x:Name="Close"
@@ -68,7 +69,7 @@
             Clicked="Close_OnClicked"
             IsVisible="True"
             ImageSource="{StaticResource CloseIcon}"
-            ToolTipProperties.Text="Close without remove account"
-            Text="Close whithout any action" />
+            ToolTipProperties.Text="{x:Static properties:AppResources.CloseWithoutRemoveAccount}"
+            Text="{x:Static properties:AppResources.CloseWhithoutAnyAction}" />
     </Grid>
 </ContentView>

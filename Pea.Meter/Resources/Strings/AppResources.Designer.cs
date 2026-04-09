@@ -197,6 +197,33 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close and remove account.
+        /// </summary>
+        public static string CloseAndRemoveAccount {
+            get {
+                return ResourceManager.GetString("CloseAndRemoveAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close whithout any action.
+        /// </summary>
+        public static string CloseWhithoutAnyAction {
+            get {
+                return ResourceManager.GetString("CloseWhithoutAnyAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close without remove account.
+        /// </summary>
+        public static string CloseWithoutRemoveAccount {
+            get {
+                return ResourceManager.GetString("CloseWithoutRemoveAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comprehensive diagnostic testing, oil analysis, and preventative repairs to ensure grid stability and peak electrical efficiency.
         /// </summary>
         public static string ComprehensiveDiagnosticTestingOil {
@@ -256,6 +283,24 @@ namespace Pea.Meter.Resources.Strings {
         public static string DemoAccount {
             get {
                 return ResourceManager.GetString("DemoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting up your demo environment....
+        /// </summary>
+        public static string DemoRegistrationWait_SettingUpYourDemoEnvironment {
+            get {
+                return ResourceManager.GetString("DemoRegistrationWait_SettingUpYourDemoEnvironment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will only take a moment.
+        /// </summary>
+        public static string DemoRegistrationWait_ThisWillOnlyTakeAMoment {
+            get {
+                return ResourceManager.GetString("DemoRegistrationWait_ThisWillOnlyTakeAMoment", resourceCulture);
             }
         }
         
@@ -391,6 +436,15 @@ namespace Pea.Meter.Resources.Strings {
         public static string Id {
             get {
                 return ResourceManager.GetString("Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I have a full understanding of the situation. Please continue..
+        /// </summary>
+        public static string IHaveAFullUnderstandingOfTheSituationPleaseContinue {
+            get {
+                return ResourceManager.GetString("IHaveAFullUnderstandingOfTheSituationPleaseContinue", resourceCulture);
             }
         }
         
@@ -656,6 +710,15 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please be advised that your account and all associated data will be removed from the app.
+        /// </summary>
+        public static string PleaseBeAdvisedThatYourAccountAndAllAssociatedDataWillBeRemovedFromTheApp {
+            get {
+                return ResourceManager.GetString("PleaseBeAdvisedThatYourAccountAndAllAssociatedDataWillBeRemovedFromTheApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please be aware .
         /// </summary>
         public static string PleaseBeAware {
@@ -845,6 +908,15 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start removal procedure.
+        /// </summary>
+        public static string StartRemovalProcedure {
+            get {
+                return ResourceManager.GetString("StartRemovalProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Statistics.
         /// </summary>
         public static string Statistics {
@@ -958,6 +1030,15 @@ namespace Pea.Meter.Resources.Strings {
         public static string ThisMeansTheTOUTariffResultsInASavingsOf {
             get {
                 return ResourceManager.GetString("ThisMeansTheTOUTariffResultsInASavingsOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will only take a moment.
+        /// </summary>
+        public static string ThisWillOnlyTakeAMoment {
+            get {
+                return ResourceManager.GetString("ThisWillOnlyTakeAMoment", resourceCulture);
             }
         }
         

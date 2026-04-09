@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Pea.Meter.Models;
+using Pea.Meter.Services;
 using Pea.Meter.View.Interface;
 using Pea.Meter.ViewModel;
 using Syncfusion.Maui.Buttons;
@@ -9,6 +10,8 @@ namespace Pea.Meter.View.Components;
 public partial class CustomerInfoPopupView : ContentView, ICloseable
 {
     private readonly CustomerInfoViewModel viewModel;
+    private readonly StorageService storageService;
+
     public event EventHandler? CloseRequested;
     private bool hasRemoveButtonBeenPressed = false;
     private bool removeAccount;
@@ -16,6 +19,9 @@ public partial class CustomerInfoPopupView : ContentView, ICloseable
     public CustomerInfoPopupView(CustomerInfoViewModel viewModel)
     {
         this.viewModel = viewModel;
+
+        storageService = AppService.GetRequiredService<StorageService>();
+
         InitializeComponent();
         
         BindingContext = viewModel;
@@ -44,6 +50,7 @@ public partial class CustomerInfoPopupView : ContentView, ICloseable
     {
         if (hasRemoveButtonBeenPressed)
         {
+            storageService.IsAuthenticated = false;
             WeakReferenceMessenger.Default.Send(new UserLoggedOutMessage());
             WeakReferenceMessenger.Default.Send(new UserAccountRemovedMessage());
         }

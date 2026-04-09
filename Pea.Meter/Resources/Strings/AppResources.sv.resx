@@ -51,6 +51,15 @@
   <data name="Close">
     <value>Stäng</value>
   </data>
+  <data name="CloseAndRemoveAccount" xml:space="preserve">
+    <value>Stäng och ta bort konto</value>
+  </data>
+  <data name="CloseWhithoutAnyAction" xml:space="preserve">
+    <value>Stäng utan någon åtgärd</value>
+  </data>
+  <data name="CloseWithoutRemoveAccount" xml:space="preserve">
+    <value>Stäng utan att ta bort konto</value>
+  </data>
   <data name="ComprehensiveDiagnosticTestingOil">
     <value>Omfattande diagnostiska tester, oljeanalys och förebyggande reparationer för att säkerställa nätstabilitet och maximal elektrisk effektivitet</value>
   </data>
@@ -71,6 +80,12 @@
   </data>
   <data name="DemoAccount" xml:space="preserve">
     <value>Demokonto</value>
+  </data>
+  <data name="DemoRegistrationWait_SettingUpYourDemoEnvironment" xml:space="preserve">
+    <value>Konfigurerar din demomiljö...</value>
+  </data>
+  <data name="DemoRegistrationWait_ThisWillOnlyTakeAMoment" xml:space="preserve">
+    <value>Detta tar bara ett ögonblick</value>
   </data>
   <data name="ElectricityTariffComparisonSummary">
     <value>Sammanställning av jämförelse av eltariffer</value>
@@ -116,6 +131,9 @@
   </data>
   <data name="Id">
     <value>ID</value>
+  </data>
+  <data name="IHaveAFullUnderstandingOfTheSituationPleaseContinue" xml:space="preserve">
+    <value>Jag har full förståelse för situationen. Vänligen fortsätt.</value>
   </data>
   <data name="ImportantNote" xml:space="preserve">
     <value>Viktig anmärkning:</value>
@@ -204,6 +222,9 @@
   <data name="Personal">
     <value>Personlig</value>
   </data>
+  <data name="PleaseBeAdvisedThatYourAccountAndAllAssociatedDataWillBeRemovedFromTheApp" xml:space="preserve">
+    <value>Observera att ditt konto och all tillhörande data kommer att tas bort från appen</value>
+  </data>
   <data name="PleaseBeAware" xml:space="preserve">
     <value>Var uppmärksam</value>
   </data>
@@ -267,6 +288,9 @@
   <data name="StartImportingHistoricalData" xml:space="preserve">
     <value>Börja importera historisk data...</value>
   </data>
+  <data name="StartRemovalProcedure" xml:space="preserve">
+    <value>Starta borttagningsprocedur</value>
+  </data>
   <data name="Statistics">
     <value>Statistik</value>
   </data>
@@ -305,6 +329,9 @@
   </data>
   <data name="ThisMeansTheTOUTariffResultsInASavingsOf" xml:space="preserve">
     <value>Detta innebär att TOU-tariffen resulterar i en besparing på</value>
+  </data>
+  <data name="ThisWillOnlyTakeAMoment" xml:space="preserve">
+    <value>Detta tar bara ett ögonblick</value>
   </data>
   <data name="TimeOfUse" xml:space="preserve">
     <value>Användningstid (ToU)</value>

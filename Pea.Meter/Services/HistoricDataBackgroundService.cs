@@ -115,6 +115,21 @@ public class HistoricDataBackgroundService
                 break;
             }
 
+            if (peaAdapterRouter.IsInDemoMode)
+            {
+                var importDiff = DateTime.Today - oldestDateToImport;
+                if (importDiff.Days > 400)
+                {
+                    logger.LogWarning(
+                        "Import cancelled due to excessive data age. Oldest date to import is {OldestDate}, today is {Today}",
+                        oldestDateToImport.ToString("yyyy-MM-dd"), DateTime.Today.ToString("yyyy-MM-dd"));
+
+                    WeakReferenceMessenger.Default.Send(new AllImportedDataCompletedMessage());
+
+                    return;
+                }
+            }
+
             try
             {
                 // Check if data already exists for this date in the database

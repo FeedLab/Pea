@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:Pea.Meter.Controls"
+             xmlns:core="http://schemas.syncfusion.com/maui"
+             xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
+             x:Class="Pea.Meter.View.Components.HomeRegisterDemoAccountWaitPopup">
+
+    <VerticalStackLayout
+        Margin="32, 12">
+        
+        <!-- <controls:StrokedLabel -->
+        <!--     Text="Setting up your demo environment..." -->
+        <!--     FillColor="NavajoWhite" -->
+        <!--     StrokeColor="Black" -->
+        <!--     FontSize="18" -->
+        <!--     StrokeWidth="1" -->
+        <!--     HorizontalOptions="Center" -->
+        <!--     VerticalOptions="Start" -->
+        <!--     WidthRequest="350" -->
+        <!--     HeightRequest="40"/> -->
+        
+        <Label
+            Margin="0,0,0,0"
+            FontSize="24"
+            Text="{x:Static properties:AppResources.DemoRegistrationWait_SettingUpYourDemoEnvironment}" HorizontalOptions="Center" />
+        
+        <core:SfBusyIndicator
+            Margin="0,32"
+            IsRunning="True"
+            AnimationType="CircularMaterial"
+            WidthRequest="80"
+            HeightRequest="80"
+            HorizontalOptions="Center"
+            OverlayFill="Transparent"
+            IndicatorColor="#002684" />
+        
+        <Label
+            Text="{x:Static properties:AppResources.DemoRegistrationWait_ThisWillOnlyTakeAMoment}" HorizontalOptions="Center" />
+    </VerticalStackLayout>
+
+</ContentView>

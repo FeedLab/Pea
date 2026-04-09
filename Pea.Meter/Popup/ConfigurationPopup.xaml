@@ -97,9 +97,9 @@
                 IndicatorBackground="#4CAF50"
                 SelectionChanged="TabView_OnSelectionChanged">
                 <tabView:SfTabView.Items>
-                    <tabView:SfTabItem Header="{x:Static properties:AppResources.Tariff}" 
+                    <tabView:SfTabItem Header="{x:Static properties:AppResources.Tariff}"
                                        x:Name="Tariff"
-                                       AutomationId="Tariff" 
+                                       AutomationId="Tariff"
                                        TextColor="White"
                                        FontSize="14">
                         <tabView:SfTabItem.Content>
@@ -116,7 +116,7 @@
 
                     <tabView:SfTabItem Header="{x:Static properties:AppResources.Language}"
                                        x:Name="Language"
-                                       AutomationId="Language" 
+                                       AutomationId="Language"
                                        TextColor="White"
                                        FontSize="14">
                         <tabView:SfTabItem.Content>

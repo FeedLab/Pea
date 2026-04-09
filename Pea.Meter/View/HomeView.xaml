@@ -7,113 +7,115 @@
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
              x:Class="Pea.Meter.View.HomeView">
 
-        <Border
-            Grid.Column="0"
-            Margin="20"
-            Padding="16"
-            Style="{StaticResource MainPanelBorder}"
-            WidthRequest="400"
-            VerticalOptions="Center"
+    <Border
+        Margin="20"
+        Padding="16"
+        Style="{StaticResource MainPanelBorder}"
+        WidthRequest="500"
+        VerticalOptions="Center"
+        HorizontalOptions="Center">
+
+        <Grid
+            RowDefinitions="Auto,*,Auto" RowSpacing="8"
             HorizontalOptions="Center">
 
-            <Grid
-                RowDefinitions="Auto,*,Auto" RowSpacing="8">
+            <Label Grid.Row="0"
+                   Margin="0,0,0,16"
+                   Text="{x:Static properties:AppResources.Register_HowToRegisterYourElectricMeter}"
+                   TextColor="Black"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center" />
 
-                <Label Grid.Row="0"
-                       Margin="0,0,0,16"
-                       Text="{x:Static properties:AppResources.Register_HowToRegisterYourElectricMeter}"
-                       TextColor="Black"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       HorizontalTextAlignment="Center" />
+            <VerticalStackLayout Grid.Row="1" Spacing="12" Padding="8,0" HorizontalOptions="Center">
+                <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black" HorizontalOptions="Start">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{x:Static properties:AppResources.Register_1ObtainCredentialX0a}"
+                                  FontAttributes="Bold" />
+                            <Span Text="&#10;" />
+                            <Span Text="{x:Static properties:AppResources.Register_ReadInstructionInThe}" />
+                            <Span Text="link" TextColor="Blue" TextDecorations="Underline">
+                                <Span.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped" />
+                                </Span.GestureRecognizers>
+                            </Span>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
 
-                <VerticalStackLayout Grid.Row="1" Spacing="12" Padding="8,0">
-                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{x:Static properties:AppResources.Register_1ObtainCredentialX0a}"
-                                      FontAttributes="Bold" />
-                                <Span Text="&#10;" />
-                                <Span Text="{x:Static properties:AppResources.Register_ReadInstructionInThe}" />
-                                <Span Text="link" TextColor="Blue" TextDecorations="Underline">
-                                    <Span.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped" />
-                                    </Span.GestureRecognizers>
-                                </Span>
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-
-                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{x:Static properties:AppResources.Register_2CredentialSentFromPEA}"
-                                      FontAttributes="Bold" />
-                                <Span Text="&#10;" />
-                                <Span Text="{x:Static properties:AppResources.Register_LookInYourInboxForAMailFrom}" />
+                <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black"
+                       HorizontalOptions="Start">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{x:Static properties:AppResources.Register_2CredentialSentFromPEA}"
+                                  FontAttributes="Bold" />
+                            <Span Text="&#10;" />
+                            <Span Text="{x:Static properties:AppResources.Register_LookInYourInboxForAMailFrom}" />
                             <Span Text="support.amr@pea.co.th"
-                                      FontAttributes="Bold" TextColor="Gray" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
+                                  FontAttributes="Bold" TextColor="Gray" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
 
-                    <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{x:Static properties:AppResources.Register_3StartRegistration}"
-                                      FontAttributes="Bold" />
-                                <Span Text="&#10;" />
-                                <Span
-                                    Text="{x:Static properties:AppResources.Register_TapTheGreenButtonBelowToGetStarted}" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-                </VerticalStackLayout>
+                <Label LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="Black"
+                       HorizontalOptions="Start">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{x:Static properties:AppResources.Register_3StartRegistration}"
+                                  FontAttributes="Bold" />
+                            <Span Text="&#10;" />
+                            <Span
+                                Text="{x:Static properties:AppResources.Register_TapTheGreenButtonBelowToGetStarted}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </VerticalStackLayout>
 
-                <VerticalStackLayout
-                    Grid.Row="2"
-                    Margin="0,16,0,0"
+            <VerticalStackLayout
+                Grid.Row="2"
+                Margin="0,16,0,0"
+                HorizontalOptions="Center">
+
+                <button:SfButton
+                    Style="{StaticResource IconButtonStyle}"
+                    Command="{Binding AddAccountCommand}"
+                    ImageSource="{StaticResource AddMeterIcon}"
+                    ToolTipProperties.Text="{x:Static properties:AppResources.Register_RegisterMeterAccount}"
+                    Text="{x:Static properties:AppResources.Register_YesIWantToRegisterAMeter}"
+                    HorizontalOptions="Fill" />
+
+                <HorizontalStackLayout
                     HorizontalOptions="Center">
+                    <BoxView Margin="0,0,0,0"
+                             WidthRequest="55"
+                             HeightRequest="1"
+                             Background="#000093"
+                             VerticalOptions="Center" />
 
-                    <button:SfButton
-                        Style="{StaticResource IconButtonStyle}"
-                        Command="{Binding AddAccountCommand}"
-                        ImageSource="{StaticResource AddMeterIcon}"
-                        ToolTipProperties.Text="{x:Static properties:AppResources.Register_RegisterMeterAccount}"
-                        Text="{x:Static properties:AppResources.Register_YesIWantToRegisterAMeter}"
-                        HorizontalOptions="Fill" />
+                    <Label
+                        Margin="8,16"
+                        Text="{x:Static properties:AppResources.OR}"
+                        TextColor="#000093"
+                        FontSize="18" />
 
-                    <HorizontalStackLayout
-                        HorizontalOptions="Center">
-                        <BoxView Margin="0,0,0,0"
-                                 WidthRequest="55"
-                                 HeightRequest="1"
-                                 Background="#000093"
-                                 VerticalOptions="Center" />
+                    <BoxView Margin="0,0,0,0"
+                             WidthRequest="55"
+                             HeightRequest="1"
+                             Background="#000093"
+                             VerticalOptions="Center" />
+                </HorizontalStackLayout>
 
-                        <Label
-                            Margin="8,16"
-                            Text="{x:Static properties:AppResources.OR}"
-                            TextColor="#000093"
-                            FontSize="18" />
+                <button:SfButton
+                    Style="{StaticResource IconButtonStyle}"
+                    Command="{Binding AddDemoAccountCommand}"
+                    ImageSource="{StaticResource ImportIcon}"
+                    ToolTipProperties.Text="{x:Static properties:AppResources.DemoAccount}"
+                    Text="{x:Static properties:AppResources.NoADemoAccountWillBeEnough}"
+                    HorizontalOptions="Fill" />
 
-                        <BoxView Margin="0,0,0,0"
-                                 WidthRequest="55"
-                                 HeightRequest="1"
-                                 Background="#000093"
-                                 VerticalOptions="Center" />
-                    </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
 
-                    <button:SfButton
-                        Style="{StaticResource IconButtonStyle}"
-                        Command="{Binding AddDemoAccountCommand}"
-                        ImageSource="{StaticResource ImportIcon}"
-                        ToolTipProperties.Text="{x:Static properties:AppResources.DemoAccount}"
-                        Text="{x:Static properties:AppResources.NoADemoAccountWillBeEnough}"
-                        HorizontalOptions="Fill" />
-
-                </VerticalStackLayout>
-            </Grid>
-
-        </Border>
+    </Border>
 </ContentView>

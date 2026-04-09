@@ -10,6 +10,7 @@ using Pea.Meter.Helpers;
 using Pea.Meter.Helpers;
 using Pea.Meter.Models;
 using Pea.Meter.Services;
+using Pea.Meter.View.Components;
 using AuthData = Pea.Meter.Helpers.AuthData;
 
 namespace Pea.Meter.ViewModel;
@@ -25,6 +26,7 @@ public partial class HomeViewModel : ObservableObject
     private readonly StorageService storageService;
     private readonly HistoricDataBackgroundService historicDataBackgroundService;
     private readonly PeaDbContextFactory dbContextFactory;
+    private readonly ILogger<HomeViewModel> logger;
     private readonly PeaAdapterRouter peaAdapterRouter;
     private readonly DailyPeaReadingsTimer dailyPeaReadingsTimer;
     private readonly NewDayBackgroundTimer newDayBackgroundTimer;
@@ -35,6 +37,7 @@ public partial class HomeViewModel : ObservableObject
         StorageService storageService, HistoricDataBackgroundService historicDataBackgroundService,
         IPeaAdapter peaAdapterRouter,
         PeaDbContextFactory dbContextFactory,
+        ILogger<HomeViewModel> logger,
         DailyPeaReadingsTimer dailyPeaReadingsTimer, NewDayBackgroundTimer newDayBackgroundTimer)
     {
         this.customerProfile = customerProfile;
@@ -44,6 +47,7 @@ public partial class HomeViewModel : ObservableObject
         this.storageService = storageService;
         this.historicDataBackgroundService = historicDataBackgroundService;
         this.dbContextFactory = dbContextFactory;
+        this.logger = logger;
         this.peaAdapterRouter = (PeaAdapterRouter)peaAdapterRouter;
         this.dailyPeaReadingsTimer = dailyPeaReadingsTimer;
         this.newDayBackgroundTimer = newDayBackgroundTimer;
@@ -54,33 +58,45 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private async Task AddDemoAccount()
     {
-        await Task.Run(async () =>
+        PopupHelper popupHelper = new();
+        
+        await popupHelper.ShowAutoClosePopup(new HomeRegisterDemoAccountWaitPopup(), async () =>
         {
-            Debug.WriteLine("AddDemoAccount: Running in background");
-            var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
-            var meterReadingRepository = new MeterReadingRepository(loggerRepository, dbContextFactory);
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    Debug.WriteLine("AddDemoAccount: Running in background");
+                    var loggerRepository = AppService.GetRequiredService<ILogger<MeterReadingRepository>>();
+                    var meterReadingRepository = new MeterReadingRepository(loggerRepository, dbContextFactory);
 
-            peaAdapterRouter.UseDemo(true);
-            await peaAdapterRouter.LoginUser("demo", "demo");
-            authDataLogin = new AuthData("demo", "demo");
-            var meterNumber = peaAdapterRouter.MeterNumber ?? throw new InvalidOperationException();
+                    peaAdapterRouter.UseDemo(true);
+                    await peaAdapterRouter.LoginUser("demo", "demo");
+                    authDataLogin = new AuthData("demo", "demo");
+                    var meterNumber = peaAdapterRouter.MeterNumber ?? throw new InvalidOperationException();
 
-            await meterReadingRepository.DeleteAllAsync();
-            await meterReadingRepository.DeleteAllAsync(meterNumber);
-            var readings = await peaAdapterRouter.GetAllReadings(DateTime.Today);
-            await meterReadingRepository.AddRangeAsync(readings, meterNumber);
+                    await meterReadingRepository.DeleteAllAsync();
+                    await meterReadingRepository.DeleteAllAsync(meterNumber);
+                    var readings = await peaAdapterRouter.GetAllReadings(DateTime.Today);
+                    await meterReadingRepository.AddRangeAsync(readings, meterNumber);
 
-            storageService.IsAuthenticated = true;
-            AuthData = await loginHelper.SaveAuthDataAsync(authDataLogin.Username, authDataLogin.Password);
+                    storageService.IsAuthenticated = true;
+                    AuthData = await loginHelper.SaveAuthDataAsync(authDataLogin.Username, authDataLogin.Password);
 
-            WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(AuthData));
+                    WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(AuthData));
 
-            await storageService.ResetHistoricalData();
-            WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
+                    await storageService.ResetHistoricalData();
+                    WeakReferenceMessenger.Default.Send(new AllAggregationsCompletedMessage());
 
-            newDayBackgroundTimer.Start();
-            await dailyPeaReadingsTimer.Start();
-            historicDataBackgroundService.Start(1);
+                    newDayBackgroundTimer.Start();
+                    await dailyPeaReadingsTimer.Start();
+                    historicDataBackgroundService.Start(1);
+                });
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error adding demo account");
+            }
         });
     }
 
