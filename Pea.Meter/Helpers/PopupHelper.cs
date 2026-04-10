@@ -45,6 +45,6 @@ public class PopupHelper
 
         await action();
 
-        await popup.CloseAsync(true);
+        await MainThread.InvokeOnMainThreadAsync(() => popup.CloseAsync(true));
     }
 }

@@ -11,7 +11,7 @@
         Margin="20"
         Padding="16"
         Style="{StaticResource MainPanelBorder}"
-        WidthRequest="500"
+        WidthRequest="450"
         VerticalOptions="Center"
         HorizontalOptions="Center">
 
@@ -75,6 +75,7 @@
             <VerticalStackLayout
                 Grid.Row="2"
                 Margin="0,16,0,0"
+                WidthRequest="330"
                 HorizontalOptions="Center">
 
                 <button:SfButton
@@ -83,6 +84,8 @@
                     ImageSource="{StaticResource AddMeterIcon}"
                     ToolTipProperties.Text="{x:Static properties:AppResources.Register_RegisterMeterAccount}"
                     Text="{x:Static properties:AppResources.Register_YesIWantToRegisterAMeter}"
+                    LineBreakMode="TailTruncation"
+                    HorizontalTextAlignment="Start"
                     HorizontalOptions="Fill" />
 
                 <HorizontalStackLayout
@@ -112,6 +115,8 @@
                     ImageSource="{StaticResource ImportIcon}"
                     ToolTipProperties.Text="{x:Static properties:AppResources.DemoAccount}"
                     Text="{x:Static properties:AppResources.NoADemoAccountWillBeEnough}"
+                    LineBreakMode="TailTruncation"
+                    HorizontalTextAlignment="Start"
                     HorizontalOptions="Fill" />
 
             </VerticalStackLayout>

@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="Pea.Meter">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-04-01T05:46:45.082694800Z">
+        <DropdownSelection timestamp="2026-04-09T22:54:43.616141400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\jompa\.android\avd\pixel_7_-_api_36_0.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\jompa\.android\avd\tablet_m-dpi_10_1in_-_api_36_0.avd" />
             </handle>
           </Target>
         </DropdownSelection>

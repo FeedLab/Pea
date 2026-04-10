@@ -26,30 +26,30 @@ public class PeaAdapterDemo : IPeaAdapter
 
     public IList<PeaMeterReading> ImportPeriodDataAsList => importPeriodDataAsList;
     
-    private string userName;
-    private string password;
+    private string userName = string.Empty;
+    private string password = string.Empty;
 
-    public string? CustomerId { get; set; }
-    public string? CustomerCode { get; set; }
-    public string? PeaNo { get; set; }
-    public string? CustomerName { get; set; }
-    public string? PeaSite { get; set; }
-    public string? CustomerAddress { get; set; }
-    public string? CustomerPhone { get; set; }
-    public string? CustomerFax { get; set; }
-    public string? CustomerContact { get; set; }
-    public string? CustomerEmail { get; set; }
-    public string? CustomerWebsite { get; set; }
-    public string? RateType { get; set; }
-    public string? AccountType { get; set; }
-    public string? IndustrialEstate { get; set; }
-    public string? BusinessType { get; set; }
-    public string? BusinessSize { get; set; }
-    public string? MeterNumber { get; set; }
-    public string? CTVT { get; set; }
-    public string? KVA { get; set; }
-    public string? BillingCycle { get; set; }
-    public string? MeterPointId { get; set; }
+    public string? CustomerId { get; private set; }
+    public string? CustomerCode { get; private set; }
+    public string? PeaNo { get; private set; }
+    public string? CustomerName { get; private set; }   
+    public string? PeaSite { get; private set; }
+    public string? CustomerAddress { get; private set; }
+    public string? CustomerPhone { get; private set; }
+    public string? CustomerFax { get; private set; }
+    public string? CustomerContact { get; private set; }
+    public string? CustomerEmail { get; private set; }
+    public string? CustomerWebsite { get; private set; }
+    public string? RateType { get; private set; }
+    public string? AccountType { get; private set; }
+    public string? IndustrialEstate { get; private set; }
+    public string? BusinessType { get; private set; }
+    public string? BusinessSize { get; private set; }
+    public string? MeterNumber { get; private set; }
+    public string? CTVT { get; private set; }
+    public string? KVA { get; private set; }
+    public string? BillingCycle { get; private set; }
+    public string? MeterPointId { get; private set; }
 
     public async Task<bool> LoginUser(string username, string password)
     {
@@ -278,8 +278,12 @@ public class PeaMeterPeriodData
 
     public static Dictionary<DateTime, List<PeaMeterReading>> ImportPeriodDataDictionary()
     {
-        // Read JSON from file
-        var json = File.ReadAllText("AllMeterReadings.json");
+        // Read JSON from embedded resource
+        var assembly = typeof(PeaMeterPeriodData).Assembly;
+        using var stream = assembly.GetManifestResourceStream("Pea.Meter.AllMeterReadings.json")
+            ?? throw new InvalidOperationException("Embedded resource 'AllMeterReadings.json' not found.");
+        using var reader = new StreamReader(stream);
+        var json = reader.ReadToEnd();
 
         var values = JsonSerializer.Deserialize<Dictionary<DateTime, List<PeaMeterPeriodData>>>(json);
 
