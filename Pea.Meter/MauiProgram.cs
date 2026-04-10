@@ -2,6 +2,7 @@
 using Akavache.Sqlite3;
 using Akavache.SystemTextJson;
 using CommunityToolkit.Maui;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Meter.Helpers;
@@ -39,6 +40,13 @@ namespace Pea.Meter
 
             var builder = MauiApp.CreateBuilder();
 
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("Pea.Meter.appsettings.json");
+            if (stream != null)
+                builder.Configuration.AddJsonStream(stream);
+
+            builder.Configuration.AddUserSecrets<App>();
+            
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()

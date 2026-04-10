@@ -55,6 +55,22 @@
                     <FontImageSource FontFamily="FontSolid" Glyph="&#xf15b;" Color="#0F172A" Size="18" />
                 </button:SfButton.ImageSource>
             </button:SfButton>
+
+            <button:SfButton
+                Text="Send Log"
+                CornerRadius="8"
+                FontSize="14"
+                ShowIcon="True"
+                ImageSize="18"
+                ImageAlignment="Left"
+                VerticalOptions="Center"
+                Background="#E3F2FD"
+                TextColor="#0D47A1"
+                Command="{Binding SendLogCommand}">
+                <button:SfButton.ImageSource>
+                    <FontImageSource FontFamily="FontSolid" Glyph="&#xf0e0;" Color="#0D47A1" Size="18" />
+                </button:SfButton.ImageSource>
+            </button:SfButton>
         </HorizontalStackLayout>
 
         <ScrollView Grid.Row="1" Margin="8,0,8,8">

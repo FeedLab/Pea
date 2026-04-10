@@ -57,6 +57,13 @@ jobs:
           $content = $content -replace '<ApplicationVersion>\d+</ApplicationVersion>', "<ApplicationVersion>$versionCode</ApplicationVersion>"
           Set-Content Pea.Meter/Pea.Meter.csproj $content
 
+      - name: Inject secrets into appsettings.json
+        run: |
+          $file = "Pea.Meter/appsettings.json"
+          $json = Get-Content $file | ConvertFrom-Json
+          $json | Add-Member -Force -NotePropertyName 'MailLoggPassword' -NotePropertyValue '${{ secrets.MAIL_LOG_PASSWORD }}'
+          $json | ConvertTo-Json | Set-Content $file
+
       - name: Build
         run: |
           $keystorePath = Join-Path $env:GITHUB_WORKSPACE "Pea.Meter\pea.smart.meter.keystore"
