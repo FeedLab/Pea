@@ -47,13 +47,17 @@ public class PeaAdapterLive : IPeaAdapter
     public PeaAdapterLive(ILogger<PeaAdapterLive> logger)
     {
         this.logger = logger;
+        
+        userName = string.Empty;
+        password = string.Empty;
+        
         client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(20) };
     }
 
-    public async Task<bool> LoginUser(string username, string password)
+    public async Task<bool> LoginUser(string username, string pwd)
     {
         this.userName = username.Trim();
-        this.password = password.Trim();
+        this.password = pwd;
         var isAuthenticated = false;
 
         try

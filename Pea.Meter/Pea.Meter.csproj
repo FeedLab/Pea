@@ -121,7 +121,7 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Splash\pea_splash.png" />
-	  <EmbeddedResource Include="AllMeterReadings.json" />
+	  <EmbeddedResource Include="AllMeterReadings.json.gz" />
 	</ItemGroup>
 
 	<ItemGroup>

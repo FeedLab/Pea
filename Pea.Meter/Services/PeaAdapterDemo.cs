@@ -1,27 +1,40 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.IO.Compression;
+using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Pea.Infrastructure.Helpers;
 using Pea.Infrastructure.Models;
-using Serilog.Core;
 
 namespace Pea.Meter.Services;
 
 public class PeaAdapterDemo : IPeaAdapter
 {
-    private readonly IList<PeaMeterReading> importPeriodDataAsList;
-    private readonly Dictionary<DateTime, List<PeaMeterReading>> importPeriodDataAsDictionary;
+    private readonly ILogger<PeaAdapterDemo> logger;
+    private IList<PeaMeterReading> importPeriodDataAsList = [];
+    private Dictionary<DateTime, List<PeaMeterReading>> importPeriodDataAsDictionary = [];
 
-    public PeaAdapterDemo()
+    public PeaAdapterDemo(ILogger<PeaAdapterDemo> logger)
     {
-        importPeriodDataAsDictionary = PeaMeterPeriodData
-            .ImportPeriodDataDictionary()
-            .Where(w => w.Key.Year == 2025)
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        
-        importPeriodDataAsList = importPeriodDataAsDictionary
-            .SelectMany(kvp => kvp.Value)
-            .ToList();
-        
+        this.logger = logger;
 
+        Task.Run(() =>
+        {
+            var stopwatch = Stopwatch.StartNew();
+            logger.LogInformation("Importing period data...");
+
+            importPeriodDataAsDictionary = PeaMeterPeriodData
+                .ImportPeriodDataDictionary()
+                .Where(w => w.Key.Year == 2025)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            importPeriodDataAsList = importPeriodDataAsDictionary
+                .SelectMany(kvp => kvp.Value)
+                .ToList();
+
+            stopwatch.Stop();
+            logger.LogInformation("Importing period data completed in {Milliseconds} Milliseconds."
+                , stopwatch.Elapsed.Milliseconds.ToString("G3"));
+        });
     }
 
     public IList<PeaMeterReading> ImportPeriodDataAsList => importPeriodDataAsList;
@@ -175,8 +188,10 @@ public class PeaAdapterDemo : IPeaAdapter
 
     public Task<IList<PeaMeterReading>> GetAllReadings(DateTime startDate, int maximumDaysToRead = 365)
     {
-        var dayOfYear = DateTime.Today.DayOfYear;
-
+        logger.LogInformation("Getting all readings from {0} to {1}", startDate, startDate.AddDays(-maximumDaysToRead));
+        
+        var stopwatch = Stopwatch.StartNew();
+        
         var readings = importPeriodDataAsList
             .Select(p =>
             {
@@ -209,8 +224,14 @@ public class PeaAdapterDemo : IPeaAdapter
         var allReadings = readings
             .Where(w => w.PeriodStart.Date < startDate.Date)
             .OrderBy(r => r.PeriodStart)
+            .TakeLast(maximumDaysToRead)
             .ToList();
 
+        stopwatch.Stop();
+
+        logger.LogInformation("Returning {0} readings from {1} to {2} in {Milliseconds} Milliseconds."
+            , allReadings.Count, startDate, startDate.AddDays(-maximumDaysToRead), stopwatch.Elapsed.Milliseconds.ToString("G3"));
+        
         return Task.FromResult<IList<PeaMeterReading>>(allReadings);
     }
 
@@ -248,6 +269,7 @@ public class PeaAdapterDemo : IPeaAdapter
         }
 
         //throw new Exception("No data found");
+        logger.LogWarning("No data found for selected date: {0}", selectedDate);
         return Task.FromResult<IList<PeaMeterReading>?>(new List<PeaMeterReading>());
     }
 }
@@ -278,11 +300,12 @@ public class PeaMeterPeriodData
 
     public static Dictionary<DateTime, List<PeaMeterReading>> ImportPeriodDataDictionary()
     {
-        // Read JSON from embedded resource
+        // Read JSON from compressed embedded resource
         var assembly = typeof(PeaMeterPeriodData).Assembly;
-        using var stream = assembly.GetManifestResourceStream("Pea.Meter.AllMeterReadings.json")
-            ?? throw new InvalidOperationException("Embedded resource 'AllMeterReadings.json' not found.");
-        using var reader = new StreamReader(stream);
+        using var stream = assembly.GetManifestResourceStream("Pea.Meter.AllMeterReadings.json.gz")
+            ?? throw new InvalidOperationException("Embedded resource 'AllMeterReadings.json.gz' not found.");
+        using var gzip = new GZipStream(stream, CompressionMode.Decompress);
+        using var reader = new StreamReader(gzip);
         var json = reader.ReadToEnd();
 
         var values = JsonSerializer.Deserialize<Dictionary<DateTime, List<PeaMeterPeriodData>>>(json);
@@ -308,19 +331,9 @@ public class PeaMeterPeriodData
 
     public DateTime PeriodStart { get; set; }
 
-    public DateTime PeriodEnd => PeriodStart.AddMinutes(periodLengthInMinutes).AddMilliseconds(-1);
-
     public decimal RateA { get; init; }
 
     public decimal RateB { get; init; }
 
     public decimal RateC { get; init; }
-
-    public decimal Total => RateA + RateB + RateC;
-    public decimal Peek => RateA;
-    public decimal OffPeek => RateB + RateC;
-
-    public string PeekFormatted => WattFormatter.Format(Peek * 1000);
-    public string OffPeekFormatted => WattFormatter.Format(OffPeek * 1000);
-    public string TotalFormatted => WattFormatter.Format(Total * 1000);
 }
