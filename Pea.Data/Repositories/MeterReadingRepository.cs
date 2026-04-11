@@ -255,13 +255,13 @@ public class MeterReadingRepository : IMeterReadingRepository
 
     public async Task DeleteBeforeDateAsync(string meterNumber, DateTime date, CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Enter {Method} for meter {MeterNumber}, deleting readings after {Date:yyyy-MM-dd}", nameof(DeleteBeforeDateAsync), meterNumber, date);
+        logger.LogInformation("Enter {Method} for meter {MeterNumber}, deleting readings older than {Date:yyyy-MM-dd}", nameof(DeleteBeforeDateAsync), meterNumber, date);
         await syncLock.WaitAsync(cancellationToken);
         try
         {
             await using var context = contextFactory.CreateDbContext();
             var deleted = await context.MeterReadings
-                .Where(w => w.MeterNumber == meterNumber && w.PeriodStart > date)
+                .Where(w => w.MeterNumber == meterNumber && w.PeriodStart < date)
                 .ExecuteDeleteAsync(cancellationToken);
 
             logger.LogInformation("{Method}: deleted {Count} readings for meter {MeterNumber}", nameof(DeleteBeforeDateAsync), deleted, meterNumber);

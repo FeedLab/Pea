@@ -40,10 +40,7 @@ namespace Pea.Meter
 
             var builder = MauiApp.CreateBuilder();
 
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("Pea.Meter.appsettings.json");
-            if (stream != null)
-                builder.Configuration.AddJsonStream(stream);
+            LoadAppSettingsFromResource(builder);
 
             builder.Configuration.AddUserSecrets<App>();
             
@@ -144,6 +141,14 @@ namespace Pea.Meter
             var app = builder.Build();
 
             return app;
+        }
+
+        private static void LoadAppSettingsFromResource(MauiAppBuilder builder)
+        {
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("Pea.Meter.appsettings.json");
+            if (stream != null)
+                builder.Configuration.AddJsonStream(stream);
         }
     }
 }

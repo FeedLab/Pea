@@ -23,6 +23,7 @@
             Margin="16,0"
             VerticalOptions="Center"
             HorizontalOptions="Center"
+            TextColor="Black"
             FontSize="16"
             LineBreakMode="WordWrap"
             HorizontalTextAlignment="Start"

@@ -200,7 +200,7 @@ public class HistoricDataBackgroundService
             }
 
             targetDate = targetDate.AddDays(-1);
-        } while (targetDate > oldestDateToImport);
+        } while (targetDate >= oldestDateToImport);
 
         WeakReferenceMessenger.Default.Send(new AllImportedDataCompletedMessage());
 
