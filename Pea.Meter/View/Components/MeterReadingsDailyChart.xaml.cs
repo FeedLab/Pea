@@ -68,13 +68,15 @@ public partial class MeterReadingsDailyChart : ContentView
             if (toggleButton.Value.ToString() == "Daily")
             {
                 ColumnSeriesPeek.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateDaily"];
-                ColumnSeriesOffPeek.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateDaily"];
+                OffPeakEvening.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateDaily"];
+                OffPeakMorning.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateDaily"];
                 viewModel.TimeResolutionChanged(MeterReadingsDailyViewModel.TimeResolutionType.Daily);
             }
             else if (toggleButton.Value.ToString() == "Monthly")
             {
                 ColumnSeriesPeek.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateMonthly"];
-                ColumnSeriesOffPeek.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateMonthly"];
+                OffPeakEvening.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateMonthly"];
+                OffPeakMorning.TooltipTemplate = (DataTemplate)Resources["StackedTooltipTemplateMonthly"];
                 viewModel.TimeResolutionChanged(MeterReadingsDailyViewModel.TimeResolutionType.Monthly);
             }
             else

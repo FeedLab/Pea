@@ -17,10 +17,12 @@
                 <VerticalStackLayout Padding="8,6" Spacing="2">
                     <Label Text="{Binding Item.PeriodStart, StringFormat='{0:MMM yyyy}'}"
                            FontAttributes="Bold" TextColor="White" FontSize="12" />
+                    <Label Text="{Binding Item.OffPeakMorningFormatted, StringFormat='Off-peak morning: {0}'}"
+                           TextColor="#96CE96" FontSize="11" />                    
+                    <Label Text="{Binding Item.OffPeakEveningFormatted, StringFormat='Off-peak evening: {0}'}"
+                           TextColor="#96CE96" FontSize="11" />
                     <Label Text="{Binding Item.PeekFormatted, StringFormat='Peak: {0}'}"
                            TextColor="#FF9999" FontSize="11" />
-                    <Label Text="{Binding Item.OffPeekFormatted, StringFormat='Off-peak: {0}'}"
-                           TextColor="#96CE96" FontSize="11" />
                     <Label Text="{Binding Item.TotalFormatted, StringFormat='Total: {0}'}"
                            TextColor="White" FontSize="11" FontAttributes="Bold" />
                 </VerticalStackLayout>
@@ -34,10 +36,12 @@
                 <VerticalStackLayout Padding="8,6" Spacing="2">
                     <Label Text="{Binding Item.PeriodStart, StringFormat='{0:D}'}"
                            FontAttributes="Bold" TextColor="White" FontSize="12" />
+                    <Label Text="{Binding Item.OffPeakMorningFormatted, StringFormat='Off-peak morning: {0}'}"
+                           TextColor="#96CE96" FontSize="11" />
+                    <Label Text="{Binding Item.OffPeakEveningFormatted, StringFormat='Off-peak evening: {0}'}"
+                           TextColor="#96CE96" FontSize="11" />
                     <Label Text="{Binding Item.PeekFormatted, StringFormat='Peak: {0}'}"
                            TextColor="#FF9999" FontSize="11" />
-                    <Label Text="{Binding Item.OffPeekFormatted, StringFormat='Off-peak: {0}'}"
-                           TextColor="#96CE96" FontSize="11" />
                     <Label Text="{Binding Item.TotalFormatted, StringFormat='Total: {0}'}"
                            TextColor="White" FontSize="11" FontAttributes="Bold" />
                 </VerticalStackLayout>
@@ -134,6 +138,21 @@
 
             </chart:SfCartesianChart.ZoomPanBehavior>
 
+            <chart:StackingColumnSeries x:Name="OffPeakMorning" ItemsSource="{Binding MeterDataAggregated}"
+                                        Label="Off Peak Morning"
+                                        XBindingPath="PeriodStart"
+                                        YBindingPath="OffPeakMorning"
+                                        GroupingLabel="Kw"
+                                        Fill="#96CE96"
+                                        Stroke="#6D966D"
+                                        StrokeWidth="1"
+                                        IsVisibleOnLegend="True"
+                                        EnableTooltip="True"
+                                        Spacing="0.3"
+                                        CornerRadius="0,0,0,0"
+                                        ShowDataLabels="False">
+            </chart:StackingColumnSeries>
+                
             <chart:StackingColumnSeries x:Name="ColumnSeriesPeek" ItemsSource="{Binding MeterDataAggregated}"
                                         Label="{x:Static properties:AppResources.Peek}"
                                         XBindingPath="PeriodStart"
@@ -149,13 +168,13 @@
                                         ShowDataLabels="False">
             </chart:StackingColumnSeries>
 
-            <chart:StackingColumnSeries x:Name="ColumnSeriesOffPeek" ItemsSource="{Binding MeterDataAggregated}"
-                                        Label="{x:Static properties:AppResources.OffPeek}"
+            <chart:StackingColumnSeries x:Name="OffPeakEvening" ItemsSource="{Binding MeterDataAggregated}"
+                                        Label="Off Peak Evening"
                                         XBindingPath="PeriodStart"
-                                        YBindingPath="OffPeek"
+                                        YBindingPath="OffPeakEvening"
                                         GroupingLabel="Kw"
-                                        Fill="#96CE96"
-                                        Stroke="#6D966D"
+                                        Fill="#5D7F5D"
+                                        Stroke="#324432"
                                         StrokeWidth="1"
                                         IsVisibleOnLegend="True"
                                         EnableTooltip="True"

@@ -106,12 +106,7 @@ public static class ObservableCollectionExtensions
         var dailyList = readings
             .GroupBy(r => r.PeriodStart.Date)
             .Select(g => new PeaMeterReading(
-                g.Key,
-                g.Sum(r => r.RateA),
-                g.Sum(r => r.RateB),
-                g.Sum(r => r.RateC),
-                60 * 24
-            ))
+                g.Key, g.ToList()))
             .OrderBy(r => r.PeriodStart)
             .ToList();
 
@@ -128,13 +123,8 @@ public static class ObservableCollectionExtensions
 
         var weeklyList = readings
             .GroupBy(r => r.PeriodStart.Date.AddDays(-(int)r.PeriodStart.DayOfWeek))
-            .Select(g => new PeaMeterReading(
-                g.Key,
-                g.Sum(r => r.RateA),
-                g.Sum(r => r.RateB),
-                g.Sum(r => r.RateC),
-                60 * 24 * 7
-            ))
+            .Select(g => 
+                new PeaMeterReading(g.Key, g.ToList(), 60 * 24 * 7))
             .OrderBy(r => r.PeriodStart)
             .ToList();
 
@@ -150,14 +140,9 @@ public static class ObservableCollectionExtensions
             return new ObservableCollection<PeaMeterReading>();
 
         var monthlyList = readings
-            .GroupBy(r => new { r.PeriodStart.Year, r.PeriodStart.Month })
-            .Select(g => new PeaMeterReading(
-                new DateTime(g.Key.Year, g.Key.Month, 1),
-                g.Sum(r => r.RateA),
-                g.Sum(r => r.RateB),
-                g.Sum(r => r.RateC),
-                60 * 24 * DateTime.DaysInMonth(g.Key.Year, g.Key.Month)
-            ))
+            .GroupBy(r => new DateTime(r.PeriodStart.Year, r.PeriodStart.Month, 1))
+            .Select(g => 
+                new PeaMeterReading(g.Key, g.ToList(), 60 * 24 * DateTime.DaysInMonth(g.Key.Year, g.Key.Month)))
             .OrderBy(r => r.PeriodStart)
             .ToList();
 
