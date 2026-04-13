@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.TabView;
 using Pea.Meter.Helpers;
@@ -25,11 +25,13 @@ namespace Pea.Meter
         private readonly NewDayBackgroundTimer newDayBackgroundTimer;
         private readonly HistoricDataBackgroundService historicDataBackgroundService;
         private readonly DailyPeaReadingsTimer dailyPeaReadingsTimer;
+        private readonly IPeaAdapter peaAdapter;
 
         public MainPage()
         {
             InitializeComponent();
 
+            peaAdapter = AppService.GetRequiredService<IPeaAdapter>();
             historicDataBackgroundService = AppService.GetRequiredService<HistoricDataBackgroundService>();
             dailyPeaReadingsTimer = AppService.GetRequiredService<DailyPeaReadingsTimer>();
             newDayBackgroundTimer = AppService.GetRequiredService<NewDayBackgroundTimer>();
@@ -54,11 +56,21 @@ namespace Pea.Meter
                 MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     StatisticsView.IsVisible = true;
-                    TabCustomerProfile.IsVisible = true;
                     Pea.IsVisible = false;
                     Info.IsVisible = true;
                     TouVsFlatRate.IsVisible = true;
                     SolarSystemSizing.IsVisible = true;
+
+                    if (peaAdapter.MeterNumber == "27681722")
+                    {
+                        TabLogData.IsVisible = true;
+                        TabCustomerProfile.IsVisible = true;
+                    }
+                    else
+                    {
+                        TabLogData.IsVisible = false;
+                        TabCustomerProfile.IsVisible = false;
+                    }
 
                     TabView.SelectedIndex = 0;
 
@@ -71,13 +83,15 @@ namespace Pea.Meter
                 MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     StatisticsView.IsVisible = false;
-                    TabCustomerProfile.IsVisible = false;
                     Pea.IsVisible = true;
                     TouVsFlatRate.IsVisible = false;
                     Info.IsVisible = false;
                     SolarSystemSizing.IsVisible = false;
 
                     TabView.SelectedIndex = 0;
+
+                    TabLogData.IsVisible = false;
+                    TabCustomerProfile.IsVisible = false;
 
                     return Task.CompletedTask;
                 });

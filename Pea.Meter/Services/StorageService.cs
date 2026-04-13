@@ -1,17 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Reactive.Linq;
 using System.Text.Json;
-using Akavache;
-using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Pea.Data;
 using Pea.Data.Repositories;
-using Pea.Infrastructure;
 using Pea.Infrastructure.Models;
 using Pea.Meter.Extension;
 using Pea.Meter.Helpers;

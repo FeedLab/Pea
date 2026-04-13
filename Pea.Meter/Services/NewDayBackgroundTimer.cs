@@ -62,16 +62,17 @@ public class NewDayBackgroundTimer
 
         newDayTimer = new Timer(async void (_) =>
             {
-                var today = DateTime.Now.Date;
-
                 try
                 {
-                    logger.LogInformation("Checking for new day at {CurrentDate}", today);
+                    var today = DateTime.Now.Date;
+                    logger.LogInformation("Starting to check if we have a new Date at {CurrentDate}", today);
 
                     if (today > yesterday)
                     {
+                        logger.LogInformation("YES, we have a new day...");
+                        
                         var dailyReadings = await peaAdapter.ShowDailyReadings(today);
-                        var readingsFromPeaToday = dailyReadings ??= new List<PeaMeterReading>();
+                        var readingsFromPeaToday = dailyReadings ?? new List<PeaMeterReading>();
 
                         var readingsFromPeaYesterday =
                             yesterday != DateTime.MinValue
@@ -88,12 +89,25 @@ public class NewDayBackgroundTimer
                             return;
                         }
 
-                        logger.LogInformation("Found new day, Current day: {CurrentDay}, Now: {Now}",
+                        logger.LogInformation("Found new readings from PEA for TODAY, Yesterday: {Yesterday}, Today: {Today}",
                             yesterday,
                             today);
 
-                        if (readingsFromPeaYesterday is not null)
+                        
+                        if (readingsFromPeaYesterday is null || readingsFromPeaYesterday.Count == 0 )
                         {
+                            logger.LogWarning("Could not find any PEA readings for yesterday, Yesterday: {Yesterday}, Today: {Today}",
+                                yesterday,
+                                today);
+                            return;
+                        }
+                        else
+                        {
+                            logger.LogInformation("Found {Count} PEA readings for yesterday, Yesterday: {Yesterday}, Today: {Today}",
+                                readingsFromPeaYesterday.Count,
+                                yesterday,
+                                today);
+                            
                             var peaAdapterMeterNumber = peaAdapter.MeterNumber ?? "N/A";
 
                             await meterReadingRepository.AddRangeUpsertAsync(readingsFromPeaYesterday.ToList(),
@@ -105,8 +119,11 @@ public class NewDayBackgroundTimer
 
                         await ProcessPeaReadingsAndNotify(readingsFromPeaToday, allReadingsFromDb, today);
 
+                        logger.LogInformation("Finished processing new day, Yesterday: {Yesterday}, Today: {Today}",
+                            yesterday,
+                            today);
+                        
                         yesterday = today;
-
                     }
                 }
                 catch (Exception e)
@@ -119,7 +136,7 @@ public class NewDayBackgroundTimer
             },
             null,
             TimeSpan.FromSeconds(startTimeDelay),
-            TimeSpan.FromMinutes(15));
+            TimeSpan.FromMinutes(5));
     }
 
     private async Task ProcessPeaReadingsAndNotify(IList<PeaMeterReading> readingsFromPeaToday,

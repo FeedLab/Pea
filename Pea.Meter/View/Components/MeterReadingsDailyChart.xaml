@@ -139,7 +139,7 @@
             </chart:SfCartesianChart.ZoomPanBehavior>
 
             <chart:StackingColumnSeries x:Name="OffPeakMorning" ItemsSource="{Binding MeterDataAggregated}"
-                                        Label="Off Peak Morning"
+                                        Label="{x:Static properties:AppResources.OffPeakMorning}"
                                         XBindingPath="PeriodStart"
                                         YBindingPath="OffPeakMorning"
                                         GroupingLabel="Kw"
@@ -169,7 +169,7 @@
             </chart:StackingColumnSeries>
 
             <chart:StackingColumnSeries x:Name="OffPeakEvening" ItemsSource="{Binding MeterDataAggregated}"
-                                        Label="Off Peak Evening"
+                                        Label="{x:Static properties:AppResources.OffPeakEvening}"
                                         XBindingPath="PeriodStart"
                                         YBindingPath="OffPeakEvening"
                                         GroupingLabel="Kw"

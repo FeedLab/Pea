@@ -177,6 +177,12 @@
   <data name="NoADemoAccountWillBeEnough" xml:space="preserve">
     <value>No, a demo account will be enough</value>
   </data>
+  <data name="OffPeakEvening" xml:space="preserve">
+    <value>Off-Peak Evening</value>
+  </data>
+  <data name="OffPeakMorning" xml:space="preserve">
+    <value>Off-Peak Morning</value>
+  </data>
   <data name="OffPeakPrice" xml:space="preserve">
     <value>OffPeak Price</value>
   </data>

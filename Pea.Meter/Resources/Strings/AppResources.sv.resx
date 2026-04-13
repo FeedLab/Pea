@@ -177,6 +177,12 @@
   <data name="NoADemoAccountWillBeEnough" xml:space="preserve">
     <value>Nej, det räcker med ett demokonto</value>
   </data>
+  <data name="OffPeakEvening" xml:space="preserve">
+    <value>Låg-period (kväll)</value>
+  </data>
+  <data name="OffPeakMorning" xml:space="preserve">
+    <value>Låg-period (Morgon)</value>
+  </data>
   <data name="OffPeakPrice" xml:space="preserve">
     <value>Lägsta pris</value>
   </data>

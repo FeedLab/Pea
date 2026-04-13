@@ -575,6 +575,24 @@ namespace Pea.Meter.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Off-Peak Evening.
+        /// </summary>
+        public static string OffPeakEvening {
+            get {
+                return ResourceManager.GetString("OffPeakEvening", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off-Peak Morning.
+        /// </summary>
+        public static string OffPeakMorning {
+            get {
+                return ResourceManager.GetString("OffPeakMorning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OffPeak Price.
         /// </summary>
         public static string OffPeakPrice {

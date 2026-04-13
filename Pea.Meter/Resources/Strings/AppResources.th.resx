@@ -177,6 +177,12 @@
   <data name="NoADemoAccountWillBeEnough" xml:space="preserve">
     <value>ไม่ บัญชีทดลองก็เพียงพอแล้ว</value>
   </data>
+  <data name="OffPeakEvening" xml:space="preserve">
+    <value>ช่วงเย็นนอกช่วงพีค</value>
+  </data>
+  <data name="OffPeakMorning" xml:space="preserve">
+    <value>ช่วงเช้าที่คึกคัก</value>
+  </data>
   <data name="OffPeakPrice" xml:space="preserve">
     <value>ราคา OffPeak</value>
   </data>
