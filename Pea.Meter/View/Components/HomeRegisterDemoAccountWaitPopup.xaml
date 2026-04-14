@@ -24,6 +24,7 @@
         <Label
             Margin="0,0,0,0"
             FontSize="24"
+            TextColor="Black"
             Text="{x:Static properties:AppResources.DemoRegistrationWait_SettingUpYourDemoEnvironment}" HorizontalOptions="Center" />
         
         <core:SfBusyIndicator
@@ -37,6 +38,7 @@
             IndicatorColor="#002684" />
         
         <Label
+            TextColor="Black"
             Text="{x:Static properties:AppResources.DemoRegistrationWait_ThisWillOnlyTakeAMoment}" HorizontalOptions="Center" />
     </VerticalStackLayout>
 

@@ -24,12 +24,16 @@ public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteV
     private readonly StorageService storageService;
 
     private DateTime lastPopulateChartData = DateTime.MinValue;
-
+    
     [ObservableProperty] private ObservableCollection<PvMonthlyAggregatedModel> pvCalculatedPerMonth = [];
     [ObservableProperty] private ObservableCollection<MeterDataManagerMonth> costCompareMonthList = [];
     [ObservableProperty] private ObservableCollection<PeaMeterReading> meterDataMonthSummary = [];
     [ObservableProperty] private ObservableCollection<MeterDataManagerMonth> energyProducedMonthlySummary = [];
     [ObservableProperty] private string yearlyConsumptionText;
+    [ObservableProperty] private string dailyUsageAveragePeekKwText;
+    [ObservableProperty] private string averageKwUsedBetween08To17MonthlyText;
+    [ObservableProperty] private string batterySizeNeededText;
+    [ObservableProperty] private string solarSizeNeededText;
     [ObservableProperty] private decimal yearlyConsumption;
     [ObservableProperty] private decimal dailyUsageAveragePeekKw;
     [ObservableProperty] private decimal averageKwUsedBetween08To17Monthly;
@@ -321,25 +325,24 @@ public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteV
             var yearlyConsumptionPeekKw = monthly.Sum(s => s.PeakUsedKw);
             var yearlyConsumptionOffPeekKw = monthly.Sum(s => s.OffPeakUsedKw);
             var yearlyConsumptionTotalKw = yearlyConsumptionPeekKw + yearlyConsumptionOffPeekKw;
-            var averageUsedBetween08To17Monthly = averageUsedBetween08To17;
+            var averageUsedBetween08To17Monthly = averageUsedBetween08To17 * 1000;
             var dailyConsumptionAveragePeekKw = yearlyConsumptionPeekKw / 365;
 
-            var solarArraySize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
+            var solarSize = listSolarArraySizes.ClosestGreater(dailyConsumptionAveragePeekKw / 4.0m);
 
             MainThread.InvokeOnMainThreadAsync(() =>
             {
-                if (newPvData != null)
                     PvCalculatedPerMonth = newPvData;
 
                 AverageKwUsedBetween08To17Monthly = averageUsedBetween08To17Monthly;
-
+                AverageKwUsedBetween08To17MonthlyText = WattFormatter.Format(averageUsedBetween08To17Monthly);
                 YearlyConsumptionText = WattFormatter.Format(yearlyConsumptionTotalKw);
                 YearlyConsumption = yearlyConsumptionTotalKw;
-                DailyUsageAveragePeekKw = dailyConsumptionAveragePeekKw;
-                BatterySizeNeeded = (dailyConsumptionAveragePeekKw - averageUsedBetween08To17Monthly)
-                    .RoundUpToNearestFive();
-
-                SolarSizeNeeded = solarArraySize;
+                DailyUsageAveragePeekKwText = WattFormatter.Format(dailyConsumptionAveragePeekKw);
+                // BatterySizeNeeded = (dailyConsumptionAveragePeekKw - averageUsedBetween08To17Monthly)
+                //     .RoundUpToNearestFive();
+                BatterySizeNeededText = WattFormatter.Format(BatterySize * 1000);
+                SolarSizeNeededText = WattFormatter.Format(SolarArraySize * 1000);
             });
         }
         catch (Exception e)

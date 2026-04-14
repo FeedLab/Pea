@@ -19,8 +19,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<UserSecretsId>Pea.Smart.Meter</UserSecretsId>
-
-
+		<MauiXamlInflator>SourceGen</MauiXamlInflator>
+		
 		<!-- Display name -->
 		<ApplicationTitle>PEA Smart Meter</ApplicationTitle>
 
@@ -74,6 +74,7 @@
 	<ItemGroup>
 		<PackageReference Include="Akavache.Sqlite3" Version="11.5.1" />
 		<PackageReference Include="Akavache.SystemTextJson" Version="11.5.1" />
+		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="7.0.1" />
 		<PackageReference Include="HtmlAgilityPack.NetCore" Version="1.5.0.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">

@@ -77,7 +77,6 @@ public partial class CustomerInfoViewModel : ObservableObject
                         !string.IsNullOrEmpty(peaAdapter.MeterNumber))
                     {
                         CustomerName = peaAdapter.CustomerName;
-                        CustomerId = peaAdapter.CustomerId;
                         MeterNumber = peaAdapter.MeterNumber;
 
                         if (storageService.DailyAggregated.Any())

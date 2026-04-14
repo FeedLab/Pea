@@ -29,6 +29,7 @@
             TextColor="Black"
             FontAttributes="Bold"
             FontFamily="OpenSansSemibold"
+            LineBreakMode="TailTruncation"
             Text="{Binding LabelText, Source={x:Reference Root}}" />
 
         <sliders:SfSlider

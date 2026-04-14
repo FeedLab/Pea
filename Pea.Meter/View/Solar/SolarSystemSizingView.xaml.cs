@@ -21,13 +21,13 @@ public partial class SolarSystemSizingView : ContentView
 
         BindingContext = viewModel;
 
-        var costTooltip = (DataTemplate)Resources["TooltipTemplateMonthly"];
-        CostPeek.TooltipTemplate = costTooltip;
-        CostOffPeek.TooltipTemplate = costTooltip;
-        CostFlatRate.TooltipTemplate = costTooltip;
-        CostPeekSolar.TooltipTemplate = costTooltip;
-        CostOffPeekSolar.TooltipTemplate = costTooltip;
-        CostFlatRateSolar.TooltipTemplate = costTooltip;
+        // var costTooltip = (DataTemplate)Resources["TooltipTemplateMonthly"];
+        // CostPeek.TooltipTemplate = costTooltip;
+        // CostOffPeek.TooltipTemplate = costTooltip;
+        // CostFlatRate.TooltipTemplate = costTooltip;
+        // CostPeekSolar.TooltipTemplate = costTooltip;
+        // CostOffPeekSolar.TooltipTemplate = costTooltip;
+        // CostFlatRateSolar.TooltipTemplate = costTooltip;
 
         var kwhTooltip = (DataTemplate)Resources["TooltipTemplateKwh"];
         KwhPeek.TooltipTemplate = kwhTooltip;

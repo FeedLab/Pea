@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:components="clr-namespace:Pea.Meter.Components"
              x:Class="Pea.Meter.Components.Configuration.SolarArrayConfigurationComponent"
@@ -10,18 +10,26 @@
         Background="White"
         Padding="8, 16"
         HorizontalOptions="Fill"
-        VerticalOptions="Start">
+        VerticalOptions="Fill">
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
+            <ColumnDefinition Width="6*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <components:CompassDirectionComponent
             Grid.Column="0"
-            HorizontalOptions="Start"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            HorizontalOptions="Fill"
             VerticalOptions="Center"
-            LabelText="What direction will the solar array face"
+            LabelText="Direction of the panels"
             LabelTextColor="Black"
             SelectedDirection="{Binding Source={x:Reference This}, Path=SelectedDirection}"
             ArrowColor="Blue"
@@ -34,55 +42,56 @@
             RaiseAnimationDuration="150"
             CenterImageColor="Navy"
             DirectionChanged="OnCompassDirectionChanged"
-            Shadow="{StaticResource PanelShadow}"
-            HeightRequest="222"
-            WidthRequest="330" />
+            Shadow="{StaticResource PanelShadow}" />
 
-        <VerticalStackLayout
-            Grid.Column="1"
+        <components:SliderComponent
+            Grid.Column="0"
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            HorizontalOptions="Start"
             VerticalOptions="Center"
-            HorizontalOptions="Fill">
+            LabelText="Tilt of the solar array"
+            Minimum="0"
+            Maximum="30"
+            Value="{Binding Source={x:Reference This}, Path=Tilt}"
+            StepSize="1"
+            Interval="5"
+            NumberFormat="N0"
+            ThumbNumberFormat="{}{0:N0}"
+            ThumbColor="#C2FFFF"
+            Shadow="{StaticResource PanelShadow}" />
 
-            <components:SliderComponent
-                LabelText="What is the tilt of your solar array (against sun)"
-                Minimum="0"
-                Maximum="90"
-                Value="{Binding Source={x:Reference This}, Path=Tilt}"
-                StepSize="1"
-                Interval="20"
-                NumberFormat="N0"
-                ThumbNumberFormat="{}{0:N0}"
-                ThumbColor="#C2FFFF"
-                Shadow="{StaticResource PanelShadow}" />
+        <components:SliderComponent
+            Grid.Column="1"
+            Grid.Row="1"
+            HorizontalOptions="Start"
+            VerticalOptions="Center"
+            LabelText="Solar array size (Kw)"
+            Minimum="2"
+            Maximum="100"
+            Value="{Binding Source={x:Reference This}, Path=ArraySize}"
+            StepSize="2"
+            Interval="20"
+            NumberFormat="N0"
+            ThumbNumberFormat="{}{0:N0}"
+            ThumbColor="#C2FFFF"
+            Shadow="{StaticResource PanelShadow}" />
 
-            <components:SliderComponent
-                HorizontalOptions="Fill"
-                VerticalOptions="Start"
-                LabelText="What is the size of your solar array (Kw)"
-                Minimum="2"
-                Maximum="100"
-                Value="{Binding Source={x:Reference This}, Path=ArraySize}"
-                StepSize="2"
-                Interval="10"
-                NumberFormat="N0"
-                ThumbNumberFormat="{}{0:N0}"
-                ThumbColor="#C2FFFF"
-                Shadow="{StaticResource PanelShadow}" />
-
-            <components:SliderComponent
-                HorizontalOptions="Fill"
-                VerticalOptions="Start"
-                LabelText="What is the size of your battery pack (Kw)"
-                Minimum="2"
-                Maximum="100"
-                Value="{Binding Source={x:Reference This}, Path=BatterySize}"
-                StepSize="2"
-                Interval="10"
-                NumberFormat="N0"
-                ThumbNumberFormat="{}{0:N0}"
-                ThumbColor="#C2FFFF"
-                Shadow="{StaticResource PanelShadow}" />
-        </VerticalStackLayout>
+        <components:SliderComponent
+            Grid.Column="1"
+            Grid.Row="2"
+            HorizontalOptions="Start"
+            VerticalOptions="Center"
+            LabelText="Battery pack size (Kw)"
+            Minimum="2"
+            Maximum="100"
+            Value="{Binding Source={x:Reference This}, Path=BatterySize}"
+            StepSize="2"
+            Interval="20"
+            NumberFormat="N0"
+            ThumbNumberFormat="{}{0:N0}"
+            ThumbColor="#C2FFFF"
+            Shadow="{StaticResource PanelShadow}" />
     </Grid>
 
-</ContentView>
+</Border>

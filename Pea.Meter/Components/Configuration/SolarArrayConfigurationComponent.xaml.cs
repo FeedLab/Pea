@@ -1,6 +1,6 @@
 namespace Pea.Meter.Components.Configuration;
 
-public partial class SolarArrayConfigurationComponent : ContentView
+public partial class SolarArrayConfigurationComponent : Border
 {
     public static readonly BindableProperty TiltProperty =
         BindableProperty.Create(nameof(Tilt), typeof(double), typeof(SolarArrayConfigurationComponent), 0.0, BindingMode.TwoWay);

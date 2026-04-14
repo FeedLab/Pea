@@ -224,7 +224,7 @@ public class PeaAdapterDemo : IPeaAdapter
         var allReadings = readings
             .Where(w => w.PeriodStart.Date < startDate.Date)
             .OrderBy(r => r.PeriodStart)
-            .TakeLast(maximumDaysToRead)
+            // .TakeLast(maximumDaysToRead)
             .ToList();
 
         stopwatch.Stop();

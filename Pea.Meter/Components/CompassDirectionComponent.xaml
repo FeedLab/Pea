@@ -26,6 +26,7 @@
                 FontSize="14"
                 FontAttributes="Bold"
                 FontFamily="OpenSansSemibold"
+                LineBreakMode="TailTruncation"
                 TextColor="{Binding LabelTextColor, Source={x:Reference Root}}"
                 Text="{Binding LabelText, Source={x:Reference Root}}" />
 
@@ -33,7 +34,9 @@
                   Grid.Row="1"
                   Margin="8,0,8,8"
                   HorizontalOptions="Fill"
-                  VerticalOptions="Fill">
+                  VerticalOptions="Fill"
+                  MinimumWidthRequest="125"
+                  MinimumHeightRequest="125">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />

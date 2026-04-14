@@ -90,7 +90,7 @@ public partial class HomeViewModel : ObservableObject
 
                     newDayBackgroundTimer.Start();
                     await dailyPeaReadingsTimer.Start();
-                    historicDataBackgroundService.Start(1);
+                    // historicDataBackgroundService.Start(1);
                 });
             }
             catch (Exception e)

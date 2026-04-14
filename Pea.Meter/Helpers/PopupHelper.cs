@@ -52,7 +52,7 @@ public class PopupHelper
             return;
 
         var popup = new ContentPopup(contentView);
-        windows.ShowPopup(contentView, popupOptions);
+        windows.ShowPopup(popup, popupOptions);
 
         await action();
 
