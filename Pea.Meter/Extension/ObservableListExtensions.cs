@@ -33,14 +33,9 @@ public static class ObservableCollectionExtensions
                 .GroupBy(r =>
                     new DateTime(r.PeriodStart.Year, r.PeriodStart.Month, r.PeriodStart.Day, r.PeriodStart.Hour, 0, 0))
                 .Select(g => new PeaMeterReading(
-                    g.Key,
-                    g.Sum(r => r.RateA),
-                    g.Sum(r => r.RateB),
-                    g.Sum(r => r.RateC),
-                    60
-                ))
+                    g.Key, g.ToList()))
                 .OrderBy(r => r.PeriodStart)
-            .ToList();
+                .ToList();
 
         return new ObservableCollection<PeaMeterReading>(hourlyList);
         

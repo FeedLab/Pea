@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Pea.Infrastructure.Extensions;
 using Pea.Infrastructure.Models;
+using Pea.Meter.Extension;
 
 namespace Pea.Meter.Models;
 
@@ -28,42 +30,19 @@ public partial class CostCompare : ObservableObject
         MeterReading = meterReading;
         KwUsed = meterReading.Total;
  
-        var isWeekday = meterReading.PeriodStart.DayOfWeek >= DayOfWeek.Monday &&
-                        meterReading.PeriodStart.DayOfWeek <= DayOfWeek.Friday;
-        var isWeekend = !isWeekday;
-
-
-        if (meterReading.PeriodStart.Hour is >= 9 and < 22 && isWeekday)
+        if (meterReading.PeriodStart.Hour is >= 9 and < 22 && !meterReading.PeriodStart.IsWeekendOrHoliday())
         {
             TouCost += meterReading.Total * peekPrice;
             KwCostAtPeek += meterReading.Total;
-            
+
             isPeekPeriod = true;
-        }
-        else if (meterReading.PeriodStart.Hour >= 22 && isWeekday)
-        {
-            TouCost += meterReading.Total * offPeekPrice;
-            KwCostAtOffPeek += meterReading.Total;
-            
-            isPeekPeriod = false;
-        }
-        else if (meterReading.PeriodStart.Hour < 9 && isWeekday)
-        {
-            TouCost += meterReading.Total * offPeekPrice;
-            KwCostAtOffPeek += meterReading.Total;
-       
-            isPeekPeriod = false;
-        }
-        else if (isWeekend)
-        {
-            TouCost += meterReading.Total * offPeekPrice;
-            KwCostAtOffPeek += meterReading.Total;
-            
-            isPeekPeriod = false;
         }
         else
         {
-            throw new Exception("Invalid time");
+            TouCost += meterReading.Total * offPeekPrice;
+            KwCostAtOffPeek += meterReading.Total;
+
+            isPeekPeriod = false;
         }
 
         FlatRateCost = meterReading.Total * flatRatePrice;

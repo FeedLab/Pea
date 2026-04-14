@@ -1,3 +1,4 @@
+using Pea.Infrastructure.Extensions;
 using Pea.Infrastructure.Helpers;
 
 namespace Pea.Infrastructure.Models;
@@ -11,31 +12,11 @@ public class PeaMeterReading
     private readonly bool isWeekend;
     private readonly bool isHoliday;
 
-    public List<DateOnly> Holidays =
-    [
-        new DateOnly(2026, 1, 1),
-        new DateOnly(2026, 1, 1),
-        new DateOnly(2026, 3, 3),
-        new DateOnly(2026, 4, 6),
-        new DateOnly(2026, 4, 13),
-        new DateOnly(2026, 4, 14),
-        new DateOnly(2026, 4, 15),
-        new DateOnly(2026, 5, 1),
-        new DateOnly(2026, 6, 3),
-        new DateOnly(2026, 7, 28),
-        new DateOnly(2026, 7, 29),
-        new DateOnly(2026, 7, 30),
-        new DateOnly(2026, 8, 12),
-        new DateOnly(2026, 10, 13),
-        new DateOnly(2026, 12, 10),
-        new DateOnly(2026, 12, 31),
-    ];
-
 
     private PeaMeterReading(DateTime periodStart)
     {
-        isWeekend = periodStart.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday;
-        isHoliday = IsHolidayInternal(periodStart);
+        isWeekend = periodStart.IsWeekend();
+        isHoliday = periodStart.IsHoliday();
     }
 
     public PeaMeterReading(DateTime periodStart, decimal rateA, decimal rateB, decimal rateC, int periodLength = 15)
@@ -63,8 +44,8 @@ public class PeaMeterReading
             .GroupBy(r => r.PeriodStart.Date)
             .Select(g =>
             {
-                var isWeekendOrHoliday = g.Key.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday
-                                         || Holidays.Contains(DateOnly.FromDateTime(g.Key));
+                var isWeekendOrHoliday = g.Key.IsWeekend()
+                                         || g.Key.IsHoliday();
 
                 return isWeekendOrHoliday
                     ? (Morning: g.Where(w => w.PeriodStart.Hour < 12).Sum(r => r.RateC + r.RateB),
@@ -73,15 +54,15 @@ public class PeaMeterReading
                         Evening: g.Where(w => w.PeriodStart.Hour >= 22).Sum(r => r.RateC + r.RateB));
             })
             .ToList();
-        
         OffPeakMorning = result.Sum(r => r.Morning);
         OffPeakEvening = result.Sum(r => r.Evening);
-    }
-
-    private bool IsHolidayInternal(DateTime dateTime)
-    {
-        var dateOnly = DateOnly.FromDateTime(dateTime);
-        return Holidays.Contains(dateOnly);
+        
+        AverageUsedBetween08To17 = readings
+            .Where(r => r.PeriodStart.Hour is >= 8 and < 17)
+            .GroupBy(r => r.PeriodStart.Date)
+            .Select(a => a.Sum(r => r.Total))
+            .DefaultIfEmpty(0)
+            .Average();
     }
 
     public bool IsHoliday => isHoliday;
@@ -102,7 +83,9 @@ public class PeaMeterReading
     public decimal OffPeek => RateB + RateC;
     public decimal OffPeakMorning { get; init; }
     public decimal OffPeakEvening { get; init; }
-
+    
+    public decimal AverageUsedBetween08To17 { get; init; }
+    
     public string PeekFormatted => WattFormatter.Format(Peek * 1000);
     public string OffPeekFormatted => WattFormatter.Format(OffPeek * 1000);
     public string TotalFormatted => WattFormatter.Format(Total * 1000);

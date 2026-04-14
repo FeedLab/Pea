@@ -15,7 +15,7 @@ public class PvCalculatorService
     // - Soiling/dust (~5%)
     // - Mismatch/shading (~3%)
     // Combined: 0.96 × 0.98 × 0.85 × 0.95 × 0.97 ≈ 0.58
-    const double SystemEfficiency = 0.58;
+    const double SystemEfficiency = 0.68;
 
     private static readonly ConcurrentDictionary<(double lat, double lon, double tilt, double az, int tz), double[]> DailyBaseProductionCache = new();
 

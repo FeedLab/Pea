@@ -4,7 +4,53 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
              xmlns:properties="clr-namespace:Pea.Meter.Resources.Strings"
-             x:Class="Pea.Meter.View.Solar.SolarSystemSizingView">
+             xmlns:expander="clr-namespace:Syncfusion.Maui.Expander;assembly=Syncfusion.Maui.Expander"
+             xmlns:config="clr-namespace:Pea.Meter.Components.Configuration"
+             x:Class="Pea.Meter.View.Solar.SolarSystemSizingView"
+             x:Name="This">
+    <ContentView.Resources>
+        <DataTemplate x:Key="TooltipTemplateKwh">
+            <Border Background="#333333"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 4">
+                <VerticalStackLayout Padding="8,6" Spacing="2">
+                    <Label Text="{Binding Item.PeriodStart, StringFormat='{0:MMM yyyy}'}"
+                           FontAttributes="Bold" TextColor="White" FontSize="12" />
+                    <Label Text="{Binding Item.PeakUsedKwFormatted, StringFormat='Peak used: {0}'}"
+                           TextColor="#FF9999" FontSize="11" />
+                    <Label Text="{Binding Item.OffPeakUsedKwFormatted, StringFormat='Off-peak used: {0}'}"
+                           TextColor="#96CE96" FontSize="11" />
+                    <Label Text="{Binding Item.DailyCalculatedKwFormatted, StringFormat='Solar produced: {0}'}"
+                           TextColor="#FFCA28" FontSize="11" />
+                    <Label Text="{Binding Item.BatteryKwFormatted, StringFormat='Battery: {0}'}"
+                           TextColor="#80D8FF" FontSize="11" />
+                    <Label Text="{Binding Item.TotalUsedKwFormatted, StringFormat='Total used: {0}'}"
+                           TextColor="White" FontSize="11" FontAttributes="Bold" />
+                </VerticalStackLayout>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TooltipTemplateMonthly">
+            <Border Background="#333333"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 4">
+                <VerticalStackLayout Padding="8,6" Spacing="2">
+                    <Label Text="{Binding Item.PeriodStart, StringFormat='{0:MMM yyyy}'}"
+                           FontAttributes="Bold" TextColor="White" FontSize="12" />
+                    <Label Text="{Binding Item.PeakUsedKwFormatted, StringFormat='Peak used: {0}'}"
+                           TextColor="#FF9999" FontSize="11" />
+                    <Label Text="{Binding Item.OffPeakUsedKwFormatted, StringFormat='Off-peak used: {0}'}"
+                           TextColor="#96CE96" FontSize="11" />
+                    <Label Text="{Binding Item.DailyCalculatedKwFormatted, StringFormat='Solar produced: {0}'}"
+                           TextColor="#FFCA28" FontSize="11" />
+                    <Label Text="{Binding Item.BatteryKwFormatted, StringFormat='Battery: {0}'}"
+                           TextColor="#80D8FF" FontSize="11" />
+                    <Label Text="{Binding Item.TotalUsedKwFormatted, StringFormat='Total used: {0}'}"
+                           TextColor="White" FontSize="11" FontAttributes="Bold" />
+                </VerticalStackLayout>
+            </Border>
+        </DataTemplate>
+    </ContentView.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6*" />
@@ -12,41 +58,66 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
+        <expander:SfExpander
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            AnimationDuration="200"
+            AnimationEasing="None"
+            HorizontalOptions="Fill"
+            VerticalOptions="Start">
+
+            <expander:SfExpander.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="48" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="1" 
+                           Text="Configure Solar Array System" 
+                           FontSize="24" 
+                           FontAttributes="Bold"
+                           Margin="0,2,0,2"
+                           FontFamily='{OnPlatform Android=AccordionFontIcons.ttf#,WinUI=AccordionFontIcons.ttf#AccordionFontIcons,MacCatalyst=AccordionFontIcons,iOS=AccordionFontIcons}'
+                           VerticalOptions="Center" VerticalTextAlignment="Center" />
+                </Grid>
+            </expander:SfExpander.Header>
+
+            <expander:SfExpander.Content>
+                <config:SolarArrayConfigurationComponent
+                    Tilt="{Binding Tilt, Mode=TwoWay}"
+                    ArraySize="{Binding SolarArraySize, Mode=TwoWay}"
+                    BatterySize="{Binding BatterySize, Mode=TwoWay}"
+                    SelectedDirection="{Binding SelectedDirection, Mode=TwoWay}"
+                    DirectionChanged="OnCompassDirectionChanged" />
+            </expander:SfExpander.Content>
+        </expander:SfExpander>
+
         <Border
             Grid.Column="0"
-            Grid.Row="0"
+            Grid.Row="1"
             Style="{StaticResource MainPanelBorder}"
             Margin="24, 12"
             Padding="8">
 
             <chart:SfCartesianChart
+                x:Name="ChartCalculatedKwComparision"
                 HorizontalOptions="Fill">
                 <chart:SfCartesianChart.Shadow>
                     <Shadow Brush="Gray" Opacity="0.3" Radius="10" Offset="5,5" />
                 </chart:SfCartesianChart.Shadow>
 
-                <chart:SfCartesianChart.Resources>
-                    <DataTemplate x:Key="tooltipTemplate">
-                        <Border Background="#333333"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 4">
-                            <StackLayout Orientation="Horizontal" Padding="8">
-                                <Label Text="{Binding Item.YValue, StringFormat='{}{0:0}'}"
-                                       TextColor="White"
-                                       FontSize="14"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center" />
-                            </StackLayout>
-                        </Border>
-                    </DataTemplate>
-                </chart:SfCartesianChart.Resources>
-
                 <chart:SfCartesianChart.TooltipBehavior>
-                    <chart:ChartTooltipBehavior />
+                    <chart:ChartTooltipBehavior Duration="10" />
                 </chart:SfCartesianChart.TooltipBehavior>
 
                 <chart:SfCartesianChart.Legend>
@@ -89,85 +160,85 @@
                 </chart:SfCartesianChart.YAxes>
 
                 <!-- Stacked column series with colored data labels -->
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="CostPeek"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.Peek}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="MeterDataUsageInMoney.PeekTouUsagePriceSummary"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="PeakUsedKw"
                                             GroupingLabel="CostSummaryToU"
                                             Fill="#FF7043"
                                             Stroke="#E64A19"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="0,0,0,0"
                                             ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
 
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="CostOffPeek"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.OffPeek}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="MeterDataUsageInMoney.OffPeekTouUsagePriceSummary"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="OffPeakUsedKw"
                                             GroupingLabel="CostSummaryToU"
                                             Fill="#EC407A"
                                             Stroke="#C2185B"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="2,2,0,0"
                                             ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
                 <!-- Stacked column series with colored data labels -->
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="CostFlatRate"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.FlatRate}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="MeterDataUsageInMoney.FlatRateUsagePriceSummary"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="TotalUsedKw"
                                             GroupingLabel="CostSummaryFlatRate"
                                             Fill="#7CB342"
                                             Stroke="#558B2F"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="2,2,0,0"
                                             ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
                 <!-- Stacked column series with colored data labels -->
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="CostPeekSolar"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.PeekSolar}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="SolarProduction.DiscountedMoney.Peek"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="PeakCalculatedKw"
                                             GroupingLabel="CostSummaryToUSolar"
                                             Fill="#B184B2"
                                             Stroke="#806182"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="0,0,0,0"
                                             ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
 
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="CostOffPeekSolar"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.OffPeekSolar}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="SolarProduction.DiscountedMoney.OffPeek"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="OffPeakCalculatedKw"
                                             GroupingLabel="CostSummaryToUSolar"
                                             Fill="#FFCA28"
                                             Stroke="#F9A825"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="2,2,0,0"
                                             ShowDataLabels="False">
@@ -175,17 +246,17 @@
 
 
                 <!-- Stacked column series with colored data labels -->
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="CostFlatRateSolar"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.FlatRateSolar}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="SolarProduction.DiscountedMoney.FlatRate"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="DailyCalculatedKw"
                                             GroupingLabel="CostSummaryFlatRateSolar"
                                             Fill="#26C6DA"
                                             Stroke="#00838F"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="2,2,0,0"
                                             ShowDataLabels="False">
@@ -195,7 +266,7 @@
         </Border>
 
         <Border
-            Grid.Row="0"
+            Grid.Row="1"
             Grid.Column="1"
             Margin="24,12"
             Style="{StaticResource MainPanelBorder}"
@@ -203,28 +274,12 @@
 
             <chart:SfCartesianChart
                 HorizontalOptions="Fill">
-                <chart:SfCartesianChart.Resources>
-                    <DataTemplate x:Key="tooltipTemplate">
-                        <Border Background="#333333"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 4">
-                            <StackLayout Orientation="Horizontal" Padding="8">
-                                <Label Text="{Binding Item.Value, StringFormat='{}{0:0}'}"
-                                       TextColor="White"
-                                       FontSize="14"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center" />
-                            </StackLayout>
-                        </Border>
-                    </DataTemplate>
-                </chart:SfCartesianChart.Resources>
-
                 <chart:SfCartesianChart.Shadow>
                     <Shadow Brush="Gray" Opacity="0.3" Radius="10" Offset="5,5" />
                 </chart:SfCartesianChart.Shadow>
 
                 <chart:SfCartesianChart.TooltipBehavior>
-                    <chart:ChartTooltipBehavior />
+                    <chart:ChartTooltipBehavior Duration="10" />
                 </chart:SfCartesianChart.TooltipBehavior>
 
                 <chart:SfCartesianChart.Legend>
@@ -267,68 +322,84 @@
                 </chart:SfCartesianChart.YAxes>
 
                 <!-- Stacked column series with colored data labels -->
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="KwhPeek"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.Peek}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="MeterDataUsageInKw.PeekUsage"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="PeakUsedKw"
                                             GroupingLabel="KwUsed"
                                             Fill="#FF9800"
                                             Stroke="#E65100"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="0,0,0,0"
                                             ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
 
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="KwhOffPeek"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.OffPeek}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="MeterDataUsageInKw.OffPeekUsage"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="OffPeakUsedKw"
                                             GroupingLabel="KwUsed"
                                             Fill="#FFC107"
                                             Stroke="#FF6F00"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="2,2,0,0"
                                             ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
                 <!-- Stacked column series with colored data labels -->
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="KwhSolar"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.Solar}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="SolarProduction.CalculatedSolarProductionInKw"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="DailyCalculateExcludedBatteryKw"
                                             GroupingLabel="KwProduced"
                                             Fill="#26A69A"
                                             Stroke="#00695C"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="0,0,0,0"
                                             ShowDataLabels="False">
                 </chart:StackingColumnSeries>
 
 
-                <chart:StackingColumnSeries ItemsSource="{Binding EnergyProducedMonthlySummary}"
+                <chart:StackingColumnSeries x:Name="KwhBattery"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
                                             Label="{x:Static properties:AppResources.Battery}"
-                                            XBindingPath="DateAsDateTime"
-                                            YBindingPath="SolarProduction.CalculatedBatteryNeeded"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="BatteryKw"
                                             GroupingLabel="KwProduced"
                                             Fill="#5C6BC0"
                                             Stroke="#283593"
                                             StrokeWidth="1"
                                             IsVisibleOnLegend="True"
-                                            EnableTooltip="False"
-                                            TooltipTemplate="{StaticResource tooltipTemplate}"
+                                            EnableTooltip="True"
+                                            Spacing="0.3"
+                                            CornerRadius="2,2,0,0"
+                                            ShowDataLabels="False">
+                </chart:StackingColumnSeries>
+                
+                <chart:StackingColumnSeries x:Name="KwhUnusedBattery"
+                                            ItemsSource="{Binding PvCalculatedPerMonth}"
+                                            Label="Unused battery"
+                                            XBindingPath="PeriodStart"
+                                            YBindingPath="UnusedBatteryKw"
+                                            GroupingLabel="KwProduced"
+                                            Fill="Red"
+                                            Stroke="DarkRed"
+                                            StrokeWidth="1"
+                                            IsVisibleOnLegend="True"
+                                            EnableTooltip="True"
                                             Spacing="0.3"
                                             CornerRadius="2,2,0,0"
                                             ShowDataLabels="False">
@@ -338,7 +409,7 @@
 
         <Border
             Grid.Column="0"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.ColumnSpan="2"
             Margin="24,16"
             HorizontalOptions="Center"
@@ -362,7 +433,7 @@
 
                 <Label
                     Grid.Column="0"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.ColumnSpan="2"
                     TextColor="Black"
                     Margin="24"

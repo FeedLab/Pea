@@ -18,6 +18,23 @@ public partial class SolarSystemSizingView : ContentView
         viewModel = AppService.GetRequiredService<SolarSystemSizingViewModel>();
 
         BindingContext = viewModel;
+
+        var costTooltip = (DataTemplate)Resources["TooltipTemplateMonthly"];
+        CostPeek.TooltipTemplate = costTooltip;
+        CostOffPeek.TooltipTemplate = costTooltip;
+        CostFlatRate.TooltipTemplate = costTooltip;
+        CostPeekSolar.TooltipTemplate = costTooltip;
+        CostOffPeekSolar.TooltipTemplate = costTooltip;
+        CostFlatRateSolar.TooltipTemplate = costTooltip;
+
+        var kwhTooltip = (DataTemplate)Resources["TooltipTemplateKwh"];
+        KwhPeek.TooltipTemplate = kwhTooltip;
+        KwhOffPeek.TooltipTemplate = kwhTooltip;
+        KwhSolar.TooltipTemplate = kwhTooltip;
+        KwhBattery.TooltipTemplate = kwhTooltip;
     }
 
+    private void OnCompassDirectionChanged(object? sender, int e)
+    {
+    }
 }

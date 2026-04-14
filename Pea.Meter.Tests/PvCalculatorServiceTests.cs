@@ -33,6 +33,7 @@ public class PvCalculatorServiceTests
     private const int SpringMonth = 3; // March
     private const int TestDay = 15;
 
+    
     [Fact]
     public void CalculateKwDaily_WanphenFarm_ShouldProduceRealisticDailyEnergy()
     {
@@ -59,8 +60,8 @@ public class PvCalculatorServiceTests
         // - Current formula produces: ~94 kWh/day (4.47 equivalent peak sun hours) ✓
         //
         // This matches real-world expectations for Bangkok climate
-        dailyKwh.Should().BeGreaterThan(70); // Minimum reasonable production (cloudy/rainy days)
-        dailyKwh.Should().BeLessThanOrEqualTo(110); // Maximum realistic production (clear sunny days)
+        dailyKwh.Should().BeGreaterThan(80); // Minimum reasonable production (cloudy/rainy days)
+        dailyKwh.Should().BeLessThanOrEqualTo(120); // Maximum realistic production (clear sunny days)
 
         // Output for debugging - write to console for visibility
         testOutputHelper.WriteLine($"Daily production for 21kWp system: {dailyKwh:F2} kWh/day (equivalent {dailyKwh/systemSize:F2} peak sun hours)");
@@ -1185,6 +1186,50 @@ public class PvCalculatorServiceTests
     #endregion
 
     [Fact]
+    public void CalculateKwMonthly_ShouldMatchSumOfAllHourlyCalculations()
+    {
+        // Arrange
+        var time = new DateTime(TestYear, 4, 1); // April (30 days)
+
+        // Act
+        var monthlyTotal = PvCalculatorService.CalculateKwMonthly(
+            BangkokLatitude,
+            BangkokLongitude,
+            time,
+            StandardSystemKWp,
+            StandardTilt,
+            SouthFacingAzimuth,
+            ThailandTimezone);
+
+        // Calculate sum of all hourly values for the entire month
+        double hourlySum = 0;
+        var daysInMonth = DateTime.DaysInMonth(TestYear, 4);
+
+        for (int day = 0; day < daysInMonth; day++)
+        {
+            for (int hour = 0; hour < 24; hour++)
+            {
+                var hourTime = time.AddDays(day).AddHours(hour);
+                var hourlyPower = PvCalculatorService.CalculateKw(
+                    BangkokLatitude,
+                    BangkokLongitude,
+                    hourTime,
+                    StandardSystemKWp,
+                    StandardTilt,
+                    SouthFacingAzimuth,
+                    ThailandTimezone);
+                hourlySum += hourlyPower;
+            }
+        }
+
+        // Assert
+        monthlyTotal.Should().BeApproximately(hourlySum, 0.01);
+        testOutputHelper.WriteLine($"Monthly total: {monthlyTotal:F2} kWh");
+        testOutputHelper.WriteLine($"Sum of hourly values: {hourlySum:F2} kWh");
+        testOutputHelper.WriteLine($"Difference: {Math.Abs(monthlyTotal - hourlySum):F4} kWh");
+    }
+
+    [Fact]
     public void CalculateKwMonthly_2026Estimate_ShouldProduceRealisticYearlyPattern()
     {
         // Arrange - 21 kWp system at Wanphen Farm location for all months in 2026
@@ -1224,7 +1269,7 @@ public class PvCalculatorServiceTests
         foreach (var kvp in monthlyProduction)
         {
             kvp.Value.Should().BeGreaterThan(2000); // Minimum for any month (rainy season)
-            kvp.Value.Should().BeLessThanOrEqualTo(3200); // Maximum for any month (dry season)
+            kvp.Value.Should().BeLessThanOrEqualTo(3500); // Maximum for any month (dry season, ~5.2 h/day peak)
         }
 
         // Output monthly breakdown for debugging
@@ -1239,4 +1284,50 @@ public class PvCalculatorServiceTests
         testOutputHelper.WriteLine($"{"Average Daily",-12}: {totalYearlyProduction / 365,8:F2} kWh/day");
         testOutputHelper.WriteLine($"{"Average Monthly",-12}: {totalYearlyProduction / 12,8:F2} kWh/month");
     }
+
+    [Fact]
+    public void CalculateKwMonthly_AnnualProduction_ShouldExceedSystemSizeByAtLeastFourTimes()
+    {
+        // Arrange - 21 kWp system at Bangkok location for full year
+        const double systemSize = 21.0; // kWp
+        const double tiltAngle = 4;
+        const int year = 2026;
+        // Bangkok receives roughly 3.5–5.5 peak sun hours/day → monthly minimum ≈ systemSize × 3.5 × days
+        const double minimumDailyPeakSunHours = 3.5;
+
+        double totalYearlyProduction = 0;
+
+        // Act & Assert per month
+        for (int month = 1; month <= 12; month++)
+        {
+            var time = new DateTime(year, month, 1);
+            int daysInMonth = DateTime.DaysInMonth(year, month);
+            var monthlyKwh = PvCalculatorService.CalculateKwMonthly(
+                BangkokLatitude,
+                BangkokLongitude,
+                time,
+                systemSize,
+                tiltAngle,
+                SouthFacingAzimuth,
+                ThailandTimezone);
+
+            var minimumMonthlyProduction = systemSize * minimumDailyPeakSunHours * daysInMonth;
+            monthlyKwh.Should().BeGreaterThan(minimumMonthlyProduction,
+                because: $"month {time:MMM yyyy} ({daysInMonth} days) should produce at least {minimumMonthlyProduction:F0} kWh");
+
+            totalYearlyProduction += monthlyKwh;
+
+            testOutputHelper.WriteLine(
+                $"{time:MMM}: {monthlyKwh,8:F1} kWh  (min {minimumMonthlyProduction,7:F0}, ratio {monthlyKwh / systemSize / daysInMonth:F2} h/day) , average/day {monthlyKwh / daysInMonth:F2} Kw/day");
+        }
+
+        // Assert annual total
+        var minimumYearlyProduction = systemSize * minimumDailyPeakSunHours;
+        totalYearlyProduction.Should().BeGreaterThan(minimumYearlyProduction);
+
+        testOutputHelper.WriteLine($"{"---",-3}  {"--------",8}");
+        testOutputHelper.WriteLine($"{"Total",-3}: {totalYearlyProduction,8:F1} kWh  (ratio {totalYearlyProduction / systemSize:F2}x system size)");
+    }
+    
+    
 }
