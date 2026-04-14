@@ -255,9 +255,9 @@ public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteV
                                                  .SingleOrDefault(s => s.PeriodStart.Month == g.Key) ??
                                              new PeaMeterReading(periodStart.ToDateTime(TimeOnly.MinValue), []);
 
-                    var dailyCalculatedKw = g.Sum(s => s.Value.DayTotal);
+                    var dailyCalculatedKw = g.Sum(s => s.Value.DayTotal * 1000);
 
-                    var batteryKw = DateTime.DaysInMonth(periodStart.Year, periodStart.Month) * BatterySize;
+                    var batteryKw = DateTime.DaysInMonth(periodStart.Year, periodStart.Month) * BatterySize * 1000;
                     var unusedBatteryKw = 0.0m;
                     
                     if (batteryKw > dailyCalculatedKw)
@@ -279,9 +279,9 @@ public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteV
                         UnusedBatteryKw = unusedBatteryKw,
                         DailyCalculateExcludedBatteryKw = dailyCalculateExcludedBatteryKw,
 
-                        OffPeakUsedKw = monthlyPeaReadings.OffPeek,
-                        PeakUsedKw = monthlyPeaReadings.Peek,
-                        TotalUsedKw = monthlyPeaReadings.Total
+                        OffPeakUsedKw = monthlyPeaReadings.OffPeek * 1000,
+                        PeakUsedKw = monthlyPeaReadings.Peek * 1000,
+                        TotalUsedKw = monthlyPeaReadings.Total * 1000
                     };
                 })
                 .ToObservableCollection();
@@ -317,7 +317,7 @@ public partial class SolarSystemSizingViewModel : ObservableObject, ICanExecuteV
             List<decimal> listSolarArraySizes =
                 [2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500, 1000];
 
-            var monthly = newPvData ?? PvCalculatedPerMonth;
+            var monthly = newPvData;
             var yearlyConsumptionPeekKw = monthly.Sum(s => s.PeakUsedKw);
             var yearlyConsumptionOffPeekKw = monthly.Sum(s => s.OffPeakUsedKw);
             var yearlyConsumptionTotalKw = yearlyConsumptionPeekKw + yearlyConsumptionOffPeekKw;

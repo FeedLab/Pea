@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Pea.Infrastructure.Helpers;
 using Pea.Meter.Services;
 using Pea.Meter.ViewModel;
+using Syncfusion.Maui.Charts;
 
 namespace Pea.Meter.View.Solar;
 
@@ -36,5 +38,15 @@ public partial class SolarSystemSizingView : ContentView
 
     private void OnCompassDirectionChanged(object? sender, int e)
     {
+    }
+
+    private void ChartAxis_OnLabelCreated(object? sender, ChartAxisLabelEventArgs e)
+    {
+        e.Label = WattFormatter.Format((decimal)e.Position);
+    }
+
+    private void OnYAxisLabelCreated(object? sender, ChartAxisLabelEventArgs e)
+    {
+        e.Label = WattFormatter.Format((decimal)e.Position);
     }
 }

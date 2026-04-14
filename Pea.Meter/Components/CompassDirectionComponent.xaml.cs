@@ -393,20 +393,20 @@ public partial class CompassDirectionComponent : Border
 
     private static void AnimateRaise(Border border, Color raisedColor, Color sunkenColor, uint duration)
     {
-        border.AbortAnimation("Sink");
+        // border.AbortAnimation("Sink");
         border.Shadow = CreateRaisedShadow();
 
-        var fromR = sunkenColor.Red; var fromG = sunkenColor.Green; var fromB = sunkenColor.Blue;
-        var toR = raisedColor.Red;   var toG = raisedColor.Green;   var toB = raisedColor.Blue;
-        var fromScale = (float)border.Scale;
-
-        new Animation(t =>
-        {
-            border.BackgroundColor = new Color(
-                (float)(fromR + (toR - fromR) * t),
-                (float)(fromG + (toG - fromG) * t),
-                (float)(fromB + (toB - fromB) * t));
-            border.Scale = fromScale + (float)(1.0 - fromScale) * (float)t;
-        }, 0, 1).Commit(border, "Raise", 16, duration, Easing.CubicOut);
+        // var fromR = sunkenColor.Red; var fromG = sunkenColor.Green; var fromB = sunkenColor.Blue;
+        // var toR = raisedColor.Red;   var toG = raisedColor.Green;   var toB = raisedColor.Blue;
+        // var fromScale = (float)border.Scale;
+        //
+        // new Animation(t =>
+        // {
+        //     border.BackgroundColor = new Color(
+        //         (float)(fromR + (toR - fromR) * t),
+        //         (float)(fromG + (toG - fromG) * t),
+        //         (float)(fromB + (toB - fromB) * t));
+        //     border.Scale = fromScale + (float)(1.0 - fromScale) * (float)t;
+        // }, 0, 1).Commit(border, "Raise", 16, duration, Easing.CubicOut);
     }
 }
