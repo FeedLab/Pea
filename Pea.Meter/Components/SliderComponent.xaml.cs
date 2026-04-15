@@ -28,7 +28,7 @@ public partial class SliderComponent : Border
 
     public static readonly BindableProperty ThumbNumberFormatProperty =
         BindableProperty.Create(nameof(ThumbNumberFormat), typeof(string), typeof(SliderComponent), "{0:N0}");
-    
+
     public static readonly BindableProperty ThumbColorProperty =
         BindableProperty.Create(nameof(ThumbColor), typeof(Color), typeof(SliderComponent), Colors.Red);
 
@@ -79,7 +79,7 @@ public partial class SliderComponent : Border
         get => (string)GetValue(ThumbNumberFormatProperty);
         set => SetValue(ThumbNumberFormatProperty, value);
     }
-    
+
     public Color ThumbColor
     {
         get => (Color)GetValue(ThumbColorProperty);
@@ -93,6 +93,52 @@ public partial class SliderComponent : Border
 
     private void Slider_OnValueChanged(object? sender, SliderValueChangedEventArgs e)
     {
+        ValidateStepButtons();
+    }
+
+    private void OnStepLeftTapped(object? sender, TappedEventArgs e)
+    {
+        if (Value > Minimum)
+        {
+            Value -= StepSize;
+        }
+
+        ValidateStepButtons();
+    }
+
+    private void OnStepRightTapped(object? sender, TappedEventArgs e)
+    {
+        if (Value < Maximum)
+        {
+            Value += StepSize;
+        }
+
+        ValidateStepButtons();
+    }
+
+    private void ValidateStepButtons()
+    {
+        if (Value > Minimum)
+        {
+            LeftStepButton.IsEnabled = true;
+            LeftStepButton.Opacity = 1;
+        }
+        else
+        {
+            LeftStepButton.IsEnabled = false;
+            LeftStepButton.Opacity = 0.5;
+        }
+
+        if (Value < Maximum)
+        {
+            RightStepButton.IsEnabled = true;
+            RightStepButton.Opacity = 1;
+        }
+        else
+        {
+            RightStepButton.IsEnabled = false;
+            RightStepButton.Opacity = 0.5;
+        }
     }
 }
 

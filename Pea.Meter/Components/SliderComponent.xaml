@@ -14,7 +14,7 @@
     <Border.Shadow>
         <StaticResource Key="PanelShadow" />
     </Border.Shadow>
-    
+
     <Grid
         HorizontalOptions="Start"
         VerticalOptions="Start">
@@ -22,7 +22,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-
+        
         <Label
             Margin="12,8,0,0"
             Grid.Row="0"
@@ -32,47 +32,109 @@
             LineBreakMode="TailTruncation"
             Text="{Binding LabelText, Source={x:Reference Root}}" />
 
-        <sliders:SfSlider
-            x:Name="Slider"
+        <Grid 
             Grid.Row="1"
-            Margin="8,-8,8,8"
-            HorizontalOptions="Start"
-            VerticalOptions="Start"
-            NumberFormat="{Binding NumberFormat, Source={x:Reference Root}}"
-            EdgeLabelsPlacement="Default"
-            Interval="{Binding Interval, Source={x:Reference Root}}"
-            ShowLabels="True"
-            ShowTicks="True"
-            Minimum="{Binding Minimum, Source={x:Reference Root}}"
-            Maximum="{Binding Maximum, Source={x:Reference Root}}"
-            Value="{Binding Value, Source={x:Reference Root}, Mode=TwoWay}"
-            StepSize="{Binding StepSize, Source={x:Reference Root}}"
-            ValueChanged="Slider_OnValueChanged">
+            Grid.Column="0">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            
 
-            <sliders:SfSlider.ThumbStyle>
-                <sliders:SliderThumbStyle
-                    Radius="19"
-                    Fill="{Binding ThumbColor, Source={x:Reference Root}}" />
-            </sliders:SfSlider.ThumbStyle>
 
-            <sliders:SfSlider.ThumbIcon>
-                <VerticalStackLayout>
-                    <HorizontalStackLayout>
-                        <Label Margin="18"
-                               TextColor="Black">
-                            <Label.Text>
-                                <MultiBinding>
-                                    <MultiBinding.Converter>
-                                        <components:StringFormatConverter />
-                                    </MultiBinding.Converter>
-                                    <Binding Path="Value" Source="{x:Reference Slider}" />
-                                    <Binding Path="ThumbNumberFormat" Source="{x:Reference Root}" />
-                                </MultiBinding>
-                            </Label.Text>
-                        </Label>
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </sliders:SfSlider.ThumbIcon>
-        </sliders:SfSlider>
+            <sliders:SfSlider
+                x:Name="Slider"
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="8,-8,8,8"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                NumberFormat="{Binding NumberFormat, Source={x:Reference Root}}"
+                EdgeLabelsPlacement="Default"
+                Interval="{Binding Interval, Source={x:Reference Root}}"
+                ShowLabels="True"
+                ShowTicks="True"
+                Minimum="{Binding Minimum, Source={x:Reference Root}}"
+                Maximum="{Binding Maximum, Source={x:Reference Root}}"
+                Value="{Binding Value, Source={x:Reference Root}, Mode=TwoWay}"
+                StepSize="{Binding StepSize, Source={x:Reference Root}}"
+                ValueChanged="Slider_OnValueChanged">
+
+                <sliders:SfSlider.ThumbStyle>
+                    <sliders:SliderThumbStyle
+                        Radius="19"
+                        Fill="{Binding ThumbColor, Source={x:Reference Root}}" />
+                </sliders:SfSlider.ThumbStyle>
+
+                <sliders:SfSlider.ThumbIcon>
+                    <VerticalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Margin="18"
+                                   TextColor="Black">
+                                <Label.Text>
+                                    <MultiBinding>
+                                        <MultiBinding.Converter>
+                                            <components:StringFormatConverter />
+                                        </MultiBinding.Converter>
+                                        <Binding Path="Value" Source="{x:Reference Slider}" />
+                                        <Binding Path="ThumbNumberFormat" Source="{x:Reference Root}" />
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </sliders:SfSlider.ThumbIcon>
+            </sliders:SfSlider>
+            
+            <Label
+                x:Name="LeftStepButton"
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="12,-16,8,0"
+                Text = "▲"
+                FontSize="28"
+                Rotation="270"
+                FontFamily="FontSolid"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Style="{StaticResource IconLabel}">
+                <Label.Shadow>
+                    <Shadow Radius="15"
+                            Opacity="0.6"
+                            Brush="Black"
+                            Offset="5,5" />
+                </Label.Shadow>
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnStepLeftTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+            
+            <Label
+                x:Name="RightStepButton"
+                Grid.Row="0"
+                Grid.Column="2"
+                Margin="8,-16,16,0"
+                Text = "▲"
+                FontSize="28"
+                IsEnabled="{Binding IsRightStepButtonEnabled}"
+                Rotation="90"
+                FontFamily="FontSolid"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Style="{StaticResource IconLabel}">
+                <Label.Shadow>
+                    <Shadow Radius="15"
+                            Opacity="0.6"
+                            Brush="Black"
+                            Offset="5,5" />
+                </Label.Shadow>
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnStepRightTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
     </Grid>
 </Border>

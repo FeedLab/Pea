@@ -22,8 +22,7 @@ public class PeaAdapterDemo : IPeaAdapter
             var stopwatch = Stopwatch.StartNew();
             logger.LogInformation("Importing period data...");
 
-            importPeriodDataAsDictionary = PeaMeterPeriodData
-                .ImportPeriodDataDictionary()
+            importPeriodDataAsDictionary = GetUsageData()
                 .Where(w => w.Key.Year == 2025)
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
@@ -38,14 +37,14 @@ public class PeaAdapterDemo : IPeaAdapter
     }
 
     public IList<PeaMeterReading> ImportPeriodDataAsList => importPeriodDataAsList;
-    
+
     private string userName = string.Empty;
     private string password = string.Empty;
 
     public string? CustomerId { get; private set; }
     public string? CustomerCode { get; private set; }
     public string? PeaNo { get; private set; }
-    public string? CustomerName { get; private set; }   
+    public string? CustomerName { get; private set; }
     public string? PeaSite { get; private set; }
     public string? CustomerAddress { get; private set; }
     public string? CustomerPhone { get; private set; }
@@ -189,22 +188,22 @@ public class PeaAdapterDemo : IPeaAdapter
     public Task<IList<PeaMeterReading>> GetAllReadings(DateTime startDate, int maximumDaysToRead = 365)
     {
         logger.LogInformation("Getting all readings from {0} to {1}", startDate, startDate.AddDays(-maximumDaysToRead));
-        
+
         var stopwatch = Stopwatch.StartNew();
-        
+
         var readings = importPeriodDataAsList
             .Select(p =>
             {
-                if(p.PeriodStart.DayOfYear <= startDate.DayOfYear)
+                if (p.PeriodStart.DayOfYear <= startDate.DayOfYear)
                 {
                     var date = new DateTime(
                         startDate.Year,
                         p.PeriodStart.Month,
                         p.PeriodStart.Day,
                         p.PeriodStart.Hour,
-                        p.PeriodStart.Minute, 
+                        p.PeriodStart.Minute,
                         0);
-                    
+
                     return new PeaMeterReading(date, p.RateA, p.RateB, p.RateC);
                 }
                 else
@@ -214,13 +213,13 @@ public class PeaAdapterDemo : IPeaAdapter
                         p.PeriodStart.Month,
                         p.PeriodStart.Day,
                         p.PeriodStart.Hour,
-                        p.PeriodStart.Minute, 
+                        p.PeriodStart.Minute,
                         0);
-                    
+
                     return new PeaMeterReading(date, p.RateA, p.RateB, p.RateC);
                 }
             });
-        
+
         var allReadings = readings
             .Where(w => w.PeriodStart.Date < startDate.Date)
             .OrderBy(r => r.PeriodStart)
@@ -230,16 +229,17 @@ public class PeaAdapterDemo : IPeaAdapter
         stopwatch.Stop();
 
         logger.LogInformation("Returning {0} readings from {1} to {2} in {Milliseconds} Milliseconds."
-            , allReadings.Count, startDate, startDate.AddDays(-maximumDaysToRead), stopwatch.Elapsed.Milliseconds.ToString("G3"));
-        
+            , allReadings.Count, startDate, startDate.AddDays(-maximumDaysToRead),
+            stopwatch.Elapsed.Milliseconds.ToString("G3"));
+
         return Task.FromResult<IList<PeaMeterReading>>(allReadings);
     }
 
     public Task<IList<PeaMeterReading>?> ShowDailyReadings(DateTime selectedDate)
     {
         var dateTransformed = new DateTime(2025, selectedDate.Month, selectedDate.Day);
-        
-        if(importPeriodDataAsDictionary.TryGetValue(dateTransformed.Date, out var periodData))
+
+        if (importPeriodDataAsDictionary.TryGetValue(dateTransformed.Date, out var periodData))
         {
             var periodDataTransformed = periodData
                 .Select(p =>
@@ -249,28 +249,116 @@ public class PeaAdapterDemo : IPeaAdapter
                         p.PeriodStart.Month,
                         p.PeriodStart.Day,
                         p.PeriodStart.Hour,
-                        p.PeriodStart.Minute, 
+                        p.PeriodStart.Minute,
                         0);
                     return new PeaMeterReading(date, p.RateA, p.RateB, p.RateC);
                 })
                 .ToList();
-            
+
             var today = DateTime.Today.Date;
             if (selectedDate.Month == today.Month && selectedDate.Day == today.Day)
             {
                 var filtered = periodDataTransformed
                     .Where(w => w.PeriodStart.TimeOfDay < DateTime.Now.TimeOfDay)
                     .ToList();
-                
+
                 return Task.FromResult<IList<PeaMeterReading>?>(filtered);
             }
-            
+
             return Task.FromResult<IList<PeaMeterReading>?>(periodDataTransformed);
         }
 
         //throw new Exception("No data found");
         logger.LogWarning("No data found for selected date: {0}", selectedDate);
         return Task.FromResult<IList<PeaMeterReading>?>(new List<PeaMeterReading>());
+    }
+
+    private static Dictionary<DateTime, List<PeaMeterReading>> GetUsageData()
+    {
+        var year = 2025;
+        decimal[] monthlyTotalsKw =
+        {
+            1910, 1670, 2290, 4320, 3630, 4030, 3810, 4720, 4320, 3960, 2020, 3110,
+        };
+
+        var holidays = new HashSet<DateTime>
+        {
+            new(2026, 1, 1),
+            new(2026, 1, 1),
+            new(2026, 3, 3),
+            new(2026, 4, 6),
+            new(2026, 4, 13),
+            new(2026, 4, 14),
+            new(2026, 4, 15),
+            new(2026, 5, 1),
+            new(2026, 6, 3),
+            new(2026, 7, 28),
+            new(2026, 7, 29),
+            new(2026, 7, 30),
+            new(2026, 8, 12),
+            new(2026, 10, 13),
+            new(2026, 12, 10),
+            new(2026, 12, 31),
+        };
+
+        var usageData = new List<PeaMeterReading>();
+
+        for (var month = 1; month <= 12; month++)
+        {
+            var daysInMonth = DateTime.DaysInMonth(year, month);
+            var monthlyTotal = monthlyTotalsKw[month - 1];
+            var dailyTotal = monthlyTotal / daysInMonth;
+
+            for (var day = 1; day <= daysInMonth; day++)
+            {
+                var date = new DateTime(year, month, day);
+
+                var peakWeight = 0.8m;
+                var offPeakWeight = 0.2m;
+                var factorEnergy = 1.2m;
+
+                var peakTotal = dailyTotal * peakWeight;
+                var offPeakTotal = dailyTotal * offPeakWeight;
+
+                var peakIntervals = 13 * 4; // 09:00–22:00
+                var offPeakIntervals = 96 - peakIntervals;
+
+                var peakPerInterval = peakTotal / peakIntervals;
+                var offPeakPerInterval = offPeakTotal / offPeakIntervals;
+
+                for (var interval = 0; interval < 96; interval++)
+                {
+                    var timestamp = date.AddMinutes(interval * 15);
+
+                    decimal peak = 0, offPeak = 0, holiday = 0;
+
+                    if (holidays.Contains(date))
+                    {
+                        // Example: reduce holiday usage to 50%
+                        holiday = (dailyTotal * 0.5m) / 96;
+                    }
+                    else
+                    {
+                        var hour = timestamp.Hour;
+                        if (hour >= 9 && hour < 22)
+                            peak = peakPerInterval;
+                        else
+                            offPeak = offPeakPerInterval;
+                    }
+
+                    usageData.Add(new PeaMeterReading(timestamp, peak * factorEnergy, offPeak * factorEnergy, holiday * factorEnergy));
+                }
+            }
+        }
+
+        // Write to JSON file
+        // var options = new JsonSerializerOptions { WriteIndented = true };
+        // var json = JsonSerializer.Serialize(usageData, options);
+        // File.WriteAllText("usageData.json", json);
+        //
+        // Console.WriteLine("Usage data written to usageData.json");
+
+        return usageData.ToDictionary(r => r.PeriodStart, r => new List<PeaMeterReading> { r });
     }
 }
 
@@ -303,7 +391,8 @@ public class PeaMeterPeriodData
         // Read JSON from compressed embedded resource
         var assembly = typeof(PeaMeterPeriodData).Assembly;
         using var stream = assembly.GetManifestResourceStream("Pea.Meter.AllMeterReadings.json.gz")
-            ?? throw new InvalidOperationException("Embedded resource 'AllMeterReadings.json.gz' not found.");
+                           ?? throw new InvalidOperationException(
+                               "Embedded resource 'AllMeterReadings.json.gz' not found.");
         using var gzip = new GZipStream(stream, CompressionMode.Decompress);
         using var reader = new StreamReader(gzip);
         var json = reader.ReadToEnd();
