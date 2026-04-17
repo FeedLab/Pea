@@ -22,7 +22,7 @@ public class PeaAdapterDemo : IPeaAdapter
             var stopwatch = Stopwatch.StartNew();
             logger.LogInformation("Importing period data...");
 
-            importPeriodDataAsDictionary = GetUsageData()
+            importPeriodDataAsDictionary = PeaMeterPeriodData.ImportPeriodDataDictionary() // GetUsageData()
                 .Where(w => w.Key.Year == 2025)
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 

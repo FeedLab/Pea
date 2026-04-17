@@ -61,7 +61,7 @@ namespace Pea.Meter
                     TouVsFlatRate.IsVisible = true;
                     SolarSystemSizing.IsVisible = true;
 
-                    if (peaAdapter.MeterNumber == "27681722")
+                    if (peaAdapter.MeterNumber == "27681722X")
                     {
                         TabLogData.IsVisible = true;
                         TabCustomerProfile.IsVisible = true;

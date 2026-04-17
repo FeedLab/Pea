@@ -125,6 +125,10 @@ public class NewDayBackgroundTimer
                         
                         yesterday = today;
                     }
+                    else
+                    {
+                        logger.LogInformation("No new day found: {Yesterday}, Today: {Today}", yesterday, today);
+                    }
                 }
                 catch (Exception e)
                 {
