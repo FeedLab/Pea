@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Tablet-only support -->
+    <!-- Broad tablet support -->
     <supports-screens
         android:smallScreens="false"
         android:normalScreens="false"
@@ -9,13 +8,17 @@
         android:xlargeScreens="true"
         android:anyDensity="true" />
 
-    <!-- Removed <compatible-screens> to avoid hard filtering -->
-    <!-- This ensures devices like Xiaomi Pad 6 (11", ~320 dpi) are included -->
+    <!-- Avoid <compatible-screens> to prevent hard filtering -->
+    <!-- Ensures devices like Xiaomi Pad 6 and other mid-DPI tablets are included -->
+
+    <!-- Explicit SDK versions for Play Store compliance -->
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
     <application
         android:icon="@mipmap/pea_raw"
         android:allowBackup="true"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:resizeableActivity="true">
     </application>
 
     <!-- Network permissions -->
