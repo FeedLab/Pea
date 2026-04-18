@@ -11,10 +11,7 @@
     <!-- Avoid <compatible-screens> to prevent hard filtering -->
     <!-- Ensures devices like Xiaomi Pad 6 and other mid-DPI tablets are included -->
 
-    <!-- Explicit SDK versions for Play Store compliance -->
-    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
-
-    <application
+<application
         android:icon="@mipmap/pea_raw"
         android:allowBackup="true"
         android:supportsRtl="true"
