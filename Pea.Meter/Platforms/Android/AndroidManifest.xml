@@ -18,6 +18,9 @@
         android:resizeableActivity="true">
     </application>
 
+    <!-- Allow non-touchscreen devices: ChromeOS tablets, foldables in desktop mode -->
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
     <!-- Network permissions -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
