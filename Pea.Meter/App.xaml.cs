@@ -25,12 +25,12 @@ namespace Pea.Meter
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
-            {
-                var mainPageNotSupportedWindow = new Window(new MainPageNotSupported());
-
-                return mainPageNotSupportedWindow;
-            }
+            // if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            // {
+            //     var mainPageNotSupportedWindow = new Window(new MainPageNotSupported());
+            //
+            //     return mainPageNotSupportedWindow;
+            // }
             
             var window = new Window(new AppShell());
 
