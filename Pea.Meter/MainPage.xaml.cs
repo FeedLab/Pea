@@ -44,6 +44,7 @@ namespace Pea.Meter
             authData = authDataOptions.AuthData;
             StatisticsView.IsVisible = false;
             TabCustomerProfile.IsVisible = false;
+            TabLogData.IsVisible = false;
             Pea.IsVisible = true;
             TouVsFlatRate.IsVisible = false;
             Info.IsVisible = false;
