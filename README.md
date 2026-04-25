@@ -193,7 +193,7 @@ Pea.Meter.Tests
 - `StatisticsViewModel` - Overall statistics
 - `MeterReadingsHourViewModel` - Hourly meter reading analysis
 - `MeterReadingsDailyViewModel` - Daily consumption patterns
-- `TouVsFlatRateViewModel` - Rate comparison calculations
+- `TouVsFlatRateViewModel` - Rate comparison calculations 
 - `SolarSystemSizingViewModel` - Solar panel sizing calculator
 - `PeaServicesViewModel` - PEA services integration
 - `InfoViewModel` - App information and settings
