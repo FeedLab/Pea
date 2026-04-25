@@ -199,7 +199,7 @@ Pea.Meter.Tests
 - `InfoViewModel` - App information and settings
 - `LogViewModel` - In-app log viewer
 
-### Services
+### Services 
 - `IPeaAdapter` / `PeaAdapterRouter` - Adapter interface and router (selects Live or Demo)
 - `PeaAdapterLive` - Live PEA API integration
 - `PeaAdapterDemo` - Demo mode data source (no account required)
